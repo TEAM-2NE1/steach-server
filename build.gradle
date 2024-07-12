@@ -34,9 +34,16 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+task copyYML(type: Copy){
+    copy {
+        from './steach-server-submodule'
+        include "*.yml"
+        into 'src/main/resources'
+    }
 }

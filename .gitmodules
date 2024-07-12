@@ -1,0 +1,3 @@
+[submodule "steach-server-submodule"]
+	path = steach-server-submodule
+	url = https://github.com/TEAM-2NE1/steach-server-submodule.git
