@@ -15,7 +15,7 @@ public class QuizChoice {
     @JoinColumn(name = "quizzes_id")
     private Quiz quiz;
 
-    private Integer isAnswer;
+    private Boolean isAnswer;
     private String choiceSentence;
 }
 

@@ -7,7 +7,15 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "students_quizzes")
+@Table(
+        name = "students_quizzes",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_student_quiz",
+                        columnNames = {"students_id", "quizzes_id"}
+                )
+        }
+)
 public class StudentsQuizzes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

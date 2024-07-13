@@ -5,7 +5,15 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "students_curricula")
+@Table(
+        name = "students_curricula",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_student_curricula",
+                        columnNames = {"curricula_id", "students_id"}
+                )
+        }
+)
 public class StudentsCurricula {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

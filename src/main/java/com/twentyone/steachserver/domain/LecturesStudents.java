@@ -6,7 +6,15 @@ import lombok.*;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "lectures_students")
+@Table(
+        name = "lectures_students",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_lecture_student",
+                        columnNames = {"students_id", "lectures_id"}
+                )
+        }
+)
 public class LecturesStudents {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "auth_codes")
 public class AuthCode {
-    @Id
+    @Id @Column(length = 30)
     private String authCode;
 
-    private Integer isRegistered;
+    private Boolean isRegistered = false;
 }

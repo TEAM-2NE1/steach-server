@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain;
 
+import com.twentyone.steachserver.domain.enums.CurriculaCategory;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -15,14 +16,16 @@ public class Curricula {
     @JoinColumn(name = "teachers_id")
     private Teacher teacher;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "informations_id")
     private CurriculaInformation information;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "schedules_id")
     private CurriculaSchedule schedule;
 
-    private String title;
-    private String category;
+    private String title; //varchar(255)
+
+    @Enumerated(EnumType.STRING)
+    private CurriculaCategory category;
 }
