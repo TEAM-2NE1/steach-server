@@ -10,8 +10,6 @@ public interface QuizService {
     // Quiz methods
     Optional<QuizResponseDto> createQuiz(QuizRequestDto request) throws Exception;
 
-    void enterScore(Integer studentId, Integer quizId, Integer score);
-
     Optional<QuizResponseDto> getQuizResponseDto(Integer quizId);
 }
 

@@ -1,10 +1,8 @@
 package com.twentyone.steachserver.domain.quiz.service;
 
-import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
 import com.twentyone.steachserver.domain.quiz.validator.QuizChoiceValidator;
 import com.twentyone.steachserver.domain.quiz.validator.QuizValidator;
-import com.twentyone.steachserver.domain.studentsQuizzes.StudentQuizzesService;
-import com.twentyone.steachserver.domain.studentsQuizzes.StudentsQuizzes;
+import com.twentyone.steachserver.domain.studentsQuizzes.service.StudentQuizzesService;
 import com.twentyone.steachserver.domain.lecture.Lecture;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -57,12 +54,6 @@ public class QuizServiceImpl implements QuizService {
             throw new RuntimeException("Lecture not found");
         }
         return lectureOpt.get();
-    }
-
-    @Override
-    public void enterScore(Integer studentId, Integer quizId, Integer score) {
-        StudentsQuizzes byQuizIdAndStudentId = studentQuizzesService.findByQuizIdAndStudentId(quizId, studentId);
-        byQuizIdAndStudentId.updateScore(score);
     }
 
     @Override

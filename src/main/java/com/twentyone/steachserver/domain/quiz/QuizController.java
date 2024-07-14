@@ -24,19 +24,6 @@ public class QuizController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
-    /**
-     * score,
-     * quizId,
-     * studentId,
-     * @return
-     */
-    @PostMapping("/{studentId}/{quizId}/{score}")
-    public ResponseEntity<?> enterScore(@PathVariable Integer studentId, @PathVariable Integer quizId, @PathVariable Integer score) throws Exception {
-        quizService.enterScore(studentId, quizId, score);
-        return ResponseEntity
-                .status(HttpStatus.OK).build();
-    }
-
     @GetMapping("/{quizId}")
     public ResponseEntity<QuizResponseDto> getQuizResponseDto(@PathVariable Integer quizId) {
         Optional<QuizResponseDto> quizOptional = quizService.getQuizResponseDto(quizId);

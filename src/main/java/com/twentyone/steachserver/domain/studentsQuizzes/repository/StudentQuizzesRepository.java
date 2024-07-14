@@ -1,5 +1,6 @@
-package com.twentyone.steachserver.domain.studentsQuizzes;
+package com.twentyone.steachserver.domain.studentsQuizzes.repository;
 
+import com.twentyone.steachserver.domain.studentsQuizzes.model.StudentsQuizzes;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
