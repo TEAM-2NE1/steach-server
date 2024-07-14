@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "quizzes")
 @NoArgsConstructor
-@Getter(value = AccessLevel.PRIVATE)
+@Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
 public class Quiz {
     @Id
