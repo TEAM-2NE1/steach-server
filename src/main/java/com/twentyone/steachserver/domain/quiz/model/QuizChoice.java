@@ -20,7 +20,10 @@ public class QuizChoice {
     @JoinColumn(name = "quizzes_id")
     private Quiz quiz;
 
+    @Column(name = "is_answer", nullable = false)
     private Integer isAnswer;
+
+    @Column(name = "choice_sentence", nullable = false)
     private String choiceSentence;
 
     public static QuizChoice createQuizChoice(String choiceText, Quiz savedQuiz, boolean isAnswer) {

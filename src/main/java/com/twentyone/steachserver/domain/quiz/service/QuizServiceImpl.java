@@ -1,6 +1,8 @@
 package com.twentyone.steachserver.domain.quiz.service;
 
 import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
+import com.twentyone.steachserver.domain.quiz.validator.QuizChoiceValidator;
+import com.twentyone.steachserver.domain.quiz.validator.QuizValidator;
 import com.twentyone.steachserver.domain.studentsQuizzes.StudentQuizzesService;
 import com.twentyone.steachserver.domain.studentsQuizzes.StudentsQuizzes;
 import com.twentyone.steachserver.domain.lecture.Lecture;
@@ -27,12 +29,18 @@ public class QuizServiceImpl implements QuizService {
     private final LectureService lectureService;
     private final StudentQuizzesService studentQuizzesService;
 
+    private final QuizValidator quizValidator;
+    private final QuizChoiceValidator quizChoiceValidator;
+
+
     @Override
     public Optional<QuizResponseDto> createQuiz(QuizRequestDto request) throws Exception {
         Lecture lecture = getLecture(request);
 
         Quiz quiz = Quiz.createQuiz(request, lecture);
         Quiz savedQuiz = quizRepository.save(quiz);
+
+        quizValidator.validateEmptyQuiz(savedQuiz);
 
         // Create and save QuizChoice entities
         List<String> choices = request.getChoices();
@@ -44,11 +52,11 @@ public class QuizServiceImpl implements QuizService {
 
     private Lecture getLecture(QuizRequestDto request) {
         Optional<Lecture> lectureOpt = lectureService.findLectureById(request.getLectureId());
+
         if (lectureOpt.isEmpty()) {
             throw new RuntimeException("Lecture not found");
         }
-        Lecture lecture = lectureOpt.get();
-        return lecture;
+        return lectureOpt.get();
     }
 
     @Override
@@ -59,23 +67,30 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public Optional<QuizResponseDto> getQuizResponseDto(Integer quizId) {
-        return quizRepository.findById(quizId)
-                .map(this::mapToDto);
+        Quiz quizById = findQuizById(quizId);
+        return Optional.of(mapToDto(quizById));
     }
 
     private QuizResponseDto mapToDto(Quiz quiz) {
-        List<String> choices = quiz.getQuiz().stream()
-                .map(QuizChoice::getChoiceSentence)
-                .collect(Collectors.toList());
+        List<String> choices = quizChoiceService.getChoices(quiz);
+        List<String> answers = quizChoiceService.getAnswers(quiz);
 
-        List<String> answers = quiz.getQuiz().stream()
-                .filter(choice -> choice.getIsAnswer() == 1)
-                .map(QuizChoice::getChoiceSentence)
-                .collect(Collectors.toList());
+        quizChoiceValidator.validateQuizChoices(answers, choices);
 
         return QuizResponseDto.createQuizResponseDto(quiz, choices, answers);
     }
 
+    private Quiz findQuizById(Integer quizId) {
+        Optional<Quiz> QuizOpt = quizRepository.findById(quizId);
+
+        try {
+            quizValidator.validateEmptyQuiz(QuizOpt);
+        } catch (Exception e) {
+            throw new RuntimeException("Quiz not found");
+        }
+
+        return QuizOpt.orElseThrow(() -> new RuntimeException("Quiz not found"));
+    }
 
 
 }

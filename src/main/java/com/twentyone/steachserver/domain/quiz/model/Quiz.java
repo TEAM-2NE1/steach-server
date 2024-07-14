@@ -1,6 +1,6 @@
 package com.twentyone.steachserver.domain.quiz.model;
 
-import com.twentyone.steachserver.domain.studentsQuizzes.StudentsQuizzes;
+import com.twentyone.steachserver.domain.studentsQuizzes.model.StudentsQuizzes;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.lecture.Lecture;
 import jakarta.persistence.*;
@@ -28,6 +28,8 @@ public class Quiz {
 
     // 강의의 몇번째 퀴즈인지
     private Integer quizNumber;
+
+    @Column(name = "question", nullable = false)
     private String question;
 
     @OneToMany(mappedBy = "student")
@@ -52,12 +54,4 @@ public class Quiz {
         this.getQuiz().add(quizChoice);
         quizChoice.updateQuiz(this);
     }
-
-    // 추후 개봉
-//    public void createStudentsQuizzes(Student student) {
-//        StudentsQuizzes studentsQuizzes = new StudentsQuizzes();
-//        studentsQuizzes.setStudent(student);
-//        studentsQuizzes.setQuiz(this);
-//        this.getStudentsQuizzes().add(studentsQuizzes);
-//    }
 }

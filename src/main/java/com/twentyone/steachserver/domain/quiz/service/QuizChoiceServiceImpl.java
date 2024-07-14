@@ -2,37 +2,56 @@ package com.twentyone.steachserver.domain.quiz.service;
 
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
+import com.twentyone.steachserver.domain.quiz.repository.QuizChoiceRepository;
+import com.twentyone.steachserver.domain.quiz.validator.QuizChoiceValidator;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Service
+@RequiredArgsConstructor
 public class QuizChoiceServiceImpl implements QuizChoiceService{
+    private final QuizChoiceRepository quizChoiceRepository;
+
+    private final QuizChoiceValidator quizChoiceValidator;
+
     @Override
     public void createQuizChoices(List<String> choices, List<String> answers, Quiz savedQuiz) throws Exception{
-        if (savedQuiz == null) {
-            throw new NullPointerException("Quiz cannot be null");
-        }
-
-        if (choices == null || choices.isEmpty()) {
-            throw new NullPointerException("Choices cannot be empty");
-        }
-
-        if (answers == null || answers.isEmpty()) {
-            throw new NullPointerException("Answers cannot be empty");
-        }
-
-        if (answers.size() > choices.size()) {
-            throw new IllegalArgumentException("Answers cannot be more than choices");
-        }
+        quizChoiceValidator.validateQuizChoices(choices, answers);
 
         int answerCount = 0;
-        for (String option : choices) {
-            boolean isAnswer = answers.contains(option);
+        for (String choice : choices) {
+            boolean isAnswer = answers.contains(choice);
             if (isAnswer) answerCount++;
-            QuizChoice.createQuizChoice(option, savedQuiz, isAnswer);
+
+            QuizChoice quizChoice = QuizChoice.createQuizChoice(choice, savedQuiz, isAnswer);
+            quizChoiceRepository.save(quizChoice);
         }
 
-        if (answerCount == 0) {
-            throw new IllegalArgumentException("Answers cannot be empty");
-        }
+        quizChoiceValidator.validateRightAnswers(answerCount);
+    }
+
+
+    public List<String> getAnswers(Quiz quiz) {
+        List<String> answers = quiz.getQuiz().stream()
+                .filter(choice -> choice.getIsAnswer() == 1)
+                .map(QuizChoice::getChoiceSentence)
+                .collect(Collectors.toList());
+
+        quizChoiceValidator.validateEmptyList(answers, "Answers cannot be empty");
+
+        return answers;
+    }
+
+    public List<String> getChoices(Quiz quiz) {
+        List<String> choices = quiz.getQuiz().stream()
+                .map(QuizChoice::getChoiceSentence)
+                .collect(Collectors.toList());
+
+        quizChoiceValidator.validateEmptyList(choices, "Choices cannot be empty");
+
+        return choices;
     }
 }
