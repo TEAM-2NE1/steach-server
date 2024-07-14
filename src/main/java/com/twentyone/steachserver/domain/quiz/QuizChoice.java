@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.quiz;
 
+import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 

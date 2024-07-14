@@ -1,6 +1,7 @@
-package com.twentyone.steachserver.domain;
+package com.twentyone.steachserver.domain.lecture;
 
 
+import com.twentyone.steachserver.domain.Curricula;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
