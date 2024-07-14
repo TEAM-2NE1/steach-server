@@ -8,8 +8,8 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "quiz_choices")
-@NoArgsConstructor
-@Getter(value = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
 public class QuizChoice {
     @Id
@@ -24,11 +24,15 @@ public class QuizChoice {
     private String choiceSentence;
 
     public static void createQuizChoice(String choiceText, Quiz savedQuiz, boolean isAnswer) {
-        QuizChoice choice = new QuizChoice();
-        choice.setChoiceSentence(choiceText);
-        choice.setQuiz(savedQuiz);
-        choice.setIsAnswer(isAnswer ? 1 : 0);
+        QuizChoice quizChoice = new QuizChoice();
+        quizChoice.setChoiceSentence(choiceText);
+        quizChoice.setQuiz(savedQuiz);
+        quizChoice.setIsAnswer(isAnswer ? 1 : 0);
+        savedQuiz.addChoice(quizChoice);
     }
 
+    public void updateQuiz(Quiz quiz) {
+        this.setQuiz(quiz);
+    }
 }
 
