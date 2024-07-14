@@ -5,9 +5,9 @@ import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Setter(value = AccessLevel.PRIVATE)
 @Getter(value = AccessLevel.PUBLIC)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Setter(value = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
 @Entity
@@ -20,6 +20,8 @@ import lombok.*;
         }
 )
 public class StudentsQuizzes {
+    @EmbeddedId
+    private StudentsQuizzesId id;
 
     @ManyToOne
     @JoinColumn(name = "students_id")
@@ -32,7 +34,13 @@ public class StudentsQuizzes {
     @Column(name = "total_score")
     private Integer totalScore;
 
+    protected StudentsQuizzes() {}
+
     public void updateScore(Integer totalScore) {
         this.setTotalScore(totalScore);
+    }
+
+    public void updateQuiz(Quiz quiz) {
+        this.setQuiz(quiz);
     }
 }
