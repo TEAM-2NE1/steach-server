@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.quiz.dto;
 
+import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,5 +24,15 @@ public class QuizResponseDto {
         responseDto.setChoices(request.getChoices());
         responseDto.setAnswers(request.getAnswers());
         return responseDto;
+    }
+
+    public static QuizResponseDto createQuizResponseDto(Quiz quiz, List<String> choices, List<String> answers) {
+        QuizResponseDto dto = new QuizResponseDto();
+        dto.setLectureId(quiz.getLectures().getId());
+        dto.setQuizNumber(quiz.getQuizNumber());
+        dto.setQuestion(quiz.getQuestion());
+        dto.setChoices(choices);
+        dto.setAnswers(answers);
+        return dto;
     }
 }

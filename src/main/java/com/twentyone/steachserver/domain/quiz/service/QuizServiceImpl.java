@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.quiz.service;
 
+import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
 import com.twentyone.steachserver.domain.studentsQuizzes.StudentQuizzesService;
 import com.twentyone.steachserver.domain.studentsQuizzes.StudentsQuizzes;
 import com.twentyone.steachserver.domain.lecture.Lecture;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -26,12 +28,8 @@ public class QuizServiceImpl implements QuizService {
     private final StudentQuizzesService studentQuizzesService;
 
     @Override
-    public QuizResponseDto createQuiz(QuizRequestDto request) throws Exception {
-        Optional<Lecture> lectureOpt = lectureService.findLectureById(request.getLectureId());
-        if (lectureOpt.isEmpty()) {
-            throw new RuntimeException("Lecture not found");
-        }
-        Lecture lecture = lectureOpt.get();
+    public Optional<QuizResponseDto> createQuiz(QuizRequestDto request) throws Exception {
+        Lecture lecture = getLecture(request);
 
         Quiz quiz = Quiz.createQuiz(request, lecture);
         Quiz savedQuiz = quizRepository.save(quiz);
@@ -41,8 +39,16 @@ public class QuizServiceImpl implements QuizService {
         List<String> answers = request.getAnswers();
         quizChoiceService.createQuizChoices(choices, answers, savedQuiz);
 
+        return Optional.of(QuizResponseDto.createQuizResponseDto(request));
+    }
 
-        return QuizResponseDto.createQuizResponseDto(request);
+    private Lecture getLecture(QuizRequestDto request) {
+        Optional<Lecture> lectureOpt = lectureService.findLectureById(request.getLectureId());
+        if (lectureOpt.isEmpty()) {
+            throw new RuntimeException("Lecture not found");
+        }
+        Lecture lecture = lectureOpt.get();
+        return lecture;
     }
 
     @Override
@@ -50,5 +56,26 @@ public class QuizServiceImpl implements QuizService {
         StudentsQuizzes byQuizIdAndStudentId = studentQuizzesService.findByQuizIdAndStudentId(quizId, studentId);
         byQuizIdAndStudentId.updateScore(score);
     }
+
+    @Override
+    public Optional<QuizResponseDto> getQuizResponseDto(Integer quizId) {
+        return quizRepository.findById(quizId)
+                .map(this::mapToDto);
+    }
+
+    private QuizResponseDto mapToDto(Quiz quiz) {
+        List<String> choices = quiz.getQuiz().stream()
+                .map(QuizChoice::getChoiceSentence)
+                .collect(Collectors.toList());
+
+        List<String> answers = quiz.getQuiz().stream()
+                .filter(choice -> choice.getIsAnswer() == 1)
+                .map(QuizChoice::getChoiceSentence)
+                .collect(Collectors.toList());
+
+        return QuizResponseDto.createQuizResponseDto(quiz, choices, answers);
+    }
+
+
 
 }
