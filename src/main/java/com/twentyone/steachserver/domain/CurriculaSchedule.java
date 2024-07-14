@@ -1,9 +1,8 @@
 package com.twentyone.steachserver.domain;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Entity
 @Table(name = "curricula_schedules")
@@ -13,15 +12,13 @@ public class CurriculaSchedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer monday;
-    private Integer tuesday;
-    private Integer wednesday;
-    private Integer thursday;
-    private Integer friday;
-    private Integer saturday;
-    private Integer sunday;
-    private Date startedDate;
-    private Date closedDate;
-    private Date startedTime;
-    private Date closedTime;
+    private Boolean monday;
+    private Boolean tuesday;
+    private Boolean wednesday;
+    private Boolean thursday;
+    private Boolean friday;
+    private Boolean saturday;
+    private Boolean sunday;
+    private LocalDateTime startedAt;
+    private LocalDateTime closedAt;
 }

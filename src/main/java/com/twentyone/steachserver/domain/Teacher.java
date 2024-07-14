@@ -1,9 +1,8 @@
 package com.twentyone.steachserver.domain;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Entity
 @Table(name = "teachers")
@@ -17,8 +16,10 @@ public class Teacher {
     @JoinColumn(name = "login_credentials_id")
     private LoginCredential loginCredential;
 
+    @Column(length = 30)
     private String name;
     private Integer volunteerTime;
-    private Date createdDate;
-    private Date updatedDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private String pathQualification;
 }

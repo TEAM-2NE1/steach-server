@@ -1,10 +1,8 @@
 package com.twentyone.steachserver.domain;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
-
 
 @NoArgsConstructor
 @Entity
@@ -18,7 +16,8 @@ public class Admin {
     @JoinColumn(name = "login_credentials_id")
     private LoginCredential loginCredential;
 
+    @Column(length = 30)
     private String name;
-    private Date createdDate;
-    private Date updatedDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
