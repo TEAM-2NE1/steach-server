@@ -29,7 +29,7 @@ public class QuizController {
      * studentId,
      * @return
      */
-    @PutMapping("/{studentId}/{quizId}/{score}")
+    @PostMapping("/{studentId}/{quizId}/{score}")
     public ResponseEntity<?> enterScore(@PathVariable Integer studentId, @PathVariable Integer quizId, @PathVariable Integer score) throws Exception {
         quizService.enterScore(studentId, quizId, score);
         return ResponseEntity
