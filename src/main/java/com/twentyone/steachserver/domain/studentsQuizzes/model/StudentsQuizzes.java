@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.studentsQuizzes;
+package com.twentyone.steachserver.domain.studentsQuizzes.model;
 
 import com.twentyone.steachserver.domain.Student;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
@@ -7,7 +7,6 @@ import lombok.*;
 
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 @EqualsAndHashCode
 @Entity
@@ -24,10 +23,12 @@ public class StudentsQuizzes {
     private StudentsQuizzesId id;
 
     @ManyToOne
+    @MapsId("studentId") //  엔터티의 외래 키 필드를 포함된 기본 키 클래스의 해당 필드에 매핑합니다.
     @JoinColumn(name = "students_id")
     private Student student;
 
     @ManyToOne
+    @MapsId("quizId")
     @JoinColumn(name = "quizzes_id")
     private Quiz quiz;
 
@@ -36,11 +37,21 @@ public class StudentsQuizzes {
 
     protected StudentsQuizzes() {}
 
+    private StudentsQuizzes(Student student, Quiz quiz) {
+        this.id = StudentsQuizzesId.createStudentsQuizzesId(student.getId(), quiz.getId());
+        this.student = student;
+        this.quiz = quiz;
+    }
+
+    public static StudentsQuizzes createStudentsQuizzes(Student student, Quiz quiz) {
+        return new StudentsQuizzes(student, quiz);
+    }
+
     public void updateScore(Integer totalScore) {
-        this.setTotalScore(totalScore);
+        this.totalScore = totalScore;
     }
 
     public void updateQuiz(Quiz quiz) {
-        this.setQuiz(quiz);
+        this.quiz = quiz;
     }
 }
