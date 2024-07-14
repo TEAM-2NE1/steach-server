@@ -1,6 +1,8 @@
 package com.twentyone.steachserver.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
@@ -8,6 +10,7 @@ import java.util.Date;
 @Entity
 @Table(name = "studentds")
 @NoArgsConstructor
+@Getter(value = AccessLevel.PUBLIC)
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
