@@ -1,8 +1,12 @@
-package com.twentyone.steachserver.domain;
+package com.twentyone.steachserver.domain.curricula.model;
 
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter(value = AccessLevel.PUBLIC)
+@Setter(value = AccessLevel.PRIVATE)
+@ToString
+@EqualsAndHashCode
 @Entity
 @Table(name = "curricula_informations")
 @NoArgsConstructor
@@ -29,4 +33,10 @@ public class CurriculaInformation {
 
     @Column(name = "banner_img_url", length = 1000)
     private String bannerImgUrl;
+
+    @OneToOne
+    @JoinColumn(name = "curricula_id")
+    private Curricula curricula;
+
+
 }
