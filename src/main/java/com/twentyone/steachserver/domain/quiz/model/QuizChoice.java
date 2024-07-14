@@ -23,12 +23,13 @@ public class QuizChoice {
     private Integer isAnswer;
     private String choiceSentence;
 
-    public static void createQuizChoice(String choiceText, Quiz savedQuiz, boolean isAnswer) {
+    public static QuizChoice createQuizChoice(String choiceText, Quiz savedQuiz, boolean isAnswer) {
         QuizChoice quizChoice = new QuizChoice();
         quizChoice.setChoiceSentence(choiceText);
         quizChoice.setQuiz(savedQuiz);
         quizChoice.setIsAnswer(isAnswer ? 1 : 0);
         savedQuiz.addChoice(quizChoice);
+        return quizChoice;
     }
 
     public void updateQuiz(Quiz quiz) {
