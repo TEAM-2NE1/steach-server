@@ -5,6 +5,8 @@ import com.twentyone.steachserver.domain.quiz.dto.QuizResponseDto;
 
 public interface QuizService {
     // Quiz methods
-    QuizResponseDto createQuiz(QuizRequestDto request);
+    QuizResponseDto createQuiz(QuizRequestDto request) throws Exception;
 
+    void enterScore(Integer studentId, Integer quizId, Integer score);
 }
+

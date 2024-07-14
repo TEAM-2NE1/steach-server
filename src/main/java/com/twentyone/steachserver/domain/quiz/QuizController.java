@@ -16,11 +16,23 @@ public class QuizController {
     private QuizService quizService;
 
     @PostMapping
-    public ResponseEntity<?> createQuiz(@RequestBody QuizRequestDto request) {
-        QuizResponseDto quiz = quizService.createQuiz(request);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(quiz);
+    public ResponseEntity<?> createQuiz(@RequestBody QuizRequestDto request) throws Exception {
+            QuizResponseDto quiz = quizService.createQuiz(request);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(quiz);
     }
 
+    /**
+     * score,
+     * quizId,
+     * studentId,
+     * @return
+     */
+    @PutMapping("/{studentId}/{quizId}/{score}")
+    public ResponseEntity<?> enterScore(@PathVariable Integer studentId, @PathVariable Integer quizId, @PathVariable Integer score) throws Exception {
+        quizService.enterScore(studentId, quizId, score);
+        return ResponseEntity
+                .status(HttpStatus.OK).build();
+    }
 }
