@@ -15,28 +15,22 @@ public class CurriculaInformation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 10000, columnDefinition= "TEXT") //varchar(10000)
+    @Column(length = 10000, columnDefinition= "TEXT", nullable = false) //varchar(10000)
     private String subTitle;
 
-    @Column(length = 10000, columnDefinition= "TEXT") //varchar(10000)
+    @Column(length = 10000, columnDefinition= "TEXT", nullable = false) //varchar(10000)
     private String intro;
 
-    @Column(length = 10000, columnDefinition= "TEXT") //varchar(10000)
+    @Column(length = 10000, columnDefinition= "TEXT", nullable = false) //varchar(10000)
     private String target;
 
-    @Column(length = 10000, columnDefinition= "TEXT") //varchar(10000)
+    @Column(length = 10000, columnDefinition= "TEXT", nullable = false) //varchar(10000)
     private String requirement;
 
     @Lob
-    @Column(length = 10000000, columnDefinition = "MEDIUMTEXT") //mediumtext
+    @Column(length = 10000000, columnDefinition = "MEDIUMTEXT", nullable = false) //mediumtext
     private String information;
 
-    @Column(name = "banner_img_url", length = 1000)
+    @Column(name = "banner_img_url", length = 1000, nullable = false)
     private String bannerImgUrl;
-
-
-    @OneToOne
-    @JoinColumn(name = "curricula_id", referencedColumnName = "id")
-    private Curricula curricula;
-
 }

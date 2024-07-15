@@ -10,15 +10,7 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 @Entity
-@Table(
-        name = "students_curricula",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_student_curricula",
-                        columnNames = {"curricula_id", "students_id"}
-                )
-        }
-)
+@Table(name = "students_curricula")
 public class StudentsCurricula {
     @EmbeddedId
     private StudentsCurriculaId id;
@@ -27,7 +19,6 @@ public class StudentsCurricula {
     @MapsId("curriculaId")
     @JoinColumn(name = "curricula_id")
     private Curricula curricula;
-
 
     @ManyToOne
     @MapsId("studentId")
@@ -41,5 +32,4 @@ public class StudentsCurricula {
         this.student = student;
         this.curricula = curricula;
     }
-
 }

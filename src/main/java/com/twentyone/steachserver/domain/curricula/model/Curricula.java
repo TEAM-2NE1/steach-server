@@ -21,17 +21,18 @@ public class Curricula {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String title; //varchar(255)
+    @Column(length = 255, nullable = false)
+    private String title;
 
     @Enumerated(EnumType.STRING)
-    private CurriculaCategory category;
+    private CurriculaCategory category = CurriculaCategory.ETC;
 
     @OneToOne
-    @JoinColumn(name = "informations_id", referencedColumnName = "id")
+    @JoinColumn(name = "informations_id", referencedColumnName = "id", nullable = false)
     private CurriculaInformation information;
 
     @OneToOne
-    @JoinColumn(name = "schedules_id", referencedColumnName = "id")
+    @JoinColumn(name = "schedules_id", referencedColumnName = "id", nullable = false)
     private CurriculaSchedule schedule;
 
     @ManyToOne
@@ -40,5 +41,4 @@ public class Curricula {
 
     @OneToMany(mappedBy = "curricula")
     private Set<StudentsCurricula> studentsCurricula = new HashSet<>();
-
 }
