@@ -1,6 +1,5 @@
 package com.twentyone.steachserver.domain.studentsQuizzes.model;
 
-import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import jakarta.persistence.*;
 import lombok.*;

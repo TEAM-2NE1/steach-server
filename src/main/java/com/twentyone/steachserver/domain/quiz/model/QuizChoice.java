@@ -8,35 +8,27 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "quiz_choices")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter(value = AccessLevel.PUBLIC)
+@NoArgsConstructor
+@Getter(value = AccessLevel.PRIVATE)
 @Setter(value = AccessLevel.PRIVATE)
 public class QuizChoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "is_answer", nullable = false)
-    private Boolean isAnswer;
-
-    @Column(name = "choice_sentence", nullable = false)
-    private String choiceSentence;
-
     @ManyToOne
     @JoinColumn(name = "quizzes_id")
     private Quiz quiz;
 
-    public static QuizChoice createQuizChoice(String choiceText, Quiz savedQuiz, boolean isAnswer) {
-        QuizChoice quizChoice = new QuizChoice();
-        quizChoice.setChoiceSentence(choiceText);
-        quizChoice.setQuiz(savedQuiz);
-        quizChoice.setIsAnswer(isAnswer);
-        savedQuiz.addChoice(quizChoice);
-        return quizChoice;
+    private Integer isAnswer;
+    private String choiceSentence;
+
+    public static void createQuizChoice(String choiceText, Quiz savedQuiz, boolean isAnswer) {
+        QuizChoice choice = new QuizChoice();
+        choice.setChoiceSentence(choiceText);
+        choice.setQuiz(savedQuiz);
+        choice.setIsAnswer(isAnswer ? 1 : 0);
     }
 
-    public void updateQuiz(Quiz quiz) {
-        this.setQuiz(quiz);
-    }
 }
 
