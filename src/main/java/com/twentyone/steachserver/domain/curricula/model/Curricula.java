@@ -28,15 +28,15 @@ public class Curricula {
     private CurriculaCategory category = CurriculaCategory.ETC;
 
     @OneToOne
-    @JoinColumn(name = "informations_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "information_id", referencedColumnName = "id", nullable = false)
     private CurriculaInformation information;
 
     @OneToOne
-    @JoinColumn(name = "schedules_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "schedule_id", referencedColumnName = "id", nullable = false)
     private CurriculaSchedule schedule;
 
     @ManyToOne
-    @JoinColumn(name = "teachers_id")
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
     @OneToMany(mappedBy = "curricula")

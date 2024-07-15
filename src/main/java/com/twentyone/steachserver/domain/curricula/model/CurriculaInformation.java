@@ -8,7 +8,7 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 @Entity
-@Table(name = "curricula_informations")
+@Table(name = "curriculum_information")
 @NoArgsConstructor
 public class CurriculaInformation {
     @Id

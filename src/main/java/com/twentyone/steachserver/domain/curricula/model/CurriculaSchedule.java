@@ -10,7 +10,7 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 @Entity
-@Table(name = "curricula_schedules")
+@Table(name = "curriculum_schedules")
 @NoArgsConstructor
 public class CurriculaSchedule {
     @Id

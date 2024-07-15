@@ -23,7 +23,7 @@ public class QuizChoice {
     private String choiceSentence;
 
     @ManyToOne
-    @JoinColumn(name = "quizzes_id")
+    @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
     public static QuizChoice createQuizChoice(String choiceText, Quiz savedQuiz, boolean isAnswer) {

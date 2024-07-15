@@ -29,7 +29,7 @@ public class Teacher {
     private String pathQualification;
 
     @OneToOne
-    @JoinColumn(name = "login_credentials_id", nullable = false)
+    @JoinColumn(name = "login_credential_id", nullable = false)
     private LoginCredential loginCredential;
 
     private LocalDateTime createdAt = LocalDateTime.now();

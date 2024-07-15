@@ -29,7 +29,7 @@ public class Student {
     private String name;
 
     @OneToOne
-    @JoinColumn(name = "login_credentials_id", nullable = false)
+    @JoinColumn(name = "login_credential_id", nullable = false)
     private LoginCredential loginCredential;
 
     @OneToMany(mappedBy = "student")
