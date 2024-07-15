@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain;
+package com.twentyone.steachserver.domain.member.auth.model;
 
 import jakarta.persistence.*;
 import lombok.*;
