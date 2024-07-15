@@ -29,14 +29,14 @@ public class Curricula {
 
     @OneToOne
     @JoinColumn(name = "information_id", referencedColumnName = "id", nullable = false)
-    private CurriculaInformation information;
+    private CurriculumDetails information;
 
     @OneToOne
-    @JoinColumn(name = "schedule_id", referencedColumnName = "id", nullable = false)
-    private CurriculaSchedule schedule;
+    @JoinColumn(name = "detail_id", referencedColumnName = "id", nullable = false)
+    private CurriculumDetails details;
 
     @ManyToOne
-    @JoinColumn(name = "teacher_id")
+    @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     private Teacher teacher;
 
     @OneToMany(mappedBy = "curricula")

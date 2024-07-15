@@ -22,7 +22,7 @@ public class Admin {
     private String name;
 
     @OneToOne
-    @JoinColumn(name = "login_credential_id", nullable = false)
+    @JoinColumn(name = "login_credential_id", nullable = false, referencedColumnName = "id")
     private LoginCredential loginCredential;
 
     //TODO now 자동매핑

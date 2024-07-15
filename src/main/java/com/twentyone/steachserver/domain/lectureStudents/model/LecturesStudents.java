@@ -11,27 +11,19 @@ import java.math.BigDecimal;
 @ToString
 @EqualsAndHashCode
 @Entity
-@Table(
-        name = "lectures_students",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_lecture_student",
-                        columnNames = {"students_id", "lectures_id"}
-                )
-        }
-)
+@Table(name = "lectures_students")
 public class LecturesStudents {
     @EmbeddedId
     private LecturesStudentsId id;
 
     @ManyToOne
     @MapsId("studentId") //  엔터티의 외래 키 필드를 포함된 기본 키 클래스의 해당 필드에 매핑합니다.
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
 
     @ManyToOne
     @MapsId("lectureId") //  엔터티의 외래 키 필드를 포함된 기본 키 클래스의 해당 필드에 매핑합니다.
-    @JoinColumn(name = "lecture_id")
+    @JoinColumn(name = "lecture_id", referencedColumnName = "id")
     private Lecture lecture;
 
     @Column(name = "focus_ratio", precision = 4, scale = 2)

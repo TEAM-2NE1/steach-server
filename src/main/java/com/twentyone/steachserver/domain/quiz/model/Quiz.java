@@ -29,7 +29,7 @@ public class Quiz {
     private String question;
 
     @ManyToOne
-    @JoinColumn(name = "lecture_id")
+    @JoinColumn(name = "lecture_id", referencedColumnName = "id")
     private Lecture lectures;
 
     @OneToMany(mappedBy = "quiz")
