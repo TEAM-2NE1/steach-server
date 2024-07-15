@@ -1,5 +1,6 @@
-package com.twentyone.steachserver.domain;
+package com.twentyone.steachserver.domain.students.model;
 
+import com.twentyone.steachserver.domain.LoginCredential;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.NoArgsConstructor;
