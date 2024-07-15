@@ -27,11 +27,11 @@ public class Curricula {
     private CurriculaCategory category;
 
     @OneToOne
-    @JoinColumn(name = "informations_id")
+    @JoinColumn(name = "informations_id", referencedColumnName = "id")
     private CurriculaInformation information;
 
     @OneToOne
-    @JoinColumn(name = "schedules_id")
+    @JoinColumn(name = "schedules_id", referencedColumnName = "id")
     private CurriculaSchedule schedule;
 
     @ManyToOne
