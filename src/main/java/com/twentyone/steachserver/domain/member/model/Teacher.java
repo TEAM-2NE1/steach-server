@@ -1,7 +1,8 @@
 package com.twentyone.steachserver.domain.member.model;
 
-import com.twentyone.steachserver.domain.member.auth.model.LoginCredential;
+import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 import lombok.*;
@@ -18,15 +19,19 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 30)
+    @Column(length = 30, nullable = false)
     private String name;
-    private Integer volunteerTime;
+
+    @Column(nullable = false)
+    private Integer volunteerTime = 0;
+
+    @Column(length = 255)
     private String pathQualification;
 
     @OneToOne
-    @JoinColumn(name = "login_credentials_id")
+    @JoinColumn(name = "login_credentials_id", nullable = false)
     private LoginCredential loginCredential;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime updatedAt = LocalDateTime.now();
 }
