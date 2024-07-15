@@ -1,3 +1,15 @@
+-- 정수 타입 (Integer Types)
+-- TINYINT: -128 ~ 127 (SIGNED), 0 ~ 255 (UNSIGNED)
+-- SMALLINT: -32,768 ~ 32,767 (SIGNED), 0 ~ 65,535 (UNSIGNED)
+-- MEDIUMINT: -8,388,608 ~ 8,388,607 (SIGNED), 0 ~ 16,777,215 (UNSIGNED)
+-- INT 또는 INTEGER: -2,147,483,648 ~ 2,147,483,647 (SIGNED), 0 ~ 4,294,967,295 (UNSIGNED)
+-- BIGINT: -9,223,372,036,854,775,808 ~ 9,223,372,036,854,775,807 (SIGNED), 0 ~ 18,446,744,073,709,551,615 (UNSIGNED)
+
+-- 소수점 타입 (Decimal Types)
+-- FLOAT(M, D): 소수점 이하 D 자리를 포함한 M 자리의 부동 소수점 숫자. 예: FLOAT(7, 3) -> 최대 7자리 숫자, 소수점 이하 3자리
+-- DOUBLE(M, D): 소수점 이하 D 자리를 포함한 M 자리의 배정밀도 부동 소수점 숫자. 예: DOUBLE(16, 4) -> 최대 16자리 숫자, 소수점 이하 4자리
+-- DECIMAL(M, D): 소수점 이하 D 자리를 포함한 M 자리의 고정 소수점 숫자. 예: DECIMAL(10, 2) -> 최대 10자리 숫자, 소수점 이하 2자리
+
 CREATE TABLE `login_credentials`
 (
     `id`       INTEGER(11)  NOT NULL AUTO_INCREMENT,
@@ -9,53 +21,42 @@ CREATE TABLE `login_credentials`
 CREATE TABLE `teachers`
 (
     `id`                   INTEGER(11)  NOT NULL AUTO_INCREMENT,
-    `login_credentials_id` INTEGER(11)  NOT NULL,
+    `login_credential_id`  INTEGER(11)  NOT NULL,
     `name`                 VARCHAR(30)  NOT NULL,
+    `email`                VARCHAR(255) NULL UNIQUE,
     `volunteer_time`       SMALLINT(6)  NOT NULL DEFAULT 0,
     `path_qualification`   VARCHAR(255) NULL,
     `created_at`           DATETIME     NOT NULL,
     `updated_at`           DATETIME     NOT NULL,
-    -- `email` VARCHAR(255) NOT NULL UNIQUE,
     CONSTRAINT `PK_teachers` PRIMARY KEY (`id`),
-    CONSTRAINT `FK_teachers_login_credentials` FOREIGN KEY (`login_credentials_id`) REFERENCES `login_credentials` (`id`)
+    CONSTRAINT `FK_teachers_login_credentials` FOREIGN KEY (`login_credential_id`) REFERENCES `login_credentials` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `students`
 (
     `id`                   INTEGER(11) NOT NULL AUTO_INCREMENT,
-    `login_credentials_id` INTEGER(11) NOT NULL,
+    `login_credential_id`  INTEGER(11) NOT NULL,
     `name`                 VARCHAR(30) NOT NULL UNIQUE,
     `created_at`           DATETIME    NOT NULL,
     `updated_at`           DATETIME    NOT NULL,
-    -- `email` VARCHAR(255) NOT NULL UNIQUE,
+    `email` VARCHAR(255) NULL UNIQUE,
     CONSTRAINT `PK_students` PRIMARY KEY (`id`),
-    CONSTRAINT `FK_students_login_credentials` FOREIGN KEY (`login_credentials_id`) REFERENCES `login_credentials` (`id`)
+    CONSTRAINT `FK_students_login_credentials` FOREIGN KEY (`login_credential_id`) REFERENCES `login_credentials` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `admins`
 (
     `id`                   INTEGER(11) NOT NULL AUTO_INCREMENT,
-    `login_credentials_id` INTEGER(11) NOT NULL,
+    `login_credential_id`  INTEGER(11) NOT NULL,
     `name`                 VARCHAR(30) NOT NULL UNIQUE,
     `created_at`           DATETIME    NOT NULL,
     `updated_at`           DATETIME    NOT NULL,
-    -- `email` VARCHAR(255) NOT NULL UNIQUE,
     CONSTRAINT `PK_admins` PRIMARY KEY (`id`),
-    CONSTRAINT `FK_admins_login_credentials` FOREIGN KEY (`login_credentials_id`) REFERENCES `login_credentials` (`id`)
+    CONSTRAINT `FK_admins_login_credentials` FOREIGN KEY (`login_credential_id`) REFERENCES `login_credentials` (`id`) ON DELETE CASCADE
 );
 
-CREATE TABLE `curricula_schedules`
-(
-    `id`           INTEGER(11) NOT NULL AUTO_INCREMENT,
-    `weekdays_bitmask` BIT(7) NOT NULL DEFAULT 0,
-    `start_date` DATE        NOT NULL,
-    `end_date`  DATE        NOT NULL,
-    `lecture_start_time` TIME        NOT NULL,
-    `lecture_close_time`  TIME        NOT NULL,
-    CONSTRAINT `PK_curricula_schedules` PRIMARY KEY (`id`)
-);
 
-CREATE TABLE `curricula_information`
+CREATE TABLE `curriculum_details`
 (
     `id`          INTEGER(11)  NOT NULL AUTO_INCREMENT,
     `sub_title`   VARCHAR(255) NULL DEFAULT NULL,
@@ -63,75 +64,79 @@ CREATE TABLE `curricula_information`
     `target`      VARCHAR(255) NULL,
     `requirement` VARCHAR(255) NULL,
     `information` TEXT         NULL,
-    `Field`       VARCHAR(255) NOT NULL,
-    CONSTRAINT `PK_curricula_information` PRIMARY KEY (`id`)
+    `field`       VARCHAR(255) NOT NULL,
+    `weekdays_bitmask`  BIT(7) NOT NULL DEFAULT 0,
+    `start_date`        DATE        NOT NULL,
+    `end_date`          DATE        NOT NULL,
+    `lecture_start_time` TIME        NOT NULL,
+    `lecture_close_time` TIME        NOT NULL,
+    CONSTRAINT `PK_curriculum_details` PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `curricula`
 (
     `id`             INTEGER(11)                                             NOT NULL AUTO_INCREMENT,
-    `teachers_id`    INTEGER(11)                                             NOT NULL,
-    `information_id` INTEGER(11)                                             NOT NULL,
-    `schedules_id`   INTEGER(11)                                             NOT NULL,
+    `teacher_id`     INTEGER(11)                                             NULL,
+    `detail_id`      INTEGER(11)                                             NOT NULL,
+    `schedule_id`    INTEGER(11)                                             NOT NULL,
     `title`          VARCHAR(255)                                            NOT NULL,
     `category`       ENUM ('국어', '외국어', '수학', '과학', '사회', '공학', '예체능', '기타') NOT NULL,
     CONSTRAINT `PK_curricula` PRIMARY KEY (`id`),
-    CONSTRAINT `FK_curricula_teachers` FOREIGN KEY (`teachers_id`) REFERENCES `teachers` (`id`),
-    CONSTRAINT `FK_curricula_curricula_information` FOREIGN KEY (`information_id`) REFERENCES `curricula_information` (`id`),
-    CONSTRAINT `FK_curricula_curricula_schedules` FOREIGN KEY (`schedules_id`) REFERENCES `curricula_schedules` (`id`)
+    CONSTRAINT `FK_curricula_teachers` FOREIGN KEY (`teacher_id`) REFERENCES `teachers` (`id`) ON DELETE SET NULL,
+    CONSTRAINT `FK_curricula_curriculum_details` FOREIGN KEY (`detail_id`) REFERENCES `curriculum_details` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `lectures`
 (
     `id`            INTEGER(11)  NOT NULL AUTO_INCREMENT,
-    `curricula_id`  INTEGER(11)  NOT NULL,
+    `curriculum_id` INTEGER(11)  NOT NULL,
     `lecture_order` TINYINT(4)   NOT NULL,
     `title`         VARCHAR(255) NOT NULL,
-    `start_time` TIMESTAMP NOT NULL,
-    `end_time` TIMESTAMP NOT NULL,
+    `start_time`    TIMESTAMP    NOT NULL,
+    `end_time`      TIMESTAMP    NOT NULL,
     CONSTRAINT `PK_lectures` PRIMARY KEY (`id`),
-    CONSTRAINT `FK_lectures_curricula` FOREIGN KEY (`curricula_id`) REFERENCES `curricula` (`id`)
+    CONSTRAINT `FK_lectures_curricula` FOREIGN KEY (`curriculum_id`) REFERENCES `curricula` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `quizzes`
 (
     `id`          INTEGER(11)  NOT NULL AUTO_INCREMENT,
-    `lectures_id` INTEGER(11)  NOT NULL,
+    `lecture_id`  INTEGER(11)  NOT NULL,
     `quiz_number` TINYINT(4)   NOT NULL,
     `question`    VARCHAR(255) NOT NULL,
     CONSTRAINT `PK_quizzes` PRIMARY KEY (`id`),
-    CONSTRAINT `FK_quizzes_lectures` FOREIGN KEY (`lectures_id`) REFERENCES `lectures` (`id`)
+    CONSTRAINT `FK_quizzes_lectures` FOREIGN KEY (`lecture_id`) REFERENCES `lectures` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `quiz_choices`
 (
     `id`              INTEGER(11)  NOT NULL AUTO_INCREMENT,
-    `quizzes_id`      INTEGER(11)  NOT NULL,
+    `quiz_id`         INTEGER(11)  NOT NULL,
     `is_answer`       BIT(1)       NOT NULL,
     `choice_sentence` VARCHAR(255) NOT NULL,
     CONSTRAINT `PK_quiz_choices` PRIMARY KEY (`id`),
-    CONSTRAINT `FK_quiz_choices_quizzes` FOREIGN KEY (`quizzes_id`) REFERENCES `quizzes` (`id`)
+    CONSTRAINT `FK_quiz_choices_quizzes` FOREIGN KEY (`quiz_id`) REFERENCES `quizzes` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `students_quizzes`
 (
-    `id`          INTEGER(11) NOT NULL AUTO_INCREMENT,
-    `students_id` INTEGER(11) NOT NULL,
-    `quizzes_id`  INTEGER(11) NOT NULL,
+    `id`         INTEGER(11) NOT NULL AUTO_INCREMENT,
+    `student_id` INTEGER(11) NOT NULL,
+    `quiz_id`    INTEGER(11) NOT NULL,
     `total_score` INTEGER(11) NOT NULL,
     CONSTRAINT `PK_students_quizzes` PRIMARY KEY (`id`),
-    CONSTRAINT `FK_students_quizzes_students` FOREIGN KEY (`students_id`) REFERENCES `students` (`id`),
-    CONSTRAINT `FK_students_quizzes_quizzes` FOREIGN KEY (`quizzes_id`) REFERENCES `quizzes` (`id`)
+    CONSTRAINT `FK_students_quizzes_students` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE ,
+    CONSTRAINT `FK_students_quizzes_quizzes` FOREIGN KEY (`quiz_id`) REFERENCES `quizzes` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `students_curricula`
 (
     `id`           INTEGER(11) NOT NULL AUTO_INCREMENT,
-    `curricula_id` INTEGER(11) NOT NULL,
-    `students_id`  INTEGER(11) NOT NULL,
+    `curriculum_id` INTEGER(11) NOT NULL,
+    `student_id`    INTEGER(11) NOT NULL,
     CONSTRAINT `PK_students_curricula` PRIMARY KEY (`id`),
-    CONSTRAINT `FK_students_curricula_curricula` FOREIGN KEY (`curricula_id`) REFERENCES `curricula` (`id`),
-    CONSTRAINT `FK_students_curricula_students` FOREIGN KEY (`students_id`) REFERENCES `students` (`id`)
+    CONSTRAINT `FK_students_curricula_curricula` FOREIGN KEY (`curriculum_id`) REFERENCES `curricula` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `FK_students_curricula_students` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `auth_codes`
@@ -144,20 +149,20 @@ CREATE TABLE `auth_codes`
 CREATE TABLE `lectures_students`
 (
     `id`          INTEGER(11) NOT NULL AUTO_INCREMENT,
-    `students_id` INTEGER(11) NOT NULL,
-    `lectures_id` INTEGER(11) NOT NULL,
+    `student_id`  INTEGER(11) NOT NULL,
+    `lecture_id`  INTEGER(11) NOT NULL,
     `focus_ratio` DECIMAL(4, 2) NULL,
-    `focus_time`  TIMESTAMP NOT NULL,
+    `focus_time`  SMALLINT(6) NOT NULL,
     CONSTRAINT `PK_lectures_students` PRIMARY KEY (`id`),
-    CONSTRAINT `FK_lectures_students_students` FOREIGN KEY (`students_id`) REFERENCES `students` (`id`),
-    CONSTRAINT `FK_lectures_students_lectures` FOREIGN KEY (`lectures_id`) REFERENCES `lectures` (`id`)
+    CONSTRAINT `FK_lectures_students_students` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `FK_lectures_students_lectures` FOREIGN KEY (`lecture_id`) REFERENCES `lectures` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `classrooms`
 (
     `id` INTEGER(11) NOT NULL AUTO_INCREMENT,
-    `lectures_id` INTEGER(11) NOT NULL ,
-    `session_id` VARCHAR(255) NOT NULL ,
-    CONSTRAINT `PK_classrooms_id` PRIMARY KEY classrooms(`id`),
-    CONSTRAINT `FK_classrooms_lectures` FOREIGN KEY (`lectures_id`) REFERENCES `lectures` (`id`)
-)
+    `lecture_id` INTEGER(11) NOT NULL,
+    `session_id` VARCHAR(255) NOT NULL,
+    CONSTRAINT `PK_classrooms_id` PRIMARY KEY (`id`),
+    CONSTRAINT `FK_classrooms_lectures` FOREIGN KEY (`lecture_id`) REFERENCES `lectures` (`id`) ON DELETE CASCADE
+);
