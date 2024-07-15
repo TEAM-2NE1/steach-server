@@ -24,12 +24,12 @@ public class StudentsQuizzes {
 
     @ManyToOne
     @MapsId("studentId") //  엔터티의 외래 키 필드를 포함된 기본 키 클래스의 해당 필드에 매핑합니다.
-    @JoinColumn(name = "students_id")
+    @JoinColumn(name = "student_id")
     private Student student;
 
     @ManyToOne
     @MapsId("quizId")
-    @JoinColumn(name = "quizzes_id")
+    @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
     @Column(name = "total_score")

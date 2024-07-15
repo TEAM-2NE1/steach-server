@@ -17,12 +17,12 @@ public class StudentsCurricula {
 
     @ManyToOne
     @MapsId("curriculaId")
-    @JoinColumn(name = "curricula_id")
+    @JoinColumn(name = "curriculum_id")
     private Curricula curricula;
 
     @ManyToOne
     @MapsId("studentId")
-    @JoinColumn(name = "students_id")
+    @JoinColumn(name = "student_id")
     private Student student;
 
     protected StudentsCurricula() {}

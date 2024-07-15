@@ -26,12 +26,12 @@ public class LecturesStudents {
 
     @ManyToOne
     @MapsId("studentId") //  엔터티의 외래 키 필드를 포함된 기본 키 클래스의 해당 필드에 매핑합니다.
-    @JoinColumn(name = "students_id")
+    @JoinColumn(name = "student_id")
     private Student student;
 
     @ManyToOne
     @MapsId("lectureId") //  엔터티의 외래 키 필드를 포함된 기본 키 클래스의 해당 필드에 매핑합니다.
-    @JoinColumn(name = "lectures_id")
+    @JoinColumn(name = "lecture_id")
     private Lecture lecture;
 
     @Column(name = "focus_ratio", precision = 4, scale = 2)

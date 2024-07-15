@@ -25,7 +25,7 @@ public class Lecture {
     private String title = "";
 
     @ManyToOne
-    @JoinColumn(name = "curricula_id", nullable = false)
+    @JoinColumn(name = "curriculum_id", nullable = false)
     private Curricula curricula;
 
     @Column(name = "start_time", nullable = false)
