@@ -46,7 +46,8 @@
 ## 관련 이슈
 > 관련있는 이슈를 알려주세요
 >> example
->> - Close #이슈번호
+>> - Close #이슈번호  
+>> ex) Close [#1](https://github.com/TEAM-2NE1/steach-server/pull/2)
 <!-- 아래 작성 -->
 
 
