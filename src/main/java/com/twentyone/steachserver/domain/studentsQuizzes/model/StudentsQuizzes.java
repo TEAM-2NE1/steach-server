@@ -10,26 +10,19 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 @Entity
-@Table(name = "students_quizzes",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_students_quizzes",
-                        columnNames = {"students_id", "quizzes_id"}
-                )
-        }
-)
+@Table(name = "students_quizzes")
 public class StudentsQuizzes {
     @EmbeddedId
     private StudentsQuizzesId id;
 
     @ManyToOne
     @MapsId("studentId") //  엔터티의 외래 키 필드를 포함된 기본 키 클래스의 해당 필드에 매핑합니다.
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
 
     @ManyToOne
     @MapsId("quizId")
-    @JoinColumn(name = "quiz_id")
+    @JoinColumn(name = "quiz_id", referencedColumnName = "id")
     private Quiz quiz;
 
     @Column(name = "total_score")

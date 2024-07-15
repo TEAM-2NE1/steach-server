@@ -15,7 +15,7 @@ public class Classroom {
     private String sessionId;
 
     @OneToOne
-    @JoinColumn(name = "lecture_id")
+    @JoinColumn(name = "lecture_id", referencedColumnName = "id")
     private Lecture lecture;
 
     // Getters and Setters
