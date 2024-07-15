@@ -1,6 +1,6 @@
 package com.twentyone.steachserver.domain.lecture.service;
 
-import com.twentyone.steachserver.domain.lecture.Lecture;
+import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

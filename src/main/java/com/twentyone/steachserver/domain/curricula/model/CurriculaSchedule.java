@@ -32,7 +32,7 @@ public class CurriculaSchedule {
     private LocalTime closed_time;
 
     @OneToOne
-    @JoinColumn(name = "curricula_id")
+    @JoinColumn(name = "curricula_id", referencedColumnName = "id")
     private Curricula curricula;
 
 }
