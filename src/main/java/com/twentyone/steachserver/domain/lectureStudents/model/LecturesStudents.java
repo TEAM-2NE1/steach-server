@@ -4,6 +4,7 @@ import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Student;
 import jakarta.persistence.*;
 import lombok.*;
+import java.math.BigDecimal;
 
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
@@ -33,7 +34,11 @@ public class LecturesStudents {
     @JoinColumn(name = "lectures_id")
     private Lecture lecture;
 
-    private Integer focusRatio;
+    @Column(name = "focus_ratio", precision = 4, scale = 2)
+    private BigDecimal focusRatio = BigDecimal.ZERO;
+
+    @Column(name = "focus_time", nullable = false)
+    private Integer focusTime;
 
     protected LecturesStudents() {}
 

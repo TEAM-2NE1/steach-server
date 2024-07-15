@@ -1,10 +1,8 @@
 package com.twentyone.steachserver.domain.curricula.model;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
-
 import lombok.*;
 
 @Getter(value = AccessLevel.PUBLIC)
@@ -19,20 +17,18 @@ public class CurriculaSchedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Boolean monday;
-    private Boolean tuesday;
-    private Boolean wednesday;
-    private Boolean thursday;
-    private Boolean friday;
-    private Boolean saturday;
-    private Boolean sunday;
-    private LocalDate startedDate;
-    private Integer weekNumber;
-    private LocalTime started_time;
-    private LocalTime closed_time;
+    @Column(name = "weekdays_bitmask", nullable = false, columnDefinition = "BIT(7) DEFAULT 0")
+    private byte[] weekdaysBitmask;
 
-    @OneToOne
-    @JoinColumn(name = "curricula_id", referencedColumnName = "id")
-    private Curricula curricula;
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
 
+    @Column(name = "end_date", nullable = false)
+    private LocalDate endDate;
+
+    @Column(name = "lecture_start_time", nullable = false)
+    private LocalTime lectureStartTime;
+
+    @Column(name = "lecture_close_time", nullable = false)
+    private LocalTime lectureCloseTime;
 }

@@ -1,14 +1,10 @@
 package com.twentyone.steachserver.domain.lecture.model;
 
-
 import com.twentyone.steachserver.domain.curricula.model.Curricula;
-import com.twentyone.steachserver.domain.lectureStudents.model.LecturesStudents;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import java.time.LocalDateTime;
 
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
@@ -22,14 +18,22 @@ public class Lecture {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "lecture_order", nullable = false)
     private Integer lectureOrder;
-    private String title;
+
+    @Column(length = 255, nullable = false)
+    private String title = "";
 
     @ManyToOne
-    @JoinColumn(name = "curricula_id")
+    @JoinColumn(name = "curricula_id", nullable = false)
     private Curricula curricula;
 
-    @OneToMany(mappedBy = "lecture")
-    private Set<LecturesStudents> lecturesStudents = new HashSet<>();
+    @Column(name = "start_time", nullable = false)
+    private LocalDateTime startTime;
 
+    @Column(name = "end_time", nullable = false)
+    private LocalDateTime endTime;
+
+//    @OneToMany(mappedBy = "lecture")
+//    private Set<LecturesStudents> lecturesStudents = new HashSet<>();
 }
