@@ -1,6 +1,6 @@
-package com.twentyone.steachserver.domain.studentsQuizzes;
+package com.twentyone.steachserver.domain.studentQuiz;
 
-import com.twentyone.steachserver.domain.studentsQuizzes.service.StudentsQuizzesService;
+import com.twentyone.steachserver.domain.studentQuiz.service.StudentQuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/studentsQuizzes")
 @RequiredArgsConstructor
-public class StudentsQuizzesController {
+public class StudentQuizController {
 
-    private final StudentsQuizzesService studentsQuizzesService;
+    private final StudentQuizService studentQuizService;
 
     @PostMapping("/{studentId}/{quizId}/{score}")
     public ResponseEntity<?> enterScore(@PathVariable Integer studentId, @PathVariable Integer quizId, @PathVariable Integer score) throws Exception {
-        studentsQuizzesService.enterScore(studentId, quizId, score);
+        studentQuizService.enterScore(studentId, quizId, score);
         return ResponseEntity
                 .status(HttpStatus.OK).build();
     }

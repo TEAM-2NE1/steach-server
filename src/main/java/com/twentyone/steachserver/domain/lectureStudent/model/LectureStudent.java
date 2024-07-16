@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.lectureStudents.model;
+package com.twentyone.steachserver.domain.lectureStudent.model;
 
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Student;
@@ -12,9 +12,9 @@ import java.math.BigDecimal;
 @EqualsAndHashCode
 @Entity
 @Table(name = "lectures_students")
-public class LecturesStudents {
+public class LectureStudent {
     @EmbeddedId
-    private LecturesStudentsId id;
+    private LectureStudentId id;
 
     @ManyToOne
     @MapsId("studentId") //  엔터티의 외래 키 필드를 포함된 기본 키 클래스의 해당 필드에 매핑합니다.
@@ -26,24 +26,24 @@ public class LecturesStudents {
     @JoinColumn(name = "lecture_id", referencedColumnName = "id")
     private Lecture lecture;
 
-    @Column(name = "focus_ratio", precision = 4, scale = 2)
+    @Column(name = "focus_ratio", precision = 5, scale = 2)
     private BigDecimal focusRatio = BigDecimal.ZERO;
 
     @Column(name = "focus_time", nullable = false)
     private Integer focusTime;
 
-    protected LecturesStudents() {}
+    protected LectureStudent() {}
 
-    private LecturesStudents(Student student, Lecture lecture) {
-        this.id = LecturesStudentsId.createLecturesStudentsId(student.getId(), lecture.getId());
+    private LectureStudent(Student student, Lecture lecture) {
+        this.id = LectureStudentId.createLectureStudentId(student.getId(), lecture.getId());
         this.student = student;
         this.lecture = lecture;
     }
 
-    public static LecturesStudents createLecturesStudents(Student student, Lecture lecture, Integer focusTime) {
-        LecturesStudents lecturesStudents = new LecturesStudents(student, lecture);
-        lecturesStudents.focusTime = focusTime;
-        return lecturesStudents;
+    public static LectureStudent createLectureStudent(Student student, Lecture lecture, Integer focusTime) {
+        LectureStudent lectureStudent = new LectureStudent(student, lecture);
+        lectureStudent.focusTime = focusTime;
+        return lectureStudent;
     }
 
     public void sumFocusTime(Integer focusTime) {

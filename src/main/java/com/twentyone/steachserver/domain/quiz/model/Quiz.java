@@ -1,6 +1,6 @@
 package com.twentyone.steachserver.domain.quiz.model;
 
-import com.twentyone.steachserver.domain.studentsQuizzes.model.StudentsQuizzes;
+import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import jakarta.persistence.*;
@@ -33,7 +33,7 @@ public class Quiz {
     private Lecture lectures;
 
     @OneToMany(mappedBy = "quiz")
-    private Set<StudentsQuizzes> studentsQuizzes = new HashSet<>();
+    private Set<StudentQuiz> studentQuiz = new HashSet<>();
 
     @OneToMany(mappedBy = "quiz")
     private Set<QuizChoice> quizChoices = new HashSet<>();
@@ -46,9 +46,9 @@ public class Quiz {
         return quiz;
     }
 
-    public void addStudentsQuizzes(StudentsQuizzes studentsQuizzes) {
-        this.getStudentsQuizzes().add(studentsQuizzes);
-        studentsQuizzes.updateQuiz(this);
+    public void addStudentQuiz(StudentQuiz studentQuiz) {
+        this.getStudentQuiz().add(studentQuiz);
+        studentQuiz.updateQuiz(this);
     }
 
     public void addChoice(QuizChoice quizChoice) {

@@ -1,14 +1,14 @@
 package com.twentyone.steachserver.domain.statistic.service;
 
 import com.twentyone.steachserver.domain.statistic.dto.StatisticsDto;
-import com.twentyone.steachserver.domain.statistic.repository.StatisticsRepository;
+import com.twentyone.steachserver.domain.statistic.repository.StatisticRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class StatisticsServiceImpl implements StatisticsService{
-    private StatisticsRepository statisticsRepository;
+public class StatisticServiceImpl implements StatisticService{
+    private StatisticRepository statisticRepository;
 
     /**
      * Each item means a focus ratio for one category
