@@ -2,14 +2,12 @@ package com.twentyone.steachserver.domain.member.model;
 
 import com.twentyone.steachserver.domain.lectureStudents.model.LecturesStudents;
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
-import com.twentyone.steachserver.domain.studentCurricula.model.StudentsCurricula;
+import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
 import com.twentyone.steachserver.domain.studentsQuizzes.model.StudentsQuizzes;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import lombok.*;
 
@@ -36,7 +34,7 @@ public class Student {
     private List<StudentsQuizzes> studentsQuizzes = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
-    private List<StudentsCurricula> studentsCurricula = new ArrayList<>();
+    private List<StudentCurriculum> studentsCurricula = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
     private List<LecturesStudents> lecturesStudents = new ArrayList<>();
