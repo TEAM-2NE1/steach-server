@@ -1,6 +1,6 @@
 package com.twentyone.steachserver.domain.studentsQuizzes;
 
-import com.twentyone.steachserver.domain.studentsQuizzes.service.StudentQuizzesService;
+import com.twentyone.steachserver.domain.studentsQuizzes.service.StudentsQuizzesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class StudentsQuizzesController {
 
-    private final StudentQuizzesService studentQuizzesService;
+    private final StudentsQuizzesService studentsQuizzesService;
 
     @PostMapping("/{studentId}/{quizId}/{score}")
     public ResponseEntity<?> enterScore(@PathVariable Integer studentId, @PathVariable Integer quizId, @PathVariable Integer score) throws Exception {
-        studentQuizzesService.enterScore(studentId, quizId, score);
+        studentsQuizzesService.enterScore(studentId, quizId, score);
         return ResponseEntity
                 .status(HttpStatus.OK).build();
     }
