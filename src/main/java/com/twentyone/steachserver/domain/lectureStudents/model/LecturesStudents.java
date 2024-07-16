@@ -39,4 +39,14 @@ public class LecturesStudents {
         this.student = student;
         this.lecture = lecture;
     }
+
+    public static LecturesStudents createLecturesStudents(Student student, Lecture lecture, Integer focusTime) {
+        LecturesStudents lecturesStudents = new LecturesStudents(student, lecture);
+        lecturesStudents.focusTime = focusTime;
+        return lecturesStudents;
+    }
+
+    public void sumFocusTime(Integer focusTime) {
+        this.focusTime += focusTime;
+    }
 }
