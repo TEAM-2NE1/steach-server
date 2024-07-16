@@ -2,10 +2,9 @@ package com.twentyone.steachserver.domain.member.model;
 
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
-
-import lombok.*;
 
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
@@ -34,4 +33,13 @@ public class Teacher {
 
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
+
+    public static Teacher of(LoginCredential loginCredential, String name, String pathQualification) {
+        Teacher teacher = new Teacher();
+        teacher.loginCredential = loginCredential;
+        teacher.name = name;
+        teacher.pathQualification = pathQualification;
+
+        return teacher;
+    }
 }
