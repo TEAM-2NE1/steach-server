@@ -22,13 +22,14 @@ public class StatisticsServiceImpl implements StatisticsService{
     @Override
     public StatisticsDto getStatistics(){
         StatisticsDto statisticsDto = new StatisticsDto();
-        statisticsDto.setItem1();
-        statisticsDto.setItem2();
-        statisticsDto.setItem3();
-        statisticsDto.setItem4();
-        statisticsDto.setItem5();
-        statisticsDto.setItem6();
-        statisticsDto.setItem7();
+        // 추후 열기
+//        statisticsDto.setItem1();
+//        statisticsDto.setItem2();
+//        statisticsDto.setItem3();
+//        statisticsDto.setItem4();
+//        statisticsDto.setItem5();
+//        statisticsDto.setItem6();
+//        statisticsDto.setItem7();
 
         return statisticsDto;
     }
