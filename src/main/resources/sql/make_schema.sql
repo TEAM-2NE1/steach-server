@@ -151,7 +151,7 @@ CREATE TABLE `lectures_students`
     `id`          INTEGER(11) NOT NULL AUTO_INCREMENT,
     `student_id`  INTEGER(11) NOT NULL,
     `lecture_id`  INTEGER(11) NOT NULL,
-    `focus_ratio` DECIMAL(4, 2) NULL,
+    `focus_ratio` DECIMAL(5, 2) NULL,
     `focus_time`  SMALLINT(6) NOT NULL,
     CONSTRAINT `PK_lectures_students` PRIMARY KEY (`id`),
     CONSTRAINT `FK_lectures_students_students` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE,
