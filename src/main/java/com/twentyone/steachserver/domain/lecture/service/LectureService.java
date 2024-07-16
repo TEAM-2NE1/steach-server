@@ -1,7 +1,8 @@
 package com.twentyone.steachserver.domain.lecture.service;
 
 
-import com.twentyone.steachserver.domain.lecture.Lecture;
+
+import com.twentyone.steachserver.domain.lecture.model.Lecture;
 
 import java.util.Optional;
 

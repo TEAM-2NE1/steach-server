@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain;
+package com.twentyone.steachserver.domain.auth.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,6 +11,9 @@ public class LoginCredential {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(length = 16, nullable = false)
     private String username;
+
+    @Column(length = 255, nullable = false)
     private String password;
 }

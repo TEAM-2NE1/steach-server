@@ -1,10 +1,8 @@
-package com.twentyone.steachserver.domain.classroom;
+package com.twentyone.steachserver.domain.classroom.model;
 
-
-import com.twentyone.steachserver.domain.Lecture;
+import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import jakarta.persistence.*;
 import lombok.*;
-
 
 @Entity
 @Table(name = "classrooms")
@@ -12,12 +10,12 @@ import lombok.*;
 public class Classroom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String sessionId;
 
     @OneToOne
-    @JoinColumn(name = "lectures_id")
+    @JoinColumn(name = "lecture_id", referencedColumnName = "id")
     private Lecture lecture;
 
     // Getters and Setters
