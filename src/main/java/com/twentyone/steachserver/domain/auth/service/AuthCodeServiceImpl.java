@@ -46,7 +46,7 @@ public class AuthCodeServiceImpl implements AuthCodeService {
         Boolean isValid;
 
         try {
-            validAuthCode(request);
+            validAuthCode(request.getAuthCode());
             isValid = true;
         } catch (RuntimeException e) {
             isValid = false;
@@ -57,8 +57,12 @@ public class AuthCodeServiceImpl implements AuthCodeService {
                 .build();
     }
 
-    private void validAuthCode(AuthCodeAuthenticateRequest request) {
-        AuthCode authCode = authCodeRepository.findById(request.getAuthCode())
+    private void validAuthCode(String authCodeWord) {
+        if (authCodeWord.length() != 30) {
+            throw new RuntimeException("유효하지 않은 코드");
+        }
+
+        AuthCode authCode = authCodeRepository.findById(authCodeWord)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 코드"));
 
         if (authCode.getIsRegistered()) {
