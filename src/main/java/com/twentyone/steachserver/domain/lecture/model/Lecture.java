@@ -1,10 +1,13 @@
 package com.twentyone.steachserver.domain.lecture.model;
 
-import com.twentyone.steachserver.domain.curricula.model.Curricula;
+import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
+import com.twentyone.steachserver.domain.lectureStudents.model.LecturesStudents;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
@@ -26,7 +29,7 @@ public class Lecture {
 
     @ManyToOne
     @JoinColumn(name = "curriculum_id", nullable = false, referencedColumnName = "id")
-    private Curricula curricula;
+    private Curriculum curricula;
 
     @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
@@ -34,6 +37,6 @@ public class Lecture {
     @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
 
-//    @OneToMany(mappedBy = "lecture")
-//    private Set<LecturesStudents> lecturesStudents = new HashSet<>();
+    @OneToMany(mappedBy = "lecture")
+    private List<LecturesStudents> lecturesStudents = new ArrayList<>();
 }

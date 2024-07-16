@@ -1,6 +1,7 @@
-package com.twentyone.steachserver.domain.studentCurricula.model;
+package com.twentyone.steachserver.domain.studentCurriculum.model;
 
-import com.twentyone.steachserver.domain.curricula.model.Curricula;
+import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
+import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.member.model.Student;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,25 +12,25 @@ import lombok.*;
 @EqualsAndHashCode
 @Entity
 @Table(name = "students_curricula")
-public class StudentsCurricula {
+public class StudentCurriculum {
     @EmbeddedId
-    private StudentsCurriculaId id;
+    private StudentCurriculumId id;
 
     @ManyToOne
     @MapsId("curriculaId")
     @JoinColumn(name = "curriculum_id", referencedColumnName = "id")
-    private Curricula curricula;
+    private Curriculum curriculum;
 
     @ManyToOne
     @MapsId("studentId")
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
 
-    protected StudentsCurricula() {}
+    protected StudentCurriculum() {}
 
-    private StudentsCurricula(Student student, Curricula curricula) {
-        this.id = StudentsCurriculaId.createStudentsCurriculaId(student.getId(), curricula.getId());
+    private StudentCurriculum(Student student, Curriculum curriculum) {
+        this.id = StudentCurriculumId.createStudentsCurriculaId(student.getId(), curriculum.getId());
         this.student = student;
-        this.curricula = curricula;
+        this.curriculum = curriculum;
     }
 }

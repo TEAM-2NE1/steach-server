@@ -1,22 +1,37 @@
 package com.twentyone.steachserver.domain.classroom.model;
 
+
+import com.twentyone.steachserver.domain.classroom.service.util.ClassroomUtil;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import jakarta.persistence.*;
 import lombok.*;
 
+
+@Getter(value = AccessLevel.PUBLIC)
+@ToString
+@EqualsAndHashCode
+@NoArgsConstructor
 @Entity
 @Table(name = "classrooms")
-@NoArgsConstructor
 public class Classroom {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @MapsId
+    @OneToOne
+    @JoinColumn(name = "lectures_id")
+    private Lecture lecture;
 
     private String sessionId;
 
-    @OneToOne
-    @JoinColumn(name = "lecture_id", referencedColumnName = "id")
-    private Lecture lecture;
+    private Classroom(Lecture lecture) {
+        this.lecture = lecture;
+        // 추후 자동 sessionId 만들어주는 로직을 만들어볼까??
+        this.sessionId = ClassroomUtil.generateSessionId(lecture.getId()); // 임시 로직
+    }
 
-    // Getters and Setters
+    public static Classroom createClassroom(Lecture lecture) {
+        return new Classroom(lecture);
+    }
 }

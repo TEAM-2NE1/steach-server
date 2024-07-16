@@ -40,6 +40,12 @@ public class StudentsQuizzes {
         return new StudentsQuizzes(student, quiz);
     }
 
+    public static StudentsQuizzes createStudentsQuizzes(Student student, Quiz quiz, Integer score) {
+        StudentsQuizzes studentsQuizzes = new StudentsQuizzes(student, quiz);
+        studentsQuizzes.updateScore(score);
+        return studentsQuizzes;
+    }
+
     public void updateScore(Integer totalScore) {
         this.totalScore = totalScore;
     }
