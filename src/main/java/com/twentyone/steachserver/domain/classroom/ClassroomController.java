@@ -5,14 +5,13 @@ import com.twentyone.steachserver.domain.classroom.dto.FinalClassroomRequestDto;
 import com.twentyone.steachserver.domain.classroom.dto.FocusTimeRequestDto;
 import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRoomsResponseDto;
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
-import com.twentyone.steachserver.domain.classroom.model.UpComingClassRooms;
+import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRooms;
 import com.twentyone.steachserver.domain.classroom.service.ClassroomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController

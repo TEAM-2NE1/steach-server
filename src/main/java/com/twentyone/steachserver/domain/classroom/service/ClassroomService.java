@@ -2,9 +2,8 @@ package com.twentyone.steachserver.domain.classroom.service;
 
 import com.twentyone.steachserver.domain.classroom.dto.FinalClassroomRequestDto;
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
-import com.twentyone.steachserver.domain.classroom.model.UpComingClassRooms;
+import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRooms;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ClassroomService {
