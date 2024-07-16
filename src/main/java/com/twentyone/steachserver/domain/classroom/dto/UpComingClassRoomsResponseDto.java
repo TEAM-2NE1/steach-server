@@ -1,6 +1,5 @@
 package com.twentyone.steachserver.domain.classroom.dto;
 
-import com.twentyone.steachserver.domain.classroom.model.UpComingClassRooms;
 import lombok.AccessLevel;
 import lombok.Setter;
 

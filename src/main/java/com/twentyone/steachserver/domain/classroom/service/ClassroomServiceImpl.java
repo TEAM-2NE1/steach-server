@@ -2,7 +2,7 @@ package com.twentyone.steachserver.domain.classroom.service;
 
 import com.twentyone.steachserver.domain.classroom.dto.FinalClassroomRequestDto;
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
-import com.twentyone.steachserver.domain.classroom.model.UpComingClassRooms;
+import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRooms;
 import com.twentyone.steachserver.domain.classroom.repository.ClassroomRepository;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
