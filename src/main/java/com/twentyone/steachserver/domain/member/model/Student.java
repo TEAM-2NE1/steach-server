@@ -5,11 +5,10 @@ import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.studentCurricula.model.StudentsCurricula;
 import com.twentyone.steachserver.domain.studentsQuizzes.model.StudentsQuizzes;
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import lombok.*;
 
@@ -19,6 +18,7 @@ import lombok.*;
 @EqualsAndHashCode
 @Entity
 @Table(name = "students")
+@AllArgsConstructor
 @NoArgsConstructor
 public class Student {
     @Id
@@ -43,4 +43,12 @@ public class Student {
 
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
+
+    public static Student of(LoginCredential loginCredential, String name) {
+        Student student = new Student();
+        student.name = name;
+        student.loginCredential = loginCredential;
+
+        return student;
+    }
 }
