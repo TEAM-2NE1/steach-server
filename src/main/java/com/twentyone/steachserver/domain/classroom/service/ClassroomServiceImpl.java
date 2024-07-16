@@ -7,10 +7,10 @@ import com.twentyone.steachserver.domain.classroom.repository.ClassroomRepositor
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
 import com.twentyone.steachserver.domain.lectureStudents.model.LecturesStudents;
+import com.twentyone.steachserver.domain.lectureStudents.service.LectureStudentsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +21,7 @@ public class ClassroomServiceImpl implements ClassroomService {
     private ClassroomRepository classroomRepository;
 
     private LectureService lectureService;
-    private LecturesStudentsService lecturesStudentsService;
+    private LectureStudentsService lecturesStudentsService;
 
     public Optional<Classroom> findByLectureId(Integer lectureId) {
         return classroomRepository.findByLectureId(lectureId);
@@ -31,7 +31,7 @@ public class ClassroomServiceImpl implements ClassroomService {
     public UpComingClassRooms upcomingClassroom() {
         // 분 단위로 값 받아서 해주자. 남은 시간이 90분에서 ~ 30분 사이꺼 가져오기
 
-        // jpa에서 가져오면 될듯
+        // jpa 에서 가져오면 될듯
         List<Lecture> lectures = lectureService.upcomingLecture(30,90);
 
         UpComingClassRooms classrooms = UpComingClassRooms.createEmptyUpComingClassRooms();
@@ -52,11 +52,11 @@ public class ClassroomServiceImpl implements ClassroomService {
 
         if (lecturesStudents.isEmpty()) {
             // 여기 안에서 회원이나 강의가 맞는게 없으면 예외 터뜨려줘야함.
-            lecturesStudents = lecturesStudentsService.createLecturesStudents(studentId, lectureId, focusTime);
+            lecturesStudentsService.createAndSaveLecturesStudents(studentId, lectureId, focusTime);
         }
         else if (lecturesStudents.isPresent()) {
             // 기존 것과 더 해주는 로직
-            lecturesStudents.updateFocusTime(focusTime);
+            lecturesStudents.get().sumFocusTime(focusTime);
         }
     }
 
