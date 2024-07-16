@@ -1,7 +1,7 @@
-package com.twentyone.steachserver.domain.statistics.service;
+package com.twentyone.steachserver.domain.statistic.service;
 
-import com.twentyone.steachserver.domain.statistics.dto.StatisticsDto;
-import com.twentyone.steachserver.domain.statistics.repository.StatisticsRepository;
+import com.twentyone.steachserver.domain.statistic.dto.StatisticsDto;
+import com.twentyone.steachserver.domain.statistic.repository.StatisticsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

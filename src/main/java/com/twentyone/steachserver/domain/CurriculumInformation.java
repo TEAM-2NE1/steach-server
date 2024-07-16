@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "curricula_informations")
 @NoArgsConstructor
-public class CurriculaInformation {
+public class CurriculumInformation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

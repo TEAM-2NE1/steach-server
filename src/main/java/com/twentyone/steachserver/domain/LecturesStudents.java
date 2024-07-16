@@ -1,6 +1,7 @@
 package com.twentyone.steachserver.domain;
 
 import com.twentyone.steachserver.domain.lecture.Lecture;
+import com.twentyone.steachserver.domain.student.model.Student;
 import jakarta.persistence.*;
 import lombok.*;
 

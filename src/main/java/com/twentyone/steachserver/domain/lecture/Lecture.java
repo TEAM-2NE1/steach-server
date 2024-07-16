@@ -1,7 +1,7 @@
 package com.twentyone.steachserver.domain.lecture;
 
 
-import com.twentyone.steachserver.domain.Curricula;
+import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +15,7 @@ public class Lecture {
 
     @ManyToOne
     @JoinColumn(name = "curricula_id")
-    private Curricula curricula;
+    private Curriculum curriculum;
 
     private Integer lectureOrder;
     private String title;

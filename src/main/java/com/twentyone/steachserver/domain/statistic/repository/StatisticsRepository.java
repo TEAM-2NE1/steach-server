@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.statistics.repository;
+package com.twentyone.steachserver.domain.statistic.repository;
 
 public class StatisticsRepository {
 }

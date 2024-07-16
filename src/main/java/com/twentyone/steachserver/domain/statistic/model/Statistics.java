@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.statistics.model;
+package com.twentyone.steachserver.domain.statistic.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

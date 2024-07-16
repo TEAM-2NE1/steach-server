@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.students.dto;
+package com.twentyone.steachserver.domain.student.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Getter(value = AccessLevel.PRIVATE)
+@Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
 public class StudentDto {
     private Integer id;

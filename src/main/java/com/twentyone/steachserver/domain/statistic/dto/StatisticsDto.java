@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.statistics.dto;
+package com.twentyone.steachserver.domain.statistic.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,6 +1,6 @@
-package com.twentyone.steachserver.domain.statistics.service;
+package com.twentyone.steachserver.domain.statistic.service;
 
-import com.twentyone.steachserver.domain.statistics.dto.StatisticsDto;
+import com.twentyone.steachserver.domain.statistic.dto.StatisticsDto;
 
 public interface StatisticsService {
     StatisticsDto getStatistics();

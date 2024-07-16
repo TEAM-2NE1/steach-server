@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "curricula_schedules")
 @NoArgsConstructor
-public class CurriculaSchedule {
+public class CurriculumSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
