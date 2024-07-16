@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.studentsQuizzes.model;
+package com.twentyone.steachserver.domain.studentQuiz.model;
 
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
@@ -11,9 +11,9 @@ import lombok.*;
 @EqualsAndHashCode
 @Entity
 @Table(name = "students_quizzes")
-public class StudentsQuizzes {
+public class StudentQuiz {
     @EmbeddedId
-    private StudentsQuizzesId id;
+    private StudentQuizId id;
 
     @ManyToOne
     @MapsId("studentId") //  엔터티의 외래 키 필드를 포함된 기본 키 클래스의 해당 필드에 매핑합니다.
@@ -28,22 +28,22 @@ public class StudentsQuizzes {
     @Column(name = "total_score")
     private Integer totalScore;
 
-    protected StudentsQuizzes() {}
+    protected StudentQuiz() {}
 
-    private StudentsQuizzes(Student student, Quiz quiz) {
-        this.id = StudentsQuizzesId.createStudentsQuizzesId(student.getId(), quiz.getId());
+    private StudentQuiz(Student student, Quiz quiz) {
+        this.id = StudentQuizId.createStudentQuizId(student.getId(), quiz.getId());
         this.student = student;
         this.quiz = quiz;
     }
 
-    public static StudentsQuizzes createStudentsQuizzes(Student student, Quiz quiz) {
-        return new StudentsQuizzes(student, quiz);
+    public static StudentQuiz createStudentQuiz(Student student, Quiz quiz) {
+        return new StudentQuiz(student, quiz);
     }
 
-    public static StudentsQuizzes createStudentsQuizzes(Student student, Quiz quiz, Integer score) {
-        StudentsQuizzes studentsQuizzes = new StudentsQuizzes(student, quiz);
-        studentsQuizzes.updateScore(score);
-        return studentsQuizzes;
+    public static StudentQuiz createStudentQuiz(Student student, Quiz quiz, Integer score) {
+        StudentQuiz studentQuiz = new StudentQuiz(student, quiz);
+        studentQuiz.updateScore(score);
+        return studentQuiz;
     }
 
     public void updateScore(Integer totalScore) {
