@@ -17,6 +17,7 @@ import lombok.*;
 @EqualsAndHashCode
 @Entity
 @Table(name = "students")
+@AllArgsConstructor
 @NoArgsConstructor
 public class Student {
     @Id
@@ -41,4 +42,12 @@ public class Student {
 
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
+
+    public static Student of(LoginCredential loginCredential, String name) {
+        Student student = new Student();
+        student.name = name;
+        student.loginCredential = loginCredential;
+
+        return student;
+    }
 }
