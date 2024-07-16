@@ -8,7 +8,7 @@ import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizResponseDto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.repository.QuizRepository;
-import com.twentyone.steachserver.domain.studentsQuizzes.service.StudentsQuizzesService;
+import com.twentyone.steachserver.domain.studentQuiz.service.StudentQuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

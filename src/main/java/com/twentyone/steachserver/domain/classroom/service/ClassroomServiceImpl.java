@@ -6,8 +6,8 @@ import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRooms;
 import com.twentyone.steachserver.domain.classroom.repository.ClassroomRepository;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
-import com.twentyone.steachserver.domain.lectureStudents.model.LecturesStudents;
-import com.twentyone.steachserver.domain.lectureStudents.service.LectureStudentsService;
+import com.twentyone.steachserver.domain.lectureStudent.model.LectureStudent;
+import com.twentyone.steachserver.domain.lectureStudent.service.LectureStudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class ClassroomServiceImpl implements ClassroomService {
     private ClassroomRepository classroomRepository;
 
     private LectureService lectureService;
-    private LectureStudentsService lecturesStudentsService;
+    private LectureStudentService lectureStudentService;
 
     public Optional<Classroom> findByLectureId(Integer lectureId) {
         return classroomRepository.findByLectureId(lectureId);
@@ -48,15 +48,15 @@ public class ClassroomServiceImpl implements ClassroomService {
 
     @Override
     public void saveTimeFocusTime(Integer studentId, Integer lectureId, Integer focusTime) {
-        Optional<LecturesStudents> lecturesStudents = lecturesStudentsService.findByStudentIdAndLectureId(studentId, lectureId);
+        Optional<LectureStudent> lectureStudent = lectureStudentService.findByStudentIdAndLectureId(studentId, lectureId);
 
-        if (lecturesStudents.isEmpty()) {
+        if (lectureStudent.isEmpty()) {
             // 여기 안에서 회원이나 강의가 맞는게 없으면 예외 터뜨려줘야함.
-            lecturesStudentsService.createAndSaveLecturesStudents(studentId, lectureId, focusTime);
+            lectureStudentService.createAndSaveLectureStudent(studentId, lectureId, focusTime);
         }
-        else if (lecturesStudents.isPresent()) {
+        else if (lectureStudent.isPresent()) {
             // 기존 것과 더 해주는 로직
-            lecturesStudents.get().sumFocusTime(focusTime);
+            lectureStudent.get().sumFocusTime(focusTime);
         }
     }
 

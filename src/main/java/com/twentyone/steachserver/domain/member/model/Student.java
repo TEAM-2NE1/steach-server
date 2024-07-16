@@ -1,9 +1,9 @@
 package com.twentyone.steachserver.domain.member.model;
 
-import com.twentyone.steachserver.domain.lectureStudents.model.LecturesStudents;
+import com.twentyone.steachserver.domain.lectureStudent.model.LectureStudent;
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
-import com.twentyone.steachserver.domain.studentsQuizzes.model.StudentsQuizzes;
+import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,13 +32,13 @@ public class Student {
     private LoginCredential loginCredential;
 
     @OneToMany(mappedBy = "student")
-    private List<StudentsQuizzes> studentsQuizzes = new ArrayList<>();
+    private List<StudentQuiz> studentQuiz = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
     private List<StudentCurriculum> studentsCurricula = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
-    private List<LecturesStudents> lecturesStudents = new ArrayList<>();
+    private List<LectureStudent> lectureStudent = new ArrayList<>();
 
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
