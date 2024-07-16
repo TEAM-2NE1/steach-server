@@ -160,9 +160,8 @@ CREATE TABLE `lectures_students`
 
 CREATE TABLE `classrooms`
 (
-    `id` INTEGER(11) NOT NULL AUTO_INCREMENT,
     `lecture_id` INTEGER(11) NOT NULL,
     `session_id` VARCHAR(255) NOT NULL,
-    CONSTRAINT `PK_classrooms_id` PRIMARY KEY (`id`),
+    CONSTRAINT `PK_classrooms_lecture_id` PRIMARY KEY (`lecture_id`),
     CONSTRAINT `FK_classrooms_lectures` FOREIGN KEY (`lecture_id`) REFERENCES `lectures` (`id`) ON DELETE CASCADE
 );
