@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class QuizServiceImpl implements QuizService {
+public class  QuizServiceImpl implements QuizService {
 
     private final QuizRepository quizRepository;
 
