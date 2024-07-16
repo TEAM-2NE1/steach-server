@@ -1,14 +1,16 @@
 package com.twentyone.steachserver.domain.curriculum.model;
 
-import com.twentyone.steachserver.domain.CurriculumDetail;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.enums.CurriculaCategory;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "curricula")
 @NoArgsConstructor
+@Getter(value = AccessLevel.PUBLIC)
 public class Curriculum {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
