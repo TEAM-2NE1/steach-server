@@ -24,7 +24,6 @@ public class  QuizServiceImpl implements QuizService {
 
     private final QuizChoiceService quizChoiceService;
     private final LectureService lectureService;
-    private final StudentsQuizzesService studentQuizzesService;
 
     private final QuizValidator quizValidator;
     private final QuizChoiceValidator quizChoiceValidator;
