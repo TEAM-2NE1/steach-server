@@ -1,7 +1,7 @@
 package com.twentyone.steachserver.domain.lecture.model;
 
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
-import com.twentyone.steachserver.domain.lectureStudents.model.LecturesStudents;
+import com.twentyone.steachserver.domain.lectureStudent.model.LectureStudent;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,5 +38,5 @@ public class Lecture {
     private LocalDateTime endTime;
 
     @OneToMany(mappedBy = "lecture")
-    private List<LecturesStudents> lecturesStudents = new ArrayList<>();
+    private List<LectureStudent> lectureStudent = new ArrayList<>();
 }

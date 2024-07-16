@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter(value = AccessLevel.PRIVATE)
 @Setter(value = AccessLevel.PRIVATE)
-public class Statistics {
+public class Statistic {
 
     // 임시
     @Id
