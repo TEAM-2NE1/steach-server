@@ -26,7 +26,7 @@ public class LectureStudent {
     @JoinColumn(name = "lecture_id", referencedColumnName = "id")
     private Lecture lecture;
 
-    @Column(name = "focus_ratio", precision = 4, scale = 2)
+    @Column(name = "focus_ratio", precision = 5, scale = 2)
     private BigDecimal focusRatio = BigDecimal.ZERO;
 
     @Column(name = "focus_time", nullable = false)
