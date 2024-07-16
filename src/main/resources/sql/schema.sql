@@ -64,7 +64,7 @@ CREATE TABLE `curriculum_details`
     `target`      VARCHAR(255) NULL,
     `requirement` VARCHAR(255) NULL,
     `information` TEXT         NULL,
-    `field`       VARCHAR(255) NOT NULL,
+    `sub_category`       VARCHAR(255) NOT NULL,
     `weekdays_bitmask`  BIT(7) NOT NULL DEFAULT 0,
     `start_date`        DATE        NOT NULL,
     `end_date`          DATE        NOT NULL,
