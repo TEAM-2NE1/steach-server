@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.student.service;
+package com.twentyone.steachserver.domain.member.service;
 
 import com.twentyone.steachserver.domain.student.dto.StudentDto;
 import com.twentyone.steachserver.domain.student.model.Student;
