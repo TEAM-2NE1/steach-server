@@ -4,6 +4,7 @@ import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.service.StudentService;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.service.QuizService;
+import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizRequestDto;
 import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
 import com.twentyone.steachserver.domain.studentQuiz.repository.StudentQuizRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class StudentQuizServiceImpl implements StudentQuizService {
     }
 
     @Override
-    public void enterScore(Integer studentId, Integer quizId, Integer score) throws IllegalAccessException {
+    public void createStudentQuiz(Integer studentId, Integer quizId, StudentQuizRequestDto requestDto) throws IllegalAccessException {
         StudentQuiz studentQuiz = findByQuizIdAndStudentId(quizId, studentId);
         if (studentQuiz != null) {
             throw new IllegalAccessException("StudentQuiz already exists");
@@ -37,12 +38,12 @@ public class StudentQuizServiceImpl implements StudentQuizService {
         Optional<Quiz> quiz = quizService.findQuizById(quizId);
 
         if (studentById.isPresent() && quiz.isPresent()) {
-            StudentQuiz newStudentQuiz = StudentQuiz.createStudentQuiz(studentById.get(), quiz.get(), score);
-            newStudentQuiz.updateScore(score);
+            StudentQuiz newStudentQuiz = StudentQuiz.createStudentQuiz(studentById.get(), quiz.get(), requestDto);
             studentQuizzesRepository.save(newStudentQuiz);
         }
         else {
             throw new RuntimeException("Student or Quiz not found");
         }
     }
+
 }
