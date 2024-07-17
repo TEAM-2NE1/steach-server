@@ -1,8 +1,18 @@
 package com.twentyone.steachserver.domain.curriculum.model;
 
-import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.enums.CurriculaCategory;
-import jakarta.persistence.*;
+import com.twentyone.steachserver.domain.member.model.Teacher;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,4 +35,8 @@ public class Curriculum {
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
+    @OneToOne
+    @JoinColumn(name = "detail_id")
+    private CurriculumDetail curriculumDetail;
 }
