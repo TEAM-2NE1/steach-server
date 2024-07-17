@@ -24,6 +24,6 @@ public class LectureServiceImpl implements LectureService {
         LocalDateTime toTime = LocalDateTime.now().plusMinutes(toMinute);
         LocalDateTime fromTime = LocalDateTime.now().plusMinutes(toMinute);
 
-        return lectureRepository.findByStartTimeBetween(fromTime, toTime);
+        return lectureRepository.findByLectureStartTimeBetween(fromTime, toTime);
     }
 }
