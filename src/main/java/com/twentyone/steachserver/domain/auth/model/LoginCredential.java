@@ -24,6 +24,7 @@ import java.util.Collection;
 @Inheritance(strategy = InheritanceType.JOINED) // 상속 전략 설정
 public class LoginCredential implements UserDetails {
     private static final Logger log = LoggerFactory.getLogger(LoginCredential.class);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

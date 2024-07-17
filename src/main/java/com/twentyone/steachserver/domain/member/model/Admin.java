@@ -12,10 +12,10 @@ import lombok.*;
 @ToString
 @Entity
 @Table(name = "admins")
-@PrimaryKeyJoinColumn(name = "login_credential_id") // 상속받은 엔티티의 기본 키를 지정\
+//@PrimaryKeyJoinColumn(name = "login_credential_id") // 상속받은 엔티티의 기본 키를 지정\
 public class Admin extends LoginCredential{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(length = 30, nullable = false)
