@@ -12,7 +12,8 @@ import lombok.*;
 @ToString
 @Entity
 @Table(name = "admins")
-public class Admin {
+@PrimaryKeyJoinColumn(name = "login_credential_id") // 상속받은 엔티티의 기본 키를 지정\
+public class Admin extends LoginCredential{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

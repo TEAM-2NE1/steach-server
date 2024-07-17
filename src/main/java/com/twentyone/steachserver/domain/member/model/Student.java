@@ -17,7 +17,7 @@ import lombok.*;
 @Table(name = "students")
 @AllArgsConstructor
 @NoArgsConstructor
-@DiscriminatorValue("STUDENT") // 엔티티 타입 식별자 값 지정 / Student 엔티티가 type 컬럼에 저장할 값을 지정합니다.
+//@DiscriminatorValue("STUDENT") // 엔티티 타입 식별자 값 지정 / Student 엔티티가 type 컬럼에 저장할 값을 지정합니다.
 @PrimaryKeyJoinColumn(name = "login_credential_id") // 상속받은 엔티티의 기본 키를 지정
 public class Student extends LoginCredential{
     @Id

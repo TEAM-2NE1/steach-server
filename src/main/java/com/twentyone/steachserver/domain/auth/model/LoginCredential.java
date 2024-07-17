@@ -20,7 +20,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @Entity
 @Table(name = "login_credentials")
-@DiscriminatorColumn(name = "type") // 엔티티 타입을 식별하기 위한 컬럼을 추가합니다.
+//@DiscriminatorColumn(name = "type") // 엔티티 타입을 식별하기 위한 컬럼을 추가합니다.
 @Inheritance(strategy = InheritanceType.JOINED) // 상속 전략 설정
 public class LoginCredential implements UserDetails {
     private static final Logger log = LoggerFactory.getLogger(LoginCredential.class);
