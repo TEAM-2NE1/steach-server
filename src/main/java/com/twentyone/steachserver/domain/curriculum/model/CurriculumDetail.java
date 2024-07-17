@@ -13,16 +13,17 @@ public class CurriculumDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 10000) //varchar(10000)
+    @Column(length = 1000) //varchar(10000)
     private String subTitle;
 
-    @Column(length = 10000) //varchar(10000)
+    @Column(length = 1000) //varchar(10000)
     private String intro;
 
-    @Column(length = 10000) //varchar(10000)
+    @Column(length = 255) //varchar(10000)
     private String subCategory;
 
-    @Column(length = 10000000) //mediumtext
+    @Lob
+    @Column(length = 100000) //mediumtext
     private String information;
 
     @Column(name = "banner_img_url", length = 1000)
