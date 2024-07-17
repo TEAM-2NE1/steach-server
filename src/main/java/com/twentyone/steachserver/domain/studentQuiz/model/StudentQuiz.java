@@ -8,7 +8,6 @@ import lombok.*;
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
 @ToString
-@EqualsAndHashCode
 @Entity
 @Table(name = "students_quizzes")
 public class StudentQuiz {
@@ -25,8 +24,11 @@ public class StudentQuiz {
     @JoinColumn(name = "quiz_id", referencedColumnName = "id")
     private Quiz quiz;
 
-    @Column(name = "total_score")
-    private Integer totalScore;
+    @Column(name = "score")
+    private Integer score;
+
+    @Column(name = "student_choice")
+    private String student_choice;
 
     protected StudentQuiz() {}
 
@@ -46,8 +48,8 @@ public class StudentQuiz {
         return studentQuiz;
     }
 
-    public void updateScore(Integer totalScore) {
-        this.totalScore = totalScore;
+    public void updateScore(Integer score) {
+        this.score = score;
     }
 
     public void updateQuiz(Quiz quiz) {

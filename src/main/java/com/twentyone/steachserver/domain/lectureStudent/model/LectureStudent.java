@@ -8,13 +8,24 @@ import java.math.BigDecimal;
 
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
-@ToString
-@EqualsAndHashCode
+
 @Entity
 @Table(name = "lectures_students")
 public class LectureStudent {
     @EmbeddedId
     private LectureStudentId id;
+
+    @Column(name = "focus_ratio", precision = 5, scale = 2)
+    private BigDecimal focusRatio = BigDecimal.ZERO;
+
+    @Column(name = "focus_time")
+    private Integer focusTime;
+
+    @Column(name = "quiz_answer_count")
+    private Integer quizAnswerCount = 0;
+
+    @Column(name = "quiz_total_score")
+    private Integer quizTotalScore = 0;
 
     @ManyToOne
     @MapsId("studentId") //  엔터티의 외래 키 필드를 포함된 기본 키 클래스의 해당 필드에 매핑합니다.
@@ -25,12 +36,6 @@ public class LectureStudent {
     @MapsId("lectureId") //  엔터티의 외래 키 필드를 포함된 기본 키 클래스의 해당 필드에 매핑합니다.
     @JoinColumn(name = "lecture_id", referencedColumnName = "id")
     private Lecture lecture;
-
-    @Column(name = "focus_ratio", precision = 5, scale = 2)
-    private BigDecimal focusRatio = BigDecimal.ZERO;
-
-    @Column(name = "focus_time", nullable = false)
-    private Integer focusTime;
 
     protected LectureStudent() {}
 
