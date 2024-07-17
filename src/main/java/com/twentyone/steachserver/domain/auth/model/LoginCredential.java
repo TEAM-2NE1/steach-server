@@ -1,7 +1,10 @@
 package com.twentyone.steachserver.domain.auth.model;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +22,8 @@ import java.util.Collection;
  */
 @NoArgsConstructor
 @Entity
+@Getter
+@Setter(value = AccessLevel.PROTECTED)
 @Table(name = "login_credentials")
 //@DiscriminatorColumn(name = "type") // 엔티티 타입을 식별하기 위한 컬럼을 추가합니다.
 @Inheritance(strategy = InheritanceType.JOINED) // 상속 전략 설정
@@ -38,19 +43,19 @@ public class LoginCredential implements UserDetails {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    public static LoginCredential of(String username, String password) {
-        LoginCredential loginCredential = new LoginCredential();
-        loginCredential.username = username;
-        loginCredential.password = password;
-
-        return loginCredential;
-    }
-    public static LoginCredential of(LoginCredential loginCredential) {
-        LoginCredential newLoginCredential = new LoginCredential();
-        newLoginCredential.username = loginCredential.username;
-        newLoginCredential.password = loginCredential.password;
-        return newLoginCredential;
-    }
+//    public static LoginCredential of(String username, String password) {
+//        LoginCredential loginCredential = new LoginCredential();
+//        loginCredential.username = username;
+//        loginCredential.password = password;
+//
+//        return loginCredential;
+//    }
+//    public static LoginCredential of(LoginCredential loginCredential) {
+//        LoginCredential newLoginCredential = new LoginCredential();
+//        newLoginCredential.username = loginCredential.username;
+//        newLoginCredential.password = loginCredential.password;
+//        return newLoginCredential;
+//    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

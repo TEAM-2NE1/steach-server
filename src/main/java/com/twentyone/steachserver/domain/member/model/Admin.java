@@ -8,20 +8,20 @@ import java.time.LocalDateTime;
 import lombok.*;
 
 @Getter(value = AccessLevel.PUBLIC)
-@Setter(value = AccessLevel.PRIVATE)
+@Setter(value = AccessLevel.PROTECTED)
 @ToString
 @Entity
 @Table(name = "admins")
-//@PrimaryKeyJoinColumn(name = "login_credential_id") // 상속받은 엔티티의 기본 키를 지정\
+@PrimaryKeyJoinColumn(name = "id") // 상속받은 엔티티의 기본 키를 지정\
 public class Admin extends LoginCredential{
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+//    private Integer id;
 
     @Column(length = 30, nullable = false)
     private String name;
-
-    @OneToOne
-    @JoinColumn(name = "login_credential_id", nullable = false, referencedColumnName = "id")
-    private LoginCredential loginCredential;
+//
+//    @OneToOne
+//    @JoinColumn(name = "id", nullable = false, referencedColumnName = "id")
+//    private LoginCredential loginCredential;
 }

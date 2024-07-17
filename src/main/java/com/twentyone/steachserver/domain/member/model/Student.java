@@ -23,17 +23,17 @@ import lombok.*;
  * 하위 클래스의 @PrimaryKeyJoinColumn 주석은 선택사항이며 외래 키 매핑을 사용자 정의해야 하는 경우에만 사용됩니다. 상위 클래스에 '@Id' 필드가 있고 상속 전략이 정의된 경우 위 설정이 올바르게 작동해야 합니다.
  */
 @Getter(value = AccessLevel.PUBLIC)
-@Setter(value = AccessLevel.PRIVATE)
+@Setter(value = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "students")
 @AllArgsConstructor
 @NoArgsConstructor
 //@DiscriminatorValue("STUDENT") // 엔티티 타입 식별자 값 지정 / Student 엔티티가 type 컬럼에 저장할 값을 지정합니다.
-//@PrimaryKeyJoinColumn(name = "login_credential_id") // 상속받은 엔티티의 기본 키를 지정
+@PrimaryKeyJoinColumn(name = "id") // 상속받은 엔티티의 기본 키를 지정
 public class Student extends LoginCredential{
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+//    private Integer id;
 
     @Column(length = 30, nullable = false)
     private String name;
@@ -41,7 +41,7 @@ public class Student extends LoginCredential{
     private String email = "";
 
 //    @OneToOne
-//    @JoinColumn(name = "login_credential_id", referencedColumnName = "id", nullable = false)
+//    @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
 //    private LoginCredential loginCredential;
 
     @OneToMany(mappedBy = "student")
@@ -53,12 +53,14 @@ public class Student extends LoginCredential{
     @OneToMany(mappedBy = "student")
     private List<LectureStudent> lectureStudents = new ArrayList<>();
 
-    public static Student of(LoginCredential loginCredential, String name) {
+    public static Student of(String username, String password, String name) {
         Student student = new Student();
+        student.setUsername(username);
+        student.setPassword(password);
         student.name = name;
 //        student.loginCredential = loginCredential;
         LoginCredential studentLoginCredential = student;
-        studentLoginCredential.of(loginCredential);
+//        studentLoginCredential.of(loginCredential);
         return student;
     }
 }
