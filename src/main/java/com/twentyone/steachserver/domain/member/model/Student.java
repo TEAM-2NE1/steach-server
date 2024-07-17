@@ -13,13 +13,13 @@ import lombok.*;
 
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
-@ToString
-@EqualsAndHashCode
 @Entity
 @Table(name = "students")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Student {
+@DiscriminatorValue("STUDENT") // 엔티티 타입 식별자 값 지정 / Student 엔티티가 type 컬럼에 저장할 값을 지정합니다.
+@PrimaryKeyJoinColumn(name = "login_credential_id") // 상속받은 엔티티의 기본 키를 지정
+public class Student extends LoginCredential{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -27,9 +27,11 @@ public class Student {
     @Column(length = 30, nullable = false)
     private String name;
 
-    @OneToOne
-    @JoinColumn(name = "login_credential_id", referencedColumnName = "id", nullable = false)
-    private LoginCredential loginCredential;
+    private String email = "";
+
+//    @OneToOne
+//    @JoinColumn(name = "login_credential_id", referencedColumnName = "id", nullable = false)
+//    private LoginCredential loginCredential;
 
     @OneToMany(mappedBy = "student")
     private List<StudentQuiz> studentQuiz = new ArrayList<>();
@@ -38,16 +40,14 @@ public class Student {
     private List<StudentCurriculum> studentsCurricula = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
-    private List<LectureStudent> lectureStudent = new ArrayList<>();
-
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private List<LectureStudent> lectureStudents = new ArrayList<>();
 
     public static Student of(LoginCredential loginCredential, String name) {
         Student student = new Student();
         student.name = name;
-        student.loginCredential = loginCredential;
-
+//        student.loginCredential = loginCredential;
+        LoginCredential studentLoginCredential = student;
+        studentLoginCredential.of(loginCredential);
         return student;
     }
 }

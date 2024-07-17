@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
 @ToString
-@EqualsAndHashCode
 @Entity
 @Table(name = "teachers")
 @NoArgsConstructor
@@ -21,6 +20,8 @@ public class Teacher {
     @Column(length = 30, nullable = false)
     private String name;
 
+    private String email = "";
+
     @Column(nullable = false)
     private Integer volunteerTime = 0;
 
@@ -30,9 +31,6 @@ public class Teacher {
     @OneToOne
     @JoinColumn(name = "login_credential_id", referencedColumnName = "id", nullable = false)
     private LoginCredential loginCredential;
-
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime updatedAt = LocalDateTime.now();
 
     public static Teacher of(LoginCredential loginCredential, String name, String pathQualification) {
         Teacher teacher = new Teacher();

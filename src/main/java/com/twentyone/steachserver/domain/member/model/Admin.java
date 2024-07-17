@@ -10,7 +10,6 @@ import lombok.*;
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
 @ToString
-@EqualsAndHashCode
 @Entity
 @Table(name = "admins")
 public class Admin {
@@ -24,8 +23,4 @@ public class Admin {
     @OneToOne
     @JoinColumn(name = "login_credential_id", nullable = false, referencedColumnName = "id")
     private LoginCredential loginCredential;
-
-    //TODO now 자동매핑
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime updatedAt = LocalDateTime.now();
 }
