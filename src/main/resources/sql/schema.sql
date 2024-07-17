@@ -12,9 +12,9 @@
 
 CREATE TABLE `login_credentials`
 (
-    `id`       INTEGER(11)  NOT NULL AUTO_INCREMENT,
-    `username` VARCHAR(16)  NOT NULL UNIQUE,
-    `password` VARCHAR(255) NOT NULL,
+    `id`                   INTEGER(11)  NOT NULL AUTO_INCREMENT,
+    `username`             VARCHAR(16)  NOT NULL UNIQUE,
+    `password`             VARCHAR(255) NOT NULL,
     `created_at`           DATETIME     NOT NULL,
     `updated_at`           DATETIME     NOT NULL,
     CONSTRAINT `PK_login_credentials` PRIMARY KEY (`id`)
@@ -37,7 +37,7 @@ CREATE TABLE `students`
     `id`                   INTEGER(11) NOT NULL AUTO_INCREMENT,
     `login_credential_id`  INTEGER(11) NOT NULL,
     `name`                 VARCHAR(30) NOT NULL UNIQUE,
-    `email` VARCHAR(255) NULL UNIQUE,
+    `email`                VARCHAR(255) NULL UNIQUE,
     CONSTRAINT `PK_students` PRIMARY KEY (`id`),
     CONSTRAINT `FK_students_login_credentials` FOREIGN KEY (`login_credential_id`) REFERENCES `login_credentials` (`id`) ON DELETE CASCADE
 );
