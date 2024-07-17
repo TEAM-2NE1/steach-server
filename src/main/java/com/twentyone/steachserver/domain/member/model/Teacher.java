@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "teachers")
 @NoArgsConstructor
-public class Teacher {
+@PrimaryKeyJoinColumn(name = "login_credential_id") // 상속받은 엔티티의 기본 키를 지정
+public class Teacher extends LoginCredential{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
