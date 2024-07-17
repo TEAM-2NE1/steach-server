@@ -81,4 +81,18 @@ public class AuthServiceImpl implements AuthService {
                 signupDtoStudent.getEmail(), fileName);
         teacherRepository.save(teacher);
     }
+
+
+    public void test(String username) {
+        Optional<LoginCredential> loginCredential = loginCredentialRepository.findByUsername(username);
+
+        if (loginCredential.isPresent()) {
+            LoginCredential credential = loginCredential.get();
+            if (credential instanceof Student member) {
+                // Student 객체를 사용하여 필요한 작업 수행
+                System.out.println("member = " + member);
+            }
+
+        }
+    }
 }
