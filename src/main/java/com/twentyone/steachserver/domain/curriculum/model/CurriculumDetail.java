@@ -1,13 +1,20 @@
 package com.twentyone.steachserver.domain.curriculum.model;
 
-import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "curriculum_details")
 @NoArgsConstructor
+@Getter
 public class CurriculumDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +43,4 @@ public class CurriculumDetail {
     private LocalDateTime endDate;
     private LocalDateTime lectureStartTime;
     private LocalDateTime lectureCloseTime;
-
-
 }
