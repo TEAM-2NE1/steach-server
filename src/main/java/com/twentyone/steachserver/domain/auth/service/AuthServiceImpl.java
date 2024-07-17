@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -86,5 +87,19 @@ public class AuthServiceImpl implements AuthService {
         //Teacher 저장
         Teacher teacher = Teacher.of(loginCredential, signupDtoStudent.getName(), fileName);
         teacherRepository.save(teacher);
+    }
+
+
+    public void test(String username) {
+        Optional<LoginCredential> loginCredential = loginCredentialRepository.findByUsername(username);
+
+        if (loginCredential.isPresent()) {
+            LoginCredential credential = loginCredential.get();
+            if (credential instanceof Student member) {
+                // Student 객체를 사용하여 필요한 작업 수행
+                System.out.println("member = " + member);
+            }
+
+        }
     }
 }
