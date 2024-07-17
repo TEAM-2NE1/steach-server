@@ -94,6 +94,7 @@ CREATE TABLE `lectures`
     `real_start_time`    TIMESTAMP    NULL,
     `real_end_time`      TIMESTAMP    NULL,
     `lecture_start_date` DATETIME     NULL,
+    `number_of_quizzes` TINYINT(4)   NOT NULL DEFAULT 0,
     CONSTRAINT `PK_lectures` PRIMARY KEY (`id`),
     CONSTRAINT `FK_lectures_curricula` FOREIGN KEY (`curriculum_id`) REFERENCES `curricula` (`id`) ON DELETE CASCADE
 );
@@ -123,7 +124,8 @@ CREATE TABLE `students_quizzes`
     `id`         INTEGER(11) NOT NULL AUTO_INCREMENT,
     `student_id` INTEGER(11) NOT NULL,
     `quiz_id`    INTEGER(11) NOT NULL,
-    `total_score` INTEGER(11) NOT NULL,
+    `score` INTEGER(11) NOT NULL,
+    `student_choice` VARCHAR(255) NOT NULL,
     CONSTRAINT `PK_students_quizzes` PRIMARY KEY (`id`),
     CONSTRAINT `FK_students_quizzes_students` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE ,
     CONSTRAINT `FK_students_quizzes_quizzes` FOREIGN KEY (`quiz_id`) REFERENCES `quizzes` (`id`) ON DELETE CASCADE
@@ -153,6 +155,8 @@ CREATE TABLE `lectures_students`
     `lecture_id`  INTEGER(11) NOT NULL,
     `focus_ratio` DECIMAL(5, 2) NULL,
     `focus_time`  SMALLINT(6) NOT NULL,
+    `quiz_answer_count` SMALLINT(6) NOT NULL DEFAULT 0,
+    `quiz_total_score` SMALLINT(6) NOT NULL DEFAULT 0,
     CONSTRAINT `PK_lectures_students` PRIMARY KEY (`id`),
     CONSTRAINT `FK_lectures_students_students` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE,
     CONSTRAINT `FK_lectures_students_lectures` FOREIGN KEY (`lecture_id`) REFERENCES `lectures` (`id`) ON DELETE CASCADE
