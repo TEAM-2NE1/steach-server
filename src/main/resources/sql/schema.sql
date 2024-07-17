@@ -28,6 +28,8 @@ CREATE TABLE `teachers`
     `email`                VARCHAR(255) NULL UNIQUE,
     `volunteer_time`       SMALLINT(6)  NOT NULL DEFAULT 0,
     `path_qualification`   VARCHAR(255) NULL,
+    `created_at`           DATETIME     NOT NULL,
+    `updated_at`           DATETIME     NOT NULL,
     CONSTRAINT `PK_teachers` PRIMARY KEY (`id`),
     CONSTRAINT `FK_teachers_login_credentials` FOREIGN KEY (`login_credential_id`) REFERENCES `login_credentials` (`id`) ON DELETE CASCADE
 );
@@ -76,6 +78,8 @@ CREATE TABLE `admins`
     `id`                   INTEGER(11) NOT NULL AUTO_INCREMENT,
     `login_credential_id`  INTEGER(11) NOT NULL,
     `name`                 VARCHAR(30) NOT NULL UNIQUE,
+    `created_at`           DATETIME    NOT NULL,
+    `updated_at`           DATETIME    NOT NULL,
     CONSTRAINT `PK_admins` PRIMARY KEY (`id`),
     CONSTRAINT `FK_admins_login_credentials` FOREIGN KEY (`login_credential_id`) REFERENCES `login_credentials` (`id`) ON DELETE CASCADE
 );
