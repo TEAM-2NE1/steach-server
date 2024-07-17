@@ -63,12 +63,8 @@ public class AuthServiceImpl implements AuthService {
         //password 인코딩
         String encodedPassword = passwordEncoder.encode(signupDtoStudent.getPassword());
 
-        //loginCredential 저장
-        LoginCredential loginCredential = LoginCredential.of(signupDtoStudent.getUsername(), encodedPassword);
-        loginCredentialRepository.save(loginCredential);
-
         //student 저장
-        Student student = Student.of(loginCredential, signupDtoStudent.getName());
+        Student student = Student.of(signupDtoStudent.getUsername(), encodedPassword, signupDtoStudent.getName());
         studentRepository.save(student);
     }
 
@@ -80,12 +76,9 @@ public class AuthServiceImpl implements AuthService {
         //password 인코딩
         String encodedPassword = passwordEncoder.encode(signupDtoStudent.getPassword());
 
-        //loginCredential 저장
-        LoginCredential loginCredential = LoginCredential.of(signupDtoStudent.getUsername(), encodedPassword);
-        loginCredentialRepository.save(loginCredential);
-
         //Teacher 저장
-        Teacher teacher = Teacher.of(loginCredential, signupDtoStudent.getName(), fileName);
+        Teacher teacher = Teacher.of(signupDtoStudent.getUsername(), encodedPassword, signupDtoStudent.getName(),
+                signupDtoStudent.getEmail(), fileName);
         teacherRepository.save(teacher);
     }
 
