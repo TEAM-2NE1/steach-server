@@ -59,11 +59,10 @@ CREATE TABLE `admins`
 CREATE TABLE `curriculum_details`
 (
     `id`          INTEGER(11)  NOT NULL AUTO_INCREMENT,
-    `sub_title`   VARCHAR(255) NULL DEFAULT NULL,
-    `intro`       VARCHAR(255) NULL DEFAULT NULL,
-    `target`      VARCHAR(255) NULL,
-    `requirement` VARCHAR(255) NULL,
-    `information` TEXT         NULL,
+    `sub_title`   VARCHAR(255) NULL,
+    `intro`       VARCHAR(255) NULL,
+    `banner_img_url` VARCHAR(255) NULL,
+    `information`   TEXT     NOT NULL,
     `sub_category`       VARCHAR(255) NOT NULL,
     `weekdays_bitmask`  BIT(7) NOT NULL DEFAULT 0,
     `start_date`        DATE        NOT NULL,
@@ -92,8 +91,9 @@ CREATE TABLE `lectures`
     `curriculum_id` INTEGER(11)  NOT NULL,
     `lecture_order` TINYINT(4)   NOT NULL,
     `title`         VARCHAR(255) NOT NULL,
-    `start_time`    TIMESTAMP    NOT NULL,
-    `end_time`      TIMESTAMP    NOT NULL,
+    `real_start_time`    TIMESTAMP    NULL,
+    `real_end_time`      TIMESTAMP    NULL,
+    `lecture_start_date` DATETIME     NULL,
     CONSTRAINT `PK_lectures` PRIMARY KEY (`id`),
     CONSTRAINT `FK_lectures_curricula` FOREIGN KEY (`curriculum_id`) REFERENCES `curricula` (`id`) ON DELETE CASCADE
 );
