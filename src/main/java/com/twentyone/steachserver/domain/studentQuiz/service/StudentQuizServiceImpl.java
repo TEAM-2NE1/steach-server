@@ -10,8 +10,6 @@ import com.twentyone.steachserver.domain.studentQuiz.repository.StudentQuizRepos
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class StudentQuizServiceImpl implements StudentQuizService {
@@ -26,7 +24,7 @@ public class StudentQuizServiceImpl implements StudentQuizService {
                 .orElseThrow(() -> new RuntimeException("StudentQuiz not found"));
     }
 
-    public StudentQuiz createStudentQuiz(Integer studentId, Integer quizId, StudentQuizRequestDto requestDto) throws IllegalAccessException {
+    public StudentQuiz createStudentQuiz(Integer studentId, Integer quizId, StudentQuizRequestDto requestDto){
         Student student = studentRepository.getReferenceById(studentId);
         Quiz quiz = quizRepository.getReferenceById(quizId);
 
@@ -34,7 +32,4 @@ public class StudentQuizServiceImpl implements StudentQuizService {
         studentQuizzesRepository.save(newStudentQuiz);
         return newStudentQuiz;
     }
-
-
-
 }
