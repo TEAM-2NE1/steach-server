@@ -1,7 +1,9 @@
 package com.twentyone.steachserver.domain.lecture.model;
 
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
+import com.twentyone.steachserver.domain.lecture.dto.UpdateLectureRequestDto;
 import com.twentyone.steachserver.domain.lectureStudent.model.LectureStudent;
+import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -45,4 +47,21 @@ public class Lecture {
 
     @OneToMany(mappedBy = "lecture")
     private List<LectureStudent> lectureStudents = new ArrayList<>();
+
+    @OneToMany(mappedBy = "lecture")
+    private List<Quiz> quizzes = new ArrayList<>();
+
+    public void addQuiz(Quiz quiz) {
+        this.quizzes.add(quiz);
+    }
+
+    public void updateRealEndTimeWithNow() {
+        this.realEndTime = LocalDateTime.now();
+    }
+
+    public void update(UpdateLectureRequestDto lectureRequestDto) {
+        this.lectureOrder = Integer.valueOf(lectureRequestDto.getLectureOrder());
+        this.title = lectureRequestDto.getTitle();
+        this.lectureStartTime = lectureRequestDto.getLectureStartTime();
+    }
 }

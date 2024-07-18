@@ -1,7 +1,7 @@
 package com.twentyone.steachserver.domain.curriculum.model;
 
 import com.twentyone.steachserver.domain.member.model.Teacher;
-import com.twentyone.steachserver.domain.enums.CurriculaCategory;
+import com.twentyone.steachserver.domain.enums.CurriculumCategory;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,10 +19,12 @@ public class Curriculum {
     @Column(name = "title", length = 255)
     private String title;
 
-    @Enumerated(EnumType.STRING)
-    private CurriculaCategory category;
-
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
+    @Enumerated(EnumType.STRING)
+    private CurriculumCategory category;
+
+
 }

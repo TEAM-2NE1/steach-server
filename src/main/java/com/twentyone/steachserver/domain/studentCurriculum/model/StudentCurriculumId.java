@@ -17,12 +17,12 @@ public class StudentCurriculumId {
     private Integer studentId;
 
     @Column(name = "curricula_id")
-    private Integer curriculaId;
+    private Integer curriculumId;
 
-    public static StudentCurriculumId createStudentsCurriculaId(Integer studentId, Integer curriculaId) {
-        StudentCurriculumId studentsCurriculaId = new StudentCurriculumId();
-        studentsCurriculaId.studentId = studentId;
-        studentsCurriculaId.curriculaId = curriculaId;
-        return studentsCurriculaId;
+    public static StudentCurriculumId createStudentCurriculumId(Integer studentId, Integer curriculumId) {
+        StudentCurriculumId studentCurriculumId = new StudentCurriculumId();
+        studentCurriculumId.studentId = studentId;
+        studentCurriculumId.curriculumId = curriculumId;
+        return studentCurriculumId;
     }
 }
