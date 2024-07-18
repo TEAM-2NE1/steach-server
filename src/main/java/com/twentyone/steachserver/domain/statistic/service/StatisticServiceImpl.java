@@ -1,15 +1,28 @@
 package com.twentyone.steachserver.domain.statistic.service;
 
+import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
+import com.twentyone.steachserver.domain.curriculum.service.CurriculumService;
+import com.twentyone.steachserver.domain.lecture.model.Lecture;
+import com.twentyone.steachserver.domain.lecture.service.LectureService;
+import com.twentyone.steachserver.domain.member.model.Student;
+import com.twentyone.steachserver.domain.member.service.StudentService;
 import com.twentyone.steachserver.domain.statistic.dto.StatisticsDto;
 import com.twentyone.steachserver.domain.statistic.repository.StatisticRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class StatisticServiceImpl implements StatisticService{
     private StatisticRepository statisticRepository;
-
+    private StudentService studentService;
+    private LectureService lectureService;
+    private CurriculumService curriculumService;
     /**
      * Each item means a focus ratio for one category
      * (e.g. 76 for Korean, 81 for Math. 98 for Engineering)
@@ -19,10 +32,22 @@ public class StatisticServiceImpl implements StatisticService{
      * 카테고리명이 아직 정해지지 않았기 때문에 숫자 7개의 숫자를 반환.
      * @return 7 numbers
      */
-    @Override
-    public StatisticsDto getStatistics(){
+
+    public StatisticsDto getStatistics(int studentId){
         StatisticsDto statisticsDto = new StatisticsDto();
-        // 추후 열기
+
+        Lecture lecture;
+        List<Curriculum> listCurricula;
+        Optional<Student> student;
+        student = studentService.findStudentById(studentId);
+
+        List<Integer> listCurriculumIds = new ArrayList<>();
+
+        if(student.isPresent()){
+//            listCurricula =  curriculumService.findById()
+        }
+
+
 //        statisticsDto.setItem1();
 //        statisticsDto.setItem2();
 //        statisticsDto.setItem3();
@@ -31,6 +56,14 @@ public class StatisticServiceImpl implements StatisticService{
 //        statisticsDto.setItem6();
 //        statisticsDto.setItem7();
 
+        // 아래 코드는 Radar Chart 계산법
+
+
         return statisticsDto;
+    }
+
+    @Override
+    public StatisticsDto getStatistics(String studentUsername) {
+        return null;
     }
 }
