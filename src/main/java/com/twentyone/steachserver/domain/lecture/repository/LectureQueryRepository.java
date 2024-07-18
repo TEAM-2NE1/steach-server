@@ -77,7 +77,7 @@ public class LectureQueryRepository {
                 .stream()
                 .map(ls -> new StudentInfoByLectureDto(
                         ls.getStudent().getStudentQuizzes().stream()
-                                .map(sq -> new StudentQuizDto(sq.getScore(), sq.getStudentChoice()))
+                                .map(sq -> new StudentQuizDto(sq.getScore(), sq.getStudentChoice(),sq.getStudent().getName()))
                                 .collect(Collectors.toList()),
                         ls.getFocusRatio().intValue(),
                         ls.getFocusTime()
