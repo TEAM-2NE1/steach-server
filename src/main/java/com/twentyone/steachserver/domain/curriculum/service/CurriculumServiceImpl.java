@@ -3,14 +3,17 @@ package com.twentyone.steachserver.domain.curriculum.service;
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
+import com.twentyone.steachserver.domain.curriculum.dto.CurriculumListResponse;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumDetailRepository;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumRepository;
+import com.twentyone.steachserver.domain.curriculum.repository.StudentCurriculumRepository;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
+import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,7 @@ public class CurriculumServiceImpl implements CurriculumService {
     private final CurriculumRepository curriculumRepository;
     private final LectureRepository lectureRepository;
     private final CurriculumDetailRepository curriculumDetailRepository;
+    private final StudentCurriculumRepository studentCurriculumRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -35,9 +39,7 @@ public class CurriculumServiceImpl implements CurriculumService {
         Curriculum curriculum = curriculumRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curriculum not found"));
 
-        CurriculumDetail curriculumDetail = curriculum.getCurriculumDetail();
-
-        return CurriculumDetailResponse.fromDomain(curriculum, curriculumDetail);
+        return CurriculumDetailResponse.fromDomain(curriculum);
     }
 
     @Override
@@ -82,15 +84,17 @@ public class CurriculumServiceImpl implements CurriculumService {
             lectureRepository.save(lecture);
         }
 
-        return CurriculumDetailResponse.fromDomain(curriculum, curriculumDetail); //관련 강의도 줄까?? 고민
+        return CurriculumDetailResponse.fromDomain(curriculum); //관련 강의도 줄까?? 고민
     }
 
     @Override
     @Transactional
-    public void registration(LoginCredential credential, Integer curriculaId) {
-        if (!(credential instanceof Student)) {
+    public void registration(LoginCredential loginCredential, Integer curriculaId) {
+        if (!(loginCredential instanceof Student)) {
             throw new RuntimeException("학생만 수강신청이 가능합니다.");
         }
+
+        Student student = (Student) loginCredential;
 
         Curriculum curriculum = curriculumRepository.findByIdWithLock(curriculaId)
                 .orElseThrow(() -> new RuntimeException("찾을 수 없음"));
@@ -101,7 +105,41 @@ public class CurriculumServiceImpl implements CurriculumService {
             throw new RuntimeException("수강정원이 다 찼습니다.");
         }
 
+        StudentCurriculum studentCurriculum = new StudentCurriculum(student, curriculum);
+        studentCurriculumRepository.save(studentCurriculum);
+
         curriculum.register();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CurriculumListResponse getMyCourses(LoginCredential credential) {
+        if (credential instanceof Student student) {
+            return getStudentCourses(student);
+        } else if (credential instanceof Teacher teacher) {
+            return getTeacherCourses(teacher);
+        } else {
+            throw new RuntimeException("에러");
+        }
+    }
+
+    private CurriculumListResponse getTeacherCourses(Teacher teacher) {
+        List<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher)
+                .orElseGet(() -> new ArrayList<>());
+
+        return CurriculumListResponse.fromDomainList(curriculumList);
+    }
+
+    private CurriculumListResponse getStudentCourses(Student student) {
+        List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student)
+                .orElseGet(() -> new ArrayList<>());
+
+        List<Curriculum> curriculaList = new ArrayList<>();
+        for (StudentCurriculum studentCurriculum : studentsCurricula) {
+            curriculaList.add(studentCurriculum.getCurriculum());
+        }
+
+        return CurriculumListResponse.fromDomainList(curriculaList);
     }
 
     private byte bitmaskStringToByte(String bitmaskString) {
