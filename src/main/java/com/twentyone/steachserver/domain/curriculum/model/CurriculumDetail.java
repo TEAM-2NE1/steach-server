@@ -7,13 +7,20 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Entity
 @Table(name = "curriculum_details")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class CurriculumDetail {
     @Id
@@ -39,8 +46,8 @@ public class CurriculumDetail {
     @Column(name = "weekdays_bitmask", columnDefinition = "BIT(7)")
     private byte weekdaysBitmask;
 
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
-    private LocalDateTime lectureStartTime;
-    private LocalDateTime lectureCloseTime;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private LocalTime lectureStartTime;
+    private LocalTime lectureCloseTime;
 }

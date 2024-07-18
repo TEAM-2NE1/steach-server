@@ -39,4 +39,14 @@ public class Curriculum {
     @OneToOne
     @JoinColumn(name = "detail_id")
     private CurriculumDetail curriculumDetail;
+
+    public static Curriculum of(String title, CurriculaCategory category, Teacher teacher, CurriculumDetail curriculumDetail) {
+        Curriculum curriculum = new Curriculum();
+        curriculum.title = title;
+        curriculum.category = category;
+        curriculum.teacher = teacher;
+        curriculum.curriculumDetail = curriculumDetail;
+
+        return curriculum;
+    }
 }
