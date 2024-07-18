@@ -6,6 +6,7 @@ import com.twentyone.steachserver.domain.lecture.dto.UpdateLectureRequestDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.repository.LectureQueryRepository;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,8 @@ public class LectureServiceImpl implements LectureService {
     // Optional 로 줘야하나?
     @Override
     public LectureBeforeStartingResponseDto getLectureInformation(Integer lectureId) {
+        // 시작 전 수업
+        // 완료 된 수업
         return lectureQueryRepository.findLectureDetailsByLectureId(lectureId);
     }
 
@@ -50,11 +53,6 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
-    public FinalLectureInfoByTeacherDto getFinalLectureInformation(Integer lectureId) {
-        return null;
-    }
-
-    @Override
     public void updateRealEndTime(Integer lectureId) {
         Optional<Lecture> lectureById = findLectureById(lectureId);
         if (lectureById.isPresent()) {
@@ -62,6 +60,10 @@ public class LectureServiceImpl implements LectureService {
             lecture.updateRealEndTimeWithNow();
         }
     }
-}
 
+    @Override
+    public FinalLectureInfoByTeacherDto getFinalLectureInformation(Integer lectureId){
+        return lectureQueryRepository.getFinalLectureInfoByTeacher(lectureId);
+    }
+}
 
