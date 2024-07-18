@@ -2,7 +2,7 @@ package com.twentyone.steachserver.domain.lecture.model;
 
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.lecture.dto.UpdateLectureRequestDto;
-import com.twentyone.steachserver.domain.lectureStudent.model.LectureStudent;
+import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,7 +46,7 @@ public class Lecture {
     private Curriculum curriculum;
 
     @OneToMany(mappedBy = "lecture")
-    private List<LectureStudent> lectureStudents = new ArrayList<>();
+    private List<StudentLecture> studentLectures = new ArrayList<>();
 
     @OneToMany(mappedBy = "lecture")
     private List<Quiz> quizzes = new ArrayList<>();
