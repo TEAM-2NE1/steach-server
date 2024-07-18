@@ -1,12 +1,9 @@
 package com.twentyone.steachserver.domain.lecture.dto;
 
-import lombok.Getter;
-
 import java.time.LocalDateTime;
 
-@Getter
-public class LectureRequestDto {
-    private String title;
+public class LectureResponseDto {
+    private String lectureTitle;
     private Integer lectureOrder;
     private LocalDateTime lectureStartTime;
 }
