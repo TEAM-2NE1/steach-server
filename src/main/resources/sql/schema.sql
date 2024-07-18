@@ -12,36 +12,35 @@
 
 CREATE TABLE `login_credentials`
 (
-    `id`       INTEGER(11)  NOT NULL AUTO_INCREMENT,
-    `username` VARCHAR(16)  NOT NULL UNIQUE,
-    `password` VARCHAR(255) NOT NULL,
+    `id`                   INTEGER(11)  NOT NULL AUTO_INCREMENT,
+    `username`             VARCHAR(16)  NOT NULL UNIQUE,
+    `password`             VARCHAR(255) NOT NULL,
+    `created_at`           DATETIME     NOT NULL,
+    `updated_at`           DATETIME     NOT NULL,
     CONSTRAINT `PK_login_credentials` PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `teachers`
 (
-    `id`                   INTEGER(11)  NOT NULL AUTO_INCREMENT,
-    `login_credential_id`  INTEGER(11)  NOT NULL,
+    `id`                   INTEGER(11)  NOT NULL,
     `name`                 VARCHAR(30)  NOT NULL,
     `email`                VARCHAR(255) NULL UNIQUE,
     `volunteer_time`       SMALLINT(6)  NOT NULL DEFAULT 0,
     `path_qualification`   VARCHAR(255) NULL,
-    `created_at`           DATETIME     NOT NULL,
-    `updated_at`           DATETIME     NOT NULL,
+    `brief_introduction`   VARCHAR(255) NULL,
+    `academic_background`  VARCHAR(255) NULL,
+    `specialization`       VARCHAR(255) NULL,
     CONSTRAINT `PK_teachers` PRIMARY KEY (`id`),
-    CONSTRAINT `FK_teachers_login_credentials` FOREIGN KEY (`login_credential_id`) REFERENCES `login_credentials` (`id`) ON DELETE CASCADE
+    CONSTRAINT `FK_teachers_login_credentials` FOREIGN KEY (`id`) REFERENCES `login_credentials` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `students`
 (
-    `id`                   INTEGER(11) NOT NULL AUTO_INCREMENT,
-    `login_credential_id`  INTEGER(11) NOT NULL,
+    `id`                   INTEGER(11) NOT NULL,
     `name`                 VARCHAR(30) NOT NULL UNIQUE,
-    `created_at`           DATETIME    NOT NULL,
-    `updated_at`           DATETIME    NOT NULL,
-    `email` VARCHAR(255) NULL UNIQUE,
+    `email`                VARCHAR(255) NULL UNIQUE,
     CONSTRAINT `PK_students` PRIMARY KEY (`id`),
-    CONSTRAINT `FK_students_login_credentials` FOREIGN KEY (`login_credential_id`) REFERENCES `login_credentials` (`id`) ON DELETE CASCADE
+    CONSTRAINT `FK_students_login_credentials` FOREIGN KEY (`id`) REFERENCES `login_credentials` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `students_statistics`
@@ -75,13 +74,10 @@ CREATE TABLE `students_statistics`
 
 CREATE TABLE `admins`
 (
-    `id`                   INTEGER(11) NOT NULL AUTO_INCREMENT,
-    `login_credential_id`  INTEGER(11) NOT NULL,
+    `id`                   INTEGER(11) NOT NULL,
     `name`                 VARCHAR(30) NOT NULL UNIQUE,
-    `created_at`           DATETIME    NOT NULL,
-    `updated_at`           DATETIME    NOT NULL,
     CONSTRAINT `PK_admins` PRIMARY KEY (`id`),
-    CONSTRAINT `FK_admins_login_credentials` FOREIGN KEY (`login_credential_id`) REFERENCES `login_credentials` (`id`) ON DELETE CASCADE
+    CONSTRAINT `FK_admins_login_credentials` FOREIGN KEY (`id`) REFERENCES `login_credentials` (`id`) ON DELETE CASCADE
 );
 
 
@@ -91,6 +87,8 @@ CREATE TABLE `curriculum_details`
     `sub_title`   VARCHAR(255) NULL,
     `intro`       VARCHAR(255) NULL,
     `banner_img_url` VARCHAR(255) NULL,
+    `current_attendees` TINYINT(4) NOT NULL DEFAULT 0,
+    `max_attendees`     TINYINT(4) NOT NULL DEFAULT 4,
     `information`   TEXT     NOT NULL,
     `sub_category`       VARCHAR(255) NOT NULL,
     `weekdays_bitmask`  BIT(7) NOT NULL DEFAULT 0,
