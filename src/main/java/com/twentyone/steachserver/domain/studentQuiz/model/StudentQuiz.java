@@ -2,6 +2,7 @@ package com.twentyone.steachserver.domain.studentQuiz.model;
 
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
+import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizDto;
 import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,7 +30,7 @@ public class StudentQuiz {
     private Integer score;
 
     @Column(name = "student_choice")
-    private String student_choice;
+    private String studentChoice;
 
     protected StudentQuiz() {}
 
@@ -42,9 +43,10 @@ public class StudentQuiz {
     public static StudentQuiz createStudentQuiz(Student student, Quiz quiz, StudentQuizRequestDto requestDto) {
         StudentQuiz studentQuiz = new StudentQuiz(student, quiz);
         studentQuiz.score = requestDto.getScore() == null ? 0 : requestDto.getScore();
-        studentQuiz.student_choice = requestDto.getStudent_choice();
+        studentQuiz.studentChoice = requestDto.getStudent_choice();
         return studentQuiz;
     }
+
     public void updateQuiz(Quiz quiz) {
         this.quiz = quiz;
     }
