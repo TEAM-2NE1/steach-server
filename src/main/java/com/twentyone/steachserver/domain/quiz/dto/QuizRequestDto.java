@@ -22,7 +22,6 @@ import java.util.List;
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
 public class QuizRequestDto {
-    private Integer lectureId;
     private Integer quizNumber;
     private String question;
     private List<String> choices;

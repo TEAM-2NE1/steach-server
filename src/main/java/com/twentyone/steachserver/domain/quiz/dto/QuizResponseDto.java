@@ -16,9 +16,9 @@ public class QuizResponseDto {
     private List<String> choices;
     private List<String> answers;
 
-    public static QuizResponseDto createQuizResponseDto(QuizRequestDto request) {
+    public static QuizResponseDto createQuizResponseDto(Integer lectureId, QuizRequestDto request) {
         QuizResponseDto responseDto = new QuizResponseDto();
-        responseDto.setLectureId(request.getLectureId());
+        responseDto.setLectureId(lectureId);
         responseDto.setQuizNumber(request.getQuizNumber());
         responseDto.setQuestion(request.getQuestion());
         responseDto.setChoices(request.getChoices());
