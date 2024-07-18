@@ -1,7 +1,7 @@
 package com.twentyone.steachserver.config;
 
 import com.twentyone.steachserver.domain.lecture.repository.LectureQueryRepository;
-import com.twentyone.steachserver.domain.lectureStudent.repository.LectureStudentQueryRepository;
+import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureQueryRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +19,8 @@ public class ConstructConfiguration {
     }
 
     @Bean
-    public LectureStudentQueryRepository lectureStudentQueryRepository() {
-        return new LectureStudentQueryRepository(em);
+    public StudentLectureQueryRepository studentLectureQueryRepository() {
+        return new StudentLectureQueryRepository(em);
     }
 
 }
