@@ -7,6 +7,9 @@ import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRoomsRespons
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRooms;
 import com.twentyone.steachserver.domain.classroom.service.ClassroomService;
+import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizDto;
+import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
+import com.twentyone.steachserver.domain.studentQuiz.service.StudentQuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,8 @@ import java.util.Optional;
 public class ClassroomController {
 
     private final ClassroomService classroomService;
+    private final StudentQuizService studentQuizService;
+
 
     @GetMapping("/upcoming")
     public ResponseEntity<?> upcoming() {
@@ -51,14 +56,4 @@ public class ClassroomController {
         classroomService.saveFinalClassroomState(studentId, lectureId, finalClassroomRequestDto);
         return ResponseEntity.notFound().build();
     }
-
-    @PostMapping("/focus-time/{studentId}/{lectureId}")
-    public ResponseEntity<?> submitTimeFocusTime(@PathVariable Integer studentId,
-                                                 @PathVariable Integer lectureId,
-                                                 @RequestBody FocusTimeRequestDto focusTimeDto) {
-        classroomService.saveTimeFocusTime(studentId, lectureId, focusTimeDto.getFocusTime());
-        return ResponseEntity.ok().build();
-    }
-
-
 }
