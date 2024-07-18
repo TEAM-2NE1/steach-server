@@ -6,8 +6,9 @@ import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRooms;
 import com.twentyone.steachserver.domain.classroom.repository.ClassroomRepository;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
-import com.twentyone.steachserver.domain.lectureStudent.model.LectureStudent;
-import com.twentyone.steachserver.domain.lectureStudent.service.LectureStudentService;
+import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
+import com.twentyone.steachserver.domain.studentLecture.service.StudentLectureService;
+import com.twentyone.steachserver.domain.member.model.Student;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class ClassroomServiceImpl implements ClassroomService {
     private ClassroomRepository classroomRepository;
 
     private LectureService lectureService;
-    private LectureStudentService lectureStudentService;
+    private StudentLectureService studentLectureService;
 
     public Optional<Classroom> findByLectureId(Integer lectureId) {
         return classroomRepository.findByLectureId(lectureId);
@@ -46,23 +47,23 @@ public class ClassroomServiceImpl implements ClassroomService {
         return classrooms;
     }
 
-    @Override
-    public void saveTimeFocusTime(Integer studentId, Integer lectureId, Integer focusTime) {
-        Optional<LectureStudent> lectureStudent = lectureStudentService.findByStudentIdAndLectureId(studentId, lectureId);
-
-        if (lectureStudent.isEmpty()) {
-            // 여기 안에서 회원이나 강의가 맞는게 없으면 예외 터뜨려줘야함.
-            lectureStudentService.createAndSaveLectureStudent(studentId, lectureId, focusTime);
-        }
-        else if (lectureStudent.isPresent()) {
-            // 기존 것과 더 해주는 로직
-            lectureStudent.get().sumFocusTime(focusTime);
-        }
-    }
+//    @Override
+//    public void saveTimeFocusTime(Student student, Lecture lecture, Integer focusTime) {
+//        Optional<StudentLecture> studentLecture = studentLectureService.findByStudentIdAndLectureId(studentId, lectureId);
+//
+//        if (studentLecture.isEmpty()) {
+//            // 여기 안에서 회원이나 강의가 맞는게 없으면 예외 터뜨려줘야함.
+//            studentLectureService.createAndSaveStudentLecture(student, lecture, focusTime);
+//        }
+//        else if (studentLecture.isPresent()) {
+//            // 기존 것과 더 해주는 로직
+//            studentLecture.get().sumFocusTime(focusTime);
+//        }
+//    }
 
     @Override
     public void saveFinalClassroomState(Integer studentId, Integer lectureId, FinalClassroomRequestDto finalClassroomRequestDto) {
-        saveTimeFocusTime(studentId, lectureId, finalClassroomRequestDto.getFocusTime());
+//        saveTimeFocusTime(studentId, lectureId, finalClassroomRequestDto.getFocusTime());
         // 추후 추가 로직 고려
     }
 
