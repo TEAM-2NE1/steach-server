@@ -1,10 +1,12 @@
 package com.twentyone.steachserver.domain.curriculum.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 @Table(name = "curriculum_details")
 @NoArgsConstructor

@@ -1,7 +1,9 @@
 package com.twentyone.steachserver.domain.quiz;
 
+import com.twentyone.steachserver.domain.lecture.service.LectureService;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizResponseDto;
+import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,12 +18,16 @@ import java.util.Optional;
 public class QuizController {
 
     private QuizService quizService;
+    private LectureService lectureService;
 
-    @PostMapping
-    public ResponseEntity<?> createQuiz(@RequestBody QuizRequestDto request) throws Exception {
-            Optional<QuizResponseDto> quiz = quizService.createQuiz(request);
-            return quiz.map(ResponseEntity.status(HttpStatus.CREATED)::body)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+    @PostMapping("/{lectureId}")
+    public ResponseEntity<QuizResponseDto> createQuiz(@PathVariable Integer lectureId, @RequestBody QuizRequestDto request) throws Exception {
+        Optional<Quiz> quiz = quizService.createQuiz(lectureId,request);
+        if (quiz.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(QuizResponseDto.createQuizResponseDto(lectureId, request));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @GetMapping("/{quizId}")

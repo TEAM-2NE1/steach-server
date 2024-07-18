@@ -8,7 +8,6 @@ import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizResponseDto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.repository.QuizRepository;
-import com.twentyone.steachserver.domain.studentQuiz.service.StudentQuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +29,8 @@ public class  QuizServiceImpl implements QuizService {
 
 
     @Override
-    public Optional<QuizResponseDto> createQuiz(QuizRequestDto request) throws Exception {
-        Lecture lecture = getLecture(request);
+    public Optional<Quiz> createQuiz(Integer lectureId, QuizRequestDto request) throws Exception {
+        Lecture lecture = getLecture(lectureId);
 
         Quiz quiz = Quiz.createQuiz(request, lecture);
         Quiz savedQuiz = quizRepository.save(quiz);
@@ -43,11 +42,11 @@ public class  QuizServiceImpl implements QuizService {
         List<String> answers = request.getAnswers();
         quizChoiceService.createQuizChoices(choices, answers, savedQuiz);
 
-        return Optional.of(QuizResponseDto.createQuizResponseDto(request));
+        return Optional.of(savedQuiz);
     }
 
-    private Lecture getLecture(QuizRequestDto request) {
-        Optional<Lecture> lectureOpt = lectureService.findLectureById(request.getLectureId());
+    private Lecture getLecture(Integer lectureId) {
+        Optional<Lecture> lectureOpt = lectureService.findLectureById(lectureId);
 
         if (lectureOpt.isEmpty()) {
             throw new RuntimeException("Lecture not found");
