@@ -1,17 +1,12 @@
 package com.twentyone.steachserver.domain.curriculum.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.time.LocalDate;
-
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
 import com.twentyone.steachserver.domain.enums.CurriculaCategory;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDate;
 
 /*
 {
@@ -79,7 +74,9 @@ public class CurriculumDetailResponse {
     @JsonProperty("max_attendees")
     private int maxAttendees;
 
-    public static CurriculumDetailResponse fromDomain(Curriculum curriculum, CurriculumDetail curriculumDetail) {
+    public static CurriculumDetailResponse fromDomain(Curriculum curriculum) {
+        CurriculumDetail curriculumDetail = curriculum.getCurriculumDetail();
+
         // 7을 이진수 문자열로 변환
         String weekDaysBitmaskString = Integer.toBinaryString(curriculumDetail.getWeekdaysBitmask());
 
