@@ -17,7 +17,7 @@ public class StudentCurriculum {
     private StudentCurriculumId id;
 
     @ManyToOne
-    @MapsId("curriculaId")
+    @MapsId("curriculumId")
     @JoinColumn(name = "curriculum_id", referencedColumnName = "id")
     private Curriculum curriculum;
 
@@ -29,7 +29,7 @@ public class StudentCurriculum {
     protected StudentCurriculum() {}
 
     private StudentCurriculum(Student student, Curriculum curriculum) {
-        this.id = StudentCurriculumId.createStudentsCurriculaId(student.getId(), curriculum.getId());
+        this.id = StudentCurriculumId.createStudentCurriculumId(student.getId(), curriculum.getId());
         this.student = student;
         this.curriculum = curriculum;
     }

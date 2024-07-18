@@ -48,7 +48,7 @@ public class Student extends LoginCredential{
     private List<StudentQuiz> studentQuiz = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
-    private List<StudentCurriculum> studentsCurricula = new ArrayList<>();
+    private List<StudentCurriculum> studentCurricula = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
     private List<LectureStudent> lectureStudents = new ArrayList<>();
