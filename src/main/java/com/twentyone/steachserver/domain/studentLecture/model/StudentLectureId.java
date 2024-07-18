@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.lectureStudent.model;
+package com.twentyone.steachserver.domain.studentLecture.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -11,17 +11,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode
 @Embeddable
-public class LectureStudentId {
+public class StudentLectureId {
     @Column(name = "student_id")
     private Integer studentId;
 
     @Column(name = "lecture_id")
     private Integer lectureId;
 
-    public static LectureStudentId createLectureStudentId(Integer studentId, Integer lectureId) {
-        LectureStudentId LectureStudentId = new LectureStudentId();
-        LectureStudentId.studentId = studentId;
-        LectureStudentId.lectureId = lectureId;
-        return LectureStudentId;
+    public static StudentLectureId createStudentLectureId(Integer studentId, Integer lectureId) {
+        StudentLectureId studentLectureId = new StudentLectureId();
+        studentLectureId.studentId = studentId;
+        studentLectureId.lectureId = lectureId;
+        return studentLectureId;
     }
 }

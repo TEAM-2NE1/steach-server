@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.lectureStudent.repository;
+package com.twentyone.steachserver.domain.studentLecture.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -7,14 +7,14 @@ import jakarta.persistence.EntityManager;
 
 import java.util.List;
 
-import static com.twentyone.steachserver.domain.lectureStudent.model.QLectureStudent.lectureStudent;
+import static com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture.studentLecture;
 import static com.twentyone.steachserver.domain.member.model.QStudent.student;
 import static com.twentyone.steachserver.domain.studentQuiz.model.QStudentQuiz.studentQuiz;
 
-public class LectureStudentQueryRepository {
+public class StudentLectureQueryRepository {
     private final JPAQueryFactory query;
 
-    public LectureStudentQueryRepository(EntityManager em) {
+    public StudentLectureQueryRepository(EntityManager em) {
         this.query = new JPAQueryFactory(em);
     }
 
@@ -26,10 +26,10 @@ public class LectureStudentQueryRepository {
                         student.name,
                         studentQuiz.score
                 ))
-                .from(lectureStudent)
-                .join(lectureStudent.student, student)
+                .from(studentLecture)
+                .join(studentLecture.student, student)
                 .join(studentQuiz).on(studentQuiz.student.id.eq(student.id))
-                .where(lectureStudent.lecture.id.eq(lectureId))
+                .where(studentLecture.lecture.id.eq(lectureId))
                 .fetch();
     }
 }

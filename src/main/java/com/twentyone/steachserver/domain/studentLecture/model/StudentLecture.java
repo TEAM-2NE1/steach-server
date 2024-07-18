@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.lectureStudent.model;
+package com.twentyone.steachserver.domain.studentLecture.model;
 
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Student;
@@ -11,9 +11,9 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "lectures_students")
-public class LectureStudent {
+public class StudentLecture {
     @EmbeddedId
-    private LectureStudentId id;
+    private StudentLectureId id;
 
     @Column(name = "focus_ratio", precision = 5, scale = 2)
     private BigDecimal focusRatio = BigDecimal.ZERO;
@@ -37,18 +37,18 @@ public class LectureStudent {
     @JoinColumn(name = "lecture_id", referencedColumnName = "id")
     private Lecture lecture;
 
-    protected LectureStudent() {}
+    protected StudentLecture() {}
 
-    private LectureStudent(Student student, Lecture lecture) {
-        this.id = LectureStudentId.createLectureStudentId(student.getId(), lecture.getId());
+    private StudentLecture(Student student, Lecture lecture) {
+        this.id = StudentLectureId.createStudentLectureId(student.getId(), lecture.getId());
         this.student = student;
         this.lecture = lecture;
     }
 
-    public static LectureStudent createLectureStudent(Student student, Lecture lecture, Integer focusTime) {
-        LectureStudent lectureStudent = new LectureStudent(student, lecture);
-        lectureStudent.focusTime = focusTime;
-        return lectureStudent;
+    public static StudentLecture createStudentLecture(Student student, Lecture lecture, Integer focusTime) {
+        StudentLecture studentLecture = new StudentLecture(student, lecture);
+        studentLecture.focusTime = focusTime;
+        return studentLecture;
     }
 
     public void sumFocusTime(Integer focusTime) {
