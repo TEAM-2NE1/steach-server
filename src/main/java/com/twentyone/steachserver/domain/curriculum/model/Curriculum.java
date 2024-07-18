@@ -49,4 +49,8 @@ public class Curriculum {
 
         return curriculum;
     }
+
+    public void register() {
+        this.curriculumDetail.register();
+    }
 }

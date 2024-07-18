@@ -9,6 +9,7 @@ import com.twentyone.steachserver.domain.curriculum.repository.CurriculumDetailR
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumRepository;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
+import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +64,7 @@ public class CurriculumServiceImpl implements CurriculumService {
                 .endDate(request.getEndDate())
                 .lectureStartTime(request.getLectureStartTime())
                 .lectureCloseTime(request.getLectureEndTime())
+                .maxAttendees(request.getMaxAttendees())
                 .build();
         curriculumDetailRepository.save(curriculumDetail);
 
@@ -81,6 +83,25 @@ public class CurriculumServiceImpl implements CurriculumService {
         }
 
         return CurriculumDetailResponse.fromDomain(curriculum, curriculumDetail); //관련 강의도 줄까?? 고민
+    }
+
+    @Override
+    @Transactional
+    public void registration(LoginCredential credential, Integer curriculaId) {
+        if (!(credential instanceof Student)) {
+            throw new RuntimeException("학생만 수강신청이 가능합니다.");
+        }
+
+        Curriculum curriculum = curriculumRepository.findByIdWithLock(curriculaId)
+                .orElseThrow(() -> new RuntimeException("찾을 수 없음"));
+
+        CurriculumDetail curriculumDetail = curriculum.getCurriculumDetail();
+
+        if (curriculumDetail.getMaxAttendees() <= curriculumDetail.getCurrentAttendees()) {
+            throw new RuntimeException("수강정원이 다 찼습니다.");
+        }
+
+        curriculum.register();
     }
 
     private byte bitmaskStringToByte(String bitmaskString) {

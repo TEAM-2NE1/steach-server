@@ -4,7 +4,6 @@ import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.service.CurriculumService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,5 +27,13 @@ public class CurriculumController {
         CurriculumDetailResponse curriculumDetailResponse = curriculumService.create(credential, request);
 
         return ResponseEntity.ok(curriculumDetailResponse);
+    }
+
+    //커리큘럼 수강신청
+    @PostMapping("/{curricula_id}/apply")
+    public ResponseEntity<Void> registration(@AuthenticationPrincipal LoginCredential credential, @PathVariable("curricula_id") Integer curriculaId) {
+        curriculumService.registration(credential, curriculaId);
+
+        return ResponseEntity.ok().build(); //TODO 반환값
     }
 }
