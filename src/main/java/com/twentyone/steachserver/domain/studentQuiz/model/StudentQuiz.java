@@ -43,7 +43,7 @@ public class StudentQuiz {
     public static StudentQuiz createStudentQuiz(Student student, Quiz quiz, StudentQuizRequestDto requestDto) {
         StudentQuiz studentQuiz = new StudentQuiz(student, quiz);
         studentQuiz.score = requestDto.getScore() == null ? 0 : requestDto.getScore();
-        studentQuiz.studentChoice = requestDto.getStudent_choice();
+        studentQuiz.studentChoice = requestDto.getStudentChoice();
         return studentQuiz;
     }
 

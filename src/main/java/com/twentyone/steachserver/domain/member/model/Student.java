@@ -1,11 +1,10 @@
 package com.twentyone.steachserver.domain.member.model;
 
-import com.twentyone.steachserver.domain.lectureStudent.model.LectureStudent;
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
+import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
