@@ -9,7 +9,7 @@ import lombok.*;
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
 @ToString
-@EqualsAndHashCode
+
 @Entity
 @Table(name = "students_curricula")
 public class StudentCurriculum {

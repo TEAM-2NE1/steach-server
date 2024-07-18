@@ -7,19 +7,21 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter(value = AccessLevel.PUBLIC)
-@Setter(value = AccessLevel.PRIVATE)
+@Setter(value = AccessLevel.PROTECTED)
 @ToString
-@EqualsAndHashCode
 @Entity
 @Table(name = "teachers")
 @NoArgsConstructor
-public class Teacher {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+@PrimaryKeyJoinColumn(name = "id") // 상속받은 엔티티의 기본 키를 지정
+public class Teacher extends LoginCredential{
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Integer id;
 
     @Column(length = 30, nullable = false)
     private String name;
+
+    private String email = "";
 
     @Column(nullable = false)
     private Integer volunteerTime = 0;
@@ -27,17 +29,14 @@ public class Teacher {
     @Column(length = 255)
     private String pathQualification;
 
-    @OneToOne
-    @JoinColumn(name = "login_credential_id", referencedColumnName = "id", nullable = false)
-    private LoginCredential loginCredential;
-
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime updatedAt = LocalDateTime.now();
-
-    public static Teacher of(LoginCredential loginCredential, String name, String pathQualification) {
+    public static Teacher of(String username, String password, String name, String email, String pathQualification) {
         Teacher teacher = new Teacher();
-        teacher.loginCredential = loginCredential;
+//        teacher.loginCredential = loginCredential;
+
+        teacher.setUsername(username);
+        teacher.setPassword(password);
         teacher.name = name;
+        teacher.email = email;
         teacher.pathQualification = pathQualification;
 
         return teacher;

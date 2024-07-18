@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -62,12 +63,8 @@ public class AuthServiceImpl implements AuthService {
         //password 인코딩
         String encodedPassword = passwordEncoder.encode(signupDtoStudent.getPassword());
 
-        //loginCredential 저장
-        LoginCredential loginCredential = LoginCredential.of(signupDtoStudent.getUsername(), encodedPassword);
-        loginCredentialRepository.save(loginCredential);
-
         //student 저장
-        Student student = Student.of(loginCredential, signupDtoStudent.getName());
+        Student student = Student.of(signupDtoStudent.getUsername(), encodedPassword, signupDtoStudent.getName());
         studentRepository.save(student);
     }
 
@@ -79,12 +76,23 @@ public class AuthServiceImpl implements AuthService {
         //password 인코딩
         String encodedPassword = passwordEncoder.encode(signupDtoStudent.getPassword());
 
-        //loginCredential 저장
-        LoginCredential loginCredential = LoginCredential.of(signupDtoStudent.getUsername(), encodedPassword);
-        loginCredentialRepository.save(loginCredential);
-
         //Teacher 저장
-        Teacher teacher = Teacher.of(loginCredential, signupDtoStudent.getName(), fileName);
+        Teacher teacher = Teacher.of(signupDtoStudent.getUsername(), encodedPassword, signupDtoStudent.getName(),
+                signupDtoStudent.getEmail(), fileName);
         teacherRepository.save(teacher);
+    }
+
+
+    public void test(String username) {
+        Optional<LoginCredential> loginCredential = loginCredentialRepository.findByUsername(username);
+
+        if (loginCredential.isPresent()) {
+            LoginCredential credential = loginCredential.get();
+            if (credential instanceof Student member) {
+                // Student 객체를 사용하여 필요한 작업 수행
+                System.out.println("member = " + member);
+            }
+
+        }
     }
 }

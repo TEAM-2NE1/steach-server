@@ -30,24 +30,24 @@ public class Quiz {
 
     @ManyToOne
     @JoinColumn(name = "lecture_id", referencedColumnName = "id")
-    private Lecture lectures;
+    private Lecture lecture;
 
     @OneToMany(mappedBy = "quiz")
-    private Set<StudentQuiz> studentQuiz = new HashSet<>();
+    private Set<StudentQuiz> studentQuizzes = new HashSet<>();
 
     @OneToMany(mappedBy = "quiz")
     private Set<QuizChoice> quizChoices = new HashSet<>();
 
     public static Quiz createQuiz(QuizRequestDto request, Lecture lecture) {
         Quiz quiz = new Quiz();
-        quiz.setLectures(lecture);
+        quiz.setLecture(lecture);
         quiz.setQuestion(request.getQuestion());
         quiz.setQuizNumber(request.getQuizNumber());
         return quiz;
     }
 
     public void addStudentQuiz(StudentQuiz studentQuiz) {
-        this.getStudentQuiz().add(studentQuiz);
+        this.getStudentQuizzes().add(studentQuiz);
         studentQuiz.updateQuiz(this);
     }
 
