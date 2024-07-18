@@ -1,9 +1,9 @@
 package com.twentyone.steachserver.domain.studentQuiz.service;
 
 import com.twentyone.steachserver.domain.member.model.Student;
-import com.twentyone.steachserver.domain.member.service.StudentService;
+import com.twentyone.steachserver.domain.member.repository.StudentRepository;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
-import com.twentyone.steachserver.domain.quiz.service.QuizService;
+import com.twentyone.steachserver.domain.quiz.repository.QuizRepository;
 import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizRequestDto;
 import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
 import com.twentyone.steachserver.domain.studentQuiz.repository.StudentQuizRepository;
@@ -17,9 +17,8 @@ import java.util.Optional;
 public class StudentQuizServiceImpl implements StudentQuizService {
 
     private final StudentQuizRepository studentQuizzesRepository;
-
-    private final StudentService studentService;
-    private final QuizService quizService;
+    private final StudentRepository studentRepository;
+    private final QuizRepository quizRepository;
 
     @Override
     public StudentQuiz findByQuizIdAndStudentId(Integer quizId, Integer studentId) {
@@ -27,23 +26,15 @@ public class StudentQuizServiceImpl implements StudentQuizService {
                 .orElseThrow(() -> new RuntimeException("StudentQuiz not found"));
     }
 
-    @Override
-    public void createStudentQuiz(Integer studentId, Integer quizId, StudentQuizRequestDto requestDto) throws IllegalAccessException {
-        StudentQuiz studentQuiz = findByQuizIdAndStudentId(quizId, studentId);
-        if (studentQuiz != null) {
-            throw new IllegalAccessException("StudentQuiz already exists");
-        }
+    public StudentQuiz createStudentQuiz(Integer studentId, Integer quizId, StudentQuizRequestDto requestDto) throws IllegalAccessException {
+        Student student = studentRepository.getReferenceById(studentId);
+        Quiz quiz = quizRepository.getReferenceById(quizId);
 
-        Optional<Student> studentById = studentService.findStudentById(studentId);
-        Optional<Quiz> quiz = quizService.findQuizById(quizId);
-
-        if (studentById.isPresent() && quiz.isPresent()) {
-            StudentQuiz newStudentQuiz = StudentQuiz.createStudentQuiz(studentById.get(), quiz.get(), requestDto);
-            studentQuizzesRepository.save(newStudentQuiz);
-        }
-        else {
-            throw new RuntimeException("Student or Quiz not found");
-        }
+        StudentQuiz newStudentQuiz = StudentQuiz.createStudentQuiz(student, quiz, requestDto);
+        studentQuizzesRepository.save(newStudentQuiz);
+        return newStudentQuiz;
     }
+
+
 
 }
