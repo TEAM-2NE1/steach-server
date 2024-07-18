@@ -1,7 +1,7 @@
 package com.twentyone.steachserver.domain.curriculum.model;
 
 import com.twentyone.steachserver.domain.member.model.Teacher;
-import com.twentyone.steachserver.domain.enums.CurriculumCategory;
+import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
