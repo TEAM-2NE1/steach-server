@@ -8,8 +8,8 @@ import lombok.*;
 
 
 @Getter(value = AccessLevel.PUBLIC)
-@ToString
-@EqualsAndHashCode
+
+
 @NoArgsConstructor
 @Entity
 @Table(name = "classrooms")

@@ -18,10 +18,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class SignUpDto {
+public class TeacherSignUpDto {
     private String username;
     private String password;
     private String name;
-    private String auth_code;
     private String email;
 }

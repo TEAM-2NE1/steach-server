@@ -28,7 +28,7 @@ public class QuizResponseDto {
 
     public static QuizResponseDto createQuizResponseDto(Quiz quiz, List<String> choices, List<String> answers) {
         QuizResponseDto dto = new QuizResponseDto();
-        dto.setLectureId(quiz.getLectures().getId());
+        dto.setLectureId(quiz.getLecture().getId());
         dto.setQuizNumber(quiz.getQuizNumber());
         dto.setQuestion(quiz.getQuestion());
         dto.setChoices(choices);

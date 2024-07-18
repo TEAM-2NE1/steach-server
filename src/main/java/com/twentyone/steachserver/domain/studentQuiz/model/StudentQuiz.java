@@ -2,13 +2,13 @@ package com.twentyone.steachserver.domain.studentQuiz.model;
 
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
+import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
 @ToString
-@EqualsAndHashCode
 @Entity
 @Table(name = "students_quizzes")
 public class StudentQuiz {
@@ -25,8 +25,11 @@ public class StudentQuiz {
     @JoinColumn(name = "quiz_id", referencedColumnName = "id")
     private Quiz quiz;
 
-    @Column(name = "total_score")
-    private Integer totalScore;
+    @Column(name = "score")
+    private Integer score;
+
+    @Column(name = "student_choice")
+    private String student_choice;
 
     protected StudentQuiz() {}
 
@@ -36,20 +39,12 @@ public class StudentQuiz {
         this.quiz = quiz;
     }
 
-    public static StudentQuiz createStudentQuiz(Student student, Quiz quiz) {
-        return new StudentQuiz(student, quiz);
-    }
-
-    public static StudentQuiz createStudentQuiz(Student student, Quiz quiz, Integer score) {
+    public static StudentQuiz createStudentQuiz(Student student, Quiz quiz, StudentQuizRequestDto requestDto) {
         StudentQuiz studentQuiz = new StudentQuiz(student, quiz);
-        studentQuiz.updateScore(score);
+        studentQuiz.score = requestDto.getScore() == null ? 0 : requestDto.getScore();
+        studentQuiz.student_choice = requestDto.getStudent_choice();
         return studentQuiz;
     }
-
-    public void updateScore(Integer totalScore) {
-        this.totalScore = totalScore;
-    }
-
     public void updateQuiz(Quiz quiz) {
         this.quiz = quiz;
     }

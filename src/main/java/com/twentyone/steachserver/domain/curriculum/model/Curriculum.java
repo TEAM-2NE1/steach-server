@@ -16,18 +16,13 @@ public class Curriculum {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "teacher_id")
-    private Teacher teacher;
-
-    @OneToOne
-    @JoinColumn(name = "detail_id")
-    private CurriculumDetail detail;
-
-    private String title; //varchar(255)
+    @Column(name = "title", length = 255)
+    private String title;
 
     @Enumerated(EnumType.STRING)
     private CurriculaCategory category;
 
-
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 }
