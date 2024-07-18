@@ -1,6 +1,6 @@
 package com.twentyone.steachserver.domain.member.model;
 
-import com.twentyone.steachserver.domain.lectureStudent.model.LectureStudent;
+import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
 import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
@@ -45,13 +45,13 @@ public class Student extends LoginCredential{
 //    private LoginCredential loginCredential;
 
     @OneToMany(mappedBy = "student")
-    private List<StudentQuiz> studentQuiz = new ArrayList<>();
+    private List<StudentQuiz> studentQuizzes = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
     private List<StudentCurriculum> studentCurricula = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
-    private List<LectureStudent> lectureStudents = new ArrayList<>();
+    private List<StudentLecture> studentLectures = new ArrayList<>();
 
     public static Student of(String username, String password, String name) {
         Student student = new Student();
