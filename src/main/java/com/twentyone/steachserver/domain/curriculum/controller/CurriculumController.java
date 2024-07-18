@@ -22,12 +22,11 @@ public class CurriculumController {
         return ResponseEntity.ok(detail);
     }
 
-    @Transactional
     @PostMapping
     public ResponseEntity<CurriculumDetailResponse> createCurriculum(@AuthenticationPrincipal LoginCredential credential,
                                                                      @RequestBody CurriculumAddRequest request) {
-        curriculumService.create(credential, request);
+        CurriculumDetailResponse curriculumDetailResponse = curriculumService.create(credential, request);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(curriculumDetailResponse);
     }
 }

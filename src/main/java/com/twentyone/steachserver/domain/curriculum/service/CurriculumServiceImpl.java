@@ -47,6 +47,10 @@ public class CurriculumServiceImpl implements CurriculumService {
             throw new RuntimeException("선생님만 만들 수 있습니다.");
         }
 
+        //bitmask byte로 변환
+        //이진수 문자열을 정수로 변환
+        Byte weekdaysBitmask = bitmaskStringToByte(request.getWeekdaysBitmask());
+
         //detail 만들기
         CurriculumDetail curriculumDetail = CurriculumDetail.builder()
                 .subTitle(request.getSubTitle())
@@ -54,7 +58,7 @@ public class CurriculumServiceImpl implements CurriculumService {
                 .subCategory(request.getSubCategory())
                 .information(request.getInformation())
                 .bannerImgUrl(request.getBannerImgUrl())
-                .weekdaysBitmask(request.getWeekdaysBitmask())
+                .weekdaysBitmask(weekdaysBitmask)
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .lectureStartTime(request.getLectureStartTime())
@@ -67,20 +71,31 @@ public class CurriculumServiceImpl implements CurriculumService {
 
         //lecture 만들기
         //날짜 오름차순대로 들어감
-        List<LocalDate> selectedDates = getSelectedWeekdays(request.getStartDate(), request.getEndDate(), request.getWeekdaysBitmask());
+        List<LocalDate> selectedDates = getSelectedWeekdays(request.getStartDate(), request.getEndDate(), weekdaysBitmask);
 
         for (int i = 0; i < selectedDates.size(); i++) {
             LocalDate lectureDate = selectedDates.get(i);
-            int order = i+1;
+            int order = i + 1;
             Lecture lecture = Lecture.of(request.getTitle() + " " + order + "강", i, lectureDate.atStartOfDay(), request.getLectureStartTime(), request.getLectureEndTime(), curriculum);
-            log.info(lecture.getTitle());
             lectureRepository.save(lecture);
         }
 
         return CurriculumDetailResponse.fromDomain(curriculum, curriculumDetail); //관련 강의도 줄까?? 고민
     }
 
-    public static List<LocalDate> getSelectedWeekdays(LocalDate startDate, LocalDate endDate, int weekdaysBitmask) {
+    private byte bitmaskStringToByte(String bitmaskString) {
+        if (bitmaskString.length() != 7) {
+            throw new RuntimeException("bitmask 이상함");
+        }
+
+        if (!bitmaskString.matches("[01]*")) {
+            throw new RuntimeException("bitmask 이상함");
+        }
+
+        return (byte) Integer.parseInt(bitmaskString, 2);
+    }
+
+    public List<LocalDate> getSelectedWeekdays(LocalDate startDate, LocalDate endDate, int weekdaysBitmask) {
         List<LocalDate> selectedDates = new ArrayList<>();
 
         for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
@@ -95,7 +110,7 @@ public class CurriculumServiceImpl implements CurriculumService {
         return selectedDates;
     }
 
-    private static int getBitmaskForDayOfWeek(DayOfWeek dayOfWeek) {
+    private int getBitmaskForDayOfWeek(DayOfWeek dayOfWeek) {
         switch (dayOfWeek) {
             case MONDAY:
                 return 64; // 1000000

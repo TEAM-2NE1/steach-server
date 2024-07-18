@@ -58,7 +58,7 @@ public class CurriculumAddRequest {
     private LocalDate endDate;
 
     @JsonProperty("weekdays_bitmask")
-    private byte weekdaysBitmask;
+    private String weekdaysBitmask;
 
     @Schema(description = "Lecture start time in HH:mm:ss format", example = "15:30:00")
     @JsonProperty("lecture_start_time")

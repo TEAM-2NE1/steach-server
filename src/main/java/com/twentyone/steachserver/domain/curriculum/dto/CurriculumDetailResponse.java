@@ -1,6 +1,7 @@
 package com.twentyone.steachserver.domain.curriculum.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
 
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
@@ -64,7 +65,7 @@ public class CurriculumDetailResponse {
     private LocalDate endDate;
 
     @JsonProperty("weekdays_bitmask")
-    private byte weekdaysBitmask;
+    private String weekdaysBitmask;
 
     @JsonProperty("lecture_start_time")
     private int lectureStartTime;
@@ -73,6 +74,12 @@ public class CurriculumDetailResponse {
     private int lectureEndTime;
 
     public static CurriculumDetailResponse fromDomain(Curriculum curriculum, CurriculumDetail curriculumDetail) {
+        // 7을 이진수 문자열로 변환
+        String weekDaysBitmaskString = Integer.toBinaryString(curriculumDetail.getWeekdaysBitmask());
+
+        // 길이가 7이 되도록 0으로 패딩
+        String paddedWeekDaysBitmask = String.format("%0" + 7 + "d", Integer.parseInt(weekDaysBitmaskString));
+
         return CurriculumDetailResponse.builder()
                 .title(curriculum.getTitle())
                 .subTitle(curriculumDetail.getSubTitle())
@@ -83,7 +90,7 @@ public class CurriculumDetailResponse {
                 .bannerImgUrl(curriculumDetail.getBannerImgUrl())
                 .startDate(curriculumDetail.getStartDate())
                 .endDate(curriculumDetail.getEndDate() != null ? curriculumDetail.getEndDate() : null)
-                .weekdaysBitmask(curriculumDetail.getWeekdaysBitmask())
+                .weekdaysBitmask(paddedWeekDaysBitmask)
                 .lectureStartTime(curriculumDetail.getLectureStartTime().getHour())
                 .lectureEndTime(curriculumDetail.getLectureCloseTime().getHour())
                 .build();
