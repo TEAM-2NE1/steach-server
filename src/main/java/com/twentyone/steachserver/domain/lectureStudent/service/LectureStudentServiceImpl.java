@@ -1,14 +1,17 @@
 package com.twentyone.steachserver.domain.lectureStudent.service;
 
+import com.twentyone.steachserver.domain.lecture.dto.StudentInfoByLectureDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
 import com.twentyone.steachserver.domain.lectureStudent.model.LectureStudent;
+import com.twentyone.steachserver.domain.lectureStudent.repository.LectureStudentQueryRepository;
 import com.twentyone.steachserver.domain.lectureStudent.repository.LectureStudentRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,6 +19,7 @@ import java.util.Optional;
 public class LectureStudentServiceImpl implements LectureStudentService {
 
     private final LectureStudentRepository lectureStudentRepository;
+    private final LectureStudentQueryRepository lectureStudentQueryRepository;
 
     private final StudentService studentService;
     private final LectureService lectureService;
@@ -23,6 +27,11 @@ public class LectureStudentServiceImpl implements LectureStudentService {
     @Override
     public Optional<LectureStudent> findByStudentIdAndLectureId(Integer studentId, Integer lectureId) {
         return lectureStudentRepository.findByStudentIdAndLectureId(studentId, lectureId);
+    }
+
+    @Override
+    public List<StudentInfoByLectureDto> findAllStudentInfoByLectureId(Integer lectureId) {
+        return lectureStudentQueryRepository.findAllStudentInfoByLectureId(lectureId);
     }
 
     @Override
