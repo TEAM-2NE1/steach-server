@@ -2,17 +2,21 @@ package com.twentyone.steachserver.domain.lecture.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.*;
+import com.twentyone.steachserver.domain.lecture.dto.FinalLectureInfoByTeacherDto;
 import com.twentyone.steachserver.domain.lecture.dto.LectureBeforeStartingResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.StudentInfoByLectureDto;
+import com.twentyone.steachserver.domain.lecture.model.QLecture;
+import com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture;
+import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizDto;
+import com.twentyone.steachserver.domain.studentQuiz.model.QStudentQuiz;
 import jakarta.persistence.EntityManager;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.twentyone.steachserver.domain.curriculum.model.QCurriculum.curriculum;
 import static com.twentyone.steachserver.domain.lecture.model.QLecture.lecture;
-import static com.twentyone.steachserver.domain.lectureStudent.model.QLectureStudent.lectureStudent;
-import static com.twentyone.steachserver.domain.member.model.QStudent.student;
-import static com.twentyone.steachserver.domain.studentQuiz.model.QStudentQuiz.studentQuiz;
+
 
 public class LectureQueryRepository {
     private final JPAQueryFactory query;
@@ -45,10 +49,10 @@ public class LectureQueryRepository {
 //                        student.name,
 //                        studentQuiz.totalScore
 //                ))
-//                .from(lectureStudent)
-//                .join(lectureStudent.student, student)
+//                .from(studentLecture)
+//                .join(studentLecture.student, student)
 //                .join(studentQuiz).on(studentQuiz.student.id.eq(student.id))
-//                .where(lectureStudent.lecture.id.eq(lectureId))
+//                .where(studentLecture.lecture.id.eq(lectureId))
 //                .fetch();
 //
 //        // LectureResponseDto에 학생 정보 추가
@@ -58,4 +62,29 @@ public class LectureQueryRepository {
 
         return lectureDetails;
     }
+
+    public FinalLectureInfoByTeacherDto getFinalLectureInfoByTeacher(Integer lectureId) {
+        QLecture lecture = QLecture.lecture;
+        QStudentLecture studentLecture = QStudentLecture.studentLecture;
+        QStudentQuiz studentQuiz = QStudentQuiz.studentQuiz;
+
+        List<StudentInfoByLectureDto> studentInfoByLectureDtoList = query
+                .selectFrom(studentLecture)
+                .leftJoin(studentLecture.student).fetchJoin()
+                .leftJoin(studentLecture.student.studentQuizzes, studentQuiz).fetchJoin()
+                .where(studentLecture.lecture.id.eq(lectureId))
+                .fetch()
+                .stream()
+                .map(ls -> new StudentInfoByLectureDto(
+                        ls.getStudent().getStudentQuizzes().stream()
+                                .map(sq -> new StudentQuizDto(sq.getScore(), sq.getStudentChoice()))
+                                .collect(Collectors.toList()),
+                        ls.getFocusRatio().intValue(),
+                        ls.getFocusTime()
+                ))
+                .collect(Collectors.toList());
+
+        return FinalLectureInfoByTeacherDto.createFinalLectureInfoByTeacherDto(studentInfoByLectureDtoList);
+    }
+
 }
