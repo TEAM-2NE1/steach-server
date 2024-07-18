@@ -43,6 +43,8 @@ public class Quiz {
         quiz.setLecture(lecture);
         quiz.setQuestion(request.getQuestion());
         quiz.setQuizNumber(request.getQuizNumber());
+
+        lecture.addQuiz(quiz);
         return quiz;
     }
 
