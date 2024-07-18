@@ -16,8 +16,8 @@ public class StudentInfoByLectureDto {
     public StudentInfoByLectureDto(List<StudentQuizDto> StudentQuizzesDto, Integer focusRatio, Integer sleepMinute) {
         this.StudentQuizzesDto = StudentQuizzesDto;
         for (StudentQuizDto studentQuizDto : StudentQuizzesDto) {
-            this.totalQuizScore += studentQuizDto.getScore();
-            this.correctNumber += studentQuizDto.getScore() == 0 ? 0 : 1;
+            this.totalQuizScore += studentQuizDto.score();
+            this.correctNumber += studentQuizDto.score() == 0 ? 0 : 1;
         }
         this.focusRatio = focusRatio;
         this.sleepMinute = sleepMinute;

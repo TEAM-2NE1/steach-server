@@ -18,7 +18,7 @@ public class StudentLectureController {
     public ResponseEntity<?> submitTimeFocusTime(@PathVariable Integer studentId,
                                                  @PathVariable Integer lectureId,
                                                  @RequestBody FocusTimeRequestDto focusTimeDto) {
-        studentLectureService.saveTimeFocusTime(studentId, lectureId, focusTimeDto.getFocusTime());
+        studentLectureService.saveTimeFocusTime(studentId, lectureId, focusTimeDto.focusTime());
         return ResponseEntity.ok().build();
     }
 }

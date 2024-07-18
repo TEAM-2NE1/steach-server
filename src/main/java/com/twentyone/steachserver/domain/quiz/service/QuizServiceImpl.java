@@ -38,8 +38,8 @@ public class  QuizServiceImpl implements QuizService {
         quizValidator.validateEmptyQuiz(savedQuiz);
 
         // Create and save QuizChoice entities
-        List<String> choices = request.getChoices();
-        List<String> answers = request.getAnswers();
+        List<String> choices = request.choices();
+        List<String> answers = request.answers();
         quizChoiceService.createQuizChoices(choices, answers, savedQuiz);
 
         return Optional.of(savedQuiz);
