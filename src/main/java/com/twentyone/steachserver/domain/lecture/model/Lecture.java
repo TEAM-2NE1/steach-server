@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,16 +29,16 @@ public class Lecture {
     private Integer lectureOrder;
 
     @Column(name = "lecture_start_time", nullable = false)
-    private LocalDateTime lectureStartTime;
+    private LocalDateTime lectureStartTime; //시작 날짜로 해석하겠음 - 주효림
 
     @Column(name = "real_start_time")
-    private LocalDateTime realStartTime;
+    private LocalTime realStartTime;
 
     @Column(name = "real_end_time")
-    private LocalDateTime realEndTime;
+    private LocalTime realEndTime;
 
     @Column(name = "number_of_quizzes")
-    private Integer numberOfQuizzes;
+    private Integer numberOfQuizzes = 0;
 
     @ManyToOne
     @JoinColumn(name = "curriculum_id", nullable = false, referencedColumnName = "id")
@@ -45,4 +46,16 @@ public class Lecture {
 
     @OneToMany(mappedBy = "lecture")
     private List<LectureStudent> lectureStudents = new ArrayList<>();
+
+    public static Lecture of(String title, Integer lectureOrder, LocalDateTime lectureStartTime, LocalTime realStartTime, LocalTime realEndTime, Curriculum curriculum) {
+        Lecture lecture = new Lecture();
+        lecture.title = title;
+        lecture.lectureOrder = lectureOrder;
+        lecture.lectureStartTime = lectureStartTime;
+        lecture.realStartTime = realStartTime;
+        lecture.realEndTime = realEndTime;
+        lecture.curriculum = curriculum;
+
+        return lecture;
+    }
 }
