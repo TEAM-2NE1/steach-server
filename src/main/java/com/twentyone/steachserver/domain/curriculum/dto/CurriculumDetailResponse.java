@@ -73,6 +73,12 @@ public class CurriculumDetailResponse {
     @JsonProperty("lecture_end_time")
     private int lectureEndTime;
 
+    @JsonProperty("current_attendees")
+    private int currentAttendees;
+
+    @JsonProperty("max_attendees")
+    private int maxAttendees;
+
     public static CurriculumDetailResponse fromDomain(Curriculum curriculum, CurriculumDetail curriculumDetail) {
         // 7을 이진수 문자열로 변환
         String weekDaysBitmaskString = Integer.toBinaryString(curriculumDetail.getWeekdaysBitmask());
@@ -93,6 +99,8 @@ public class CurriculumDetailResponse {
                 .weekdaysBitmask(paddedWeekDaysBitmask)
                 .lectureStartTime(curriculumDetail.getLectureStartTime().getHour())
                 .lectureEndTime(curriculumDetail.getLectureCloseTime().getHour())
+                .currentAttendees(curriculumDetail.getCurrentAttendees())
+                .maxAttendees(curriculumDetail.getMaxAttendees())
                 .build();
     }
 }

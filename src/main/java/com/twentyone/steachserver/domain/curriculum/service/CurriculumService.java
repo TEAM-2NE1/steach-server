@@ -8,4 +8,6 @@ public interface CurriculumService {
     CurriculumDetailResponse getDetail(Integer id);
 
     CurriculumDetailResponse create(LoginCredential credential, CurriculumAddRequest request);
+
+    void registration(LoginCredential credential, Integer curriculaId);
 }

@@ -50,4 +50,14 @@ public class CurriculumDetail {
     private LocalDate endDate;
     private LocalTime lectureStartTime;
     private LocalTime lectureCloseTime;
+
+    @Builder.Default
+    @Column(name = "current_attendees")
+    private Integer currentAttendees = 0; //현재 수강확정인원
+
+    private Integer maxAttendees; //수강정원
+
+    public void register() {
+        this.currentAttendees++;
+    }
 }
