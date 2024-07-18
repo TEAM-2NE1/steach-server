@@ -5,15 +5,10 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Getter
-public class CurriculumDetailByLectureDto {
-    private final LocalDateTime estimatedEndTime;
-    private final String information;
-    private final String bannerImgUrl;
-
-    public CurriculumDetailByLectureDto(CurriculumDetail curriculumDetail) {
-        this.estimatedEndTime = curriculumDetail.getEndDate();
-        this.information = curriculumDetail.getInformation();
-        this.bannerImgUrl = curriculumDetail.getBannerImgUrl();
+public record CurriculumDetailByLectureDto(LocalDateTime estimatedEndTime, String information, String bannerImgUrl) {
+    public static CurriculumDetailByLectureDto createCurriculumDetailByLectureDto(CurriculumDetail curriculumDetail) {
+        return new CurriculumDetailByLectureDto(curriculumDetail.getEndDate(),
+                curriculumDetail.getInformation(),
+                curriculumDetail.getBannerImgUrl());
     }
 }

@@ -18,12 +18,9 @@ import java.util.List;
  *   ] // 중복가능
  * }
  */
+public record QuizRequestDto(Integer quizNumber, String question, List<String> choices, List<String> answers) {
 
-@Getter(value = AccessLevel.PUBLIC)
-@Setter(value = AccessLevel.PRIVATE)
-public class QuizRequestDto {
-    private Integer quizNumber;
-    private String question;
-    private List<String> choices;
-    private List<String> answers;
+    public static QuizRequestDto createQuizRequestDto(Integer quizNumber, String question, List<String> choices, List<String> answers) {
+        return new QuizRequestDto(quizNumber, question, choices, answers);
+    }
 }

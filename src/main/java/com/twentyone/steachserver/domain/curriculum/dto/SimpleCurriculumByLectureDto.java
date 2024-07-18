@@ -1,18 +1,9 @@
 package com.twentyone.steachserver.domain.curriculum.dto;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+public record SimpleCurriculumByLectureDto(String curriculumTitle,String curriculumCategory) {
 
-@Getter
-@NoArgsConstructor()
-public class SimpleCurriculumByLectureDto {
-    private String curriculumTitle;
-    private String curriculumCategory;
-
-    public SimpleCurriculumByLectureDto(Curriculum curriculum) {
-        this.curriculumTitle = curriculum.getTitle();
-        this.curriculumCategory = curriculum.getCategory().toString();
+    public static  SimpleCurriculumByLectureDto createSimpleCurriculumByLectureDto(Curriculum curriculum) {
+        return new SimpleCurriculumByLectureDto(curriculum.getTitle(), curriculum.getCategory().toString());
     }
 }
