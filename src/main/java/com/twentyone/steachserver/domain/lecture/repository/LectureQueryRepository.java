@@ -75,11 +75,12 @@ public class LectureQueryRepository {
                 .where(studentLecture.lecture.id.eq(lectureId))
                 .fetch()
                 .stream()
+                // studentInfoLectureDto
                 .map(ls -> new StudentInfoByLectureDto(
                         ls.getStudent().getStudentQuizzes().stream()
                                 .map(sq -> new StudentQuizDto(sq.getScore(), sq.getStudentChoice(),sq.getStudent().getName()))
                                 .collect(Collectors.toList()),
-                        ls.getFocusRatio().intValue(),
+                        ls.getFocusRatio(),
                         ls.getFocusTime()
                 ))
                 .collect(Collectors.toList());
