@@ -20,7 +20,7 @@ public class LectureController {
     private final StudentLectureService studentLectureService;
 
     @GetMapping("/{lectureId}")
-    public ResponseEntity<LectureBeforeStartingResponseDto> getLectureInformation(@PathVariable Integer lectureId) {
+    public ResponseEntity<LectureBeforeStartingResponseDto> getLectureInformation(@PathVariable("lectureId")Integer lectureId) {
         LectureBeforeStartingResponseDto lectureResponseDto = lectureService.getLectureInformation(lectureId);
 
         if (lectureResponseDto.getIsCompleted()){
@@ -34,7 +34,7 @@ public class LectureController {
 
     // teacher
     @GetMapping("/final/{lectureId}")
-    public ResponseEntity<FinalLectureInfoByTeacherDto> getFinalLectureInformation(@PathVariable Integer lectureId) {
+    public ResponseEntity<FinalLectureInfoByTeacherDto> getFinalLectureInformation(@PathVariable("lectureId") Integer lectureId) {
         lectureService.updateRealEndTime(lectureId);
         studentLectureService.updateStudentLectureByFinishLecture(lectureId);
         StudentLectureStatisticDto lectureStudentStatistic = studentLectureService.createLectureStudentStatistic(lectureId);

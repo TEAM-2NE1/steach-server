@@ -21,7 +21,7 @@ public class QuizController {
     private LectureService lectureService;
 
     @PostMapping("/{lectureId}")
-    public ResponseEntity<QuizResponseDto> createQuiz(@PathVariable Integer lectureId, @RequestBody QuizRequestDto request) throws Exception {
+    public ResponseEntity<QuizResponseDto> createQuiz(@PathVariable("lectureId")Integer lectureId, @RequestBody QuizRequestDto request) throws Exception {
         Optional<Quiz> quiz = quizService.createQuiz(lectureId,request);
         if (quiz.isPresent()) {
             return ResponseEntity.status(HttpStatus.CREATED).body(QuizResponseDto.createQuizResponseDto(lectureId, request));
@@ -31,7 +31,7 @@ public class QuizController {
     }
 
     @GetMapping("/{quizId}")
-    public ResponseEntity<QuizResponseDto> getQuizResponseDto(@PathVariable Integer quizId) {
+    public ResponseEntity<QuizResponseDto> getQuizResponseDto(@PathVariable("quizId") Integer quizId) {
         Optional<QuizResponseDto> quizOptional = quizService.getQuizResponseDto(quizId);
         return quizOptional.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));

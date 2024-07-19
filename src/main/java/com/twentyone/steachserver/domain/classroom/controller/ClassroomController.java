@@ -19,7 +19,6 @@ import java.util.Optional;
 public class ClassroomController {
 
     private final ClassroomService classroomService;
-    private final StudentQuizService studentQuizService;
 
 
     @GetMapping("/upcoming")
@@ -36,7 +35,7 @@ public class ClassroomController {
     }
 
     @GetMapping("/{studentId}/{lectureId}")
-    public ResponseEntity<ClassroomResponseDto> confirmStudentByApply(@PathVariable Integer studentId, @PathVariable Integer lectureId) {
+    public ResponseEntity<ClassroomResponseDto> confirmStudentByApply(@PathVariable("studentId") Integer studentId, @PathVariable("lectureId") Integer lectureId) {
         Optional<Classroom> classroomOptional = classroomService.getClassroomByLectureAndStudent(studentId, lectureId);
         return classroomOptional
                 .map(classroom -> ResponseEntity.ok().
