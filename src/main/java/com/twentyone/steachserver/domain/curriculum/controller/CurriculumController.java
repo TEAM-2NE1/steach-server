@@ -11,7 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/curricula")
+@RequestMapping("/api/v1/curricula")
 @RequiredArgsConstructor
 public class CurriculumController {
     private final CurriculumService curriculumService;

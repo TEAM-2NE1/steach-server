@@ -42,7 +42,8 @@ public class LectureQueryRepository {
 
     public LectureBeforeStartingResponseDto findLectureDetailsByLectureId(Integer lectureId) {
         // 강의 정보 조회
-        LectureBeforeStartingResponseDto lectureDetails = query
+
+        return query
                 .select(Projections.constructor(
                         LectureBeforeStartingResponseDto.class,
                         lecture.lectureOrder,
@@ -54,27 +55,6 @@ public class LectureQueryRepository {
                 .join(lecture.curriculum, curriculum)
                 .where(lecture.id.eq(lectureId))
                 .fetchOne();
-
-        // 학생 정보 조회
-//        List<StudentInfoByLectureDto> studentInfoList = query
-//                .select(Projections.constructor(
-//                        StudentInfoByLectureDto.class,
-//                        student.id,
-//                        student.name,
-//                        studentQuiz.totalScore
-//                ))
-//                .from(studentLecture)
-//                .join(studentLecture.student, student)
-//                .join(studentQuiz).on(studentQuiz.student.id.eq(student.id))
-//                .where(studentLecture.lecture.id.eq(lectureId))
-//                .fetch();
-//
-//        // LectureResponseDto에 학생 정보 추가
-//        if (lectureDetails != null) {
-//            lectureDetails.getQuizzes().addAll(studentInfoList);
-//        }
-
-        return lectureDetails;
     }
 
     public FinalLectureInfoByTeacherDto getFinalLectureInfoByTeacher(Integer lectureId) {
