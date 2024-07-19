@@ -38,13 +38,10 @@ public class CurriculumServiceImpl implements CurriculumService {
     @Override
     @Transactional(readOnly = true)
     public CurriculumDetailResponse getDetail(Integer id) {
-        Curriculum curriculum = curriculumRepository.findById(id)
+        Curriculum curriculum = curriculumRepository.findByIdWithDetail(id)
                 .orElseThrow(() -> new RuntimeException("Curriculum not found"));
 
-        CurriculumDetail curriculumDetail = curriculumDetailRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CurriculumDetail not found"));
-
-        return CurriculumDetailResponse.fromDomain(curriculum, curriculumDetail);
+        return CurriculumDetailResponse.fromDomain(curriculum);
     }
 
     @Override
@@ -75,7 +72,7 @@ public class CurriculumServiceImpl implements CurriculumService {
                 .build();
         curriculumDetailRepository.save(curriculumDetail);
 
-        Curriculum curriculum = Curriculum.of(request.getTitle(), request.getCategory(), (Teacher) loginCredential);
+        Curriculum curriculum = Curriculum.of(request.getTitle(), request.getCategory(), (Teacher) loginCredential, curriculumDetail);
         curriculumRepository.save(curriculum);
 
         //lecture 만들기
@@ -89,7 +86,7 @@ public class CurriculumServiceImpl implements CurriculumService {
             lectureRepository.save(lecture);
         }
 
-        return CurriculumDetailResponse.fromDomain(curriculum, curriculumDetail); //관련 강의도 줄까?? 고민
+        return CurriculumDetailResponse.fromDomain(curriculum); //관련 강의도 줄까?? 고민
     }
 
     @Override
@@ -114,10 +111,8 @@ public class CurriculumServiceImpl implements CurriculumService {
         StudentCurriculum studentCurriculum = new StudentCurriculum(student, curriculum);
         studentCurriculumRepository.save(studentCurriculum);
 
-        // curriculum 내부 detail 삭제에 따른 코드 삭제
-        // 확인 후 삭제 바랍니다.
-//        curriculum.register();
-
+        //복구했습니다.
+        curriculum.register();
     }
 
     @Override
