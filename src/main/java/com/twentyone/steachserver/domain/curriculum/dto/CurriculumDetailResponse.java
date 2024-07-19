@@ -74,8 +74,9 @@ public class CurriculumDetailResponse {
     @JsonProperty("max_attendees")
     private int maxAttendees;
 
-    public static CurriculumDetailResponse fromDomain(Curriculum curriculum, CurriculumDetail curriculumDetail) {
+    public static CurriculumDetailResponse fromDomain(Curriculum curriculum) {
         // 7을 이진수 문자열로 변환
+        CurriculumDetail curriculumDetail = curriculum.getCurriculumDetail();
         String weekDaysBitmaskString = Integer.toBinaryString(curriculumDetail.getWeekdaysBitmask());
 
         // 길이가 7이 되도록 0으로 패딩

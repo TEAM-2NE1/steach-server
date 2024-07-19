@@ -22,7 +22,7 @@ public class CurriculumListResponse {
         List<CurriculumDetailResponse> responseList = response.curricula;
 
         for (Curriculum curriculum : curriculaList) {
-            responseList.add(CurriculumDetailResponse.fromDomain(curriculum, curriculum.getCurriculumDetail()));
+            responseList.add(CurriculumDetailResponse.fromDomain(curriculum));
         }
 
         return response;
