@@ -132,12 +132,12 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
-    public LectureBeforeStartingResponseDto updateLectureInformation(Integer lectureId, UpdateLectureRequestDto lectureRequestDto) {
+    public Optional<LectureBeforeStartingResponseDto> updateLectureInformation(Integer lectureId, UpdateLectureRequestDto lectureRequestDto) {
         Optional<Lecture> lectureById = findLectureById(lectureId);
         if (lectureById.isPresent()) {
             Lecture lecture = lectureById.get();
             lecture.update(lectureRequestDto);
-            return lectureQueryRepository.findLectureDetailsByLectureId(lectureId);
+            return Optional.ofNullable(lectureQueryRepository.findLectureDetailsByLectureId(lectureId));
         }
         return null;
     }
