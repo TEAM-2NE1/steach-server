@@ -13,6 +13,7 @@ import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.model.QLecture;
 import com.twentyone.steachserver.domain.member.dto.StudentByLectureDto;
 import com.twentyone.steachserver.domain.member.model.QStudent;
+import com.twentyone.steachserver.domain.quiz.model.QQuiz;
 import com.twentyone.steachserver.domain.studentCurriculum.model.QStudentCurriculum;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
 import com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture;
@@ -55,6 +56,7 @@ public class StudentLectureQueryRepository {
 
     @Transactional
     public LectureBeforeStartingResponseDto getLectureBeforeStartingResponse(Integer lectureId) {
+
         QLecture qLecture = QLecture.lecture;
         QCurriculum qCurriculum = QCurriculum.curriculum;
         QCurriculumDetail qCurriculumDetail = QCurriculumDetail.curriculumDetail1;
@@ -62,7 +64,8 @@ public class StudentLectureQueryRepository {
 //        QStudent qStudent = QStudent.student;
 
         Optional<Lecture> lectureOptional = Optional.ofNullable(query
-                .selectFrom(qLecture)
+                .select(qLecture)
+                .from(qLecture).join(qLecture.quizzes, QQuiz.quiz).fetchJoin()
                 .where(qLecture.id.eq(lectureId))
                 .fetchOne());
         if (lectureOptional.isEmpty()) {
