@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface QuizService {
     // Quiz methods
-    Optional<QuizResponseDto> createQuiz(QuizRequestDto request) throws Exception;
+    Optional<Quiz> createQuiz(Integer lectureId, QuizRequestDto request) throws Exception;
 
     Optional<QuizResponseDto> getQuizResponseDto(Integer quizId);
 

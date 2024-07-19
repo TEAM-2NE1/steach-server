@@ -1,10 +1,11 @@
 package com.twentyone.steachserver.domain.member.model;
 
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
+import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PROTECTED)
@@ -28,6 +29,9 @@ public class Teacher extends LoginCredential{
 
     @Column(length = 255)
     private String pathQualification;
+
+    @OneToMany(mappedBy = "teacher")
+    List<Curriculum> curriculumList;
 
     public static Teacher of(String username, String password, String name, String email, String pathQualification) {
         Teacher teacher = new Teacher();

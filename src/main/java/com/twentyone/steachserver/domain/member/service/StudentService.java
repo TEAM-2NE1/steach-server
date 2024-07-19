@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface StudentService {
     public Optional<Student> findStudentById(Integer id);
+    public Optional<Student> findStudentByUsername(String username);
 }
