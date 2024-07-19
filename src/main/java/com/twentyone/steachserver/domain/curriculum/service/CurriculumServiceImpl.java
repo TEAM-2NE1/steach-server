@@ -35,12 +35,6 @@ public class CurriculumServiceImpl implements CurriculumService {
     private final LectureRepository lectureRepository;
     private final CurriculumDetailRepository curriculumDetailRepository;
     private final StudentCurriculumRepository studentCurriculumRepository;
-
-    @Override
-    public Optional<Curriculum> findById(Integer id) {
-        return curriculumRepository.findById(id);
-    }
-
     @Override
     @Transactional(readOnly = true)
     public CurriculumDetailResponse getDetail(Integer id) {

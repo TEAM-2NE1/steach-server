@@ -19,7 +19,6 @@ import java.util.List;
  * }
  */
 public record QuizRequestDto(Integer quizNumber, String question, List<String> choices, List<String> answers) {
-
     public static QuizRequestDto createQuizRequestDto(Integer quizNumber, String question, List<String> choices, List<String> answers) {
         return new QuizRequestDto(quizNumber, question, choices, answers);
     }

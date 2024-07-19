@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LectureService {
-    public Optional<Lecture> findLectureById(Integer id);
+    Optional<Lecture> findLectureById(Integer id);
 
     List<Lecture> upcomingLecture(int toMinute, int fromMinute);
 
     LectureBeforeStartingResponseDto getLectureInformation(Integer lectureId);
 
-    LectureBeforeStartingResponseDto updateLectureInformation(Integer lectureId, UpdateLectureRequestDto lectureRequestDto);
+    Optional<LectureBeforeStartingResponseDto> updateLectureInformation(Integer lectureId, UpdateLectureRequestDto lectureRequestDto);
 
     FinalLectureInfoByTeacherDto getFinalLectureInformation(Integer lectureId);
 
