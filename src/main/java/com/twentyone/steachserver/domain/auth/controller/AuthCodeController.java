@@ -7,6 +7,7 @@ import com.twentyone.steachserver.domain.auth.dto.AuthCodeResponse;
 import com.twentyone.steachserver.domain.auth.service.AuthCodeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +23,7 @@ public class AuthCodeController {
     private final AuthCodeService authCodeService;
 
     @PostMapping
-    public ResponseEntity<AuthCodeResponse> create(@RequestBody final AuthCodeRequest authCodeRequest) {
+    public ResponseEntity<AuthCodeResponse> create(@RequestBody @Valid final AuthCodeRequest authCodeRequest) {
         return ResponseEntity.ok(authCodeService.createNumberOfAuthCode(authCodeRequest));
     }
 
