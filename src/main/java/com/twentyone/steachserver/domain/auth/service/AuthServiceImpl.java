@@ -22,13 +22,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Transactional(readOnly = true)
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class AuthServiceImpl implements AuthService {
+    private static final String ID_PATTERN = "^[a-zA-Z][a-zA-Z0-9_]{1,20}$"; //20자 이하
+
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -59,18 +60,35 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
+    @Transactional
+    public void validateUserName(String username) {
+        if (username == null || username.length() == 0) {
+            throw new IllegalArgumentException("username은 빈칸 불가능");
+        }
+
+        if (!username.matches(ID_PATTERN)) {
+            throw new IllegalArgumentException("유효하지 않은 username");
+        }
+
+        if (loginCredentialRepository.findByUsername(username)
+                .isPresent()) {
+            throw new IllegalArgumentException("중복되는 닉네임");
+        }
+    }
 
     @Override
     @Transactional
-    public LoginResponseDto signUpStudent(StudentSignUpDto signupDtoStudent) {
+    public LoginResponseDto signUpStudent(StudentSignUpDto studentSignUpDto) {
+        validateUserName(studentSignUpDto.getUsername());
+
         //auth Code 검증
-        authCodeService.validate(signupDtoStudent.getAuth_code());
+        authCodeService.validate(studentSignUpDto.getAuth_code());
 
         //password 인코딩
-        String encodedPassword = passwordEncoder.encode(signupDtoStudent.getPassword());
+        String encodedPassword = passwordEncoder.encode(studentSignUpDto.getPassword());
 
         //student 저장
-        Student student = Student.of(signupDtoStudent.getUsername(), encodedPassword, signupDtoStudent.getName());
+        Student student = Student.of(studentSignUpDto.getUsername(), encodedPassword, studentSignUpDto.getName());
         studentRepository.save(student);
 
         String accessToken = jwtService.generateAccessToken(student);
@@ -82,16 +100,18 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public LoginResponseDto signUpTeacher(TeacherSignUpDto signupDtoStudent, MultipartFile file) throws IOException {
+    public LoginResponseDto signUpTeacher(TeacherSignUpDto teacherSignUpDto, MultipartFile file) throws IOException {
+        validateUserName(teacherSignUpDto.getUsername());
+
         //TODO 인증파일 저장
         String fileName = FileUtil.storeFile(file, uploadDir);
 
         //password 인코딩
-        String encodedPassword = passwordEncoder.encode(signupDtoStudent.getPassword());
+        String encodedPassword = passwordEncoder.encode(teacherSignUpDto.getPassword());
 
         //Teacher 저장
-        Teacher teacher = Teacher.of(signupDtoStudent.getUsername(), encodedPassword, signupDtoStudent.getName(),
-                signupDtoStudent.getEmail(), fileName);
+        Teacher teacher = Teacher.of(teacherSignUpDto.getUsername(), encodedPassword, teacherSignUpDto.getName(),
+                teacherSignUpDto.getEmail(), fileName);
         teacherRepository.save(teacher);
 
         String accessToken = jwtService.generateAccessToken(teacher);
@@ -99,19 +119,5 @@ public class AuthServiceImpl implements AuthService {
         return LoginResponseDto.builder()
                 .token(accessToken)
                 .build();
-    }
-
-
-    public void test(String username) {
-        Optional<LoginCredential> loginCredential = loginCredentialRepository.findByUsername(username);
-
-        if (loginCredential.isPresent()) {
-            LoginCredential credential = loginCredential.get();
-            if (credential instanceof Student member) {
-                // Student 객체를 사용하여 필요한 작업 수행
-                System.out.println("member = " + member);
-            }
-
-        }
     }
 }
