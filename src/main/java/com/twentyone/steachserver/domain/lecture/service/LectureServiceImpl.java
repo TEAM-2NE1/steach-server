@@ -53,7 +53,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
 
-    // 이 부분 해결해야함!!!!!!!!!
+    // ToDo: 이 부분 해결해야함!!!!!!!!!
     @Override
     public LectureBeforeStartingResponseDto getLectureInformation(Integer lectureId) {
         Optional<Lecture> lectureOpt = findLectureById(lectureId);
@@ -74,6 +74,8 @@ public class LectureServiceImpl implements LectureService {
 
         return completedLecturesResponseDto;
 
+
+        // 쿼리 dsl 코드 이전 로우 코드
 //        Optional<Lecture> lectureOptional = lectureRepository.findById(lectureId);
 //        if (lectureOptional.isEmpty()) {
 //            throw new IllegalStateException("lecture not found");
