@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class StatisticController {
 
-    @Autowired
     private StatisticService statisticService;
 
     @GetMapping
