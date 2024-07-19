@@ -6,6 +6,7 @@ import com.twentyone.steachserver.domain.lecture.dto.FinalLectureInfoByTeacherDt
 import com.twentyone.steachserver.domain.lecture.dto.LectureBeforeStartingResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.UpdateLectureRequestDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
+import com.twentyone.steachserver.domain.studentLecture.dto.StudentLectureStatisticDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,4 +23,6 @@ public interface LectureService {
     FinalLectureInfoByTeacherDto getFinalLectureInformation(Integer lectureId);
 
     void updateRealEndTime(Integer lectureId);
+
+    void createGPTData(Integer lectureId, StudentLectureStatisticDto lectureStudentStatistic);
 }
