@@ -20,7 +20,7 @@ import java.util.List;
 
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LectureBeforeStartingResponseDto extends LectureResponseDto{
     private SimpleCurriculumByLectureDto curriculumInfo;
     private CurriculumDetailByLectureDto curriculumDetailInfo;
@@ -29,16 +29,28 @@ public class LectureBeforeStartingResponseDto extends LectureResponseDto{
 
     private List<Quiz> quizzes = new ArrayList<>();
     private Integer numberOfQuizzes;
+    private Boolean isCompleted = false;
 
-    public LectureBeforeStartingResponseDto(Lecture lecture, SimpleCurriculumByLectureDto curriculumInfo,
-                                            CurriculumDetailByLectureDto curriculumDetailInfo,
-                                            List<StudentByLectureDto> studentDto) {
+    private LectureBeforeStartingResponseDto(Lecture lecture,
+                                             SimpleCurriculumByLectureDto curriculumInfo,
+                                             CurriculumDetailByLectureDto curriculumDetailInfo,
+                                             List<StudentByLectureDto> studentDtos) {
         this.curriculumInfo = curriculumInfo;
         this.curriculumDetailInfo = curriculumDetailInfo;
 
         this.quizzes = lecture.getQuizzes();
         this.numberOfQuizzes = lecture.getQuizzes().size();
 
-        this.students = studentDto;
+        this.students = studentDtos;
+    }
+
+    public static LectureBeforeStartingResponseDto of(Lecture lecture, SimpleCurriculumByLectureDto curriculumInfo,
+                        CurriculumDetailByLectureDto curriculumDetailInfo,
+                        List<StudentByLectureDto> studentDto) {
+        return new LectureBeforeStartingResponseDto(lecture, curriculumInfo, curriculumDetailInfo, studentDto);
+    }
+
+    public void completeLecture(){
+        this.isCompleted = true;
     }
 }
