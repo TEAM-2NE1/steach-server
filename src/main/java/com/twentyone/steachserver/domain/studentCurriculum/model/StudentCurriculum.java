@@ -1,7 +1,6 @@
 package com.twentyone.steachserver.domain.studentCurriculum.model;
 
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
-import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.member.model.Student;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,7 +8,6 @@ import lombok.*;
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
 @ToString
-
 @Entity
 @Table(name = "students_curricula")
 public class StudentCurriculum {
@@ -28,7 +26,7 @@ public class StudentCurriculum {
 
     protected StudentCurriculum() {}
 
-    private StudentCurriculum(Student student, Curriculum curriculum) {
+    public StudentCurriculum(Student student, Curriculum curriculum) {
         this.id = StudentCurriculumId.createStudentsCurriculaId(student.getId(), curriculum.getId());
         this.student = student;
         this.curriculum = curriculum;

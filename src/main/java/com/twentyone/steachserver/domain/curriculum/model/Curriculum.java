@@ -1,7 +1,7 @@
 package com.twentyone.steachserver.domain.curriculum.model;
 
-import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.enums.CurriculaCategory;
+import com.twentyone.steachserver.domain.member.model.Teacher;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,4 +25,22 @@ public class Curriculum {
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
+    @OneToOne
+    @JoinColumn(name = "detail_id")
+    private CurriculumDetail curriculumDetail;
+
+    public static Curriculum of(String title, CurriculaCategory category, Teacher teacher, CurriculumDetail curriculumDetail) {
+        Curriculum curriculum = new Curriculum();
+        curriculum.title = title;
+        curriculum.category = category;
+        curriculum.teacher = teacher;
+        curriculum.curriculumDetail = curriculumDetail;
+
+        return curriculum;
+    }
+
+    public void register() {
+        this.curriculumDetail.register();
+    }
 }
