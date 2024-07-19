@@ -8,6 +8,5 @@ import java.util.Optional;
 
 public interface ClassroomService {
     UpComingClassRooms upcomingClassroom();
-    void saveFinalClassroomState(Integer studentId, Integer lectureId, FinalClassroomRequestDto finalClassroomRequestDto);
-    Optional<Classroom> findByStudentIdAndLectureId(Integer studentId, Integer lectureId);
+    Optional<Classroom> getClassroomByLectureAndStudent(Integer studentId, Integer lectureId);
 }

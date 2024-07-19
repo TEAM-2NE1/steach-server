@@ -40,20 +40,11 @@ public class ClassroomController {
     }
 
     @GetMapping("/{studentId}/{lectureId}")
-    public ResponseEntity<ClassroomResponseDto> confirmStudentByApply(@PathVariable Integer studentId,
-                                                            @PathVariable Integer lectureId) {
-        Optional<Classroom> classroomOptional = classroomService.findByStudentIdAndLectureId(studentId, lectureId);
+    public ResponseEntity<ClassroomResponseDto> confirmStudentByApply(@PathVariable Integer studentId, @PathVariable Integer lectureId) {
+        Optional<Classroom> classroomOptional = classroomService.getClassroomByLectureAndStudent(studentId, lectureId);
         return classroomOptional
                 .map(classroom -> ResponseEntity.ok().
                         body(ClassroomResponseDto.createClassroomResponseDto(classroom)))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
-    }
-
-    @PostMapping("/final/{studentId}/{lectureId}")
-    public ResponseEntity<?> saveFinalClassroomState(@PathVariable Integer studentId,
-                                                          @PathVariable Integer lectureId,
-                                                          @RequestBody FinalClassroomRequestDto finalClassroomRequestDto) {
-        classroomService.saveFinalClassroomState(studentId, lectureId, finalClassroomRequestDto);
-        return ResponseEntity.notFound().build();
     }
 }
