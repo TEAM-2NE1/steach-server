@@ -1,6 +1,5 @@
 package com.twentyone.steachserver.domain.auth.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthCodeResponse {
-    @JsonProperty("auth_code")
     private List<String> authCode;
 }

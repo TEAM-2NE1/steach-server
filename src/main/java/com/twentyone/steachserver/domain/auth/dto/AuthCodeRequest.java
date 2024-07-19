@@ -14,6 +14,5 @@ import lombok.NoArgsConstructor;
 public class AuthCodeRequest {
     //1이상 몇 미만
     @Min(1)
-    @JsonProperty("number_of_code")
     private Integer numberOfCode;
 }

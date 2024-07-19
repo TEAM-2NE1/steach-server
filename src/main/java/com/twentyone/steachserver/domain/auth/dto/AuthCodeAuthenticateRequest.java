@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthCodeAuthenticateRequest {
-    @JsonProperty("auth_code")
     private String authCode;
 }
