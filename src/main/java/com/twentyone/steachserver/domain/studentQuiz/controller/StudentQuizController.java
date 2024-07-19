@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.studentQuiz;
+package com.twentyone.steachserver.domain.studentQuiz.controller;
 
 import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizRequestDto;
 import com.twentyone.steachserver.domain.studentQuiz.service.StudentQuizService;

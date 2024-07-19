@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.studentLecture;
+package com.twentyone.steachserver.domain.studentLecture.controller;
 
 import com.twentyone.steachserver.domain.classroom.dto.FocusTimeRequestDto;
 import com.twentyone.steachserver.domain.studentLecture.service.StudentLectureService;

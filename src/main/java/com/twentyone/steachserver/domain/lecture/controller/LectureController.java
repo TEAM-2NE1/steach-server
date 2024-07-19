@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.lecture;
+package com.twentyone.steachserver.domain.lecture.controller;
 
 import com.twentyone.steachserver.domain.lecture.dto.CompletedLecturesResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.FinalLectureInfoByTeacherDto;

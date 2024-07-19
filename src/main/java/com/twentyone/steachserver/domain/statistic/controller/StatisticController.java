@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.statistic;
+package com.twentyone.steachserver.domain.statistic.controller;
 
 import com.twentyone.steachserver.domain.statistic.dto.StatisticsDto;
 import com.twentyone.steachserver.domain.statistic.service.StatisticService;

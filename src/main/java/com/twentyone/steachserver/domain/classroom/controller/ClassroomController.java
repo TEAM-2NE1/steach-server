@@ -1,14 +1,10 @@
-package com.twentyone.steachserver.domain.classroom;
+package com.twentyone.steachserver.domain.classroom.controller;
 
 import com.twentyone.steachserver.domain.classroom.dto.ClassroomResponseDto;
-import com.twentyone.steachserver.domain.classroom.dto.FinalClassroomRequestDto;
-import com.twentyone.steachserver.domain.classroom.dto.FocusTimeRequestDto;
 import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRoomsResponseDto;
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRooms;
 import com.twentyone.steachserver.domain.classroom.service.ClassroomService;
-import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizDto;
-import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
 import com.twentyone.steachserver.domain.studentQuiz.service.StudentQuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
