@@ -3,7 +3,7 @@ name: Enhancement template
 about: 새로운 기능을 요청하거나 개선 사항을 요청하는 리포트입니다
 title: "기능 및 개선사항 요청 리포트"
 labels: "\\DB9F81 Enhancement"
-assignees:
+assignees: sihyunjojo
 
 ---
 
