@@ -18,11 +18,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Optional;
 
+@Transactional(readOnly = true)
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -30,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final AuthCodeService authCodeService;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
     private final LoginCredentialRepository loginCredentialRepository;
@@ -56,9 +59,12 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
+
     @Override
+    @Transactional
     public void signUpStudent(StudentSignUpDto signupDtoStudent) {
-        //TODO auth code 확인
+        //auth Code 검증
+        authCodeService.validate(signupDtoStudent.getAuth_code());
 
         //password 인코딩
         String encodedPassword = passwordEncoder.encode(signupDtoStudent.getPassword());
@@ -69,6 +75,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public void signUpTeacher(TeacherSignUpDto signupDtoStudent, MultipartFile file) throws IOException {
         //TODO 인증파일 저장
         String fileName = FileUtil.storeFile(file, uploadDir);
