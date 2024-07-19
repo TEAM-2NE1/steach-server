@@ -17,4 +17,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Integer>
 
     @Query("select c from Curriculum  c join c.curriculumDetail where c.teacher = :teacher")
     Optional<List<Curriculum>> findAllByTeacher(Teacher teacher);
+
+    @Override
+    Optional<Curriculum> findById(Integer id);
 }

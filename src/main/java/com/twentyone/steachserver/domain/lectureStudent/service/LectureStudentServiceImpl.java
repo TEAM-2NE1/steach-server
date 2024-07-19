@@ -36,6 +36,10 @@ public class LectureStudentServiceImpl implements LectureStudentService {
         Optional<Student> student = studentService.findStudentById(studentId);
         Optional<Lecture> lecture = lectureService.findLectureById(lectureId);
 
+
+
+
+
         if (student.isEmpty()) {
             throw new IllegalArgumentException("student is not exist");
         }
