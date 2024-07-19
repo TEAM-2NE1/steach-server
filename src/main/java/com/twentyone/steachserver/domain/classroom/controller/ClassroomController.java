@@ -1,14 +1,17 @@
 package com.twentyone.steachserver.domain.classroom.controller;
 
+import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.classroom.dto.ClassroomResponseDto;
 import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRoomsResponseDto;
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRooms;
 import com.twentyone.steachserver.domain.classroom.service.ClassroomService;
+import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.studentQuiz.service.StudentQuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -34,9 +37,9 @@ public class ClassroomController {
                 .body(upComingClassRoomsResponseDto);
     }
 
-    @GetMapping("/{studentId}/{lectureId}")
-    public ResponseEntity<ClassroomResponseDto> confirmStudentByApply(@PathVariable("studentId") Integer studentId, @PathVariable("lectureId") Integer lectureId) {
-        Optional<Classroom> classroomOptional = classroomService.getClassroomByLectureAndStudent(studentId, lectureId);
+    @GetMapping("/{lectureId}")
+    public ResponseEntity<ClassroomResponseDto> confirmStudentByApply(@AuthenticationPrincipal Student student, @PathVariable("lectureId") Integer lectureId) {
+        Optional<Classroom> classroomOptional = classroomService.getClassroomByLectureAndStudent(student.getId(), lectureId);
         return classroomOptional
                 .map(classroom -> ResponseEntity.ok().
                         body(ClassroomResponseDto.createClassroomResponseDto(classroom)))
