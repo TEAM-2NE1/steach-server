@@ -18,7 +18,7 @@ public interface LectureService {
 
     LectureBeforeStartingResponseDto getLectureInformation(Integer lectureId);
 
-    LectureBeforeStartingResponseDto updateLectureInformation(Integer lectureId, UpdateLectureRequestDto lectureRequestDto);
+    Optional<LectureBeforeStartingResponseDto> updateLectureInformation(Integer lectureId, UpdateLectureRequestDto lectureRequestDto);
 
     FinalLectureInfoByTeacherDto getFinalLectureInformation(Integer lectureId);
 
