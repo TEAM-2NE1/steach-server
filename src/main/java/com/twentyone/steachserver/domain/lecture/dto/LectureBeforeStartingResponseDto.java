@@ -4,6 +4,8 @@ import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailByLectur
 import com.twentyone.steachserver.domain.curriculum.dto.SimpleCurriculumByLectureDto;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
+import com.twentyone.steachserver.domain.quiz.dto.QuizByLectureDto;
+import com.twentyone.steachserver.domain.quiz.dto.QuizResponseDto;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.member.dto.StudentByLectureDto;
 import com.twentyone.steachserver.domain.member.model.Student;
@@ -27,7 +29,7 @@ public class LectureBeforeStartingResponseDto extends LectureResponseDto{
 
     private List<StudentByLectureDto> students = new ArrayList<>();
 
-    private List<Quiz> quizzes = new ArrayList<>();
+    private List<QuizByLectureDto> quizzes = new ArrayList<>();
     private Integer numberOfQuizzes;
     private Boolean isCompleted = false;
 
@@ -38,8 +40,13 @@ public class LectureBeforeStartingResponseDto extends LectureResponseDto{
         this.curriculumInfo = curriculumInfo;
         this.curriculumDetailInfo = curriculumDetailInfo;
 
-        this.quizzes = lecture.getQuizzes();
-        this.numberOfQuizzes = lecture.getQuizzes().size();
+        List<Quiz> quizList = lecture.getQuizzes();
+        for (Quiz quiz : quizList) {
+            QuizByLectureDto quizByLectureDto = QuizByLectureDto.of(quiz);
+            this.quizzes.add(quizByLectureDto);
+        }
+
+        this.numberOfQuizzes = quizList.size();
 
         this.students = studentDtos;
     }
