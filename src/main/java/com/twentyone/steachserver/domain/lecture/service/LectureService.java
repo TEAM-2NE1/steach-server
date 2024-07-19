@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LectureService {
-    public Optional<Lecture> findLectureById(Integer id);
+    Optional<Lecture> findLectureById(Integer id);
 
     List<Lecture> upcomingLecture(int toMinute, int fromMinute);
 
