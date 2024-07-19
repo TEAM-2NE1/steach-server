@@ -11,7 +11,7 @@ import java.io.IOException;
 public interface AuthService {
     LoginResponseDto login(LoginDto loginDto);
 
-    void signUpStudent(StudentSignUpDto studentSignUpDto);
+    LoginResponseDto signUpStudent(StudentSignUpDto studentSignUpDto);
 
-    void signUpTeacher(TeacherSignUpDto teacherSignUpDto, MultipartFile file) throws IOException;
+    LoginResponseDto signUpTeacher(TeacherSignUpDto teacherSignUpDto, MultipartFile file) throws IOException;
 }

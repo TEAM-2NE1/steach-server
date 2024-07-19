@@ -62,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public void signUpStudent(StudentSignUpDto signupDtoStudent) {
+    public LoginResponseDto signUpStudent(StudentSignUpDto signupDtoStudent) {
         //auth Code 검증
         authCodeService.validate(signupDtoStudent.getAuth_code());
 
@@ -72,11 +72,17 @@ public class AuthServiceImpl implements AuthService {
         //student 저장
         Student student = Student.of(signupDtoStudent.getUsername(), encodedPassword, signupDtoStudent.getName());
         studentRepository.save(student);
+
+        String accessToken = jwtService.generateAccessToken(student);
+
+        return LoginResponseDto.builder()
+                .token(accessToken)
+                .build();
     }
 
     @Override
     @Transactional
-    public void signUpTeacher(TeacherSignUpDto signupDtoStudent, MultipartFile file) throws IOException {
+    public LoginResponseDto signUpTeacher(TeacherSignUpDto signupDtoStudent, MultipartFile file) throws IOException {
         //TODO 인증파일 저장
         String fileName = FileUtil.storeFile(file, uploadDir);
 
@@ -87,6 +93,12 @@ public class AuthServiceImpl implements AuthService {
         Teacher teacher = Teacher.of(signupDtoStudent.getUsername(), encodedPassword, signupDtoStudent.getName(),
                 signupDtoStudent.getEmail(), fileName);
         teacherRepository.save(teacher);
+
+        String accessToken = jwtService.generateAccessToken(teacher);
+
+        return LoginResponseDto.builder()
+                .token(accessToken)
+                .build();
     }
 
 
