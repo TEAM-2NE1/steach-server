@@ -1,24 +1,23 @@
 ---
-name: Bug template
-about: 버그 발생 시 사용하는 템플릿입니다
-title: "버그 리포트"
-labels: "\\U0001F41B BUG"
+name: Issue template
+about: 이슈에 대해서 작성하는 리포트입니다.
+title: "이슈 리포트"
+labels: "\\1F1F1F Issue"
 assignees: sihyunjojo
 
 ---
+# 이슈 리포트
 
-# 버그 리포트
+## 어떤 이슈인가요?
 
-## 어떤 버그인가요?
-
-> 버그에 대해 알려주세요
+> 이슈에 대해 알려주세요
 <!-- 아래 작성 -->
 
 <br><br>
 
 ## 어떤 상황에서 겪으셨나요?
 
-> 버그를 겪으신 상황을 알려주세요
+> 이슈를 겪으신 상황을 알려주세요
 <!-- 아래 작성 -->
 
 <br><br>
