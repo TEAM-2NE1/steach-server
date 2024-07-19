@@ -12,10 +12,10 @@ import java.time.LocalTime;
 @Builder
 @Entity
 @Table(name = "curriculum_details")
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-public class CurriculumDetail {
+public class CurriculumDetail extends Curriculum {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

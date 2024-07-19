@@ -7,18 +7,13 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Setter(value = AccessLevel.PRIVATE)
-public class UpComingClassRooms {
-    private List<Classroom> classrooms = new ArrayList<>();
-
-    private UpComingClassRooms() {}
-
-    private UpComingClassRooms(List<Classroom> classrooms) {
-        this.classrooms = classrooms;
+public record UpComingClassRooms(List<Classroom> classrooms) {
+    public UpComingClassRooms {
+        classrooms = new ArrayList<>(classrooms);
     }
 
     public static UpComingClassRooms createEmptyUpComingClassRooms() {
-        return new UpComingClassRooms();
+        return new UpComingClassRooms(new ArrayList<>());
     }
 
     public static UpComingClassRooms createUpComingClassRooms(List<Classroom> classrooms) {
@@ -26,6 +21,6 @@ public class UpComingClassRooms {
     }
 
     public void addClassroom(Classroom classroom) {
-        this.classrooms.add(classroom);
+        classrooms.add(classroom);
     }
 }

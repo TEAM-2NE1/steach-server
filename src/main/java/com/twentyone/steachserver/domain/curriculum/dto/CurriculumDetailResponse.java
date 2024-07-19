@@ -3,7 +3,7 @@ package com.twentyone.steachserver.domain.curriculum.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
-import com.twentyone.steachserver.domain.enums.CurriculaCategory;
+import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -45,7 +45,7 @@ public class CurriculumDetailResponse {
     private String information;
 
     @JsonProperty("category")
-    private CurriculaCategory category;
+    private CurriculumCategory category;
 
     @JsonProperty("sub_category")
     private String subCategory;
@@ -74,9 +74,7 @@ public class CurriculumDetailResponse {
     @JsonProperty("max_attendees")
     private int maxAttendees;
 
-    public static CurriculumDetailResponse fromDomain(Curriculum curriculum) {
-        CurriculumDetail curriculumDetail = curriculum.getCurriculumDetail();
-
+    public static CurriculumDetailResponse fromDomain(Curriculum curriculum, CurriculumDetail curriculumDetail) {
         // 7을 이진수 문자열로 변환
         String weekDaysBitmaskString = Integer.toBinaryString(curriculumDetail.getWeekdaysBitmask());
 

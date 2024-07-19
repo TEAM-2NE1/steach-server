@@ -1,13 +1,14 @@
 package com.twentyone.steachserver.domain.curriculum.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.twentyone.steachserver.domain.enums.CurriculaCategory;
+import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /*
@@ -43,7 +44,7 @@ public class CurriculumAddRequest {
     private String information;
 
     @JsonProperty("category")
-    private CurriculaCategory category;
+    private CurriculumCategory category;
 
     @JsonProperty("sub_category")
     private String subCategory;
@@ -52,10 +53,10 @@ public class CurriculumAddRequest {
     private String bannerImgUrl;
 
     @JsonProperty("start_date")
-    private LocalDate startDate;
+    private LocalDateTime startDate;
 
     @JsonProperty("end_date")
-    private LocalDate endDate;
+    private LocalDateTime endDate;
 
     @Schema(description = "Lecture start time in HH:mm:ss format", example = "0100101")
     @JsonProperty("weekdays_bitmask")
@@ -63,11 +64,11 @@ public class CurriculumAddRequest {
 
     @Schema(description = "Lecture start time in HH:mm:ss format", example = "15:30:00")
     @JsonProperty("lecture_start_time")
-    private LocalTime lectureStartTime;
+    private LocalDateTime lectureStartTime;
 
     @Schema(description = "Lecture end time in HH:mm:ss format", example = "15:30:00")
     @JsonProperty("lecture_end_time")
-    private LocalTime lectureEndTime;
+    private LocalDateTime lectureEndTime;
 
     @JsonProperty("max_attendees")
     private int maxAttendees;

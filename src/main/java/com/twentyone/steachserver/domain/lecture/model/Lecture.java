@@ -1,12 +1,13 @@
 package com.twentyone.steachserver.domain.lecture.model;
 
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
-import com.twentyone.steachserver.domain.lectureStudent.model.LectureStudent;
+import com.twentyone.steachserver.domain.lecture.dto.UpdateLectureRequestDto;
+import com.twentyone.steachserver.domain.quiz.model.Quiz;
+import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,10 +33,10 @@ public class Lecture {
     private LocalDateTime lectureStartTime; //시작 날짜로 해석하겠음 - 주효림
 
     @Column(name = "real_start_time")
-    private LocalTime realStartTime;
+    private LocalDateTime realStartTime;
 
     @Column(name = "real_end_time")
-    private LocalTime realEndTime;
+    private LocalDateTime realEndTime;
 
     @Column(name = "number_of_quizzes")
     private Integer numberOfQuizzes = 0;
@@ -45,9 +46,12 @@ public class Lecture {
     private Curriculum curriculum;
 
     @OneToMany(mappedBy = "lecture")
-    private List<LectureStudent> lectureStudents = new ArrayList<>();
+    private List<Quiz> quizzes = new ArrayList<>();
 
-    public static Lecture of(String title, Integer lectureOrder, LocalDateTime lectureStartTime, LocalTime realStartTime, LocalTime realEndTime, Curriculum curriculum) {
+    @OneToMany(mappedBy = "lecture")
+    private List<StudentLecture> studentLectures = new ArrayList<>();
+
+    public static Lecture of(String title, Integer lectureOrder, LocalDateTime lectureStartTime, LocalDateTime realStartTime, LocalDateTime realEndTime, Curriculum curriculum) {
         Lecture lecture = new Lecture();
         lecture.title = title;
         lecture.lectureOrder = lectureOrder;
@@ -57,5 +61,20 @@ public class Lecture {
         lecture.curriculum = curriculum;
 
         return lecture;
+    }
+
+
+    public void addQuiz(Quiz quiz) {
+        this.quizzes.add(quiz);
+    }
+
+    public void updateRealEndTimeWithNow() {
+        this.realEndTime = LocalDateTime.now();
+    }
+
+    public void update(UpdateLectureRequestDto lectureRequestDto) {
+        this.lectureOrder = Integer.valueOf(lectureRequestDto.lectureOrder());
+        this.title = lectureRequestDto.title();
+        this.lectureStartTime = lectureRequestDto.lectureStartTime();
     }
 }
