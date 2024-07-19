@@ -57,7 +57,7 @@ public class StudentLectureQueryRepository {
     public LectureBeforeStartingResponseDto getLectureBeforeStartingResponse(Integer lectureId) {
         QLecture qLecture = QLecture.lecture;
         QCurriculum qCurriculum = QCurriculum.curriculum;
-        QCurriculumDetail qCurriculumDetail = QCurriculumDetail.curriculumDetail;
+        QCurriculumDetail qCurriculumDetail = QCurriculumDetail.curriculumDetail1;
         QStudentCurriculum qStudentCurriculum = QStudentCurriculum.studentCurriculum;
 //        QStudent qStudent = QStudent.student;
 

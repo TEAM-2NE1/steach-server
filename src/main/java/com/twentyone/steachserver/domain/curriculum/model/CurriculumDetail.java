@@ -1,16 +1,21 @@
 package com.twentyone.steachserver.domain.curriculum.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
-@Getter
+@Builder
 @Entity
 @Table(name = "curriculum_details")
+@Getter
 @NoArgsConstructor
-public class CurriculumDetail {
+@AllArgsConstructor
+public class CurriculumDetail extends Curriculum {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -34,10 +39,18 @@ public class CurriculumDetail {
     @Column(name = "weekdays_bitmask", columnDefinition = "BIT(7)")
     private byte weekdaysBitmask;
 
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
-    private LocalDateTime lectureStartTime;
-    private LocalDateTime lectureCloseTime;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private LocalTime lectureStartTime;
+    private LocalTime lectureCloseTime;
 
+    @Builder.Default
+    @Column(name = "current_attendees")
+    private Integer currentAttendees = 0; //현재 수강확정인원
 
+    private Integer maxAttendees; //수강정원
+
+    public void register() {
+        this.currentAttendees++;
+    }
 }

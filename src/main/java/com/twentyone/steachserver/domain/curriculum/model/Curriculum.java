@@ -24,6 +24,9 @@ public class Curriculum {
     @Column(name = "title", length = 255)
     private String title;
 
+    @Enumerated(EnumType.STRING)
+    private CurriculumCategory category;
+
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
@@ -31,13 +34,18 @@ public class Curriculum {
     @OneToMany(mappedBy = "curriculum")
     private List<Lecture> lectures;
 
+    @OneToOne
+    @JoinColumn(name = "curriculum_detail_id")
+    private CurriculumDetail curriculumDetail;
 
     @OneToMany(mappedBy = "curriculum")
     private List<StudentCurriculum> studentCurricula;
 
-
-    @Enumerated(EnumType.STRING)
-    private CurriculumCategory category;
-
-
+    public static Curriculum of(String title, CurriculumCategory category, Teacher teacher) {
+        Curriculum curriculum = new Curriculum();
+        curriculum.title = title;
+        curriculum.category = category;
+        curriculum.teacher = teacher;
+        return curriculum;
+    }
 }

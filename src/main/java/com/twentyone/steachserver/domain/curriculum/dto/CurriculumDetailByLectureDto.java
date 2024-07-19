@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public record CurriculumDetailByLectureDto(LocalDateTime estimatedEndTime, String information, String bannerImgUrl) {
     public static CurriculumDetailByLectureDto createCurriculumDetailByLectureDto(CurriculumDetail curriculumDetail) {
         return new CurriculumDetailByLectureDto(
-                curriculumDetail.getEndDate(),
+                curriculumDetail.getEndDate().atStartOfDay(),
                 curriculumDetail.getInformation(),
                 curriculumDetail.getBannerImgUrl());
     }
