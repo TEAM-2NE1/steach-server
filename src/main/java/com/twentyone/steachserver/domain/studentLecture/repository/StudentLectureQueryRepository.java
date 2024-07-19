@@ -59,7 +59,7 @@ public class StudentLectureQueryRepository {
 
         QLecture qLecture = QLecture.lecture;
         QCurriculum qCurriculum = QCurriculum.curriculum;
-        QCurriculumDetail qCurriculumDetail = QCurriculumDetail.curriculumDetail1;
+        QCurriculumDetail qCurriculumDetail = QCurriculumDetail.curriculumDetail;
         QStudentCurriculum qStudentCurriculum = QStudentCurriculum.studentCurriculum;
 //        QStudent qStudent = QStudent.student;
 

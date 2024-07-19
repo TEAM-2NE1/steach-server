@@ -41,11 +41,16 @@ public class Curriculum {
     @OneToMany(mappedBy = "curriculum")
     private List<StudentCurriculum> studentCurricula;
 
-    public static Curriculum of(String title, CurriculumCategory category, Teacher teacher) {
+    public static Curriculum of(String title, CurriculumCategory category, Teacher teacher, CurriculumDetail curriculumDetail) {
         Curriculum curriculum = new Curriculum();
         curriculum.title = title;
         curriculum.category = category;
         curriculum.teacher = teacher;
+        curriculum.curriculumDetail = curriculumDetail;
         return curriculum;
+    }
+
+    public void register() {
+        this.curriculumDetail.register();
     }
 }
