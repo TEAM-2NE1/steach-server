@@ -15,9 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "id") // 상속받은 엔티티의 기본 키를 지정
 public class Teacher extends LoginCredential{
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Integer id;
 
     @Column(length = 30, nullable = false)
     private String name;
@@ -35,7 +32,6 @@ public class Teacher extends LoginCredential{
 
     public static Teacher of(String username, String password, String name, String email, String pathQualification) {
         Teacher teacher = new Teacher();
-//        teacher.loginCredential = loginCredential;
 
         teacher.setUsername(username);
         teacher.setPassword(password);
