@@ -1,3 +1,11 @@
+---
+name: Issue template
+about: 이슈에 대해서 작성하는 리포트입니다.
+title: "이슈 리포트"
+labels: "\\1F1F1F Issue"
+assignees: sihyunjojo
+
+---
 # 이슈 리포트
 
 ## 어떤 이슈인가요?
