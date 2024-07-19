@@ -19,12 +19,6 @@ public class StudentQuizServiceImpl implements StudentQuizService {
     private final StudentRepository studentRepository;
     private final QuizRepository quizRepository;
 
-    @Override
-    public StudentQuiz findByQuizIdAndStudentId(Integer quizId, Integer studentId) {
-        return studentQuizzesRepository.findByQuizIdAndStudentId(quizId, studentId)
-                .orElseThrow(() -> new RuntimeException("StudentQuiz not found"));
-    }
-
     @Transactional
     public StudentQuiz createStudentQuiz(Integer studentId, Integer quizId, StudentQuizRequestDto requestDto){
         Student student = studentRepository.getReferenceById(studentId);
