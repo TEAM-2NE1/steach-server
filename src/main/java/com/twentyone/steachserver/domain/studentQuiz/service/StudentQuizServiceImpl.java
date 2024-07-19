@@ -7,6 +7,7 @@ import com.twentyone.steachserver.domain.quiz.repository.QuizRepository;
 import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizRequestDto;
 import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
 import com.twentyone.steachserver.domain.studentQuiz.repository.StudentQuizRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class StudentQuizServiceImpl implements StudentQuizService {
                 .orElseThrow(() -> new RuntimeException("StudentQuiz not found"));
     }
 
+    @Transactional
     public StudentQuiz createStudentQuiz(Integer studentId, Integer quizId, StudentQuizRequestDto requestDto){
         Student student = studentRepository.getReferenceById(studentId);
         Quiz quiz = quizRepository.getReferenceById(quizId);

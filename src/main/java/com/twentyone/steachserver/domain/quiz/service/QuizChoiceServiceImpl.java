@@ -4,6 +4,7 @@ import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
 import com.twentyone.steachserver.domain.quiz.repository.QuizChoiceRepository;
 import com.twentyone.steachserver.domain.quiz.validator.QuizChoiceValidator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ public class QuizChoiceServiceImpl implements QuizChoiceService{
 
 
     @Override
+    @Transactional
     public void createQuizChoices(List<String> choices, List<String> answers, Quiz savedQuiz) throws Exception{
         quizChoiceValidator.validateQuizChoices(choices, answers);
 

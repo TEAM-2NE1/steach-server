@@ -8,6 +8,7 @@ import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizResponseDto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.repository.QuizRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class  QuizServiceImpl implements QuizService {
 
 
     @Override
+    @Transactional
     public Optional<Quiz> createQuiz(Integer lectureId, QuizRequestDto request) throws Exception {
         Lecture lecture = getLecture(lectureId);
 

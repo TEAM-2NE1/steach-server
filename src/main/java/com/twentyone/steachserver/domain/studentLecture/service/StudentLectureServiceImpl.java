@@ -9,6 +9,7 @@ import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectur
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureQueryRepository;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,7 @@ public class StudentLectureServiceImpl implements StudentLectureService {
     }
 
     @Override
+    @Transactional
     public void saveTimeFocusTime(Integer studentId, Integer lectureId, Integer focusTime) {
         Optional<StudentLecture> byStudentIdAndLectureId = findByStudentIdAndLectureId(studentId, lectureId);
 
@@ -47,6 +49,7 @@ public class StudentLectureServiceImpl implements StudentLectureService {
         // 존재하지 않으면 새로 만들어서 넣어주고
         createAndSaveStudentLecture(studentId, lectureId, focusTime);
     }
+
     private void createAndSaveStudentLecture(Integer studentId, Integer lectureId, Integer focusTime) {
         Lecture lecture = lectureRepository.getReferenceById(lectureId);
         Student student = studentRepository.getReferenceById(studentId);
@@ -55,11 +58,13 @@ public class StudentLectureServiceImpl implements StudentLectureService {
     }
 
     @Override
+    @Transactional
     public void updateStudentLectureByFinishLecture(Integer lectureId) {
         studentLectureQueryRepository.updateStudentLectureByFinishLecture(lectureId);
     }
 
     @Override
+    @Transactional
     public StudentLectureStatisticDto createLectureStudentStatistic(Integer lectureId) {
         List<StudentLecture> allStudentInfoByLectureId = findAllStudentInfoByLectureId(lectureId);
 
