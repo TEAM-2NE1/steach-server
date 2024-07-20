@@ -12,9 +12,9 @@ import java.time.LocalTime;
 @Builder
 @Entity
 @Table(name = "curriculum_details")
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 public class CurriculumDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

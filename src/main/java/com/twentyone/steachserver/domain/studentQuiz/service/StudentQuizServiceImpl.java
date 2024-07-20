@@ -1,49 +1,31 @@
 package com.twentyone.steachserver.domain.studentQuiz.service;
 
 import com.twentyone.steachserver.domain.member.model.Student;
-import com.twentyone.steachserver.domain.member.service.StudentService;
+import com.twentyone.steachserver.domain.member.repository.StudentRepository;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
-import com.twentyone.steachserver.domain.quiz.service.QuizService;
+import com.twentyone.steachserver.domain.quiz.repository.QuizRepository;
 import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizRequestDto;
 import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
 import com.twentyone.steachserver.domain.studentQuiz.repository.StudentQuizRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class StudentQuizServiceImpl implements StudentQuizService {
 
     private final StudentQuizRepository studentQuizzesRepository;
+    private final StudentRepository studentRepository;
+    private final QuizRepository quizRepository;
 
-    private final StudentService studentService;
-    private final QuizService quizService;
+    @Transactional
+    public StudentQuiz createStudentQuiz(Integer studentId, Integer quizId, StudentQuizRequestDto requestDto){
+        Student student = studentRepository.getReferenceById(studentId);
+        Quiz quiz = quizRepository.getReferenceById(quizId);
 
-    @Override
-    public StudentQuiz findByQuizIdAndStudentId(Integer quizId, Integer studentId) {
-        return studentQuizzesRepository.findByQuizIdAndStudentId(quizId, studentId)
-                .orElseThrow(() -> new RuntimeException("StudentQuiz not found"));
+        StudentQuiz newStudentQuiz = StudentQuiz.createStudentQuiz(student, quiz, requestDto);
+        studentQuizzesRepository.save(newStudentQuiz);
+        return newStudentQuiz;
     }
-
-    @Override
-    public void createStudentQuiz(Integer studentId, Integer quizId, StudentQuizRequestDto requestDto) throws IllegalAccessException {
-        StudentQuiz studentQuiz = findByQuizIdAndStudentId(quizId, studentId);
-        if (studentQuiz != null) {
-            throw new IllegalAccessException("StudentQuiz already exists");
-        }
-
-        Optional<Student> studentById = studentService.findStudentById(studentId);
-        Optional<Quiz> quiz = quizService.findQuizById(quizId);
-
-        if (studentById.isPresent() && quiz.isPresent()) {
-            StudentQuiz newStudentQuiz = StudentQuiz.createStudentQuiz(studentById.get(), quiz.get(), requestDto);
-            studentQuizzesRepository.save(newStudentQuiz);
-        }
-        else {
-            throw new RuntimeException("Student or Quiz not found");
-        }
-    }
-
 }

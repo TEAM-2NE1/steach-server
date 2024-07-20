@@ -4,14 +4,21 @@ import com.twentyone.steachserver.domain.classroom.dto.FinalClassroomRequestDto;
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRooms;
 import com.twentyone.steachserver.domain.classroom.repository.ClassroomRepository;
+import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
+import com.twentyone.steachserver.domain.lecture.repository.LectureQueryRepository;
+import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
-import com.twentyone.steachserver.domain.lectureStudent.model.LectureStudent;
-import com.twentyone.steachserver.domain.lectureStudent.service.LectureStudentService;
+import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
+import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
+import com.twentyone.steachserver.domain.studentLecture.service.StudentLectureService;
+import com.twentyone.steachserver.domain.member.model.Student;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -19,15 +26,13 @@ import java.util.Optional;
 public class ClassroomServiceImpl implements ClassroomService {
 
     private ClassroomRepository classroomRepository;
+    private LectureQueryRepository lectureQueryRepository;
 
     private LectureService lectureService;
-    private LectureStudentService lectureStudentService;
-
-    public Optional<Classroom> findByLectureId(Integer lectureId) {
-        return classroomRepository.findByLectureId(lectureId);
-    }
+    private StudentLectureService studentLectureService;
 
     @Override
+    @Transactional
     public UpComingClassRooms upcomingClassroom() {
         // 분 단위로 값 받아서 해주자. 남은 시간이 90분에서 ~ 30분 사이꺼 가져오기
 
@@ -47,27 +52,9 @@ public class ClassroomServiceImpl implements ClassroomService {
     }
 
     @Override
-    public void saveTimeFocusTime(Integer studentId, Integer lectureId, Integer focusTime) {
-        Optional<LectureStudent> lectureStudent = lectureStudentService.findByStudentIdAndLectureId(studentId, lectureId);
-
-        if (lectureStudent.isEmpty()) {
-            // 여기 안에서 회원이나 강의가 맞는게 없으면 예외 터뜨려줘야함.
-            lectureStudentService.createAndSaveLectureStudent(studentId, lectureId, focusTime);
-        }
-        else if (lectureStudent.isPresent()) {
-            // 기존 것과 더 해주는 로직
-            lectureStudent.get().sumFocusTime(focusTime);
-        }
+    public Optional<Classroom> getClassroomByLectureAndStudent(Integer lectureId, Integer studentId) {
+        return lectureQueryRepository.findClassroomByLectureAndStudent(lectureId, studentId);
     }
 
-    @Override
-    public void saveFinalClassroomState(Integer studentId, Integer lectureId, FinalClassroomRequestDto finalClassroomRequestDto) {
-        saveTimeFocusTime(studentId, lectureId, finalClassroomRequestDto.getFocusTime());
-        // 추후 추가 로직 고려
-    }
 
-    @Override
-    public Optional<Classroom> findByStudentIdAndLectureId(Integer studentId, Integer lectureId) {
-        return Optional.empty();
-    }
 }

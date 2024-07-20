@@ -29,7 +29,7 @@ public class StudentQuiz {
     private Integer score;
 
     @Column(name = "student_choice")
-    private String student_choice;
+    private String studentChoice;
 
     protected StudentQuiz() {}
 
@@ -41,10 +41,11 @@ public class StudentQuiz {
 
     public static StudentQuiz createStudentQuiz(Student student, Quiz quiz, StudentQuizRequestDto requestDto) {
         StudentQuiz studentQuiz = new StudentQuiz(student, quiz);
-        studentQuiz.score = requestDto.getScore() == null ? 0 : requestDto.getScore();
-        studentQuiz.student_choice = requestDto.getStudent_choice();
+        studentQuiz.score = requestDto.score() == null ? 0 : requestDto.score();
+        studentQuiz.studentChoice = requestDto.studentChoice();
         return studentQuiz;
     }
+
     public void updateQuiz(Quiz quiz) {
         this.quiz = quiz;
     }

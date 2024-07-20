@@ -9,4 +9,6 @@ public interface AuthCodeService {
     AuthCodeResponse createNumberOfAuthCode(AuthCodeRequest authCodeRequest);
 
     AuthCodeAuthenticateResponse authenticate(AuthCodeAuthenticateRequest request);
+
+    void validate(String authCode);
 }

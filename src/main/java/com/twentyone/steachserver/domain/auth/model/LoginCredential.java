@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.auth.model;
 
+import com.twentyone.steachserver.config.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,7 +28,7 @@ import java.util.Collection;
 @Table(name = "login_credentials")
 //@DiscriminatorColumn(name = "type") // 엔티티 타입을 식별하기 위한 컬럼을 추가합니다.
 @Inheritance(strategy = InheritanceType.JOINED) // 상속 전략 설정
-public class LoginCredential implements UserDetails {
+public class LoginCredential extends BaseTimeEntity implements UserDetails {
     private static final Logger log = LoggerFactory.getLogger(LoginCredential.class);
 
     @Id
@@ -40,22 +41,8 @@ public class LoginCredential implements UserDetails {
     @Column(length = 255, nullable = false)
     private String password;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime updatedAt = LocalDateTime.now();
-
-//    public static LoginCredential of(String username, String password) {
-//        LoginCredential loginCredential = new LoginCredential();
-//        loginCredential.username = username;
-//        loginCredential.password = password;
-//
-//        return loginCredential;
-//    }
-//    public static LoginCredential of(LoginCredential loginCredential) {
-//        LoginCredential newLoginCredential = new LoginCredential();
-//        newLoginCredential.username = loginCredential.username;
-//        newLoginCredential.password = loginCredential.password;
-//        return newLoginCredential;
-//    }
+//    private LocalDateTime createdAt = LocalDateTime.now();
+//    private LocalDateTime updatedAt = LocalDateTime.now();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

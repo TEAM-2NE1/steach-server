@@ -18,18 +18,22 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 
+@Transactional(readOnly = true)
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class AuthServiceImpl implements AuthService {
+    private static final String ID_PATTERN = "^[a-zA-Z][a-zA-Z0-9_]{1,20}$"; //20자 이하
+
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final AuthCodeService authCodeService;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
     private final LoginCredentialRepository loginCredentialRepository;
@@ -56,43 +60,64 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
-    @Override
-    public void signUpStudent(StudentSignUpDto signupDtoStudent) {
-        //TODO auth code 확인
+    @Transactional
+    public void validateUserName(String username) {
+        if (username == null || username.length() == 0) {
+            throw new IllegalArgumentException("username은 빈칸 불가능");
+        }
 
-        //password 인코딩
-        String encodedPassword = passwordEncoder.encode(signupDtoStudent.getPassword());
+        if (!username.matches(ID_PATTERN)) {
+            throw new IllegalArgumentException("유효하지 않은 username");
+        }
 
-        //student 저장
-        Student student = Student.of(signupDtoStudent.getUsername(), encodedPassword, signupDtoStudent.getName());
-        studentRepository.save(student);
+        if (loginCredentialRepository.findByUsername(username)
+                .isPresent()) {
+            throw new IllegalArgumentException("중복되는 닉네임");
+        }
     }
 
     @Override
-    public void signUpTeacher(TeacherSignUpDto signupDtoStudent, MultipartFile file) throws IOException {
+    @Transactional
+    public LoginResponseDto signUpStudent(StudentSignUpDto studentSignUpDto) {
+        validateUserName(studentSignUpDto.getUsername());
+
+        //auth Code 검증
+        authCodeService.validate(studentSignUpDto.getAuth_code());
+
+        //password 인코딩
+        String encodedPassword = passwordEncoder.encode(studentSignUpDto.getPassword());
+
+        //student 저장
+        Student student = Student.of(studentSignUpDto.getUsername(), encodedPassword, studentSignUpDto.getName());
+        studentRepository.save(student);
+
+        String accessToken = jwtService.generateAccessToken(student);
+
+        return LoginResponseDto.builder()
+                .token(accessToken)
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public LoginResponseDto signUpTeacher(TeacherSignUpDto teacherSignUpDto, MultipartFile file) throws IOException {
+        validateUserName(teacherSignUpDto.getUsername());
+
         //TODO 인증파일 저장
         String fileName = FileUtil.storeFile(file, uploadDir);
 
         //password 인코딩
-        String encodedPassword = passwordEncoder.encode(signupDtoStudent.getPassword());
+        String encodedPassword = passwordEncoder.encode(teacherSignUpDto.getPassword());
 
         //Teacher 저장
-        Teacher teacher = Teacher.of(signupDtoStudent.getUsername(), encodedPassword, signupDtoStudent.getName(),
-                signupDtoStudent.getEmail(), fileName);
+        Teacher teacher = Teacher.of(teacherSignUpDto.getUsername(), encodedPassword, teacherSignUpDto.getName(),
+                teacherSignUpDto.getEmail(), fileName);
         teacherRepository.save(teacher);
-    }
 
+        String accessToken = jwtService.generateAccessToken(teacher);
 
-    public void test(String username) {
-        Optional<LoginCredential> loginCredential = loginCredentialRepository.findByUsername(username);
-
-        if (loginCredential.isPresent()) {
-            LoginCredential credential = loginCredential.get();
-            if (credential instanceof Student member) {
-                // Student 객체를 사용하여 필요한 작업 수행
-                System.out.println("member = " + member);
-            }
-
-        }
+        return LoginResponseDto.builder()
+                .token(accessToken)
+                .build();
     }
 }
