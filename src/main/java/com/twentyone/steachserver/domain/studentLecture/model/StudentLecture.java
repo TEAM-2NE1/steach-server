@@ -19,13 +19,13 @@ public class StudentLecture {
     private BigDecimal focusRatio = BigDecimal.ZERO;
 
     // minute
-    @Column(name = "focus_time")
+    @Column(name = "focus_time", columnDefinition = "SMALLINT(6)")
     private Integer focusTime = 0;
 
-    @Column(name = "quiz_answer_count")
+    @Column(name = "quiz_answer_count", columnDefinition = "SMALLINT(6)")
     private Integer quizAnswerCount = 0;
 
-    @Column(name = "quiz_total_score")
+    @Column(name = "quiz_total_score", columnDefinition = "SMALLINT(6)")
     private Integer quizTotalScore = 0;
 
     @ManyToOne

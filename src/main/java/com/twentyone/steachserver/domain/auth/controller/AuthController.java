@@ -27,8 +27,8 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(loginResponseDto);
     }
 
-    @PostMapping(value = "/teacher/join", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<LoginResponseDto> signupTeacher(@RequestPart("teacherSignUpDto") TeacherSignUpDto teacherSignUpDto, @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+    @PostMapping(value = "/teacher/join", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<LoginResponseDto> signupTeacher(@RequestPart(value = "file", required = false) MultipartFile file, @RequestPart("teacherSignUpDto") TeacherSignUpDto teacherSignUpDto) throws IOException {
         LoginResponseDto loginResponseDto = authService.signUpTeacher(teacherSignUpDto, file);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(loginResponseDto);

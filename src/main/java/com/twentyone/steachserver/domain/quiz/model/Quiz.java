@@ -23,6 +23,7 @@ public class Quiz {
     private Integer id;
 
     // 강의의 몇번째 퀴즈인지
+    @Column(columnDefinition = "TINYINT(4)")
     private Integer quizNumber;
 
     @Column(name = "question", nullable = false)
