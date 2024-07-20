@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(name = "AuthCode", description = "AuthCode 관련 API")
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/authcode")
+@RequestMapping("/api/v1/auth-codes")
 public class AuthCodeController {
     private final AuthCodeService authCodeService;
 
