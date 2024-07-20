@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface CurriculumRepository extends JpaRepository<Curriculum, Integer> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select c from Curriculum c where c.id = :curriculaId")
+    @Query("select c from Curriculum c join c.curriculumDetail where c.id = :curriculaId")
     Optional<Curriculum> findByIdWithLock(@Param("curriculaId") Integer curriculaId);
 
     @Query("select c from Curriculum c join c.curriculumDetail where c.id = :id")

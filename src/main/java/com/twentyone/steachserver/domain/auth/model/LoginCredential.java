@@ -44,20 +44,6 @@ public class LoginCredential extends BaseTimeEntity implements UserDetails {
 //    private LocalDateTime createdAt = LocalDateTime.now();
 //    private LocalDateTime updatedAt = LocalDateTime.now();
 
-//    public static LoginCredential of(String username, String password) {
-//        LoginCredential loginCredential = new LoginCredential();
-//        loginCredential.username = username;
-//        loginCredential.password = password;
-//
-//        return loginCredential;
-//    }
-//    public static LoginCredential of(LoginCredential loginCredential) {
-//        LoginCredential newLoginCredential = new LoginCredential();
-//        newLoginCredential.username = loginCredential.username;
-//        newLoginCredential.password = loginCredential.password;
-//        return newLoginCredential;
-//    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
