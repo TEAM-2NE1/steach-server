@@ -30,7 +30,7 @@ public class CurriculumDetail {
     private String subCategory;
 
     @Lob
-    @Column(length = 100000) //mediumtext
+    @Column(length = 10000) //mediumtext
     private String information;
 
     @Column(name = "banner_img_url", length = 1000)
@@ -45,9 +45,10 @@ public class CurriculumDetail {
     private LocalTime lectureCloseTime;
 
     @Builder.Default
-    @Column(name = "current_attendees")
+    @Column(name = "current_attendees", columnDefinition = "TINYINT(4)")
     private Integer currentAttendees = 0; //현재 수강확정인원
 
+    @Column(columnDefinition = "TINYINT(4)")
     private Integer maxAttendees; //수강정원
 
     public void register() {
