@@ -14,7 +14,7 @@ import lombok.*;
 @Table(name = "admins")
 @PrimaryKeyJoinColumn(name = "id") // 상속받은 엔티티의 기본 키를 지정\
 public class Admin extends LoginCredential{
-    @Column(length = 30, nullable = false)
+    @Column(length = 30, nullable = false, unique = true)
     private String name;
 
 }

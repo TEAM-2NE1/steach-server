@@ -26,7 +26,7 @@ public class Lecture {
     @Column(length = 255, nullable = false)
     private String title = "";
 
-    @Column(name = "lecture_order", nullable = false)
+    @Column(name = "lecture_order", nullable = false, columnDefinition = "TINYINT(4)")
     private Integer lectureOrder;
 
     @Column(name = "lecture_start_time", nullable = false)
@@ -38,7 +38,7 @@ public class Lecture {
     @Column(name = "real_end_time")
     private LocalDateTime realEndTime;
 
-    @Column(name = "number_of_quizzes")
+    @Column(name = "number_of_quizzes", columnDefinition = "TINYINT(4)")
     private Integer numberOfQuizzes = 0;
 
     @ManyToOne

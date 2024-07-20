@@ -19,13 +19,20 @@ public class Teacher extends LoginCredential{
     @Column(length = 30, nullable = false)
     private String name;
 
+    @Column(unique = true)
     private String email = "";
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "SMALLINT(6)")
     private Integer volunteerTime = 0;
 
     @Column(length = 255)
     private String pathQualification;
+
+    private String briefIntroduction; //강사 소개
+
+    private String academicBackground; //주요학력
+
+    private String specialization;
 
     @OneToMany(mappedBy = "teacher")
     List<Curriculum> curriculumList;
