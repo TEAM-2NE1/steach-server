@@ -13,7 +13,7 @@ public class FinalLectureInfoByTeacherDto {
     private Integer averageQuizScore;
     private Integer averageCorrectNumber;
 
-    public FinalLectureInfoByTeacherDto(List<StudentInfoByLectureDto> studentInfoByLectureDtoList) {
+    private FinalLectureInfoByTeacherDto(List<StudentInfoByLectureDto> studentInfoByLectureDtoList) {
         this.studentInfoByLectureDtoList = studentInfoByLectureDtoList;
     }
 
