@@ -1,6 +1,6 @@
 package com.twentyone.steachserver.domain.statistic.repository;
 
-import com.twentyone.steachserver.domain.statistic.model.LectureStatisticsByAllStudent;
+import com.twentyone.steachserver.domain.statistic.model.mongo.LectureStatisticsByAllStudent;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
