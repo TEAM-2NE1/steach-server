@@ -1,6 +1,7 @@
 package com.twentyone.steachserver.domain.curriculum.service;
 
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
+import com.twentyone.steachserver.domain.curriculum.dto.CurriculaSearchCondition;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumListResponse;
@@ -8,6 +9,7 @@ import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumDetailRepository;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumRepository;
+import com.twentyone.steachserver.domain.curriculum.repository.CurriculumSearchRepository;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
@@ -32,6 +34,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CurriculumServiceImpl implements CurriculumService {
     private final CurriculumRepository curriculumRepository;
+    private final CurriculumSearchRepository curriculumSearchRepository;
     private final LectureRepository lectureRepository;
     private final CurriculumDetailRepository curriculumDetailRepository;
     private final StudentCurriculumRepository studentCurriculumRepository;
@@ -125,6 +128,13 @@ public class CurriculumServiceImpl implements CurriculumService {
         } else {
             throw new RuntimeException("에러");
         }
+    }
+
+    @Override
+    public CurriculumListResponse search(CurriculaSearchCondition condition) {
+        List<Curriculum> curriculumList = curriculumSearchRepository.search(condition);
+
+        return CurriculumListResponse.fromDomainList(curriculumList);
     }
 
     private CurriculumListResponse getTeacherCourses(Teacher teacher) {
