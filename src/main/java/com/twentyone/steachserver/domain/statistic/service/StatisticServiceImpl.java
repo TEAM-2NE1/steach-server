@@ -1,28 +1,36 @@
 package com.twentyone.steachserver.domain.statistic.service;
 
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
-import com.twentyone.steachserver.domain.curriculum.service.CurriculumService;
+import com.twentyone.steachserver.domain.curriculum.repository.CurriculumRepository;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
-import com.twentyone.steachserver.domain.lecture.service.LectureService;
+import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
-import com.twentyone.steachserver.domain.member.service.StudentService;
 import com.twentyone.steachserver.domain.statistic.dto.StatisticsDto;
-import com.twentyone.steachserver.domain.statistic.repository.StatisticRepository;
+import com.twentyone.steachserver.domain.statistic.model.GPTDataByLecture;
+import com.twentyone.steachserver.domain.statistic.model.LectureStatisticsByAllStudent;
+import com.twentyone.steachserver.domain.statistic.model.LectureStatisticsByStudent;
+import com.twentyone.steachserver.domain.statistic.repository.GPTDataByLectureMongoRepository;
+import com.twentyone.steachserver.domain.statistic.repository.LectureStatisticMongoRepository;
+import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
+import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureQueryRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class StatisticServiceImpl implements StatisticService{
-    private StatisticRepository statisticRepository;
-    private StudentService studentService;
-    private LectureService lectureService;
-    private CurriculumService curriculumService;
+    private final LectureRepository lectureRepository;
+    private final CurriculumRepository curriculumRepository;
+    private final StudentLectureQueryRepository studentLectureQueryRepository;
+
+    private final LectureStatisticMongoRepository lectureStatisticMongoRepository;
+    private final GPTDataByLectureMongoRepository gptDataByLectureMongoRepository;
 
     final int NUMBER_OF_CATEGORIES = 7;
 
@@ -40,7 +48,8 @@ public class StatisticServiceImpl implements StatisticService{
      * @return 7 numbers
      */
 
-    public StatisticsDto getStatistics(int studentId){
+    @Override
+    public StatisticsDto getStatistics(Integer studentId){
         StatisticsDto statisticsDto = new StatisticsDto();
 
         double[] listAvgFocusRatio = new double[NUMBER_OF_CATEGORIES];
@@ -94,7 +103,58 @@ public class StatisticServiceImpl implements StatisticService{
     }
 
     @Override
-    public StatisticsDto getStatistics(String studentUsername) {
-        return null;
+    @Transactional
+    public void createStatisticsByFinalLecture(Lecture lecture) {
+        List<StudentLecture> allStudentInfoByLectureId = studentLectureQueryRepository.findAllStudentInfoByLectureId(lecture.getId());
+        createLectureStatisticsByAllStudent(lecture, allStudentInfoByLectureId);
+        createGPTData(lecture, allStudentInfoByLectureId);
+    }
+
+
+    @Transactional
+    public void createLectureStatisticsByAllStudent(Lecture lecture, List<StudentLecture> allStudentInfoByLectureId) {
+        int studentCount = allStudentInfoByLectureId.size();
+
+        Integer totalQuizTotalScore = 0;
+        Integer totalQuizAnswerCount = 0;
+        Integer totalFocusTime = 0;
+        BigDecimal totalFocusRatio = BigDecimal.valueOf(0);
+
+
+        for (StudentLecture studentLecture : allStudentInfoByLectureId) {
+            totalQuizTotalScore += studentLecture.getQuizTotalScore();
+            totalQuizAnswerCount += studentLecture.getQuizAnswerCount();
+            totalFocusRatio = totalFocusRatio.add(studentLecture.getFocusRatio());
+            totalFocusTime += studentLecture.getFocusTime();
+        }
+
+        Integer averageQuizTotalScore = totalQuizTotalScore / studentCount;
+        Integer averageQuizAnswerCount = totalQuizAnswerCount / studentCount;
+        Integer averageFocusTime = totalFocusTime / studentCount;
+        BigDecimal averageFocusRatio = totalFocusRatio.divide(BigDecimal.valueOf(studentCount), 2, RoundingMode.HALF_UP);
+
+        LectureStatisticsByAllStudent lectureStatisticsByAllStudent = LectureStatisticsByAllStudent.of(lecture, averageQuizTotalScore, averageQuizAnswerCount, averageFocusTime, averageFocusRatio);
+        lectureStatisticMongoRepository.save(lectureStatisticsByAllStudent);
+    }
+
+    private void createGPTData(Lecture lecture, List<StudentLecture> allStudentInfoByLectureId) {
+        Curriculum curriculum = curriculumRepository.findByLecturesContaining(lecture)
+                .orElseThrow(() -> new IllegalStateException("curriculum not found"));
+
+        // 학생별로 데이터를 모으기 위한 맵
+        Map<Integer, LectureStatisticsByStudent> studentStatisticsMap = new HashMap<>();
+
+        for (StudentLecture studentLecture : allStudentInfoByLectureId) {
+            Student student = studentLecture.getStudent();
+
+            studentStatisticsMap
+                    .computeIfAbsent(student.getId(), k -> LectureStatisticsByStudent.of(student, lecture))
+                    .addLectureData(studentLecture);
+        }
+
+        for (LectureStatisticsByStudent lectureStatisticsByStudent : studentStatisticsMap.values()) {
+            GPTDataByLecture gptDataByLecture = GPTDataByLecture.of(lecture, curriculum, lectureStatisticsByStudent);
+            gptDataByLectureMongoRepository.save(gptDataByLecture);
+        }
     }
 }
