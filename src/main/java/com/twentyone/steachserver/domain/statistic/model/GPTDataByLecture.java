@@ -3,6 +3,7 @@ package com.twentyone.steachserver.domain.statistic.model;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
+import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.statistic.dto.temp.LectureStatisticsByStudentDto;
 import jakarta.persistence.Id;
 import lombok.Getter;
@@ -16,6 +17,8 @@ import java.math.RoundingMode;
 public class GPTDataByLecture {
     @Id
     private String id;
+    private final Integer studentId;
+    private final String studentName;
     private final Integer lectureId;
     private final String curriculumTitle;
     private final CurriculumCategory category;
@@ -26,7 +29,9 @@ public class GPTDataByLecture {
     private BigDecimal averageFocusRatio;
 
     // Constructor
-    private GPTDataByLecture(Lecture lecture, Curriculum curriculum){
+    private GPTDataByLecture(Integer studentId, String studentName, Lecture lecture, Curriculum curriculum){
+        this.studentId = studentId;
+        this.studentName = studentName;
         this.lectureId = lecture.getId();
         this.curriculumTitle = curriculum.getTitle();
         this.lectureName = lecture.getTitle();
@@ -34,7 +39,9 @@ public class GPTDataByLecture {
     }
 
     public static GPTDataByLecture of(Lecture lecture, Curriculum curriculum, LectureStatisticsByStudentDto lectureStatisticsByStudent) {
-        GPTDataByLecture gptDataByLecture = new GPTDataByLecture(lecture, curriculum);
+        Integer studentId = lectureStatisticsByStudent.studentId();
+        String studentName = lectureStatisticsByStudent.studentName();
+        GPTDataByLecture gptDataByLecture = new GPTDataByLecture(studentId, studentName, lecture, curriculum);
         calculateAverages(gptDataByLecture, lectureStatisticsByStudent);
         return gptDataByLecture;
     }
