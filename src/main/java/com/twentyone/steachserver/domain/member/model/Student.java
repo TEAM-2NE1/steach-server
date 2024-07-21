@@ -31,9 +31,10 @@ import lombok.*;
 @PrimaryKeyJoinColumn(name = "id") // 상속받은 엔티티의 기본 키를 지정
 public class Student extends LoginCredential {
 
-    @Column(length = 30, nullable = false)
+    @Column(length = 30, nullable = false, unique = true)
     private String name;
 
+    @Column(unique = true)
     private String email = "";
 
     @OneToMany(mappedBy = "student")
