@@ -6,5 +6,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface GPTDataByLectureMongoRepository extends MongoRepository<GPTDataByLecture, String> {
-    Optional<GPTDataByLecture> findByLectureId(Integer lectureId);
+    Optional<GPTDataByLecture> findByLectureIdAndStudentId(Integer lectureId, Integer studentId);
 }

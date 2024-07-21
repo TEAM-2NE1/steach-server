@@ -23,9 +23,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
+import static com.twentyone.steachserver.domain.member.model.QStudent.student;
+
 @Service
 @RequiredArgsConstructor
-public class StatisticServiceImpl implements StatisticService{
+public class StatisticServiceImpl implements StatisticService {
     private final CurriculumRepository curriculumRepository;
     private final StudentLectureQueryRepository studentLectureQueryRepository;
 
@@ -46,6 +48,7 @@ public class StatisticServiceImpl implements StatisticService{
      * 각 item은 focus ratio를 의미.
      * (예시. 국어 76, 수학 81, 공학 98)
      * 카테고리명이 아직 정해지지 않았기 때문에 숫자 7개의 숫자를 반환.
+     *
      * @return 7 numbers
      */
 
@@ -117,7 +120,7 @@ public class StatisticServiceImpl implements StatisticService{
 
         List<Integer> lectureIds = gptDataRequestDto.lectureIds();
         for (Integer lectureId : lectureIds) {
-            GPTDataByLecture statistic = getGPTStatistic(lectureId);
+            GPTDataByLecture statistic = getGPTStatistic(lectureId, student.getId());
 
 //            TODO:  로직 만들어야함 !!!!
             sb.append("\n");
@@ -129,8 +132,8 @@ public class StatisticServiceImpl implements StatisticService{
         return sb.toString();
     }
 
-    private GPTDataByLecture getGPTStatistic(Integer lectureId) {
-        return gptDataByLectureMongoRepository.findByLectureId(lectureId)
+    private GPTDataByLecture getGPTStatistic(Integer lectureId, Integer studentId) {
+        return gptDataByLectureMongoRepository.findByLectureIdAndStudentId(lectureId, studentId)
                 .orElseThrow(() -> new IllegalArgumentException("lectureId : " + lectureId + " does not exist"));
 
     }
