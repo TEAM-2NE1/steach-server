@@ -3,5 +3,8 @@ package com.twentyone.steachserver.domain.statistic.repository;
 import com.twentyone.steachserver.domain.statistic.model.GPTDataByLecture;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.Optional;
+
 public interface GPTDataByLectureMongoRepository extends MongoRepository<GPTDataByLecture, String> {
+    Optional<GPTDataByLecture> findByLectureId(Integer lectureId);
 }
