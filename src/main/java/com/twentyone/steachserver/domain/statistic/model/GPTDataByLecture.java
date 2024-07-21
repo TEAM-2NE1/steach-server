@@ -3,6 +3,7 @@ package com.twentyone.steachserver.domain.statistic.model;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
+import com.twentyone.steachserver.domain.statistic.dto.temp.LectureStatisticsByStudentDto;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,7 +16,6 @@ import java.math.RoundingMode;
 public class GPTDataByLecture {
     @Id
     private String id;
-
     private final Integer lectureId;
     private final String curriculumTitle;
     private final CurriculumCategory category;
@@ -33,18 +33,18 @@ public class GPTDataByLecture {
         this.category = curriculum.getCategory();
     }
 
-    public static GPTDataByLecture of(Lecture lecture, Curriculum curriculum, LectureStatisticsByStudent lectureStatisticsByStudent) {
+    public static GPTDataByLecture of(Lecture lecture, Curriculum curriculum, LectureStatisticsByStudentDto lectureStatisticsByStudent) {
         GPTDataByLecture gptDataByLecture = new GPTDataByLecture(lecture, curriculum);
         calculateAverages(gptDataByLecture, lectureStatisticsByStudent);
         return gptDataByLecture;
     }
 
-    public static void calculateAverages(GPTDataByLecture gptDataByLecture, LectureStatisticsByStudent lectureStatisticsByStudent) {
-        Integer quizCount = lectureStatisticsByStudent.getQuizCount();
-        Integer totalQuizTotalScore = lectureStatisticsByStudent.getTotalQuizTotalScore();
-        Integer totalQuizAnswerCount = lectureStatisticsByStudent.getTotalQuizAnswerCount();
-        Integer totalFocusTime = lectureStatisticsByStudent.getTotalFocusTime();
-        BigDecimal totalFocusRatio = lectureStatisticsByStudent.getTotalFocusRatio();
+    public static void calculateAverages(GPTDataByLecture gptDataByLecture, LectureStatisticsByStudentDto lectureStatisticsByStudent) {
+        Integer quizCount = lectureStatisticsByStudent.quizCount();
+        Integer totalQuizTotalScore = lectureStatisticsByStudent.totalQuizTotalScore();
+        Integer totalQuizAnswerCount = lectureStatisticsByStudent.totalQuizAnswerCount();
+        Integer totalFocusTime = lectureStatisticsByStudent.totalFocusTime();
+        BigDecimal totalFocusRatio = lectureStatisticsByStudent.totalFocusRatio();
 
         if (quizCount > 0) {
             gptDataByLecture.averageFocusTime = totalFocusTime / quizCount;
