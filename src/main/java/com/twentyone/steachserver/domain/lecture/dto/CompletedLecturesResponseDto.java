@@ -2,23 +2,21 @@ package com.twentyone.steachserver.domain.lecture.dto;
 
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class CompletedLecturesResponseDto extends LectureBeforeStartingResponseDto{
-    private LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto;
-    private List<StudentInfoByLectureDto> studentsQuizzesByLectureDto;
+    private final LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto;
+    private final List<StudentInfoByLectureDto> studentsQuizzesByLectureDto;
 
-    private LocalDateTime realStartTime;
-    private LocalDateTime realEndTime;
+    private final LocalDateTime realStartTime;
+    private final LocalDateTime realEndTime;
 
     private final Boolean isCompleted = true;
-
-    protected CompletedLecturesResponseDto() {
-        super();
-    };
 
     private CompletedLecturesResponseDto(LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto,
                                          List<StudentInfoByLectureDto> studentsQuizzesByLectureDto,
