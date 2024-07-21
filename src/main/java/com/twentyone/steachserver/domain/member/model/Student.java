@@ -34,6 +34,7 @@ public class Student extends LoginCredential {
     @Column(length = 30, nullable = false)
     private String name;
 
+    @Column(unique = true)
     private String email = "";
 
     @OneToMany(mappedBy = "student")

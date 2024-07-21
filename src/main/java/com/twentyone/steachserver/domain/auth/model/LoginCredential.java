@@ -35,14 +35,11 @@ public class LoginCredential extends BaseTimeEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 16, nullable = false)
+    @Column(length = 16, nullable = false, unique = true)
     private String username;
 
     @Column(length = 255, nullable = false)
     private String password;
-
-//    private LocalDateTime createdAt = LocalDateTime.now();
-//    private LocalDateTime updatedAt = LocalDateTime.now();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

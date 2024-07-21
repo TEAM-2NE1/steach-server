@@ -20,7 +20,7 @@ public class Classroom {
 
     @MapsId
     @OneToOne
-    @JoinColumn(name = "lectures_id")
+    @JoinColumn(name = "lecture_id")
     private Lecture lecture;
 
     private String sessionId;
