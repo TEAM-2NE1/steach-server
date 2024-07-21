@@ -4,15 +4,14 @@ import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumRepository;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Student;
-import com.twentyone.steachserver.domain.statistic.dto.LectureStatisticsByAllStudentDto;
-import com.twentyone.steachserver.domain.statistic.dto.StatisticsDto;
+import com.twentyone.steachserver.domain.statistic.dto.radarChartStatisticDto;
 import com.twentyone.steachserver.domain.statistic.dto.GPTDataRequestDto;
 import com.twentyone.steachserver.domain.statistic.model.GPTDataByLecture;
 import com.twentyone.steachserver.domain.statistic.model.LectureStatisticsByAllStudent;
 import com.twentyone.steachserver.domain.statistic.dto.temp.LectureStatisticsByStudentDto;
 import com.twentyone.steachserver.domain.statistic.repository.GPTDataByLectureMongoRepository;
 import com.twentyone.steachserver.domain.statistic.repository.LectureStatisticMongoRepository;
-import com.twentyone.steachserver.domain.statistic.repository.StatisticRepository;
+import com.twentyone.steachserver.domain.statistic.repository.RadarChartStatisticRepository;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureQueryRepository;
 import jakarta.transaction.Transactional;
@@ -23,15 +22,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
-import static com.twentyone.steachserver.domain.member.model.QStudent.student;
-
 @Service
 @RequiredArgsConstructor
 public class StatisticServiceImpl implements StatisticService {
     private final CurriculumRepository curriculumRepository;
     private final StudentLectureQueryRepository studentLectureQueryRepository;
 
-    private final StatisticRepository statisticRepository;
+    private final RadarChartStatisticRepository radarChartStatisticRepository;
     private final LectureStatisticMongoRepository lectureStatisticMongoRepository;
     private final GPTDataByLectureMongoRepository gptDataByLectureMongoRepository;
 
@@ -55,8 +52,8 @@ public class StatisticServiceImpl implements StatisticService {
 
 // HACK : 응급조치로 우선 하드코딩을
     @Override
-    public StatisticsDto getStatistics(Integer studentId) {
-        StatisticsDto statisticsDto = new StatisticsDto();
+    public radarChartStatisticDto getStatistics(Integer studentId) {
+        radarChartStatisticDto statisticsDto = new radarChartStatisticDto();
 
         double[] listAvgFocusRatio = new double[NUMBER_OF_CATEGORIES];
         int[] listLectureMinutes = new int[NUMBER_OF_CATEGORIES];
@@ -106,7 +103,7 @@ public class StatisticServiceImpl implements StatisticService {
         statisticsDto.setItem7(retStatistics[6]);
 
         // 저장 부탁드릴게요!
-//        statisticRepository.save(statistics);
+//        radarChartStatisticRepository.save(statistics);
 
         return statisticsDto;
     }
@@ -139,10 +136,9 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public LectureStatisticsByAllStudentDto getLectureStatisticsByAllStudent(Integer lectureId) {
-        return lectureStatisticMongoRepository.findByLectureId(lectureId)
-                .map(LectureStatisticsByAllStudentDto::of)
-                .orElseThrow(() -> new IllegalArgumentException("lectureId : " + lectureId + " does not exist"));
+    public Optional<LectureStatisticsByAllStudent> getLectureStatisticsByAllStudent(Integer lectureId) {
+        return lectureStatisticMongoRepository.findByLectureId(lectureId);
+
     }
 
     @Override
