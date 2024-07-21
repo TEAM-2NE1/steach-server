@@ -17,7 +17,7 @@ import lombok.Setter;
 
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PUBLIC)
-public class StatisticsDto {
+public class radarChartStatisticDto {
     private Integer item1;
     private Integer item2;
     private Integer item3;

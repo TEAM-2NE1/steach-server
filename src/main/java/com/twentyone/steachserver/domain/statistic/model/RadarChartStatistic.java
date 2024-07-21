@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Getter(value = AccessLevel.PRIVATE)
 @Setter(value = AccessLevel.PRIVATE)
-public class Statistic {
+public class RadarChartStatistic {
 
     @Id
     @Column(name = "student_id")
