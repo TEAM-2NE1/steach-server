@@ -24,19 +24,16 @@ public class QuizController {
     @Operation(summary = "퀴즈 생성 ", description = "성공시 200 반환, 실패시 500 INTERNAL_SERVER_ERROR 반환")
     @PostMapping("/{lectureId}")
     public ResponseEntity<QuizResponseDto> createQuiz(@PathVariable("lectureId")Integer lectureId, @RequestBody QuizRequestDto request) throws Exception {
-        Optional<Quiz> quiz = quizService.createQuiz(lectureId,request);
-        if (quiz.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(QuizResponseDto.createQuizResponseDto(lectureId, request));
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return quizService.createQuiz(lectureId, request)
+                .map(quiz -> ResponseEntity.status(HttpStatus.CREATED).body(QuizResponseDto.createQuizResponseDto(lectureId, request)))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
     @Operation(summary = "퀴즈 조회 ", description = "성공시 200 반환, 실패시 204 NOT_FOUND 반환")
     @GetMapping("/{quizId}")
     public ResponseEntity<QuizResponseDto> getQuizResponseDto(@PathVariable("quizId") Integer quizId) {
-        Optional<QuizResponseDto> quizOptional = quizService.getQuizResponseDto(quizId);
-        return quizOptional.map(ResponseEntity::ok)
+        return quizService.getQuizResponseDto(quizId)
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 }
