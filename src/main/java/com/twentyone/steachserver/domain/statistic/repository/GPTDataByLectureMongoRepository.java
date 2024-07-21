@@ -1,6 +1,6 @@
 package com.twentyone.steachserver.domain.statistic.repository;
 
-import com.twentyone.steachserver.domain.statistic.model.GPTDataByLecture;
+import com.twentyone.steachserver.domain.statistic.model.mongoDB.GPTDataByLecture;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

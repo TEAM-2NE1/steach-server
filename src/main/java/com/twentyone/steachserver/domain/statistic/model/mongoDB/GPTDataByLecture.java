@@ -1,9 +1,8 @@
-package com.twentyone.steachserver.domain.statistic.model;
+package com.twentyone.steachserver.domain.statistic.model.mongoDB;
 
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
-import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.statistic.dto.temp.LectureStatisticsByStudentDto;
 import jakarta.persistence.Id;
 import lombok.Getter;

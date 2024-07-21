@@ -1,8 +1,6 @@
-package com.twentyone.steachserver.domain.statistic.model;
+package com.twentyone.steachserver.domain.statistic.model.mongoDB;
 
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
-import com.twentyone.steachserver.domain.member.model.Student;
-import com.twentyone.steachserver.domain.studentLecture.dto.LectureStatisticsByAllStudentDto;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import org.bson.types.ObjectId;

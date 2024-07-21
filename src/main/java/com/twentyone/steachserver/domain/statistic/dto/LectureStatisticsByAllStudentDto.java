@@ -1,6 +1,6 @@
 package com.twentyone.steachserver.domain.statistic.dto;
 
-import com.twentyone.steachserver.domain.statistic.model.LectureStatisticsByAllStudent;
+import com.twentyone.steachserver.domain.statistic.model.mongoDB.LectureStatisticsByAllStudent;
 
 import java.math.BigDecimal;
 
