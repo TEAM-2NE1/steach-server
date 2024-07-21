@@ -1,7 +1,7 @@
 package com.twentyone.steachserver.domain.lecture.model;
 
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
-import com.twentyone.steachserver.domain.lecture.dto.UpdateLectureRequestDto;
+import com.twentyone.steachserver.domain.lecture.dto.update.UpdateLectureRequestDto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import jakarta.persistence.*;
@@ -74,7 +74,7 @@ public class Lecture {
 
     public void update(UpdateLectureRequestDto lectureRequestDto) {
         this.lectureOrder = Integer.valueOf(lectureRequestDto.lectureOrder());
-        this.title = lectureRequestDto.title();
+        this.title = lectureRequestDto.lectureTitle();
         this.lectureStartTime = lectureRequestDto.lectureStartTime();
     }
 }
