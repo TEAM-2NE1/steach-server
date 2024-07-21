@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.statistic.model.mongoDB;
+package com.twentyone.steachserver.domain.statistic.model.mongo;
 
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;

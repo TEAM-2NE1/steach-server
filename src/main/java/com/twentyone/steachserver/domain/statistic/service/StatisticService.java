@@ -4,7 +4,7 @@ import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.statistic.dto.radarChartStatisticDto;
 import com.twentyone.steachserver.domain.statistic.dto.GPTDataRequestDto;
-import com.twentyone.steachserver.domain.statistic.model.mongoDB.LectureStatisticsByAllStudent;
+import com.twentyone.steachserver.domain.statistic.model.mongo.LectureStatisticsByAllStudent;
 
 import java.util.Optional;
 
