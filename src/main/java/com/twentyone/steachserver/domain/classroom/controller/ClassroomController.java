@@ -44,6 +44,6 @@ public class ClassroomController {
         return classroomOptional
                 .map(classroom -> ResponseEntity.ok().
                         body(ClassroomResponseDto.createClassroomResponseDto(classroom)))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.FORBIDDEN).build());
     }
 }

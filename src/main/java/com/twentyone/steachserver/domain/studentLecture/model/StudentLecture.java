@@ -10,7 +10,7 @@ import java.math.RoundingMode;
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "lectures_students")
+@Table(name = "students_lectures")
 public class StudentLecture {
     @EmbeddedId
     private StudentLectureId id;

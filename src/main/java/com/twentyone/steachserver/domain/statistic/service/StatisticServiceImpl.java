@@ -168,10 +168,18 @@ public class StatisticServiceImpl implements StatisticService {
             totalFocusTime += studentLecture.getFocusTime();
         }
 
-        Integer averageQuizTotalScore = totalQuizTotalScore / studentCount;
-        Integer averageQuizAnswerCount = totalQuizAnswerCount / studentCount;
-        Integer averageFocusTime = totalFocusTime / studentCount;
-        BigDecimal averageFocusRatio = totalFocusRatio.divide(BigDecimal.valueOf(studentCount), 2, RoundingMode.HALF_UP);
+        Integer averageQuizTotalScore = 0;
+        Integer averageQuizAnswerCount = 0;
+        Integer averageFocusTime = 0;
+        BigDecimal averageFocusRatio = BigDecimal.ZERO;
+
+        //FIXME 0으로 나눠지지 않게 처리했는데 확인 부탁드립니다.
+        if (studentCount != 0) {
+            averageQuizTotalScore = totalQuizTotalScore / studentCount;
+            averageQuizAnswerCount = totalQuizAnswerCount / studentCount;
+            averageFocusTime = totalFocusTime / studentCount;
+            averageFocusRatio = totalFocusRatio.divide(BigDecimal.valueOf(studentCount), 2, RoundingMode.HALF_UP);
+        }
 
         LectureStatisticsByAllStudent lectureStatisticsByAllStudent = LectureStatisticsByAllStudent.of(lecture, averageQuizTotalScore, averageQuizAnswerCount, averageFocusTime, averageFocusRatio);
         lectureStatisticMongoRepository.save(lectureStatisticsByAllStudent);

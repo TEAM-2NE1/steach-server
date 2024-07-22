@@ -1,35 +1,28 @@
 package com.twentyone.steachserver.domain.classroom.service;
 
-import com.twentyone.steachserver.domain.classroom.dto.FinalClassroomRequestDto;
-import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRooms;
+import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.classroom.repository.ClassroomRepository;
-import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.repository.LectureQueryRepository;
-import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
-import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
-import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.service.StudentLectureService;
-import com.twentyone.steachserver.domain.member.model.Student;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ClassroomServiceImpl implements ClassroomService {
 
-    private ClassroomRepository classroomRepository;
-    private LectureQueryRepository lectureQueryRepository;
+    private final ClassroomRepository classroomRepository;
+    private final LectureQueryRepository lectureQueryRepository;
 
-    private LectureService lectureService;
-    private StudentLectureService studentLectureService;
+    private final LectureService lectureService;
+    private final StudentLectureService studentLectureService;
 
     @Override
     @Transactional
