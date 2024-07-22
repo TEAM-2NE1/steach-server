@@ -2,6 +2,7 @@ package com.twentyone.steachserver.domain.lecture.service;
 
 
 
+import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.lecture.dto.FinalLectureInfoByTeacherDto;
 import com.twentyone.steachserver.domain.lecture.dto.LectureBeforeStartingResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.update.UpdateLectureRequestDto;
@@ -20,4 +21,6 @@ public interface LectureService {
     Optional<LectureBeforeStartingResponseDto> updateLectureInformation(Integer lectureId, UpdateLectureRequestDto lectureRequestDto);
 
     Lecture updateRealEndTime(Integer lectureId);
+
+    Optional<Classroom> getClassroomByLectureAndStudent(Integer studentId, Integer lectureId);
 }

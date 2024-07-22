@@ -143,8 +143,7 @@ public class LectureQueryRepository {
                 .fetch();
 
         for (StudentCurriculum studentCurriculum : studentCurricula) {
-            Student student = studentCurriculum.getStudent();
-            Integer id = student.getId();
+            Integer id = studentCurriculum.getStudent().getId();
             if (Objects.equals(id, studentId)) {
                 Classroom classroom = query.selectFrom(qClassroom)
                         .where(qClassroom.lecture.id.eq(lectureId))

@@ -1,18 +1,24 @@
 package com.twentyone.steachserver.domain.lecture.controller;
 
+import com.twentyone.steachserver.domain.classroom.dto.ClassroomResponseDto;
+import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.lecture.dto.CompletedLecturesResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.FinalLectureInfoByTeacherDto;
 import com.twentyone.steachserver.domain.lecture.dto.LectureBeforeStartingResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.update.UpdateLectureRequestDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
+import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.statistic.service.StatisticService;
 import com.twentyone.steachserver.domain.studentLecture.service.StudentLectureService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/lectures")
@@ -47,11 +53,22 @@ public class LectureController {
     }
 
 
-    @Operation(summary = "강의 수정 ", description = "성공시 200 반환, 실패시 204 NO_CONTENT 반환.")
+    @Operation(summary = "강의 수정!", description = "성공시 200 반환, 실패시 204 NO_CONTENT 반환.")
     @PatchMapping("/{lectureId}")
     public ResponseEntity<?> updateLectureInformation(@PathVariable("lectureId") Integer lectureId, @RequestBody UpdateLectureRequestDto updatelectureRequestDto) {
         return lectureService.updateLectureInformation(lectureId, updatelectureRequestDto)
                 .map(lectureBeforeStartingResponseDto ->  ResponseEntity.ok().body(lectureBeforeStartingResponseDto))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
     }
+
+    @Operation(summary = "강의를 들을 학생인지 확인!", description = "권한이 있으면 200을 반환, 없으면 403")
+    @GetMapping("/check/{lectureId}")
+    public ResponseEntity<ClassroomResponseDto> confirmStudentByApply(@AuthenticationPrincipal Student student, @PathVariable("lectureId") Integer lectureId) {
+        Optional<Classroom> classroomOptional = lectureService.getClassroomByLectureAndStudent(student.getId(), lectureId);
+        return classroomOptional
+                .map(classroom -> ResponseEntity.ok().
+                        body(ClassroomResponseDto.createClassroomResponseDto(classroom)))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.FORBIDDEN).build());
+    }
+
 }
