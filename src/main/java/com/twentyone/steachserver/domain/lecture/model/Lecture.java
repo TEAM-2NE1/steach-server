@@ -29,6 +29,7 @@ public class Lecture {
     @Column(name = "lecture_order", nullable = false, columnDefinition = "TINYINT(4)")
     private Integer lectureOrder;
 
+    // 강의가 언제 시작하는 날짜와 커리큘럼의 startTime을 합한 값.
     @Column(name = "lecture_start_date", nullable = false)
     private LocalDateTime lectureStartDate; //시작 날짜로 해석하겠음 - 주효림
 
