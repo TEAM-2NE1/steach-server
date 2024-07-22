@@ -66,6 +66,7 @@ public class Lecture {
 
     public void addQuiz(Quiz quiz) {
         this.quizzes.add(quiz);
+        this.numberOfQuizzes++;
     }
 
     public void updateRealEndTimeWithNow() {
