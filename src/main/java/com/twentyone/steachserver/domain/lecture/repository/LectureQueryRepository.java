@@ -1,24 +1,32 @@
 package com.twentyone.steachserver.domain.lecture.repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.*;
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.classroom.model.QClassroom;
+import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailByLectureDto;
+import com.twentyone.steachserver.domain.curriculum.dto.SimpleCurriculumByLectureDto;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
+import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
 import com.twentyone.steachserver.domain.curriculum.model.QCurriculum;
+import com.twentyone.steachserver.domain.curriculum.model.QCurriculumDetail;
 import com.twentyone.steachserver.domain.lecture.dto.FinalLectureInfoByTeacherDto;
 import com.twentyone.steachserver.domain.lecture.dto.LectureBeforeStartingResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.StudentInfoByLectureDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.model.QLecture;
+import com.twentyone.steachserver.domain.member.dto.StudentByLectureDto;
 import com.twentyone.steachserver.domain.member.model.QStudent;
 import com.twentyone.steachserver.domain.member.model.Student;
+import com.twentyone.steachserver.domain.quiz.model.QQuiz;
 import com.twentyone.steachserver.domain.studentCurriculum.model.QStudentCurriculum;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
 import com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture;
 import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizDto;
 import com.twentyone.steachserver.domain.studentQuiz.model.QStudentQuiz;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,6 +35,7 @@ import java.util.stream.Collectors;
 
 import static com.twentyone.steachserver.domain.classroom.model.QClassroom.classroom;
 import static com.twentyone.steachserver.domain.curriculum.model.QCurriculum.curriculum;
+import static com.twentyone.steachserver.domain.curriculum.model.QCurriculumDetail.curriculumDetail;
 import static com.twentyone.steachserver.domain.lecture.model.QLecture.lecture;
 import static com.twentyone.steachserver.domain.member.model.QStudent.student;
 import static com.twentyone.steachserver.domain.studentCurriculum.model.QStudentCurriculum.studentCurriculum;
@@ -40,24 +49,54 @@ public class LectureQueryRepository {
     }
 
 
-    public LectureBeforeStartingResponseDto findLectureDetailsByLectureId(Integer lectureId) {
-        // 강의 정보 조회
-        return query
-                .select(Projections.constructor(
-                        LectureBeforeStartingResponseDto.class,
-                        lecture.lectureOrder,
-                        curriculum.title,
-                        lecture.title,
-                        lecture.lectureStartDate
-                ))
-                .from(lecture)
-                .join(lecture.curriculum, curriculum)
-                .where(lecture.id.eq(lectureId))
+    @Transactional
+    public LectureBeforeStartingResponseDto getLectureBeforeStartingResponse(Integer lectureId) {
+        QLecture qLecture = lecture;
+        QCurriculum qCurriculum = curriculum;
+        QCurriculumDetail qCurriculumDetail = curriculumDetail;
+        QStudentCurriculum qStudentCurriculum = studentCurriculum;
+        QStudent qStudent = student;
+
+        // 필요한 데이터를 한 번의 쿼리로 가져오기
+        Tuple result = query
+                .select(
+                        qLecture,
+                        qCurriculum,
+                        qCurriculumDetail
+                )
+                .from(qLecture)
+                .leftJoin(qLecture.curriculum, qCurriculum)
+                .leftJoin(qCurriculum.curriculumDetail, qCurriculumDetail)
+                .where(qLecture.id.eq(lectureId))
                 .fetchOne();
+
+        if (result == null) {
+            throw new IllegalStateException("Lecture not found");
+        }
+
+        Lecture lecture = result.get(qLecture);
+        Curriculum curriculum = result.get(qCurriculum);
+        CurriculumDetail curriculumDetail = result.get(qCurriculumDetail);
+
+        SimpleCurriculumByLectureDto simpleCurriculumByLectureDto = SimpleCurriculumByLectureDto.createSimpleCurriculumByLectureDto(Objects.requireNonNull(curriculum));
+        CurriculumDetailByLectureDto curriculumDetailByLectureDto = CurriculumDetailByLectureDto.createCurriculumDetailByLectureDto(Objects.requireNonNull(curriculumDetail));
+
+        List<StudentByLectureDto> studentByLectureDtos = query
+                .select(Projections.constructor(
+                        StudentByLectureDto.class,
+                        qStudent.name,
+                        qStudent.email
+                ))
+                .from(qStudent)
+                .join(qStudent.studentCurricula, qStudentCurriculum)
+                .where(qStudentCurriculum.curriculum.id.eq(curriculum.getId()))
+                .fetch();
+
+        return LectureBeforeStartingResponseDto.of(lecture, simpleCurriculumByLectureDto, curriculumDetailByLectureDto, studentByLectureDtos);
     }
 
+
     public FinalLectureInfoByTeacherDto getFinalLectureInfoByTeacher(Integer lectureId) {
-        QLecture lecture = QLecture.lecture;
         QStudentLecture studentLecture = QStudentLecture.studentLecture;
         QStudentQuiz studentQuiz = QStudentQuiz.studentQuiz;
 
@@ -71,7 +110,7 @@ public class LectureQueryRepository {
                 // studentInfoLectureDto
                 .map(ls -> new StudentInfoByLectureDto(
                         ls.getStudent().getStudentQuizzes().stream()
-                                .map(sq -> new StudentQuizDto(sq.getScore(), sq.getStudentChoice(),sq.getStudent().getName()))
+                                .map(sq -> new StudentQuizDto(sq.getScore(), sq.getStudentChoice(), sq.getStudent().getName()))
                                 .collect(Collectors.toList()),
                         ls.getFocusRatio(),
                         ls.getFocusTime()
@@ -84,9 +123,7 @@ public class LectureQueryRepository {
 
     public Optional<Classroom> findClassroomByLectureAndStudent(Integer lectureId, Integer studentId) {
         QLecture qLecture = lecture;
-        QCurriculum qCurriculum = curriculum;
         QStudentCurriculum qStudentCurriculum = studentCurriculum;
-        QStudent qStudent = student;
         QClassroom qClassroom = classroom;
 
         // Lecture를 가져옴
