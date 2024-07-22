@@ -34,7 +34,6 @@ public class LectureController {
         }
 
         return ResponseEntity.ok().body(lectureResponseDto);
-
     }
 
     @Operation(summary = "선생님이 강의를 끝내고 관련 정보 처리 및 최종정보 반환 ", description = "무조건 200을 반환")
@@ -42,18 +41,17 @@ public class LectureController {
     public ResponseEntity<FinalLectureInfoByTeacherDto> getFinalLectureInformation(@PathVariable("lectureId") Integer lectureId) {
         Lecture updateLecture = lectureService.updateRealEndTime(lectureId);
         studentLectureService.updateStudentLectureByFinishLecture(lectureId);
-
         statisticService.createStatisticsByFinalLecture(updateLecture);
         FinalLectureInfoByTeacherDto finalLectureInfoByTeacherDto = lectureService.getFinalLectureInformation(lectureId);
         return ResponseEntity.ok().body(finalLectureInfoByTeacherDto);
     }
 
 
-    @Operation(summary = "강의 수정 ", description = "성공사 200 반환, 실패시 204 NO_CONTENT 반환")
+    @Operation(summary = "강의 수정 ", description = "성공시 200 반환, 실패시 204 NO_CONTENT 반환.")
     @PatchMapping("/{lectureId}")
     public ResponseEntity<?> updateLectureInformation(@PathVariable("lectureId") Integer lectureId, @RequestBody UpdateLectureRequestDto updatelectureRequestDto) {
         return lectureService.updateLectureInformation(lectureId, updatelectureRequestDto)
-                .map(ResponseEntity::ok)
+                .map(lectureBeforeStartingResponseDto ->  ResponseEntity.ok().body(lectureBeforeStartingResponseDto))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
     }
 }
