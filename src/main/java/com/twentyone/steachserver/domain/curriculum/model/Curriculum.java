@@ -1,7 +1,7 @@
 package com.twentyone.steachserver.domain.curriculum.model;
 
+import com.twentyone.steachserver.config.domain.BaseTimeEntity;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
-import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
@@ -16,7 +16,8 @@ import java.util.List;
 @Table(name = "curricula")
 @NoArgsConstructor
 @Getter(value = AccessLevel.PUBLIC)
-public class Curriculum {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Curriculum extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -27,14 +28,14 @@ public class Curriculum {
     @Enumerated(EnumType.STRING)
     private CurriculumCategory category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
     @OneToMany(mappedBy = "curriculum")
     private List<Lecture> lectures;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "curriculum_detail_id")
     private CurriculumDetail curriculumDetail;
 

@@ -49,7 +49,7 @@ public class LectureQueryRepository {
                         lecture.lectureOrder,
                         curriculum.title,
                         lecture.title,
-                        lecture.lectureStartTime
+                        lecture.lectureStartDate
                 ))
                 .from(lecture)
                 .join(lecture.curriculum, curriculum)
