@@ -29,7 +29,7 @@ public class CurriculumSearchRepository {
         JPAQuery<Curriculum> query = queryFactory
                 .select(curriculum)
                 .from(curriculum)
-                .join(curriculum.curriculumDetail, curriculumDetail)
+                .join(curriculum.curriculumDetail, curriculumDetail).fetchJoin()
                 .where(
                         curriculumCategoryEq(condition.getCurriculumCategory()),
                         onlyAvailableEq(condition.getOnlyAvailable()),

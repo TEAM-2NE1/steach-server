@@ -41,7 +41,7 @@ public class Lecture {
     @Column(name = "number_of_quizzes", columnDefinition = "TINYINT(4)")
     private Integer numberOfQuizzes = 0;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "curriculum_id", nullable = false, referencedColumnName = "id")
     private Curriculum curriculum;
 

@@ -15,12 +15,12 @@ public class StudentQuiz {
     @EmbeddedId
     private StudentQuizId id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("studentId") //  엔터티의 외래 키 필드를 포함된 기본 키 클래스의 해당 필드에 매핑합니다.
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("quizId")
     @JoinColumn(name = "quiz_id", referencedColumnName = "id")
     private Quiz quiz;

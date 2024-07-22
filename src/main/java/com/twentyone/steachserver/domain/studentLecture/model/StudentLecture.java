@@ -28,12 +28,12 @@ public class StudentLecture {
     @Column(name = "quiz_total_score", columnDefinition = "SMALLINT(6)")
     private Integer quizTotalScore = 0;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("studentId") //  엔터티의 외래 키 필드를 포함된 기본 키 클래스의 해당 필드에 매핑합니다.
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("lectureId") //  엔터티의 외래 키 필드를 포함된 기본 키 클래스의 해당 필드에 매핑합니다.
     @JoinColumn(name = "lecture_id", referencedColumnName = "id")
     private Lecture lecture;

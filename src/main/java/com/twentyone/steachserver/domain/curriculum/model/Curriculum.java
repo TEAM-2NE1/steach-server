@@ -28,14 +28,14 @@ public class Curriculum extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private CurriculumCategory category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
     @OneToMany(mappedBy = "curriculum")
     private List<Lecture> lectures;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "curriculum_detail_id")
     private CurriculumDetail curriculumDetail;
 
