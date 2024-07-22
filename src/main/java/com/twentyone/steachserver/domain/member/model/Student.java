@@ -47,10 +47,11 @@ public class Student extends LoginCredential {
     @OneToMany(mappedBy = "student")
     private List<StudentLecture> studentLectures = new ArrayList<>();
 
-    public static Student of(String username, String password, String name) {
+    public static Student of(String username, String password, String name, String email) {
         Student student = new Student();
         student.setUsername(username);
         student.setPassword(password);
+        student.setEmail(email);
         student.name = name;
 
         return student;

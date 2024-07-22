@@ -24,4 +24,12 @@ public class AuthCode {
 
         return newAuthCode;
     }
+
+    public void register() {
+        if (isRegistered) {
+            throw new RuntimeException("에러");
+        }
+
+        this.isRegistered = true;
+    }
 }

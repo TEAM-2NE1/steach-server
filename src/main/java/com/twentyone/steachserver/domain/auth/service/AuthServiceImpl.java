@@ -82,13 +82,13 @@ public class AuthServiceImpl implements AuthService {
         validateUserName(studentSignUpDto.getUsername());
 
         //auth Code 검증
-        authCodeService.validate(studentSignUpDto.getAuth_code());
+        authCodeService.validateAndApply(studentSignUpDto.getAuth_code());
 
         //password 인코딩
         String encodedPassword = passwordEncoder.encode(studentSignUpDto.getPassword());
 
         //student 저장
-        Student student = Student.of(studentSignUpDto.getUsername(), encodedPassword, studentSignUpDto.getName());
+        Student student = Student.of(studentSignUpDto.getUsername(), encodedPassword, studentSignUpDto.getName(), studentSignUpDto.getEmail());
         studentRepository.save(student);
 
         String accessToken = jwtService.generateAccessToken(student);
