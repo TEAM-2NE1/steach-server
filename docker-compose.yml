@@ -1,0 +1,7 @@
+services:
+    app:
+      image: steach-server
+      container_name: steach-server
+      build: .
+      ports:
+          - 8000:8000
