@@ -51,17 +51,15 @@ public class Lecture {
     @OneToMany(mappedBy = "lecture")
     private List<StudentLecture> studentLectures = new ArrayList<>();
 
-    public static Lecture of(String title, Integer lectureOrder, LocalDateTime lectureStartTime, LocalDateTime realStartTime, LocalDateTime realEndTime, Curriculum curriculum) {
+    public static Lecture of(String title, Integer lectureOrder, LocalDateTime lectureStartTime, Curriculum curriculum) {
         Lecture lecture = new Lecture();
         lecture.title = title;
         lecture.lectureOrder = lectureOrder;
         lecture.lectureStartDate = lectureStartTime;
-        lecture.realStartTime = realStartTime;
-        lecture.realEndTime = realEndTime;
         lecture.curriculum = curriculum;
-
         return lecture;
     }
+
 
 
     public void addQuiz(Quiz quiz) {
