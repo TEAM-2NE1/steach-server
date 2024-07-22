@@ -1,10 +1,8 @@
 package com.twentyone.steachserver.domain.member.service;
 
+import com.twentyone.steachserver.domain.member.dto.StudentInfoResponse;
 import com.twentyone.steachserver.domain.member.model.Student;
 
-import java.util.Optional;
-
 public interface StudentService {
-    public Optional<Student> findStudentById(Integer id);
-    public Optional<Student> findStudentByUsername(String username);
+    StudentInfoResponse getInfo(Student student);
 }
