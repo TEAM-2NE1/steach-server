@@ -103,8 +103,11 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponseDto signUpTeacher(TeacherSignUpDto teacherSignUpDto, MultipartFile file) throws IOException {
         validateUserName(teacherSignUpDto.getUsername());
 
-        //TODO 인증파일 저장
-        String fileName = FileUtil.storeFile(file, uploadDir);
+        //인증파일 저장
+        String fileName = null;
+        if (file != null) {
+            fileName = FileUtil.storeFile(file, uploadDir);
+        }
 
         //password 인코딩
         String encodedPassword = passwordEncoder.encode(teacherSignUpDto.getPassword());
