@@ -1,7 +1,19 @@
 package com.twentyone.steachserver.domain.statistic.service;
 
-import com.twentyone.steachserver.domain.statistic.dto.StatisticsDto;
+import com.twentyone.steachserver.domain.lecture.model.Lecture;
+import com.twentyone.steachserver.domain.member.model.Student;
+import com.twentyone.steachserver.domain.statistic.dto.radarChartStatisticDto;
+import com.twentyone.steachserver.domain.statistic.dto.GPTDataRequestDto;
+import com.twentyone.steachserver.domain.statistic.model.mongo.LectureStatisticsByAllStudent;
+
+import java.util.Optional;
 
 public interface StatisticService {
-    StatisticsDto getStatistics(String studentUsername);
+    radarChartStatisticDto getStatistics(Integer studentId);
+
+    String createGPTString(Student student, GPTDataRequestDto gptDataRequestDto);
+
+    Optional<LectureStatisticsByAllStudent> getLectureStatisticsByAllStudent(Integer lectureId);
+
+    void createStatisticsByFinalLecture(Lecture lecture);
 }

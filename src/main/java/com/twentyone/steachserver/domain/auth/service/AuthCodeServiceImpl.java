@@ -7,13 +7,14 @@ import com.twentyone.steachserver.domain.auth.dto.AuthCodeResponse;
 import com.twentyone.steachserver.domain.auth.model.AuthCode;
 import com.twentyone.steachserver.domain.auth.repository.AuthCodeRepository;
 import com.twentyone.steachserver.domain.auth.util.RandomStringGenerator;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class AuthCodeServiceImpl implements AuthCodeService {
@@ -55,6 +56,12 @@ public class AuthCodeServiceImpl implements AuthCodeService {
         return AuthCodeAuthenticateResponse.builder()
                 .authentication(isValid)
                 .build();
+    }
+
+    @Override
+    public void validate(String authCode) {
+        authCodeRepository.findById(authCode)
+                .orElseThrow(() -> new RuntimeException("찾을 수 없는 코드"));
     }
 
     private void validAuthCode(String authCodeWord) {

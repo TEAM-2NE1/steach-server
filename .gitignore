@@ -38,3 +38,10 @@ out/
 
 *.yml
 *.properties
+
+### querydsl ###
+**/src/main/generated/
+
+
+### docker-compost ###
+!docker-compose.yml

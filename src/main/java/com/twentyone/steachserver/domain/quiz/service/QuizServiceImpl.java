@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.quiz.service;
 
+import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.quiz.validator.QuizChoiceValidator;
 import com.twentyone.steachserver.domain.quiz.validator.QuizValidator;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
@@ -21,9 +22,9 @@ import java.util.Optional;
 public class  QuizServiceImpl implements QuizService {
 
     private final QuizRepository quizRepository;
+    private final LectureRepository lectureRepository;
 
     private final QuizChoiceService quizChoiceService;
-    private final LectureService lectureService;
 
     private final QuizValidator quizValidator;
     private final QuizChoiceValidator quizChoiceValidator;
@@ -48,7 +49,7 @@ public class  QuizServiceImpl implements QuizService {
     }
 
     private Lecture getLecture(Integer lectureId) {
-        Optional<Lecture> lectureOpt = lectureService.findLectureById(lectureId);
+        Optional<Lecture> lectureOpt = lectureRepository.findById(lectureId);
 
         if (lectureOpt.isEmpty()) {
             throw new RuntimeException("Lecture not found");

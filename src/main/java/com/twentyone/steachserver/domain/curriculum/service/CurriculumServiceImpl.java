@@ -72,17 +72,20 @@ public class CurriculumServiceImpl implements CurriculumService {
                 .build();
         curriculumDetailRepository.save(curriculumDetail);
 
-        Curriculum curriculum = Curriculum.of(request.getTitle(), request.getCategory(), (Teacher) loginCredential, curriculumDetail);
+        Curriculum curriculum = Curriculum.of(request.getTitle(), request.getCategory(), (Teacher) loginCredential,
+                curriculumDetail);
         curriculumRepository.save(curriculum);
 
         //lecture 만들기
         //날짜 오름차순대로 들어감
-        List<LocalDateTime> selectedDates = getSelectedWeekdays(request.getStartDate(), request.getEndDate(), weekdaysBitmask);
+        List<LocalDateTime> selectedDates = getSelectedWeekdays(request.getStartDate(), request.getEndDate(),
+                weekdaysBitmask);
 
         for (int i = 0; i < selectedDates.size(); i++) {
             LocalDateTime lectureDate = selectedDates.get(i);
             int order = i + 1;
-            Lecture lecture = Lecture.of(request.getTitle() + " " + order + "강", i, lectureDate, request.getLectureStartTime(), request.getLectureEndTime(), curriculum);
+            Lecture lecture = Lecture.of(request.getTitle() + " " + order + "강", i, lectureDate,
+                    request.getLectureStartTime(), request.getLectureEndTime(), curriculum);
             lectureRepository.save(lecture);
         }
 
@@ -101,17 +104,14 @@ public class CurriculumServiceImpl implements CurriculumService {
         Curriculum curriculum = curriculumRepository.findByIdWithLock(curriculaId)
                 .orElseThrow(() -> new RuntimeException("찾을 수 없음"));
 
-        CurriculumDetail curriculumDetail = curriculumDetailRepository.findById(curriculaId)
-                .orElseThrow(() -> new RuntimeException("찾을 수 없음"));
-
-        if (curriculumDetail.getMaxAttendees() <= curriculumDetail.getCurrentAttendees()) {
+        if (curriculum.getCurriculumDetail().getMaxAttendees() <= curriculum.getCurriculumDetail()
+                .getCurrentAttendees()) {
             throw new RuntimeException("수강정원이 다 찼습니다.");
         }
 
         StudentCurriculum studentCurriculum = new StudentCurriculum(student, curriculum);
         studentCurriculumRepository.save(studentCurriculum);
 
-        //복구했습니다.
         curriculum.register();
     }
 
@@ -158,7 +158,8 @@ public class CurriculumServiceImpl implements CurriculumService {
         return (byte) Integer.parseInt(bitmaskString, 2);
     }
 
-    public List<LocalDateTime> getSelectedWeekdays(LocalDateTime startDate, LocalDateTime endDate, int weekdaysBitmask) {
+    public List<LocalDateTime> getSelectedWeekdays(LocalDateTime startDate, LocalDateTime endDate,
+                                                   int weekdaysBitmask) {
         List<LocalDateTime> selectedDates = new ArrayList<>();
 
         for (LocalDateTime date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
