@@ -38,3 +38,10 @@ out/
 
 *.yml
 *.properties
+
+### queryDSL Q개체 ###
+**/generated
+
+### docker-compose.yml ###
+!docker-compose.yml
+
