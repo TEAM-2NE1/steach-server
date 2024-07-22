@@ -29,8 +29,8 @@ public class Lecture {
     @Column(name = "lecture_order", nullable = false, columnDefinition = "TINYINT(4)")
     private Integer lectureOrder;
 
-    @Column(name = "lecture_start_time", nullable = false)
-    private LocalDateTime lectureStartTime; //시작 날짜로 해석하겠음 - 주효림
+    @Column(name = "lecture_start_date", nullable = false)
+    private LocalDateTime lectureStartDate; //시작 날짜로 해석하겠음 - 주효림
 
     @Column(name = "real_start_time")
     private LocalDateTime realStartTime;
@@ -55,7 +55,7 @@ public class Lecture {
         Lecture lecture = new Lecture();
         lecture.title = title;
         lecture.lectureOrder = lectureOrder;
-        lecture.lectureStartTime = lectureStartTime;
+        lecture.lectureStartDate = lectureStartTime;
         lecture.realStartTime = realStartTime;
         lecture.realEndTime = realEndTime;
         lecture.curriculum = curriculum;
@@ -75,6 +75,6 @@ public class Lecture {
     public void update(UpdateLectureRequestDto lectureRequestDto) {
         this.lectureOrder = Integer.valueOf(lectureRequestDto.lectureOrder());
         this.title = lectureRequestDto.lectureTitle();
-        this.lectureStartTime = lectureRequestDto.lectureStartTime();
+        this.lectureStartDate = lectureRequestDto.lectureStartTime();
     }
 }
