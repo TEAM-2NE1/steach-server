@@ -24,7 +24,7 @@ public class ClassroomController {
     private final ClassroomService classroomService;
 
 
-    @Operation(summary = "전체 강의에서 다가오는 강의들을 반환 ", description = "무조건 200을 반환")
+    @Operation(summary = "전체 강의에서 다가오는 강의들을 반환!", description = "무조건 200을 반환하며 classroom을 만들어줍니다.")
     @GetMapping("/upcoming")
     public ResponseEntity<?> upcoming() {
         UpComingClassRooms classrooms = classroomService.upcomingClassroom();
@@ -37,10 +37,11 @@ public class ClassroomController {
                 .body(upComingClassRoomsResponseDto);
     }
 
-    @Operation(summary = "강의를 들을 학생인지 확인 ", description = "권한이 있으면 200을 반환, 없으면 403")
-    @GetMapping("/{lectureId}")
-    public ResponseEntity<ClassroomResponseDto> confirmStudentByApply(@AuthenticationPrincipal Student student, @PathVariable("lectureId") Integer lectureId) {
-        Optional<Classroom> classroomOptional = classroomService.getClassroomByLectureAndStudent(student.getId(), lectureId);
+
+    @Operation(summary = "강의를 들을 학생인지 확인!", description = "권한이 있으면 200을 반환, 없으면 403")
+    @GetMapping("/check/{sessionId}")
+    public ResponseEntity<ClassroomResponseDto> confirmStudentByApply(@AuthenticationPrincipal Student student, @PathVariable("sessionId") String sessionId) {
+        Optional<Classroom> classroomOptional = classroomService.getClassroomBySessionIdAndStudent(student.getId(), sessionId);
         return classroomOptional
                 .map(classroom -> ResponseEntity.ok().
                         body(ClassroomResponseDto.createClassroomResponseDto(classroom)))
