@@ -27,7 +27,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -120,31 +119,16 @@ public class CurriculumServiceImpl implements CurriculumService {
 
     @Override
     @Transactional(readOnly = true)
-    public CurriculumListResponse getMyCourses(LoginCredential credential) {
-        if (credential instanceof Student student) {
-            return getStudentCourses(student);
-        } else if (credential instanceof Teacher teacher) {
-            return getTeacherCourses(teacher);
-        } else {
-            throw new RuntimeException("에러");
-        }
-    }
-
-    @Override
-    public CurriculumListResponse search(CurriculaSearchCondition condition) {
-        List<Curriculum> curriculumList = curriculumSearchRepository.search(condition);
-
-        return CurriculumListResponse.fromDomainList(curriculumList);
-    }
-
-    private CurriculumListResponse getTeacherCourses(Teacher teacher) {
+    public CurriculumListResponse getTeachersCurricula(Teacher teacher) {
         List<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher)
                 .orElseGet(ArrayList::new);
 
         return CurriculumListResponse.fromDomainList(curriculumList);
     }
 
-    private CurriculumListResponse getStudentCourses(Student student) {
+    @Override
+    @Transactional(readOnly = true)
+    public CurriculumListResponse getStudentsCurricula(Student student) {
         List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student)
                 .orElseGet(ArrayList::new);
 
@@ -154,6 +138,13 @@ public class CurriculumServiceImpl implements CurriculumService {
         }
 
         return CurriculumListResponse.fromDomainList(curriculaList);
+    }
+
+    @Override
+    public CurriculumListResponse search(CurriculaSearchCondition condition) {
+        List<Curriculum> curriculumList = curriculumSearchRepository.search(condition);
+
+        return CurriculumListResponse.fromDomainList(curriculumList);
     }
 
     private byte bitmaskStringToByte(String bitmaskString) {

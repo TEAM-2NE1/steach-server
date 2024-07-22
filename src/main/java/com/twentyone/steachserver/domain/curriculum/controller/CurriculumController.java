@@ -1,11 +1,7 @@
 package com.twentyone.steachserver.domain.curriculum.controller;
 
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculaOrderType;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculaSearchCondition;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumListResponse;
+import com.twentyone.steachserver.domain.curriculum.dto.*;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.service.CurriculumService;
 import lombok.RequiredArgsConstructor;
@@ -43,13 +39,6 @@ public class CurriculumController {
         curriculumService.registration(credential, curriculaId);
 
         return ResponseEntity.ok().build(); //TODO 반환값
-    }
-
-    @GetMapping("/my-courses")
-    public ResponseEntity<CurriculumListResponse> getMyCourses(@AuthenticationPrincipal LoginCredential credential) {
-        CurriculumListResponse myCourses = curriculumService.getMyCourses(credential);
-
-        return ResponseEntity.ok(myCourses); //TODO 반환값
     }
 
     //커리큘럼 조회
