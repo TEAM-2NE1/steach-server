@@ -1,6 +1,7 @@
 package com.twentyone.steachserver.domain.curriculum.service;
 
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
+import com.twentyone.steachserver.domain.curriculum.dto.CurriculaSearchCondition;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumListResponse;
@@ -8,6 +9,7 @@ import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumDetailRepository;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumRepository;
+import com.twentyone.steachserver.domain.curriculum.repository.CurriculumSearchRepository;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
@@ -25,13 +27,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CurriculumServiceImpl implements CurriculumService {
     private final CurriculumRepository curriculumRepository;
+    private final CurriculumSearchRepository curriculumSearchRepository;
     private final LectureRepository lectureRepository;
     private final CurriculumDetailRepository curriculumDetailRepository;
     private final StudentCurriculumRepository studentCurriculumRepository;
@@ -117,24 +119,16 @@ public class CurriculumServiceImpl implements CurriculumService {
 
     @Override
     @Transactional(readOnly = true)
-    public CurriculumListResponse getMyCourses(LoginCredential credential) {
-        if (credential instanceof Student student) {
-            return getStudentCourses(student);
-        } else if (credential instanceof Teacher teacher) {
-            return getTeacherCourses(teacher);
-        } else {
-            throw new RuntimeException("에러");
-        }
-    }
-
-    private CurriculumListResponse getTeacherCourses(Teacher teacher) {
+    public CurriculumListResponse getTeachersCurricula(Teacher teacher) {
         List<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher)
                 .orElseGet(ArrayList::new);
 
         return CurriculumListResponse.fromDomainList(curriculumList);
     }
 
-    private CurriculumListResponse getStudentCourses(Student student) {
+    @Override
+    @Transactional(readOnly = true)
+    public CurriculumListResponse getStudentsCurricula(Student student) {
         List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student)
                 .orElseGet(ArrayList::new);
 
@@ -144,6 +138,13 @@ public class CurriculumServiceImpl implements CurriculumService {
         }
 
         return CurriculumListResponse.fromDomainList(curriculaList);
+    }
+
+    @Override
+    public CurriculumListResponse search(CurriculaSearchCondition condition) {
+        List<Curriculum> curriculumList = curriculumSearchRepository.search(condition);
+
+        return CurriculumListResponse.fromDomainList(curriculumList);
     }
 
     private byte bitmaskStringToByte(String bitmaskString) {

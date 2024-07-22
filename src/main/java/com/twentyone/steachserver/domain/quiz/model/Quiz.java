@@ -29,7 +29,7 @@ public class Quiz {
     @Column(name = "question", nullable = false)
     private String question;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", referencedColumnName = "id")
     private Lecture lecture;
 

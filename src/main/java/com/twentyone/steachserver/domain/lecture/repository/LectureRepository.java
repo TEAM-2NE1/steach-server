@@ -8,5 +8,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface LectureRepository extends JpaRepository<Lecture, Integer> {
-    List<Lecture> findByLectureStartTimeBetween(LocalDateTime toMinute, LocalDateTime fromMinute);
+    List<Lecture> findByLectureStartDateBetween(LocalDateTime toMinute, LocalDateTime fromMinute);
 }

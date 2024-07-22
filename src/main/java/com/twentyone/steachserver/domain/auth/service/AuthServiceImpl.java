@@ -82,13 +82,13 @@ public class AuthServiceImpl implements AuthService {
         validateUserName(studentSignUpDto.getUsername());
 
         //auth Code 검증
-        authCodeService.validate(studentSignUpDto.getAuth_code());
+        authCodeService.validateAndApply(studentSignUpDto.getAuth_code());
 
         //password 인코딩
         String encodedPassword = passwordEncoder.encode(studentSignUpDto.getPassword());
 
         //student 저장
-        Student student = Student.of(studentSignUpDto.getUsername(), encodedPassword, studentSignUpDto.getName());
+        Student student = Student.of(studentSignUpDto.getUsername(), encodedPassword, studentSignUpDto.getName(), studentSignUpDto.getEmail());
         studentRepository.save(student);
 
         String accessToken = jwtService.generateAccessToken(student);
@@ -103,8 +103,11 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponseDto signUpTeacher(TeacherSignUpDto teacherSignUpDto, MultipartFile file) throws IOException {
         validateUserName(teacherSignUpDto.getUsername());
 
-        //TODO 인증파일 저장
-        String fileName = FileUtil.storeFile(file, uploadDir);
+        //인증파일 저장
+        String fileName = null;
+        if (file != null) {
+            fileName = FileUtil.storeFile(file, uploadDir);
+        }
 
         //password 인코딩
         String encodedPassword = passwordEncoder.encode(teacherSignUpDto.getPassword());
