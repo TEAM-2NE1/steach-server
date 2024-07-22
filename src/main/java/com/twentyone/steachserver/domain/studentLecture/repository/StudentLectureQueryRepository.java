@@ -31,7 +31,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.twentyone.steachserver.domain.curriculum.model.QCurriculum.curriculum;
+import static com.twentyone.steachserver.domain.curriculum.model.QCurriculumDetail.curriculumDetail;
+import static com.twentyone.steachserver.domain.lecture.model.QLecture.lecture;
 import static com.twentyone.steachserver.domain.member.model.QStudent.student;
+import static com.twentyone.steachserver.domain.studentCurriculum.model.QStudentCurriculum.studentCurriculum;
 import static com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture.studentLecture;
 import static com.twentyone.steachserver.domain.studentQuiz.model.QStudentQuiz.studentQuiz;
 
@@ -54,58 +58,8 @@ public class StudentLectureQueryRepository {
                 .fetch();
     }
 
-    @Transactional
-    public LectureBeforeStartingResponseDto getLectureBeforeStartingResponse(Integer lectureId) {
-        QLecture qLecture = QLecture.lecture;
-        QCurriculum qCurriculum = QCurriculum.curriculum;
-        QCurriculumDetail qCurriculumDetail = QCurriculumDetail.curriculumDetail;
-        QStudentCurriculum qStudentCurriculum = QStudentCurriculum.studentCurriculum;
-//        QStudent qStudent = QStudent.student;
-
-        Optional<Lecture> lectureOptional = Optional.ofNullable(query
-                .select(qLecture)
-                .from(qLecture).leftJoin(qLecture.quizzes, QQuiz.quiz).fetchJoin()
-                .where(qLecture.id.eq(lectureId))
-                .fetchOne());
-        if (lectureOptional.isEmpty()) {
-            throw new IllegalStateException("lecture not found");
-        }
-        Lecture lecture = lectureOptional.get();
-
-        Optional<Curriculum> curriculumOptional = Optional.ofNullable(query
-                .selectFrom(qCurriculum)
-                .where(qCurriculum.lectures.contains(lecture))
-                .fetchOne());
-        if (curriculumOptional.isEmpty()) {
-            throw new IllegalStateException("curriculum not found");
-        }
-        Curriculum curriculum = curriculumOptional.get();
-        SimpleCurriculumByLectureDto simpleCurriculumByLectureDto = SimpleCurriculumByLectureDto.createSimpleCurriculumByLectureDto(curriculum);
-
-        Optional<CurriculumDetail> curriculumDetailOptional = Optional.ofNullable(query
-                .selectFrom(qCurriculumDetail)
-                .where(qCurriculumDetail.id.eq(curriculum.getId()))
-                .fetchOne());
-        if (curriculumDetailOptional.isEmpty()) {
-            throw new IllegalStateException("curriculum detail not found");
-        }
-        CurriculumDetail curriculumDetail = curriculumDetailOptional.get();
-        CurriculumDetailByLectureDto curriculumDetailByLectureDto = CurriculumDetailByLectureDto.createCurriculumDetailByLectureDto(curriculumDetail);
-
-        List<StudentCurriculum> studentCurricula = query
-                .selectFrom(qStudentCurriculum)
-                .where(qStudentCurriculum.curriculum.eq(curriculum))
-                .fetch();
-
-        List<StudentByLectureDto> studentByLectureDtos = studentCurricula.stream()
-                .map(sc -> StudentByLectureDto.createStudentByLectureDto(sc.getStudent()))
-                .collect(Collectors.toList());
-
-        return LectureBeforeStartingResponseDto.of(lecture, simpleCurriculumByLectureDto, curriculumDetailByLectureDto, studentByLectureDtos);
-    }
-
     public List<StudentInfoByLectureDto> getStudentInfoByLecture(Integer lectureId) {
-        QLecture qLecture = QLecture.lecture;
+        QLecture qLecture = lecture;
         QStudentLecture qStudentLecture = QStudentLecture.studentLecture;
         QStudentQuiz qStudentQuiz = QStudentQuiz.studentQuiz;
         QStudent qStudent = QStudent.student;
