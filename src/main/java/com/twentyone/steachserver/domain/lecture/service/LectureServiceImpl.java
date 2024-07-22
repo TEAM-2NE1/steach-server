@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.lecture.service;
 
+import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.lecture.dto.*;
 import com.twentyone.steachserver.domain.lecture.dto.update.UpdateLectureRequestDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
@@ -23,9 +24,9 @@ public class LectureServiceImpl implements LectureService {
     private final StudentLectureQueryRepository studentLectureQueryRepository;
 
     @Override
-    public List<Lecture> upcomingLecture(int toMinute, int fromMinute) {
+    public List<Lecture> upcomingLecture(int fromMinute, int toMinute) {
+        LocalDateTime fromTime = LocalDateTime.now().plusMinutes(fromMinute);
         LocalDateTime toTime = LocalDateTime.now().plusMinutes(toMinute);
-        LocalDateTime fromTime = LocalDateTime.now().plusMinutes(toMinute);
 
         return lectureRepository.findByLectureStartDateBetween(fromTime, toTime);
     }
@@ -64,6 +65,11 @@ public class LectureServiceImpl implements LectureService {
         return lectureRepository.findById(lectureId)
                 .map(lecture -> { lecture.updateRealEndTimeWithNow(); return lecture; })
                 .orElseThrow(() -> new IllegalArgumentException("lecture not found"));
+    }
+
+    @Override
+    public Optional<Classroom> getClassroomByLectureAndStudent(Integer studentId, Integer lectureId) {
+        return lectureQueryRepository.findClassroomByLectureAndStudent(lectureId, studentId);
     }
 
     @Override
