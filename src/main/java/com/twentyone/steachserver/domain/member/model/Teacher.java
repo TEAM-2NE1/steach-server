@@ -48,4 +48,26 @@ public class Teacher extends LoginCredential{
 
         return teacher;
     }
+
+    public void updateInfo(String name, String email, String briefIntroduction, String academicBackground, String specialization) {
+        if (name != null) {
+            this.name = name;
+        }
+
+        if (email != null) {
+            this.email = email;
+        }
+
+        if (briefIntroduction != null) {
+            this.briefIntroduction = briefIntroduction;
+        }
+
+        if (academicBackground != null) {
+            this.academicBackground = academicBackground;
+        }
+
+        if (specialization != null) {
+            this.specialization = specialization;
+        }
+    }
 }

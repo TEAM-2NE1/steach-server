@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.member.memberController;
 
+import com.twentyone.steachserver.domain.member.dto.TeacherInfoRequest;
 import com.twentyone.steachserver.domain.member.dto.TeacherInfoResponse;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.member.service.TeacherService;
@@ -21,5 +22,10 @@ public class TeacherController {
         TeacherInfoResponse response = teacherService.getInfo(teacher);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping
+    public ResponseEntity<TeacherInfoResponse> updateInfo(@RequestBody TeacherInfoRequest request, @AuthenticationPrincipal Teacher teacher) {
+        return ResponseEntity.ok(teacherService.updateInfo(request, teacher));
     }
 }
