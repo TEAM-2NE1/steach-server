@@ -1,12 +1,12 @@
 package com.twentyone.steachserver.domain.classroom.service;
 
+import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRoom;
 import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRooms;
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
+import com.twentyone.steachserver.domain.classroom.repository.ClassroomQueryRepository;
 import com.twentyone.steachserver.domain.classroom.repository.ClassroomRepository;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
-import com.twentyone.steachserver.domain.lecture.repository.LectureQueryRepository;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
-import com.twentyone.steachserver.domain.studentLecture.service.StudentLectureService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,10 +19,10 @@ import java.util.Optional;
 public class ClassroomServiceImpl implements ClassroomService {
 
     private final ClassroomRepository classroomRepository;
-    private final LectureQueryRepository lectureQueryRepository;
+    private final ClassroomQueryRepository classroomQueryRepository;
 
     private final LectureService lectureService;
-    private final StudentLectureService studentLectureService;
+
 
     @Override
     @Transactional
@@ -38,15 +38,14 @@ public class ClassroomServiceImpl implements ClassroomService {
         for (Lecture lecture : lectures) {
             Classroom classroom = Classroom.createClassroom(lecture);
             classroomRepository.save(classroom);
-            classrooms.addClassroom(classroom);
+            classrooms.addClassroom(UpComingClassRoom.of(classroom.getSessionId()));
         }
 
         return classrooms;
     }
 
-    @Override
-    public Optional<Classroom> getClassroomByLectureAndStudent(Integer lectureId, Integer studentId) {
-        return lectureQueryRepository.findClassroomByLectureAndStudent(lectureId, studentId);
+    public Optional<Classroom> getClassroomBySessionIdAndStudent(Integer studentId, String sessionId) {
+        return classroomQueryRepository.findClassroomBySessionIdAndStudent(studentId, sessionId);
     }
 
 

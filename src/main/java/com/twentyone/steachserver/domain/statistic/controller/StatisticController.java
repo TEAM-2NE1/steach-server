@@ -37,7 +37,7 @@ public class StatisticController {
 
     @Operation(summary = "강의에 대한 전체 학생에 대한 통계 반환 ", description = "무조건 200을 반환")
     @GetMapping("/lecture/{lectureId}")
-    public ResponseEntity<LectureStatisticsByAllStudentDto> getLectureStatisticsByAllStudent(@PathVariable Integer lectureId) {
+    public ResponseEntity<LectureStatisticsByAllStudentDto> getLectureStatisticsByAllStudent(@PathVariable("lectureId") Integer lectureId) {
         return statisticService.getLectureStatisticsByAllStudent(lectureId)
                 .map(ls -> ResponseEntity.ok().body(LectureStatisticsByAllStudentDto.of(ls)))
                 .orElseThrow(() -> new IllegalArgumentException("lectureId : " + lectureId + " 통계가 존재하지 않습니다."));

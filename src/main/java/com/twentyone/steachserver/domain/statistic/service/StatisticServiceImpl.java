@@ -153,35 +153,7 @@ public class StatisticServiceImpl implements StatisticService {
     // 음.. 먼진 모르겠지만 protected 써야지 Trancsacion 사용가능했음.
     @Transactional
     protected void createLectureStatisticsByAllStudent(Lecture lecture, List<StudentLecture> allStudentInfoByLectureId) {
-        int studentCount = allStudentInfoByLectureId.size();
-
-        Integer totalQuizTotalScore = 0;
-        Integer totalQuizAnswerCount = 0;
-        Integer totalFocusTime = 0;
-        BigDecimal totalFocusRatio = BigDecimal.valueOf(0);
-
-
-        for (StudentLecture studentLecture : allStudentInfoByLectureId) {
-            totalQuizTotalScore += studentLecture.getQuizTotalScore();
-            totalQuizAnswerCount += studentLecture.getQuizAnswerCount();
-            totalFocusRatio = totalFocusRatio.add(studentLecture.getFocusRatio());
-            totalFocusTime += studentLecture.getFocusTime();
-        }
-
-        Integer averageQuizTotalScore = 0;
-        Integer averageQuizAnswerCount = 0;
-        Integer averageFocusTime = 0;
-        BigDecimal averageFocusRatio = BigDecimal.ZERO;
-
-        //FIXME 0으로 나눠지지 않게 처리했는데 확인 부탁드립니다.
-        if (studentCount != 0) {
-            averageQuizTotalScore = totalQuizTotalScore / studentCount;
-            averageQuizAnswerCount = totalQuizAnswerCount / studentCount;
-            averageFocusTime = totalFocusTime / studentCount;
-            averageFocusRatio = totalFocusRatio.divide(BigDecimal.valueOf(studentCount), 2, RoundingMode.HALF_UP);
-        }
-
-        LectureStatisticsByAllStudent lectureStatisticsByAllStudent = LectureStatisticsByAllStudent.of(lecture, averageQuizTotalScore, averageQuizAnswerCount, averageFocusTime, averageFocusRatio);
+        LectureStatisticsByAllStudent lectureStatisticsByAllStudent = LectureStatisticsByAllStudent.of(lecture, allStudentInfoByLectureId);
         lectureStatisticMongoRepository.save(lectureStatisticsByAllStudent);
     }
 

@@ -22,21 +22,35 @@ import java.util.List;
 
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class LectureBeforeStartingResponseDto extends LectureResponseDto{
+
+    private String lectureTitle;
+    private Integer lectureOrder;
+    private LocalDateTime lectureStartTime;
+    private Boolean isCompleted = false;
+
     private SimpleCurriculumByLectureDto curriculumInfo;
     private CurriculumDetailByLectureDto curriculumDetailInfo;
 
     private List<StudentByLectureDto> students = new ArrayList<>();
 
     private List<QuizByLectureDto> quizzes = new ArrayList<>();
-    private Integer numberOfQuizzes;
-    private Boolean isCompleted = false;
+    private Integer numberOfQuizzes = 0;
+
+
+
 
     private LectureBeforeStartingResponseDto(Lecture lecture,
                                              SimpleCurriculumByLectureDto curriculumInfo,
                                              CurriculumDetailByLectureDto curriculumDetailInfo,
                                              List<StudentByLectureDto> studentDtos) {
+        this.lectureTitle = lecture.getTitle();
+        this.lectureOrder = lecture.getLectureOrder();
+        this.lectureStartTime = lecture.getLectureStartDate();
+
+        this.numberOfQuizzes = lecture.getNumberOfQuizzes();
+
         this.curriculumInfo = curriculumInfo;
         this.curriculumDetailInfo = curriculumDetailInfo;
 
@@ -45,8 +59,6 @@ public class LectureBeforeStartingResponseDto extends LectureResponseDto{
             QuizByLectureDto quizByLectureDto = QuizByLectureDto.of(quiz);
             this.quizzes.add(quizByLectureDto);
         }
-
-        this.numberOfQuizzes = quizList.size();
 
         this.students = studentDtos;
     }

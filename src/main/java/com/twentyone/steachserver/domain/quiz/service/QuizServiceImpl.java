@@ -4,7 +4,6 @@ import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.quiz.validator.QuizChoiceValidator;
 import com.twentyone.steachserver.domain.quiz.validator.QuizValidator;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
-import com.twentyone.steachserver.domain.lecture.service.LectureService;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizResponseDto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
@@ -58,29 +57,18 @@ public class  QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Optional<QuizResponseDto> getQuizResponseDto(Integer quizId) {
-        Optional<Quiz> quizOpt = findQuizById(quizId);
-        return Optional.of(mapToDto(quizOpt.orElse(null)));
+    public Optional<Quiz> findById(Integer quizId) {
+        return quizRepository.findById(quizId);
     }
 
-    private QuizResponseDto mapToDto(Quiz quiz) {
+
+    @Override
+    public QuizResponseDto mapToDto(Quiz quiz) {
         List<String> choices = quizChoiceService.getChoices(quiz);
         List<String> answers = quizChoiceService.getAnswers(quiz);
 
-        quizChoiceValidator.validateQuizChoices(answers, choices);
+        quizChoiceValidator.validateQuizChoices(choices, answers);
 
         return QuizResponseDto.createQuizResponseDto(quiz, choices, answers);
-    }
-
-    public Optional<Quiz> findQuizById(Integer quizId) {
-        Optional<Quiz> QuizOpt = quizRepository.findById(quizId);
-
-        try {
-            quizValidator.validateEmptyQuiz(QuizOpt);
-        } catch (Exception e) {
-            throw new RuntimeException("Quiz not found");
-        }
-
-        return QuizOpt;
     }
 }
