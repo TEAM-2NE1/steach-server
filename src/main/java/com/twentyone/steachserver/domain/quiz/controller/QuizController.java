@@ -17,9 +17,8 @@ import java.util.Optional;
 @RequestMapping("/api/v1/quizzes")
 @RequiredArgsConstructor
 public class QuizController {
-
-    private QuizService quizService;
-    private LectureService lectureService;
+    private final QuizService quizService;
+    private final LectureService lectureService;
 
     @Operation(summary = "퀴즈 생성 ", description = "성공시 200 반환, 실패시 500 INTERNAL_SERVER_ERROR 반환")
     @PostMapping("/{lectureId}")

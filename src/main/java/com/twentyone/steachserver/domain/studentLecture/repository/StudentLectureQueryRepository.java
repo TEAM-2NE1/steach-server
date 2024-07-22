@@ -31,8 +31,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture.studentLecture;
 import static com.twentyone.steachserver.domain.member.model.QStudent.student;
+import static com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture.studentLecture;
 import static com.twentyone.steachserver.domain.studentQuiz.model.QStudentQuiz.studentQuiz;
 
 public class StudentLectureQueryRepository {
@@ -56,7 +56,6 @@ public class StudentLectureQueryRepository {
 
     @Transactional
     public LectureBeforeStartingResponseDto getLectureBeforeStartingResponse(Integer lectureId) {
-
         QLecture qLecture = QLecture.lecture;
         QCurriculum qCurriculum = QCurriculum.curriculum;
         QCurriculumDetail qCurriculumDetail = QCurriculumDetail.curriculumDetail;
@@ -65,7 +64,7 @@ public class StudentLectureQueryRepository {
 
         Optional<Lecture> lectureOptional = Optional.ofNullable(query
                 .select(qLecture)
-                .from(qLecture).join(qLecture.quizzes, QQuiz.quiz).fetchJoin()
+                .from(qLecture).leftJoin(qLecture.quizzes, QQuiz.quiz).fetchJoin()
                 .where(qLecture.id.eq(lectureId))
                 .fetchOne());
         if (lectureOptional.isEmpty()) {

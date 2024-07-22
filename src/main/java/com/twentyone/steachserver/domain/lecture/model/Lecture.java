@@ -73,8 +73,8 @@ public class Lecture {
     }
 
     public void update(UpdateLectureRequestDto lectureRequestDto) {
-        this.lectureOrder = Integer.valueOf(lectureRequestDto.lectureOrder());
+//        this.lectureOrder = Integer.valueOf(lectureRequestDto@.lectureOrder());
         this.title = lectureRequestDto.lectureTitle();
-        this.lectureStartDate = lectureRequestDto.lectureStartTime();
+//        this.lectureStartDate = lectureRequestDto.lectureStartTime();
     }
 }

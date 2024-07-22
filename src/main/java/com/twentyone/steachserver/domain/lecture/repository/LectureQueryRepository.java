@@ -42,7 +42,6 @@ public class LectureQueryRepository {
 
     public LectureBeforeStartingResponseDto findLectureDetailsByLectureId(Integer lectureId) {
         // 강의 정보 조회
-
         return query
                 .select(Projections.constructor(
                         LectureBeforeStartingResponseDto.class,
