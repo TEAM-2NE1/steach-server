@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/statistics")
 @RequiredArgsConstructor
 public class StatisticController {
-    private StatisticService statisticService;
+    private final StatisticService statisticService;
 
     @Operation(summary = "통계 정보 반환 ", description = "무조건 200을 반환")
     @GetMapping
@@ -40,6 +40,6 @@ public class StatisticController {
     public ResponseEntity<LectureStatisticsByAllStudentDto> getLectureStatisticsByAllStudent(@PathVariable Integer lectureId) {
         return statisticService.getLectureStatisticsByAllStudent(lectureId)
                 .map(ls -> ResponseEntity.ok().body(LectureStatisticsByAllStudentDto.of(ls)))
-                .orElseThrow(() -> new IllegalArgumentException("lectureId : " + lectureId + " does not exist"));
+                .orElseThrow(() -> new IllegalArgumentException("lectureId : " + lectureId + " 통계가 존재하지 않습니다."));
     }
 }
