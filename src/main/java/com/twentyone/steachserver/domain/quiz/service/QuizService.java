@@ -11,8 +11,8 @@ public interface QuizService {
     // Quiz methods
     Optional<Quiz> createQuiz(Integer lectureId, QuizRequestDto request) throws Exception;
 
-    Optional<QuizResponseDto> getQuizResponseDto(Integer quizId);
+    Optional<Quiz> findById(Integer quizId);
 
-    Optional<Quiz> findQuizById(Integer quizId);
+    QuizResponseDto mapToDto(Quiz quiz);
 }
 
