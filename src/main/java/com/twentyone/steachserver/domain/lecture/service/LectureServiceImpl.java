@@ -33,13 +33,10 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     public LectureBeforeStartingResponseDto getLectureInformation(Integer lectureId) {
-        Optional<Lecture> lectureOpt = lectureRepository.findById(lectureId);
-        if (lectureOpt.isEmpty()){
-            throw new IllegalArgumentException("not found Lecture");
-        }
+        Lecture lecture = lectureRepository.findById(lectureId)
+                .orElseThrow(() -> new IllegalArgumentException("lecture not found"));
 
-        Lecture lecture = lectureOpt.get();
-        LectureBeforeStartingResponseDto lectureBeforeStartingResponse = studentLectureQueryRepository.getLectureBeforeStartingResponse(lectureId);
+        LectureBeforeStartingResponseDto lectureBeforeStartingResponse = lectureQueryRepository.getLectureBeforeStartingResponse(lectureId);
 
         if(lecture.getRealEndTime() == null){
             return lectureBeforeStartingResponse;
@@ -59,7 +56,7 @@ public class LectureServiceImpl implements LectureService {
                 .orElseThrow(() -> new IllegalArgumentException("lecture not found"));
 
         lecture.update(lectureRequestDto);
-        return Optional.ofNullable(lectureQueryRepository.findLectureDetailsByLectureId(lectureId));
+        return Optional.ofNullable(lectureQueryRepository.getLectureBeforeStartingResponse(lectureId));
     }
 
     @Override
