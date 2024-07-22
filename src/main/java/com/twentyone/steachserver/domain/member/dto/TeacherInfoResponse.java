@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class TeacherInfoResponse extends MemberInfoResponse {
     private Integer volunteerTime;
-    private String pathQualification;
     private String briefIntroduction;
     private String academicBackground;
     private String specialization;
@@ -19,7 +18,6 @@ public class TeacherInfoResponse extends MemberInfoResponse {
         response.name = teacher.getName();
         response.email = teacher.getEmail();
         response.volunteerTime = teacher.getVolunteerTime();
-        response.pathQualification = teacher.getPathQualification();
         response.briefIntroduction = teacher.getBriefIntroduction();
         response.academicBackground = teacher.getAcademicBackground();
         response.specialization = teacher.getSpecialization();
