@@ -51,7 +51,7 @@ public class LectureController {
 
     @Operation(summary = "강의 수정 ", description = "성공사 200 반환, 실패시 204 NO_CONTENT 반환")
     @PatchMapping("/{lectureId}")
-    public ResponseEntity<?> updateLectureInformation(@PathVariable Integer lectureId, @RequestBody UpdateLectureRequestDto updatelectureRequestDto) {
+    public ResponseEntity<?> updateLectureInformation(@PathVariable("lectureId") Integer lectureId, @RequestBody UpdateLectureRequestDto updatelectureRequestDto) {
         return lectureService.updateLectureInformation(lectureId, updatelectureRequestDto)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
