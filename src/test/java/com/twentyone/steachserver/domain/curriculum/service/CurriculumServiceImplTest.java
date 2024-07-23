@@ -76,7 +76,7 @@ class CurriculumServiceImplTest {
     void create() {
         //given
         CurriculumAddRequest request = new CurriculumAddRequest(TITLE, SUB_TITLE, INTRO, INFORMATION, CURRICULUM_CATEGORY, SUB_CATEGORY, BANNER_IMG_URL,
-                NOW, NOW, WEEKDAY_BITMASK, NOW, NOW, MAX_ATTENDEES);
+                NOW, NOW, WEEKDAY_BITMASK, NOW.toLocalTime(), NOW.toLocalTime(), MAX_ATTENDEES);
 
         //when
         CurriculumDetailResponse curriculumDetailResponse = curriculumService.create(teacher, request);
@@ -92,8 +92,8 @@ class CurriculumServiceImplTest {
         assertEquals(curriculumDetailResponse.getStartDate(), NOW.toLocalDate());
         assertEquals(curriculumDetailResponse.getEndDate(), NOW.toLocalDate());
         assertEquals(curriculumDetailResponse.getWeekdaysBitmask(), WEEKDAY_BITMASK);
-        assertEquals(curriculumDetailResponse.getLectureStartTime(), NOW);
-        assertEquals(curriculumDetailResponse.getLectureEndTime(), NOW);
+        assertEquals(curriculumDetailResponse.getLectureStartTime(), NOW.toLocalTime());
+        assertEquals(curriculumDetailResponse.getLectureEndTime(), NOW.toLocalTime());
         assertEquals(curriculumDetailResponse.getMaxAttendees(), MAX_ATTENDEES);
     }
 
@@ -101,7 +101,7 @@ class CurriculumServiceImplTest {
     void create_선생님만_가능() {
         //given
         CurriculumAddRequest request = new CurriculumAddRequest(TITLE, SUB_TITLE, INTRO, INFORMATION, CURRICULUM_CATEGORY, SUB_CATEGORY, BANNER_IMG_URL,
-                NOW, NOW, WEEKDAY_BITMASK, NOW, NOW, MAX_ATTENDEES);
+                NOW, NOW, WEEKDAY_BITMASK, NOW.toLocalTime(), NOW.toLocalTime(), MAX_ATTENDEES);
 
         //when //then
         assertThrows(ForbiddenException.class, () -> {

@@ -70,7 +70,7 @@ public class CurriculumServiceIntegrationTest {
         //given
         CurriculumAddRequest request = new CurriculumAddRequest(TITLE, SUB_TITLE, INTRO, INFORMATION,
                 CURRICULUM_CATEGORY, SUB_CATEGORY, BANNER_IMG_URL,
-                NOW, NOW, WEEKDAY_BITMASK, NOW, NOW, MAX_ATTENDEES);
+                NOW, NOW, WEEKDAY_BITMASK, NOW.toLocalTime(), NOW.toLocalTime(), MAX_ATTENDEES);
         CurriculumDetailResponse curriculumDetailResponse = curriculumService.create(teacher, request);
         Integer curriculumId = curriculumDetailResponse.getCurriculumId();
 
