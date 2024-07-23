@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.curriculum.service;
 
+import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculaSearchCondition;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
@@ -57,7 +58,7 @@ public class CurriculumServiceImpl implements CurriculumService {
     public CurriculumDetailResponse create(LoginCredential loginCredential, CurriculumAddRequest request) {
         //Teacher 인지 학인
         if (!(loginCredential instanceof Teacher)) {
-            throw new RuntimeException("선생님만 만들 수 있습니다.");
+            throw new ForbiddenException("선생님만 만들 수 있습니다.");
         }
         curriculumValidator.validatorMaxAttendees(request);
         //bitmask byte로 변환
@@ -120,9 +121,13 @@ public class CurriculumServiceImpl implements CurriculumService {
         }
 
         StudentCurriculum studentCurriculum = new StudentCurriculum(student, curriculum);
-        for (Lecture lecture : curriculum.getLectures()) {
-            studentLectureRepository.save(StudentLecture.of(student, lecture));
+
+        if (curriculum.getLectures() != null) {
+            for (Lecture lecture : curriculum.getLectures()) {
+                studentLectureRepository.save(StudentLecture.of(student, lecture));
+            }
         }
+
         studentCurriculumRepository.save(studentCurriculum);
 
         curriculum.register();

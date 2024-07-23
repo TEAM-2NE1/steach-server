@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.curriculum.service;
 
+import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
@@ -7,8 +8,10 @@ import com.twentyone.steachserver.domain.curriculum.repository.CurriculumDetailR
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumRepository;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumSearchRepository;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
+import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCurriculumRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class CurriculumServiceImplTest {
@@ -54,14 +58,25 @@ class CurriculumServiceImplTest {
 
     @Mock
     private StudentCurriculumRepository studentCurriculumRepository;
+    private Teacher teacher;
+    private Student student;
+
+    @BeforeEach
+    void setUp() {
+        teacher = Teacher.of(USERNAME, PASSWORD, NAME, EMAIL, PATH);
+        student = Student.of(USERNAME, PASSWORD, NAME, EMAIL);
+    }
 
     @Test
     void create() {
-        Teacher teacher = Teacher.of(USERNAME, PASSWORD, NAME, EMAIL, PATH);
+        //given
         CurriculumAddRequest request = new CurriculumAddRequest(TITLE, SUB_TITLE, INTRO, INFORMATION, CURRICULUM_CATEGORY, SUB_CATEGORY, BANNER_IMG_URL,
                 NOW, NOW, WEEKDAY_BITMASK, NOW, NOW, MAX_ATTENDEES);
 
+        //when
         CurriculumDetailResponse curriculumDetailResponse = curriculumService.create(teacher, request);
+
+        //then
         assertEquals(curriculumDetailResponse.getTitle(), TITLE);
         assertEquals(curriculumDetailResponse.getSubTitle(), SUB_TITLE);
         assertEquals(curriculumDetailResponse.getIntro(), INTRO);
@@ -75,5 +90,17 @@ class CurriculumServiceImplTest {
         assertEquals(curriculumDetailResponse.getLectureStartTime(), NOW);
         assertEquals(curriculumDetailResponse.getLectureEndTime(), NOW);
         assertEquals(curriculumDetailResponse.getMaxAttendees(), MAX_ATTENDEES);
+    }
+
+    @Test
+    void create_선생님만_가능() {
+        //given
+        CurriculumAddRequest request = new CurriculumAddRequest(TITLE, SUB_TITLE, INTRO, INFORMATION, CURRICULUM_CATEGORY, SUB_CATEGORY, BANNER_IMG_URL,
+                NOW, NOW, WEEKDAY_BITMASK, NOW, NOW, MAX_ATTENDEES);
+
+        //when //then
+        assertThrows(ForbiddenException.class, () -> {
+            curriculumService.create(student, request);
+        });
     }
 }

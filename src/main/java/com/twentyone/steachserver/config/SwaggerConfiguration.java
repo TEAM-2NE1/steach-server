@@ -6,6 +6,7 @@ import io.swagger.v3.core.jackson.ModelResolver;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.servers.Server;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
@@ -29,6 +30,19 @@ import java.util.Arrays;
         ),
         servers = {
                 @Server(url = "/", description = "API 서버")
+        },
+        tags = {
+                @Tag(name = "인증"),
+                @Tag(name = "인증코드"),
+                @Tag(name = "강사"),
+                @Tag(name = "학생"),
+                @Tag(name = "커리큘럼"),
+                @Tag(name = "강의"),
+                @Tag(name = "학생-강의"),
+                @Tag(name = "퀴즈"),
+                @Tag(name = "학생-퀴즈"),
+                @Tag(name = "클래스룸"),
+                @Tag(name = "통계"),
         }
 )
 public class SwaggerConfiguration {
