@@ -19,6 +19,7 @@ public interface LectureService {
 
     Optional<Classroom> getClassroomByLectureAndStudent(Integer studentId, Integer lectureId);
 
+    Boolean checkStudentByLecture(Integer studentId, Integer lectureId);
 
     List<Lecture> upcomingLecture(int toMinute, int fromMinute);
 
