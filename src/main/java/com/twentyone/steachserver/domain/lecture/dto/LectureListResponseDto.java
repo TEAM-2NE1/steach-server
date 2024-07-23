@@ -9,13 +9,13 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class LectureListResponseDto {
-    private List<LectureInfoResponseDto> lectures;
+    private List<LectureResponseDto> lectures;
 
     public static LectureListResponseDto fromDomainList(List<Lecture> lectures) {
-        List<LectureInfoResponseDto> lectureResponseDtoList = new ArrayList<>();
+        List<LectureResponseDto> lectureResponseDtoList = new ArrayList<>();
 
         for (Lecture lecture: lectures) {
-            lectureResponseDtoList.add(LectureInfoResponseDto.fromDomain(lecture));
+            lectureResponseDtoList.add(LectureResponseDto.fromDomain(lecture));
         }
 
         return new LectureListResponseDto(lectureResponseDtoList);
