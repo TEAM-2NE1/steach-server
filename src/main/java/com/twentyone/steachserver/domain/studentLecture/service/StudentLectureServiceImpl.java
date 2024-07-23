@@ -6,20 +6,18 @@ import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.lecture.validator.LectureValidator;
 import com.twentyone.steachserver.domain.member.repository.StudentRepository;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
-import com.twentyone.steachserver.domain.statistic.repository.LectureStatisticMongoRepository;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureQueryRepository;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
+
 
 @Service
-@org.springframework.transaction.annotation.Transactional(readOnly = true)
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class StudentLectureServiceImpl implements StudentLectureService {
 

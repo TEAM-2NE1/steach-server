@@ -12,18 +12,18 @@ import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizRequestDto;
 import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
 import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuizId;
 import com.twentyone.steachserver.domain.studentQuiz.repository.StudentQuizRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@org.springframework.transaction.annotation.Transactional(readOnly = true)
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class StudentQuizServiceImpl implements StudentQuizService {
 
