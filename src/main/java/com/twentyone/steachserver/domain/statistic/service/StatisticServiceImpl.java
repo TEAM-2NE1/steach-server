@@ -66,8 +66,8 @@ public class StatisticServiceImpl implements StatisticService {
             if (items.get(i).averageFocusRatio().compareTo(maxFocusRatio) > 0) {
                 maxFocusRatio = items.get(i).averageFocusRatio();
             }
-            if (maxLectureMinutes > items.get(i).totalLectureMinutes()) {
-                maxLectureMinutes = items.get(i).totalLectureMinutes();
+            if (maxLectureMinutes > items.get(i).totalLectureMinute()) {
+                maxLectureMinutes = items.get(i).totalLectureMinute();
             }
         }
 
@@ -79,7 +79,7 @@ public class StatisticServiceImpl implements StatisticService {
 
         for (int i = 0; i < NUMBER_OF_CATEGORIES; i++) {
             int weightedFocusRatio = items.get(i).averageFocusRatio().multiply(factorWeightingFocusRatio).intValue();
-            int weightedLectureMinutes = items.get(i).totalLectureMinutes() * factorWeightingLectureMinutes;
+            int weightedLectureMinutes = items.get(i).totalLectureMinute() * factorWeightingLectureMinutes;
             list.add(weightedFocusRatio + weightedLectureMinutes);
         }
 
@@ -110,7 +110,7 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public Optional<LectureStatisticsByAllStudent> getLectureStatisticsByAllStudent(Integer lectureId) {
+    public List<LectureStatisticsByAllStudent> getLectureStatisticsByAllStudent(Integer lectureId) {
         return lectureStatisticMongoRepository.findByLectureId(lectureId);
 
     }
