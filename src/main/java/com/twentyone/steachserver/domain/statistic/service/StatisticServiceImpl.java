@@ -7,6 +7,7 @@ import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.statistic.dto.RadarChartStatisticDto;
 import com.twentyone.steachserver.domain.statistic.dto.StatisticsByCurriculumCategory;
+import com.twentyone.steachserver.domain.statistic.dto.GPTDataRequestDto;
 import com.twentyone.steachserver.domain.statistic.model.RadarChartStatistic;
 import com.twentyone.steachserver.domain.statistic.model.mongo.GPTDataByLecture;
 import com.twentyone.steachserver.domain.statistic.model.mongo.LectureStatisticsByAllStudent;
@@ -69,10 +70,6 @@ public class StatisticServiceImpl implements StatisticService {
                 maxLectureMinutes = items.get(i).totalLectureMinute();
             }
         }
-        System.out.println(maxFocusRatio);
-        System.out.println(maxLectureMinutes);
-
-//       Fixme: 로직 이상함 로직 고쳐야할거 같음. 한쪽으로 몰릴경우 재대로 안 들어감.
 
         // 이건 기존 값에 곱해줄 값
         BigDecimal factorWeightingFocusRatio = BigDecimal.valueOf(WEIGHT_FOCUS_RATIO).divide(maxFocusRatio, 2, RoundingMode.HALF_UP);
@@ -80,8 +77,6 @@ public class StatisticServiceImpl implements StatisticService {
 
         List<Integer> list = new ArrayList<>();
 
-        System.out.println(factorWeightingFocusRatio);
-        System.out.println(factorWeightingLectureMinutes);
         for (int i = 0; i < NUMBER_OF_CATEGORIES; i++) {
             double weightedFocusRatio = items.get(i).averageFocusRatio().multiply(factorWeightingFocusRatio).intValue();
             double weightedLectureMinutes = items.get(i).totalLectureMinute() * factorWeightingLectureMinutes;
@@ -119,20 +114,20 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public List<LectureStatisticsByAllStudent> getLectureStatisticsByAllStudent(Integer lectureId) {
         return lectureStatisticMongoRepository.findByLectureId(lectureId);
+
     }
 
     @Override
     @Transactional
     public void createStatisticsByFinalLecture(Lecture lecture) {
         List<StudentLecture> allStudentInfoByLectureId = studentLectureQueryRepository.findAllStudentInfoByLectureId(lecture.getId());
-        System.out.println(allStudentInfoByLectureId);
         createLectureStatisticsByAllStudent(lecture, allStudentInfoByLectureId);
         createRadarChartStatistics(lecture.getCurriculum(), allStudentInfoByLectureId);
         createGPTData(lecture, allStudentInfoByLectureId);
     }
 
     @Transactional
-    protected void createRadarChartStatistics(Curriculum curriculum, List<StudentLecture> allStudentInfoByLectureId) {
+    public void createRadarChartStatistics(Curriculum curriculum, List<StudentLecture> allStudentInfoByLectureId) {
         for (StudentLecture studentLecture : allStudentInfoByLectureId) {
             Integer studentId = studentLecture.getStudent().getId();
             radarChartStatisticRepository.findById(studentId)
@@ -153,13 +148,13 @@ public class StatisticServiceImpl implements StatisticService {
 
     // 음.. 먼진 모르겠지만 protected 써야지 Trancsacion 사용가능했음.
     @Transactional
-    protected void createLectureStatisticsByAllStudent(Lecture lecture, List<StudentLecture> allStudentInfoByLectureId) {
+    public void createLectureStatisticsByAllStudent(Lecture lecture, List<StudentLecture> allStudentInfoByLectureId) {
         LectureStatisticsByAllStudent lectureStatisticsByAllStudent = LectureStatisticsByAllStudent.of(lecture, allStudentInfoByLectureId);
         lectureStatisticMongoRepository.save(lectureStatisticsByAllStudent);
     }
 
     @Transactional
-    protected void createGPTData(Lecture lecture, List<StudentLecture> allStudentInfoByLectureId) {
+    public void createGPTData(Lecture lecture, List<StudentLecture> allStudentInfoByLectureId) {
         Curriculum curriculum = curriculumRepository.findByLecturesContaining(lecture)
                 .orElseThrow(() -> new IllegalStateException("curriculum not found"));
 
