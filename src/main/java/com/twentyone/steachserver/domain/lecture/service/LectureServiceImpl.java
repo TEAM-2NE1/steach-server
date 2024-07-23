@@ -34,7 +34,6 @@ public class LectureServiceImpl implements LectureService {
         return lectureRepository.findByLectureStartDateBetween(fromTime, toTime);
     }
 
-
     @Override
     public LectureBeforeStartingResponseDto getLectureInformation(Integer lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId)
@@ -115,5 +114,13 @@ public class LectureServiceImpl implements LectureService {
         List<StudentInfoByLectureDto> studentInfoByLecture = studentLectureQueryRepository.getStudentInfoByLecture(lectureId);
         return FinalLectureInfoByTeacherDto.createFinalLectureInfoByTeacherDto(studentInfoByLecture);
     }
+
+    @Override
+    public CompletedLecturesResponseDto getFinalLectureInformation(LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto, Integer lectureId) {
+        List<StudentInfoByLectureDto> studentInfoByLecture = studentLectureQueryRepository.getStudentInfoByLecture(lectureId);
+        Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(() -> new IllegalArgumentException("lecture not found"));
+        return CompletedLecturesResponseDto.of(lectureBeforeStartingResponseDto, studentInfoByLecture,lecture);
+    }
+
 }
 
