@@ -38,10 +38,6 @@ public class LectureStatisticsByAllStudent {
         this.lectureId = lecture.getId();
     }
 
-//    public static LectureStatisticsByAllStudent of(Lecture lecture, Integer averageQuizTotalScore, Integer averageQuizAnswerCount, Integer averageFocusTime, BigDecimal averageFocusRatio) {
-//        return new LectureStatisticsByAllStudent(lecture, averageQuizTotalScore, averageQuizAnswerCount, averageFocusTime, averageFocusRatio);
-//    }
-
     public static LectureStatisticsByAllStudent of(Lecture lecture, List<StudentLecture> allStudentInfoByLectureId) {
         int quizSize = allStudentInfoByLectureId.size();
 
@@ -58,9 +54,7 @@ public class LectureStatisticsByAllStudent {
             totalFocusRatio = totalFocusRatio.add(studentLecture.getFocusRatio());
             totalFocusTime += studentLecture.getFocusTime();
         }
-
-        //FIXME 0으로 나눠지지 않게 처리했는데 확인 부탁드립니다.
-        if (quizSize < 0) {
+        if (quizSize > 0) {
             lectureStatisticsByAllStudent.averageQuizTotalScore = totalQuizTotalScore / quizSize;
             lectureStatisticsByAllStudent.averageQuizAnswerCount = totalQuizAnswerCount / quizSize;
             lectureStatisticsByAllStudent.averageFocusTime = totalFocusTime / quizSize;
