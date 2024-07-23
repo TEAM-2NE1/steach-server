@@ -1,12 +1,14 @@
 package com.twentyone.steachserver.domain.curriculum.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.twentyone.steachserver.domain.auth.service.AuthService;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumListResponse;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
+import com.twentyone.steachserver.domain.curriculum.error.DuplicatedCurriculumRegistrationException;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.member.repository.StudentRepository;
@@ -155,5 +157,25 @@ public class CurriculumServiceIntegrationTest {
         for (int i = 0; i < lectureStartTime.size(); i++) {
             assertEquals(lectureStartTime.get(i), selectedWeekdays.get(i));
         }
+    }
+
+    @Test
+    void 여러번_수강신청_불가능() {
+        //given
+        CurriculumAddRequest request = new CurriculumAddRequest(TITLE, SUB_TITLE, INTRO, INFORMATION,
+                CURRICULUM_CATEGORY, SUB_CATEGORY, BANNER_IMG_URL,
+                NOW, NOW, WEEKDAY_BITMASK, NOW.toLocalTime(), NOW.toLocalTime(), MAX_ATTENDEES);
+        CurriculumDetailResponse curriculumDetailResponse = curriculumService.create(teacher, request);
+        Integer curriculumId = curriculumDetailResponse.getCurriculumId();
+
+        curriculumService.registration(student, curriculumId);
+
+        //when //then
+        assertThrows(
+                DuplicatedCurriculumRegistrationException.class,
+                () -> {
+                    curriculumService.registration(student, curriculumId);
+                }
+        );
     }
 }
