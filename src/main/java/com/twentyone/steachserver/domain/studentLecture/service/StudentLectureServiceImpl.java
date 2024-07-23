@@ -38,7 +38,7 @@ public class StudentLectureServiceImpl implements StudentLectureService {
     private void createAndSaveStudentLecture(Integer studentId, Integer lectureId, Integer focusTime) {
         Lecture lecture = lectureRepository.getReferenceById(lectureId);
         Student student = studentRepository.getReferenceById(studentId);
-        StudentLecture studentLecture = StudentLecture.createStudentLecture(student, lecture, focusTime);
+        StudentLecture studentLecture = StudentLecture.of(student, lecture, focusTime);
         studentLectureRepository.save(studentLecture);
     }
 
