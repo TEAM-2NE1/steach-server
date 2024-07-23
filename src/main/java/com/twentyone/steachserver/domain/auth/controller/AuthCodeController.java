@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "인증코드")
 @RestController
-@Tag(name = "AuthCode", description = "AuthCode 관련 API")
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth-codes")
 public class AuthCodeController {

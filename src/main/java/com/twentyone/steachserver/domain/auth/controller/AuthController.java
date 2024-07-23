@@ -6,6 +6,7 @@ import com.twentyone.steachserver.domain.auth.dto.StudentSignUpDto;
 import com.twentyone.steachserver.domain.auth.dto.TeacherSignUpDto;
 import com.twentyone.steachserver.domain.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Tag(name = "인증")
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @RestController
