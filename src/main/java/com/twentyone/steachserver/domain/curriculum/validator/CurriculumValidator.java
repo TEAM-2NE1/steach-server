@@ -1,7 +1,9 @@
 package com.twentyone.steachserver.domain.curriculum.validator;
 
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CurriculumValidator {
 
     public void validatorMaxAttendees(CurriculumAddRequest request) {
