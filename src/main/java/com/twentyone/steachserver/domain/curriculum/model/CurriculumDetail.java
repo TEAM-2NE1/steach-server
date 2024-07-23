@@ -48,6 +48,7 @@ public class CurriculumDetail {
     @Column(name = "current_attendees", columnDefinition = "TINYINT(4)")
     private Integer currentAttendees = 0; //현재 수강확정인원
 
+    @Builder.Default
     @Column(columnDefinition = "TINYINT(4)")
     private Integer maxAttendees = 4; //수강정원
 

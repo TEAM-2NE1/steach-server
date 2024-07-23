@@ -12,6 +12,7 @@ import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.statistic.service.StatisticService;
 import com.twentyone.steachserver.domain.studentLecture.service.StudentLectureService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+@Tag(name = "강의")
 @RestController
 @RequestMapping("/api/v1/lectures")
 @RequiredArgsConstructor
