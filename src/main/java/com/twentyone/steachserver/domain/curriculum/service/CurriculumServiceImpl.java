@@ -16,6 +16,8 @@ import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
 import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCurriculumRepository;
+import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
+import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,8 @@ public class CurriculumServiceImpl implements CurriculumService {
     private final LectureRepository lectureRepository;
     private final CurriculumDetailRepository curriculumDetailRepository;
     private final StudentCurriculumRepository studentCurriculumRepository;
+    private final StudentLectureRepository studentLectureRepository;
+
     @Override
     @Transactional(readOnly = true)
     public CurriculumDetailResponse getDetail(Integer id) {
@@ -112,6 +116,9 @@ public class CurriculumServiceImpl implements CurriculumService {
         }
 
         StudentCurriculum studentCurriculum = new StudentCurriculum(student, curriculum);
+        for (Lecture lecture : curriculum.getLectures()) {
+            studentLectureRepository.save(StudentLecture.of(student, lecture));
+        }
         studentCurriculumRepository.save(studentCurriculum);
 
         curriculum.register();
