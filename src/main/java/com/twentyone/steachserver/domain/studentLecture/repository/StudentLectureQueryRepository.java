@@ -129,11 +129,22 @@ public class StudentLectureQueryRepository {
         for (StudentLecture sl : studentLectures) {
             Integer focusTime = sl.getFocusTime();
 
+            System.out.println(lectureDurationMinutes);
+            System.out.println(focusTime);
             // focusRatio 계산 (졸음 비율)
             if (focusTime != null && lectureDurationMinutes > 0) {
-                BigDecimal calculatedFocusRatio = BigDecimal.valueOf(focusTime / lectureDurationMinutes * 100).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal focusTimeBD = BigDecimal.valueOf(focusTime);
+                BigDecimal lectureDurationBD = BigDecimal.valueOf(lectureDurationMinutes);
+
+                BigDecimal calculatedFocusRatio = focusTimeBD
+                        .divide(lectureDurationBD, 5, RoundingMode.HALF_UP)
+                        .multiply(BigDecimal.valueOf(100))
+                        .setScale(2, RoundingMode.HALF_UP);
+
                 sl.updateFocusRatio(calculatedFocusRatio);
+                System.out.println(calculatedFocusRatio);
             }
+            System.out.println(sl);
 
             // 학생별 퀴즈 총점수 및 정답 맞춘 수 계산
             List<StudentQuiz> quizzes = studentQuizMap.get(sl.getStudent().getId());
