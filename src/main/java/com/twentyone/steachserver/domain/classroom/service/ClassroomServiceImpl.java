@@ -31,13 +31,13 @@ public class ClassroomServiceImpl implements ClassroomService {
     @Transactional
     public UpComingClassRooms upcomingClassroom() {
         // 분 단위로 값 받아서 해주자. 남은 시간이 90분에서 ~ 30분 사이꺼 가져오기
-        List<Lecture> lectures = lectureService.upcomingLecture(30,90);
+        List<Lecture> lectures = lectureService.upcomingLecture(30, 90);
 
         UpComingClassRooms classrooms = UpComingClassRooms.createEmptyUpComingClassRooms();
 
         for (Lecture lecture : lectures) {
             Classroom classroom = classroomRepository.findByLectureId(lecture.getId())
-                            .orElseGet(() -> Classroom.createClassroom(lecture));
+                    .orElseGet(() -> Classroom.createClassroom(lecture));
             classrooms.addClassroom(UpComingClassRoom.of(classroom.getSessionId()));
         }
 
@@ -47,7 +47,7 @@ public class ClassroomServiceImpl implements ClassroomService {
     @Transactional
     @Scheduled(fixedDelay = 3600000)
     public void createUpcomingClassroom() {
-        List<Lecture> lectures = lectureService.upcomingLecture(40,100);
+        List<Lecture> lectures = lectureService.upcomingLecture(40, 100);
 
         // 추후 배치처리해주면 기가 맥힐듯
         for (Lecture lecture : lectures) {
@@ -58,5 +58,18 @@ public class ClassroomServiceImpl implements ClassroomService {
 
     public Optional<Classroom> getClassroomBySessionIdAndStudent(Integer studentId, String sessionId) {
         return classroomQueryRepository.findClassroomBySessionIdAndStudent(studentId, sessionId);
+    }
+
+    @Override
+    public Classroom createClassroom(Integer lectureId) {
+        Lecture lecture = lectureRepository.getReferenceById(lectureId);
+        Optional<Classroom> classroomOptional = classroomRepository.findByLectureId(lectureId);
+
+        if (classroomOptional.isPresent()) {
+            return classroomOptional.get();
+        } else {
+            Classroom classroom = Classroom.createClassroom(lecture);
+            return classroomRepository.save(classroom);
+        }
     }
 }

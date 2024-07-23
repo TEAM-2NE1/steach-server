@@ -11,4 +11,5 @@ public interface ClassroomService {
 
     Optional<Classroom> getClassroomBySessionIdAndStudent(Integer studentId, String sessionId);
 
+    Classroom createClassroom(Integer lectureId);
 }
