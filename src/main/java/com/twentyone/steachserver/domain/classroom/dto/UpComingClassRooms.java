@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-public record UpComingClassRooms(List<Classroom> classrooms) {
+public record UpComingClassRooms(List<UpComingClassRoom> classrooms) {
     public UpComingClassRooms {
         classrooms = new ArrayList<>(classrooms);
     }
@@ -16,11 +16,11 @@ public record UpComingClassRooms(List<Classroom> classrooms) {
         return new UpComingClassRooms(new ArrayList<>());
     }
 
-    public static UpComingClassRooms createUpComingClassRooms(List<Classroom> classrooms) {
+    public static UpComingClassRooms createUpComingClassRooms(List<UpComingClassRoom> classrooms) {
         return new UpComingClassRooms(classrooms);
     }
 
-    public void addClassroom(Classroom classroom) {
+    public void addClassroom(UpComingClassRoom classroom) {
         classrooms.add(classroom);
     }
 }

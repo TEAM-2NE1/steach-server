@@ -18,9 +18,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class QuizController {
     private final QuizService quizService;
-    private final LectureService lectureService;
 
-    @Operation(summary = "퀴즈 생성 ", description = "성공시 200 반환, 실패시 500 INTERNAL_SERVER_ERROR 반환")
+    @Operation(summary = "퀴즈 생성!?!?", description = "성공시 200 반환, 실패시 500 INTERNAL_SERVER_ERROR 반환")
     @PostMapping("/{lectureId}")
     public ResponseEntity<QuizResponseDto> createQuiz(@PathVariable("lectureId")Integer lectureId, @RequestBody QuizRequestDto request) throws Exception {
         return quizService.createQuiz(lectureId, request)
@@ -28,11 +27,11 @@ public class QuizController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
-    @Operation(summary = "퀴즈 조회 ", description = "성공시 200 반환, 실패시 204 NOT_FOUND 반환")
+    @Operation(summary = "퀴즈 조회!", description = "성공시 200 반환, 실패시 204 NOT_FOUND 반환")
     @GetMapping("/{quizId}")
     public ResponseEntity<QuizResponseDto> getQuizResponseDto(@PathVariable("quizId") Integer quizId) {
-        return quizService.getQuizResponseDto(quizId)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+        return quizService.findById(quizId)
+                .map(quiz -> ResponseEntity.ok().body(quizService.mapToDto(quiz)))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 }

@@ -29,6 +29,7 @@ public class Lecture {
     @Column(name = "lecture_order", nullable = false, columnDefinition = "TINYINT(4)")
     private Integer lectureOrder;
 
+    // 강의가 언제 시작하는 날짜와 커리큘럼의 startTime을 합한 값.
     @Column(name = "lecture_start_date", nullable = false)
     private LocalDateTime lectureStartDate; //시작 날짜로 해석하겠음 - 주효림
 
@@ -51,21 +52,20 @@ public class Lecture {
     @OneToMany(mappedBy = "lecture")
     private List<StudentLecture> studentLectures = new ArrayList<>();
 
-    public static Lecture of(String title, Integer lectureOrder, LocalDateTime lectureStartTime, LocalDateTime realStartTime, LocalDateTime realEndTime, Curriculum curriculum) {
+    public static Lecture of(String title, Integer lectureOrder, LocalDateTime lectureStartTime, Curriculum curriculum) {
         Lecture lecture = new Lecture();
         lecture.title = title;
         lecture.lectureOrder = lectureOrder;
         lecture.lectureStartDate = lectureStartTime;
-        lecture.realStartTime = realStartTime;
-        lecture.realEndTime = realEndTime;
         lecture.curriculum = curriculum;
-
         return lecture;
     }
 
 
+
     public void addQuiz(Quiz quiz) {
         this.quizzes.add(quiz);
+        this.numberOfQuizzes++;
     }
 
     public void updateRealEndTimeWithNow() {

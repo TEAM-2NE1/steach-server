@@ -6,6 +6,7 @@ import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -23,8 +24,8 @@ public class CurriculumDetailResponse {
     private LocalDate startDate;
     private LocalDate endDate;
     private String weekdaysBitmask;
-    private int lectureStartTime;
-    private int lectureEndTime;
+    private LocalDateTime lectureStartTime;
+    private LocalDateTime lectureEndTime;
     private int currentAttendees;
     private int maxAttendees;
 
@@ -47,8 +48,8 @@ public class CurriculumDetailResponse {
                 .startDate(curriculumDetail.getStartDate())
                 .endDate(curriculumDetail.getEndDate() != null ? curriculumDetail.getEndDate() : null)
                 .weekdaysBitmask(paddedWeekDaysBitmask)
-                .lectureStartTime(curriculumDetail.getLectureStartTime().getHour())
-                .lectureEndTime(curriculumDetail.getLectureCloseTime().getHour())
+                .lectureStartTime(curriculumDetail.getLectureStartTime())
+                .lectureEndTime(curriculumDetail.getLectureCloseTime())
                 .currentAttendees(curriculumDetail.getCurrentAttendees())
                 .maxAttendees(curriculumDetail.getMaxAttendees())
                 .build();

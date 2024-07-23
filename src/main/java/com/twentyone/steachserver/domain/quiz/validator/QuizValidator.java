@@ -15,11 +15,4 @@ public class QuizValidator {
             throw new NullPointerException("Quiz cannot be empty");
         }
     }
-
-
-    public void validateEmptyQuiz(Optional<Quiz> quiz) {
-        if (quiz.isEmpty()) {
-            throw new NullPointerException("Quiz cannot be empty");
-        }
-    }
 }

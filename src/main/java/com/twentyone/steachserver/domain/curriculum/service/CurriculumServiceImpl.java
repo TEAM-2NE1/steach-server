@@ -72,8 +72,8 @@ public class CurriculumServiceImpl implements CurriculumService {
                 .weekdaysBitmask(weekdaysBitmask)
                 .startDate(LocalDate.from(request.getStartDate()))
                 .endDate(LocalDate.from(request.getEndDate()))
-                .lectureStartTime(LocalTime.from(request.getLectureStartTime()))
-                .lectureCloseTime(LocalTime.from(request.getLectureEndTime()))
+                .lectureStartTime(request.getLectureStartTime())
+                .lectureCloseTime(request.getLectureEndTime())
                 .maxAttendees(request.getMaxAttendees())
                 .build();
         curriculumDetailRepository.save(curriculumDetail);
@@ -87,11 +87,11 @@ public class CurriculumServiceImpl implements CurriculumService {
         List<LocalDateTime> selectedDates = getSelectedWeekdays(request.getStartDate(), request.getEndDate(),
                 weekdaysBitmask);
 
-        for (int i = 0; i < selectedDates.size(); i++) {
-            LocalDateTime lectureDate = selectedDates.get(i);
+        for (int i = 1; i < selectedDates.size(); i++) {
+            LocalDateTime lectureDate = selectedDates.get(i).with(curriculumDetail.getLectureStartTime()); // 날짜에 시간 설정
             int order = i + 1;
-            Lecture lecture = Lecture.of(request.getTitle() + " " + order + "강", i, lectureDate,
-                    request.getLectureStartTime(), request.getLectureEndTime(), curriculum);
+            Lecture lecture = Lecture.of(request.getTitle() + " " + order + "강", order,
+                    lectureDate, curriculum);
             lectureRepository.save(lecture);
         }
 

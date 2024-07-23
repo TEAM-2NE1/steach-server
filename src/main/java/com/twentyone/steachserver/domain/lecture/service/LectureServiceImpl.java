@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.lecture.service;
 
+import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.lecture.dto.*;
 import com.twentyone.steachserver.domain.lecture.dto.update.UpdateLectureRequestDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
@@ -23,9 +24,9 @@ public class LectureServiceImpl implements LectureService {
     private final StudentLectureQueryRepository studentLectureQueryRepository;
 
     @Override
-    public List<Lecture> upcomingLecture(int toMinute, int fromMinute) {
+    public List<Lecture> upcomingLecture(int fromMinute, int toMinute) {
+        LocalDateTime fromTime = LocalDateTime.now().plusMinutes(fromMinute);
         LocalDateTime toTime = LocalDateTime.now().plusMinutes(toMinute);
-        LocalDateTime fromTime = LocalDateTime.now().plusMinutes(toMinute);
 
         return lectureRepository.findByLectureStartDateBetween(fromTime, toTime);
     }
@@ -33,13 +34,10 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     public LectureBeforeStartingResponseDto getLectureInformation(Integer lectureId) {
-        Optional<Lecture> lectureOpt = lectureRepository.findById(lectureId);
-        if (lectureOpt.isEmpty()){
-            throw new IllegalArgumentException("not found Lecture");
-        }
+        Lecture lecture = lectureRepository.findById(lectureId)
+                .orElseThrow(() -> new IllegalArgumentException("lecture not found"));
 
-        Lecture lecture = lectureOpt.get();
-        LectureBeforeStartingResponseDto lectureBeforeStartingResponse = studentLectureQueryRepository.getLectureBeforeStartingResponse(lectureId);
+        LectureBeforeStartingResponseDto lectureBeforeStartingResponse = lectureQueryRepository.getLectureBeforeStartingResponse(lectureId);
 
         if(lecture.getRealEndTime() == null){
             return lectureBeforeStartingResponse;
@@ -59,7 +57,7 @@ public class LectureServiceImpl implements LectureService {
                 .orElseThrow(() -> new IllegalArgumentException("lecture not found"));
 
         lecture.update(lectureRequestDto);
-        return Optional.ofNullable(lectureQueryRepository.findLectureDetailsByLectureId(lectureId));
+        return Optional.ofNullable(lectureQueryRepository.getLectureBeforeStartingResponse(lectureId));
     }
 
     @Override
@@ -67,6 +65,11 @@ public class LectureServiceImpl implements LectureService {
         return lectureRepository.findById(lectureId)
                 .map(lecture -> { lecture.updateRealEndTimeWithNow(); return lecture; })
                 .orElseThrow(() -> new IllegalArgumentException("lecture not found"));
+    }
+
+    @Override
+    public Optional<Classroom> getClassroomByLectureAndStudent(Integer studentId, Integer lectureId) {
+        return lectureQueryRepository.findClassroomByLectureAndStudent(lectureId, studentId);
     }
 
     @Override
