@@ -110,21 +110,21 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public String createGPTString(Student student, GPTDataRequestDto gptDataRequestDto) {
-//        XXX: 영어로 작성했으면 좋겠어요!
         StringBuilder sb = new StringBuilder();
-        sb.append("I want career recommendations.");
-
+        sb.append("You're a student career consultant and student career counselor." +
+                "Next, you'll see information about the courses a student has taken, along with various statistics, such as quiz scores and attention span in those courses." +
+                "Based on these statistics, I can make career recommendations based on the student's interests and aptitudes." +
+                "Food biotech, math teacher, software developer, etc.");
 
         List<Integer> lectureIds = gptDataRequestDto.lectureIds();
         for (Integer lectureId : lectureIds) {
             GPTDataByLecture statistic = getGPTStatistic(lectureId, student.getId());
-
-//            TODO:  로직 만들어야함 !!!!
+            sb.append("Lecture name: ").append(statistic.getCurriculumTitle()).append("'s").append(statistic.getLectureTitle());
+            sb.append("Category: ").append(statistic.getCategory()).append("Subcategory: ").append(statistic.getSubCategory());
+            sb.append("Quiz score: ").append(statistic.getTotalQuizScore()).append("/").append(statistic.getQuizCount());
+            sb.append("Lecture Focus: ").append(statistic.getFocusRatio()).append("%");
             sb.append("\n");
-            sb.append(statistic);
         }
-
-        sb.append("I hope the answer begins with ").append(student.getName()).append("’s career recommendation results.");
         sb.append("in korean");
         return sb.toString();
     }
