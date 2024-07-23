@@ -71,10 +71,16 @@ public class Lecture {
     public void updateRealEndTimeWithNow() {
         this.realEndTime = LocalDateTime.now();
     }
+    public void updateRealStartTimeWithNow() {
+        System.out.println("update");
+        this.realStartTime = LocalDateTime.now();
+    }
 
     public void update(UpdateLectureRequestDto lectureRequestDto) {
 //        this.lectureOrder = Integer.valueOf(lectureRequestDto@.lectureOrder());
         this.title = lectureRequestDto.lectureTitle();
 //        this.lectureStartDate = lectureRequestDto.lectureStartTime();
     }
+
+
 }
