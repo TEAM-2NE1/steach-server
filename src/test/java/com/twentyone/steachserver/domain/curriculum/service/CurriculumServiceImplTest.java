@@ -7,6 +7,7 @@ import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumDetailRepository;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumRepository;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumSearchRepository;
+import com.twentyone.steachserver.domain.curriculum.validator.CurriculumValidator;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
@@ -58,6 +59,10 @@ class CurriculumServiceImplTest {
 
     @Mock
     private StudentCurriculumRepository studentCurriculumRepository;
+
+    @Mock
+    private CurriculumValidator curriculumValidator;
+
     private Teacher teacher;
     private Student student;
 
