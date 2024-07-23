@@ -7,11 +7,13 @@ import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRooms;
 import com.twentyone.steachserver.domain.classroom.service.ClassroomService;
 import com.twentyone.steachserver.domain.member.model.Student;
+import com.twentyone.steachserver.domain.studentLecture.service.StudentLectureService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +26,7 @@ import java.util.Optional;
 public class ClassroomController {
 
     private final ClassroomService classroomService;
-
+    private final StudentLectureService studentLectureService;
 
     @Operation(summary = "전체 강의에서 다가오는 강의들을 반환!", description = "무조건 200을 반환하며 classroom을 만들어줍니다.")
     @GetMapping("/upcoming")
@@ -49,4 +51,17 @@ public class ClassroomController {
                         body(ClassroomResponseDto.createClassroomResponseDto(classroom)))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.FORBIDDEN).build());
     }
+
+    @Secured("ROLE_TEACHER")
+    @Operation(summary = "선생님이 강의 시작을 누르면 교실로 들어가는 메서드", description = "무조건 200을 반환")
+    @PatchMapping("/start/{lectureId}")
+    public ResponseEntity<?> startClassroom(@PathVariable("lectureId") Integer lectureId) {
+        studentLectureService.createStudentLectureByLecture(lectureId);
+        Classroom classroom = classroomService.createClassroom(lectureId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ClassroomResponseDto.createClassroomResponseDto(classroom));
+    }
+
+
 }
