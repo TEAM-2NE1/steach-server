@@ -1,6 +1,7 @@
 package com.twentyone.steachserver.domain.statistic.service;
 
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
+import com.twentyone.steachserver.domain.curriculum.repository.CurriculumDetailRepository;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumRepository;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Student;
@@ -8,7 +9,6 @@ import com.twentyone.steachserver.domain.statistic.dto.radarChartStatisticDto;
 import com.twentyone.steachserver.domain.statistic.dto.GPTDataRequestDto;
 import com.twentyone.steachserver.domain.statistic.model.mongo.GPTDataByLecture;
 import com.twentyone.steachserver.domain.statistic.model.mongo.LectureStatisticsByAllStudent;
-import com.twentyone.steachserver.domain.statistic.dto.temp.LectureStatisticsByStudentDto;
 import com.twentyone.steachserver.domain.statistic.repository.GPTDataByLectureMongoRepository;
 import com.twentyone.steachserver.domain.statistic.repository.LectureStatisticMongoRepository;
 import com.twentyone.steachserver.domain.statistic.repository.RadarChartStatisticRepository;
@@ -18,8 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 
 @Service
@@ -32,6 +30,7 @@ public class StatisticServiceImpl implements StatisticService {
     private final RadarChartStatisticRepository radarChartStatisticRepository;
     private final LectureStatisticMongoRepository lectureStatisticMongoRepository;
     private final GPTDataByLectureMongoRepository gptDataByLectureMongoRepository;
+    private final CurriculumDetailRepository curriculumDetailRepository;
 
     final int NUMBER_OF_CATEGORIES = 7;
 
@@ -111,21 +110,21 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public String createGPTString(Student student, GPTDataRequestDto gptDataRequestDto) {
-//        XXX: 영어로 작성했으면 좋겠어요!
         StringBuilder sb = new StringBuilder();
-        sb.append("I want career recommendations.");
-
+        sb.append("You're a student career consultant and student career counselor." +
+                "Next, you'll see information about the courses a student has taken, along with various statistics, such as quiz scores and attention span in those courses." +
+                "Based on these statistics, I can make career recommendations based on the student's interests and aptitudes." +
+                "Food biotech, math teacher, software developer, etc.");
 
         List<Integer> lectureIds = gptDataRequestDto.lectureIds();
         for (Integer lectureId : lectureIds) {
             GPTDataByLecture statistic = getGPTStatistic(lectureId, student.getId());
-
-//            TODO:  로직 만들어야함 !!!!
+            sb.append("Lecture name: ").append(statistic.getCurriculumTitle()).append("'s").append(statistic.getLectureTitle());
+            sb.append("Category: ").append(statistic.getCategory()).append("Subcategory: ").append(statistic.getSubCategory());
+            sb.append("Quiz score: ").append(statistic.getTotalQuizScore()).append("/").append(statistic.getQuizCount());
+            sb.append("Lecture Focus: ").append(statistic.getFocusRatio()).append("%");
             sb.append("\n");
-            sb.append(statistic);
         }
-
-        sb.append("I hope the answer begins with ").append(student.getName()).append("’s career recommendation results.");
         sb.append("in korean");
         return sb.toString();
     }
@@ -163,19 +162,8 @@ public class StatisticServiceImpl implements StatisticService {
         Curriculum curriculum = curriculumRepository.findByLecturesContaining(lecture)
                 .orElseThrow(() -> new IllegalStateException("curriculum not found"));
 
-        // 학생별로 데이터를 모으기 위한 맵
-        Map<Integer, LectureStatisticsByStudentDto> studentStatisticsMap = new HashMap<>();
-
         for (StudentLecture studentLecture : allStudentInfoByLectureId) {
-            Student student = studentLecture.getStudent();
-
-            studentStatisticsMap
-                    .computeIfAbsent(student.getId(), k -> LectureStatisticsByStudentDto.of(student, lecture))
-                    .addLectureData(studentLecture);
-        }
-
-        for (LectureStatisticsByStudentDto lectureStatisticsByStudent : studentStatisticsMap.values()) {
-            GPTDataByLecture gptDataByLecture = GPTDataByLecture.of(lecture, curriculum, lectureStatisticsByStudent);
+            GPTDataByLecture gptDataByLecture = GPTDataByLecture.of(lecture, curriculum, studentLecture);
             gptDataByLectureMongoRepository.save(gptDataByLecture);
         }
     }
