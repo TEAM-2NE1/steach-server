@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "quizzes")
@@ -45,7 +43,7 @@ public class Quiz {
         Quiz quiz = new Quiz();
         quiz.setLecture(lecture);
         quiz.setQuestion(request.question());
-        quiz.setQuizNumber(request.quizNumber()== 0 ? lecture.getQuizzes().size() + 1 : request.quizNumber());
+        quiz.setQuizNumber((request.quizNumber() == null || request.quizNumber()== 0)? lecture.getQuizzes().size() + 1 : request.quizNumber());
 
         lecture.addQuiz(quiz);
         return quiz;
