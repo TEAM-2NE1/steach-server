@@ -1,6 +1,7 @@
 package com.twentyone.steachserver.domain.curriculum.model;
 
 import jakarta.persistence.*;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,8 +42,8 @@ public class CurriculumDetail {
 
     private LocalDate startDate;
     private LocalDate endDate;
-    private LocalDateTime lectureStartTime;
-    private LocalDateTime lectureCloseTime;
+    private LocalTime lectureStartTime; //LocalTIme맞으니까 만지지마 주효림
+    private LocalTime lectureCloseTime;
 
     @Builder.Default
     @Column(name = "current_attendees", columnDefinition = "TINYINT(4)")

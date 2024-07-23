@@ -66,8 +66,8 @@ public class StatisticServiceImpl implements StatisticService {
             if (items.get(i).averageFocusRatio().compareTo(maxFocusRatio) > 0) {
                 maxFocusRatio = items.get(i).averageFocusRatio();
             }
-            if (maxLectureMinutes > items.get(i).totalLectureMinutes()) {
-                maxLectureMinutes = items.get(i).totalLectureMinutes();
+            if (maxLectureMinutes > items.get(i).totalLectureMinute()) {
+                maxLectureMinutes = items.get(i).totalLectureMinute();
             }
         }
 
@@ -79,7 +79,7 @@ public class StatisticServiceImpl implements StatisticService {
 
         for (int i = 0; i < NUMBER_OF_CATEGORIES; i++) {
             int weightedFocusRatio = items.get(i).averageFocusRatio().multiply(factorWeightingFocusRatio).intValue();
-            int weightedLectureMinutes = items.get(i).totalLectureMinutes() * factorWeightingLectureMinutes;
+            int weightedLectureMinutes = items.get(i).totalLectureMinute() * factorWeightingLectureMinutes;
             list.add(weightedFocusRatio + weightedLectureMinutes);
         }
 
@@ -125,7 +125,7 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Transactional
-    protected void createRadarChartStatistics(Curriculum curriculum, List<StudentLecture> allStudentInfoByLectureId) {
+    public void createRadarChartStatistics(Curriculum curriculum, List<StudentLecture> allStudentInfoByLectureId) {
         for (StudentLecture studentLecture : allStudentInfoByLectureId) {
             Integer studentId = studentLecture.getStudent().getId();
             radarChartStatisticRepository.findById(studentId)
@@ -146,13 +146,13 @@ public class StatisticServiceImpl implements StatisticService {
 
     // 음.. 먼진 모르겠지만 protected 써야지 Trancsacion 사용가능했음.
     @Transactional
-    protected void createLectureStatisticsByAllStudent(Lecture lecture, List<StudentLecture> allStudentInfoByLectureId) {
+    public void createLectureStatisticsByAllStudent(Lecture lecture, List<StudentLecture> allStudentInfoByLectureId) {
         LectureStatisticsByAllStudent lectureStatisticsByAllStudent = LectureStatisticsByAllStudent.of(lecture, allStudentInfoByLectureId);
         lectureStatisticMongoRepository.save(lectureStatisticsByAllStudent);
     }
 
     @Transactional
-    protected void createGPTData(Lecture lecture, List<StudentLecture> allStudentInfoByLectureId) {
+    public void createGPTData(Lecture lecture, List<StudentLecture> allStudentInfoByLectureId) {
         Curriculum curriculum = curriculumRepository.findByLecturesContaining(lecture)
                 .orElseThrow(() -> new IllegalStateException("curriculum not found"));
 

@@ -2,6 +2,7 @@ package com.twentyone.steachserver.domain.curriculum.dto;
 
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,10 +27,10 @@ public class CurriculumAddRequest {
     private String weekdaysBitmask;
 
     @Schema(description = "Lecture start time in HH:mm:ss format", example = "15:30:00")
-    private LocalDateTime lectureStartTime;
+    private LocalTime lectureStartTime;
 
     @Schema(description = "Lecture end time in HH:mm:ss format", example = "15:30:00")
-    private LocalDateTime lectureEndTime;
+    private LocalTime lectureEndTime;
 
     private int maxAttendees;
 }
