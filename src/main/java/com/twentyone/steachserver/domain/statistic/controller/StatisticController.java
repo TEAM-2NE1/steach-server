@@ -2,7 +2,7 @@ package com.twentyone.steachserver.domain.statistic.controller;
 
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.statistic.dto.LectureStatisticsByAllStudentDto;
-import com.twentyone.steachserver.domain.statistic.dto.radarChartStatisticDto;
+import com.twentyone.steachserver.domain.statistic.dto.RadarChartStatisticDto;
 import com.twentyone.steachserver.domain.statistic.dto.GPTDataRequestDto;
 import com.twentyone.steachserver.domain.statistic.service.StatisticService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,8 +22,8 @@ public class StatisticController {
 
     @Operation(summary = "레이더 차트 통계 정보 반환 ", description = "무조건 200을 반환")
     @GetMapping
-    public ResponseEntity<radarChartStatisticDto> getRadarChartStatistic(@AuthenticationPrincipal Student student) {
-        radarChartStatisticDto statistics = statisticService.getStatistics(student.getId());
+    public ResponseEntity<RadarChartStatisticDto> getRadarChartStatistic(@AuthenticationPrincipal Student student) {
+        RadarChartStatisticDto statistics = statisticService.getRadarChartStatistic(student.getId());
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(statistics);
