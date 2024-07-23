@@ -6,6 +6,7 @@ import com.twentyone.steachserver.domain.curriculum.dto.CurriculaSearchCondition
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumListResponse;
+import com.twentyone.steachserver.domain.curriculum.error.DuplicatedCurriculumRegistrationException;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumDetailRepository;
@@ -118,6 +119,11 @@ public class CurriculumServiceImpl implements CurriculumService {
                 .getCurrentAttendees()) {
             throw new RuntimeException("수강정원이 다 찼습니다.");
         }
+
+        studentCurriculumRepository.findTop1ByStudentAndCurriculum(student, curriculum)
+                .ifPresent(sc -> {
+                    throw new DuplicatedCurriculumRegistrationException("중복 수강신청 불가능");
+                });
 
         StudentCurriculum studentCurriculum = new StudentCurriculum(student, curriculum);
 
