@@ -35,7 +35,7 @@ public class StatisticServiceImpl implements StatisticService {
     private final LectureStatisticMongoRepository lectureStatisticMongoRepository;
     private final GPTDataByLectureMongoRepository gptDataByLectureMongoRepository;
 
-    final int NUMBER_OF_CATEGORIES = CurriculumCategory.size();
+    final int NUMBER_OF_CATEGORIES = CurriculumCategory.sizeExcludingETC();
 
     final int WEIGHT_FOCUS_RATIO = 15;
     final int WEIGHT_LECTURE_MINUTES = 85;
@@ -66,43 +66,45 @@ public class StatisticServiceImpl implements StatisticService {
             if (items.get(i).averageFocusRatio().compareTo(maxFocusRatio) > 0) {
                 maxFocusRatio = items.get(i).averageFocusRatio();
             }
-            if (maxLectureMinutes > items.get(i).totalLectureMinute()) {
+            if (maxLectureMinutes < items.get(i).totalLectureMinute()) {
                 maxLectureMinutes = items.get(i).totalLectureMinute();
             }
         }
 
         // 이건 기존 값에 곱해줄 값
         BigDecimal factorWeightingFocusRatio = BigDecimal.valueOf(WEIGHT_FOCUS_RATIO).divide(maxFocusRatio, 2, RoundingMode.HALF_UP);
-        int factorWeightingLectureMinutes =  WEIGHT_LECTURE_MINUTES / maxLectureMinutes;
+        double factorWeightingLectureMinutes = (double) WEIGHT_LECTURE_MINUTES / maxLectureMinutes;
 
         List<Integer> list = new ArrayList<>();
 
         for (int i = 0; i < NUMBER_OF_CATEGORIES; i++) {
-            int weightedFocusRatio = items.get(i).averageFocusRatio().multiply(factorWeightingFocusRatio).intValue();
-            int weightedLectureMinutes = items.get(i).totalLectureMinute() * factorWeightingLectureMinutes;
-            list.add(weightedFocusRatio + weightedLectureMinutes);
+            double weightedFocusRatio = items.get(i).averageFocusRatio().multiply(factorWeightingFocusRatio).intValue();
+            double weightedLectureMinutes = items.get(i).totalLectureMinute() * factorWeightingLectureMinutes;
+            int sum = (int) (weightedFocusRatio + weightedLectureMinutes);
+            list.add(sum);
         }
 
         return RadarChartStatisticDto.of(list);
     }
 
     @Override
-    public String createGPTString(Student student, GPTDataRequestDto gptDataRequestDto) {
+    public String createGPTString(Student student) {
         StringBuilder sb = new StringBuilder();
         sb.append("You're a student career consultant and student career counselor." +
                 "Next, you'll see information about the courses a student has taken, along with various statistics, such as quiz scores and attention span in those courses." +
                 "Based on these statistics, I can make career recommendations based on the student's interests and aptitudes." +
-                "Food biotech, math teacher, software developer, etc.");
+                "Food biotech, math teacher, software developer, etc.").append("\n");
 
         List<GPTDataByLecture> gptDataByLectures = gptDataByLectureMongoRepository.findAllByStudentName(student.getName());
 
-        if (gptDataByLectures.isEmpty()) throw new IllegalArgumentException("student name : " + student.getName() + "의 GPT 데이터가 존재하지 않습니다.");
+        if (gptDataByLectures.isEmpty())
+            throw new IllegalArgumentException("student name : " + student.getName() + "의 GPT 데이터가 존재하지 않습니다.");
 
         for (GPTDataByLecture gptDataByLecture : gptDataByLectures) {
-            sb.append("Lecture name: ").append(gptDataByLecture.getCurriculumTitle()).append("'s").append(gptDataByLecture.getLectureTitle());
-            sb.append("Category: ").append(gptDataByLecture.getCategory()).append("Subcategory: ").append(gptDataByLecture.getSubCategory());
-            sb.append("Quiz score: ").append(gptDataByLecture.getTotalQuizScore()).append("/").append(gptDataByLecture.getQuizCount());
-            sb.append("Lecture Focus: ").append(gptDataByLecture.getFocusRatio()).append("%");
+            sb.append("Lecture title: ").append(gptDataByLecture.getLectureTitle());
+            sb.append(" Lecture Category: ").append(gptDataByLecture.getCategory()).append(" Subcategory: ").append(gptDataByLecture.getSubCategory());
+            sb.append(" Quiz score: ").append(gptDataByLecture.getTotalQuizScore()).append("/").append(gptDataByLecture.getQuizCount() * 100);
+            sb.append(" Lecture Focus: ").append(gptDataByLecture.getFocusRatio()).append("%");
             sb.append("\n");
         }
         sb.append("in korean");
@@ -110,7 +112,7 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public Optional<LectureStatisticsByAllStudent> getLectureStatisticsByAllStudent(Integer lectureId) {
+    public List<LectureStatisticsByAllStudent> getLectureStatisticsByAllStudent(Integer lectureId) {
         return lectureStatisticMongoRepository.findByLectureId(lectureId);
 
     }

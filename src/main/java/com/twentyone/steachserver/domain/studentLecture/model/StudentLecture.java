@@ -60,9 +60,8 @@ public class StudentLecture {
         this.focusTime += focusTime;
     }
 
-    public void updateFocusRatio(long focusRatio) {
-        this.focusRatio = BigDecimal.valueOf(focusRatio).
-                setScale(2, RoundingMode.HALF_UP);
+    public void updateFocusRatio(BigDecimal focusRatio) {
+        this.focusRatio = focusRatio;
     }
 
     public void updateQuizAnswerCount(Integer quizAnswerCount) {

@@ -8,7 +8,6 @@ import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
 import com.twentyone.steachserver.domain.quiz.repository.QuizChoiceRepository;
 import com.twentyone.steachserver.domain.quiz.validator.QuizChoiceValidator;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -17,7 +16,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 import java.util.List;
 
-@Disabled //테스트 실패가 너무 많아서 고쳐야할 것 같습니다
 public class QuizChoiceServiceImplTest {
 
     @InjectMocks

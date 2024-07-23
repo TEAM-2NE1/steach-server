@@ -4,8 +4,6 @@ import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.curriculum.dto.*;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.service.CurriculumService;
-import com.twentyone.steachserver.domain.lecture.dto.LectureListResponseDto;
-import com.twentyone.steachserver.domain.lecture.service.LectureService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CurriculumController {
     private final CurriculumService curriculumService;
-    private final LectureService lectureService;
 
     @Operation(summary = "커리큘럼 단일조회!")
     @GetMapping("/{id}")
@@ -63,14 +60,5 @@ public class CurriculumController {
         CurriculumListResponse result = curriculumService.search(condition);
 
         return ResponseEntity.ok(result);
-    }
-
-    @Operation(summary = "커리큘럼에 해당하는 강의 리스트 조회")
-    @GetMapping("/{curriculum_id}/lectures")
-    public ResponseEntity<LectureListResponseDto> getLecturesByCurriculum(
-            @PathVariable("curriculum_id") Integer curriculumId) {
-        LectureListResponseDto byCurriculum = lectureService.findByCurriculum(curriculumId);
-
-        return ResponseEntity.ok(byCurriculum);
     }
 }

@@ -6,7 +6,6 @@ import com.twentyone.steachserver.domain.curriculum.dto.CurriculaSearchCondition
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumListResponse;
-import com.twentyone.steachserver.domain.curriculum.error.DuplicatedCurriculumRegistrationException;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumDetailRepository;
@@ -29,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +44,6 @@ public class CurriculumServiceImpl implements CurriculumService {
     private final StudentLectureRepository studentLectureRepository;
 
     private final CurriculumValidator curriculumValidator;
-
     @Override
     @Transactional(readOnly = true)
     public CurriculumDetailResponse getDetail(Integer id) {
@@ -103,6 +102,7 @@ public class CurriculumServiceImpl implements CurriculumService {
     }
 
 
+
     @Override
     @Transactional
     public void registration(LoginCredential loginCredential, Integer curriculaId) {
@@ -119,11 +119,6 @@ public class CurriculumServiceImpl implements CurriculumService {
                 .getCurrentAttendees()) {
             throw new RuntimeException("수강정원이 다 찼습니다.");
         }
-
-        studentCurriculumRepository.findTop1ByStudentAndCurriculum(student, curriculum)
-                .ifPresent(sc -> {
-                    throw new DuplicatedCurriculumRegistrationException("중복 수강신청 불가능");
-                });
 
         StudentCurriculum studentCurriculum = new StudentCurriculum(student, curriculum);
 
@@ -180,7 +175,6 @@ public class CurriculumServiceImpl implements CurriculumService {
         return (byte) Integer.parseInt(bitmaskString, 2);
     }
 
-    @Override
     public List<LocalDateTime> getSelectedWeekdays(LocalDateTime startDate, LocalDateTime endDate,
                                                    int weekdaysBitmask) {
         List<LocalDateTime> selectedDates = new ArrayList<>();

@@ -1,6 +1,5 @@
 package com.twentyone.steachserver.config.security;
 
-import com.twentyone.steachserver.domain.auth.dto.JwtExceptionFilter;
 import com.twentyone.steachserver.domain.auth.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -54,8 +53,7 @@ public class securityConfiguration {
                 )
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(new JwtAuthenticationFilter(jwtService, userDetailsService),
-                        UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

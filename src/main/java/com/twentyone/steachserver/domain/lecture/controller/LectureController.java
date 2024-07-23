@@ -36,10 +36,10 @@ public class LectureController {
 
     @Operation(summary = "강의에 대한 다양한 정보 반환", description = "무조건 200을 반환, 강의에 대해서 시작 전 강의면 시작 전 형태로, 끝난 강의는 끝난형태로 반환.")
     @GetMapping("/{lectureId}")
-    public ResponseEntity<?> getLectureInformation(@PathVariable("lectureId")Integer lectureId) {
+    public ResponseEntity<?> getLectureInformation(@PathVariable("lectureId") Integer lectureId) {
         LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto = lectureService.getLectureInformation(lectureId);
-        if (lectureBeforeStartingResponseDto.getIsCompleted()){
-            CompletedLecturesResponseDto completedLecturesResponseDto =   lectureService.getFinalLectureInformation(lectureBeforeStartingResponseDto, lectureId);
+        if (lectureBeforeStartingResponseDto.getIsCompleted()) {
+            CompletedLecturesResponseDto completedLecturesResponseDto = lectureService.getFinalLectureInformation(lectureBeforeStartingResponseDto, lectureId);
             return ResponseEntity.ok().body(completedLecturesResponseDto);
         }
         return ResponseEntity.ok().body(lectureBeforeStartingResponseDto);
@@ -49,18 +49,24 @@ public class LectureController {
     @PatchMapping("/{lectureId}")
     public ResponseEntity<?> updateLectureInformation(@PathVariable("lectureId") Integer lectureId, @RequestBody UpdateLectureRequestDto updatelectureRequestDto) {
         return lectureService.updateLectureInformation(lectureId, updatelectureRequestDto)
-                .map(lectureBeforeStartingResponseDto ->  ResponseEntity.ok().body(lectureBeforeStartingResponseDto))
+                .map(lectureBeforeStartingResponseDto -> ResponseEntity.ok().body(lectureBeforeStartingResponseDto))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
     }
 
-    @Operation(summary = "강의를 들을 학생인지 확인!", description = "권한이 있으면 200을 반환, 없으면 403")
+    @Operation(summary = "강의를 들을 학생인지 확인!",
+            description = "권한이 있으면 200과 sessionId 반환, 권한 있는데 강의 시작 전이면 403," +
+                    "권한이 없으면 401, 학생이 아닌 권한이면 500")
     @GetMapping("/check/{lectureId}")
-    public ResponseEntity<ClassroomResponseDto> confirmStudentByApply(@AuthenticationPrincipal Student student, @PathVariable("lectureId") Integer lectureId) {
-        Optional<Classroom> classroomOptional = lectureService.getClassroomByLectureAndStudent(student.getId(), lectureId);
-        return classroomOptional
-                .map(classroom -> ResponseEntity.ok().
-                        body(ClassroomResponseDto.createClassroomResponseDto(classroom)))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.FORBIDDEN).build());
+    public ResponseEntity<?> confirmStudentByApply(@AuthenticationPrincipal Student student, @PathVariable("lectureId") Integer lectureId) {
+        Boolean isCheck = lectureService.checkStudentByLecture(student.getId(), lectureId);
+        if (isCheck) {
+            Optional<Classroom> classroomOptional = lectureService.getClassroomByLectureAndStudent(student.getId(), lectureId);
+            return classroomOptional
+                    .map(classroom -> ResponseEntity.ok().
+                            body(ClassroomResponseDto.createClassroomResponseDto(classroom)))
+                    .orElseGet(() -> ResponseEntity.status(HttpStatus.FORBIDDEN).build());
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
 
@@ -74,12 +80,10 @@ public class LectureController {
         return ResponseEntity.ok().body(finalLectureInfoByTeacherDto);
     }
 
-    @Secured("ROLE_TEACHER")
-    @Operation(summary = "선생님이 강의 시작을 누르면 강의 시작시간이 들어가는 메서드", description = "무조건 200을 반환")
+    @Operation(summary = "선생님이 강의 시작을 누르면 강의 리얼 시작시간이 들어가는 메서드", description = "무조건 200을 반환")
     @PatchMapping("/start/{lectureId}")
     public ResponseEntity<?> updateRealStartTime(@PathVariable("lectureId") Integer lectureId) {
         lectureService.updateRealStartTime(lectureId);
-        studentLectureService.createStudentLectureByLecture(lectureId);
         return ResponseEntity.ok().build();
     }
 

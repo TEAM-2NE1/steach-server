@@ -6,6 +6,8 @@ import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
@@ -13,20 +15,22 @@ import java.math.RoundingMode;
 
 @Document(collection = "gpt_data_by_lecture")
 @Getter
+@Setter
+@NoArgsConstructor // 인스턴스화 할때 생성자가 있어야함.
 public class GPTDataByLecture {
     @Id
     private String id;
-    private final String studentName;
-    private final String curriculumTitle;
-    private final String lectureTitle;
-    private final CurriculumCategory category;
-    private final String subCategory;
+    private String studentName;
+    private String curriculumTitle;
+    private String lectureTitle;
+    private CurriculumCategory category;
+    private String subCategory;
 
-    private final Integer quizCount;
-    private final Integer totalQuizScore;
-    private final Integer QuizAnswerCount;
-    private final Integer FocusTime;
-    private final BigDecimal FocusRatio;
+    private Integer quizCount;
+    private Integer totalQuizScore;
+    private Integer QuizAnswerCount;
+    private Integer FocusTime;
+    private BigDecimal FocusRatio;
 
     // Constructor
     private GPTDataByLecture(Lecture lecture, Curriculum curriculum, StudentLecture studentLecture) {

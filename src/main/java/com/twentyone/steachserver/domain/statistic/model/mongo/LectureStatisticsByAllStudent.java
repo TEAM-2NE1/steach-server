@@ -4,6 +4,8 @@ import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,10 +15,12 @@ import java.util.List;
 
 @Document(collection = "lecture_statistics_by_all_student")
 @Getter
+@Setter
+@NoArgsConstructor // 인스턴스화 할때 생성자가 있어야함.
 public class LectureStatisticsByAllStudent {
     @Id
     private ObjectId id;
-    private final Integer lectureId;
+    private Integer lectureId;
     private Integer averageQuizTotalScore;
     private Integer averageQuizAnswerCount;
     private Integer averageFocusTime;
@@ -32,10 +36,6 @@ public class LectureStatisticsByAllStudent {
 
     private LectureStatisticsByAllStudent(Lecture lecture) {
         this.lectureId = lecture.getId();
-    }
-
-    public static LectureStatisticsByAllStudent of(Lecture lecture, Integer averageQuizTotalScore, Integer averageQuizAnswerCount, Integer averageFocusTime, BigDecimal averageFocusRatio) {
-        return new LectureStatisticsByAllStudent(lecture, averageQuizTotalScore, averageQuizAnswerCount, averageFocusTime, averageFocusRatio);
     }
 
     public static LectureStatisticsByAllStudent of(Lecture lecture, List<StudentLecture> allStudentInfoByLectureId) {
@@ -54,9 +54,7 @@ public class LectureStatisticsByAllStudent {
             totalFocusRatio = totalFocusRatio.add(studentLecture.getFocusRatio());
             totalFocusTime += studentLecture.getFocusTime();
         }
-
-        //FIXME 0으로 나눠지지 않게 처리했는데 확인 부탁드립니다.
-        if (quizSize < 0) {
+        if (quizSize > 0) {
             lectureStatisticsByAllStudent.averageQuizTotalScore = totalQuizTotalScore / quizSize;
             lectureStatisticsByAllStudent.averageQuizAnswerCount = totalQuizAnswerCount / quizSize;
             lectureStatisticsByAllStudent.averageFocusTime = totalFocusTime / quizSize;
