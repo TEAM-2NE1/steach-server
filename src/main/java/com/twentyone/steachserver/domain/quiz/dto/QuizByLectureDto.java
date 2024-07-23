@@ -15,7 +15,7 @@ public record QuizByLectureDto(Integer quizNumber,
                                List<String> answers
 ) {
     public static QuizByLectureDto of(Quiz quiz) {
-        Set<QuizChoice> quizChoices = quiz.getQuizChoices();
+        List<QuizChoice> quizChoices = quiz.getQuizChoices();
         List<String> choiceSentences = new ArrayList<>();
         List<String> answers = new ArrayList<>();
 
