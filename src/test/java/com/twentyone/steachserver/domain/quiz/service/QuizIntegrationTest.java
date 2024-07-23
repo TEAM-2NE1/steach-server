@@ -13,6 +13,7 @@ import com.twentyone.steachserver.domain.member.repository.StudentRepository;
 import com.twentyone.steachserver.domain.member.repository.TeacherRepository;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
+import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +25,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
 public class QuizIntegrationTest {
     public static final String CHOICE1 = "asdf";
     public static final String CHOICE2 = "qwer";
+    public static final int QUIZ_NUMBER = 1;
+
     @Autowired
     QuizService quizService;
     @Autowired
@@ -79,20 +82,52 @@ public class QuizIntegrationTest {
     @Test
     void 퀴즈생성() throws Exception {
         Lecture createdLecture = lectureRepository.save(Lecture.of("title", 1, LocalDateTime.now(), curriculum));
-        int quizNumber = 1;
         String question = "asdf";
         List<String> choices = List.of(new String[]{CHOICE1, CHOICE2});
         List<String> answers = List.of(new String[]{CHOICE1});
 
-        Quiz quiz = quizService.createQuiz(createdLecture.getId(), new QuizRequestDto(quizNumber, question, choices, answers))
+        Quiz quiz = quizService.createQuiz(createdLecture.getId(), new QuizRequestDto(QUIZ_NUMBER, question, choices, answers))
                 .orElseThrow(() -> new RuntimeException("에러남"));
 
         assertEquals(quiz.getQuestion(), question);
-        assertEquals(quiz.getQuizNumber(), quizNumber);
-        for (int i =0; i<quiz.getQuizChoices().size(); i++) {
+        assertEquals(quiz.getQuizNumber(), QUIZ_NUMBER);
+        for (int i = 0; i < quiz.getQuizChoices().size(); i++) {
             assertEquals(quiz.getQuizChoices().get(i).getChoiceSentence(), choices.get(i));
         }
 
         assertEquals(quiz.getQuestion(), question);
+    }
+
+    @Test
+    void 퀴즈조회() throws Exception {
+        //given
+        Lecture createdLecture = lectureRepository.save(Lecture.of("title", 1, LocalDateTime.now(), curriculum));
+        String question = "asdf";
+        List<String> choices = List.of(new String[]{CHOICE1, CHOICE2});
+        List<String> answers = List.of(new String[]{CHOICE1});
+
+        Quiz quiz1 = quizService.createQuiz(createdLecture.getId(), new QuizRequestDto(QUIZ_NUMBER, question, choices, answers))
+                .orElseThrow(() -> new RuntimeException("에러남"));
+
+        Quiz quiz = quizService.findById(quiz1.getId())
+                .orElseThrow(() -> new RuntimeException("asdf"));
+
+        assertEquals(quiz.getQuizNumber(), QUIZ_NUMBER);
+        assertEquals(quiz.getQuestion(), question);
+        assertEquals(choices.size(), quiz.getQuizChoices().size());
+
+        for (int i = 0; i < choices.size(); i++) {
+            QuizChoice quizChoice = quiz.getQuizChoices().get(i);
+
+            //정답 문장이 잘 들어가는지 확인
+            assertEquals(choices.get(i), quizChoice.getChoiceSentence());
+
+            //answer 여부가 잘 저장되는지 확인
+            if (answers.contains(choices.get(i))) {
+                assertTrue(quizChoice.getIsAnswer());
+            } else {
+                assertFalse(quizChoice.getIsAnswer());
+            }
+        }
     }
 }
