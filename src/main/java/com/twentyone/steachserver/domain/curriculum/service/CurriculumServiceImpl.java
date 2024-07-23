@@ -117,9 +117,13 @@ public class CurriculumServiceImpl implements CurriculumService {
         }
 
         StudentCurriculum studentCurriculum = new StudentCurriculum(student, curriculum);
-        for (Lecture lecture : curriculum.getLectures()) {
-            studentLectureRepository.save(StudentLecture.of(student, lecture));
+
+        if (curriculum.getLectures() != null) {
+            for (Lecture lecture : curriculum.getLectures()) {
+                studentLectureRepository.save(StudentLecture.of(student, lecture));
+            }
         }
+
         studentCurriculumRepository.save(studentCurriculum);
 
         curriculum.register();

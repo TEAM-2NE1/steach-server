@@ -13,12 +13,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Transactional
 @SpringBootTest
 public class CurriculumServiceIntegrationTest {
     public static final String TITLE = "title";
@@ -49,8 +51,8 @@ public class CurriculumServiceIntegrationTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        teacher = Teacher.of("teacher1", "password1", "김범식", "bumsik@gmail.com", "imagePath");
-        student = Student.of("student1", "password2", "주효림", "mylime@gmail.com");
+        teacher = Teacher.of("teacher3132", "passw3ord132", "김범3식32", "bums33ik2@gmail.com", "imagePath");
+        student = Student.of("student1332", "passwor3d232", "주효림323", "myli3m3e2@gmail.com");
 
         teacherRepository.save(teacher);
         studentRepository.save(student);
