@@ -38,7 +38,7 @@ public class StudentController {
         return ResponseEntity.ok(studentService.updateInfo(request, student));
     }
 
-    //학생이 수강하는 커리큘럼 조회
+    @Operation(summary = "학생이 수강하는 커리큘럼 조회")
     @GetMapping("/curricula")
     public ResponseEntity<CurriculumListResponse> getMyCourses(@AuthenticationPrincipal Student student) {
         CurriculumListResponse curriculumListResponse = curriculumService.getStudentsCurricula(student);

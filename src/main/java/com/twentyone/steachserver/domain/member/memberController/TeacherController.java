@@ -37,7 +37,7 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.updateInfo(request, teacher));
     }
 
-    //선생님이 강의하는 커리큘럼 조회
+    @Operation(summary = "선생님이 강의하는 커리큘럼 조회")
     @GetMapping("/curricula")
     public ResponseEntity<CurriculumListResponse> getMyCourses(@AuthenticationPrincipal Teacher teacher) {
         CurriculumListResponse curriculumListResponse = curriculumService.getTeachersCurricula(teacher);
