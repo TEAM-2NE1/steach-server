@@ -10,13 +10,16 @@ import java.util.List;
 
 @Getter
 public class CompletedLecturesResponseDto extends LectureBeforeStartingResponseDto{
-    private final LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto;
-    private final List<StudentInfoByLectureDto> studentsQuizzesByLectureDto;
+    private final Boolean isCompleted = true;
 
     private final LocalDateTime realStartTime;
     private final LocalDateTime realEndTime;
 
-    private final Boolean isCompleted = true;
+    private final LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto;
+
+    private final List<StudentInfoByLectureDto> studentsQuizzesByLectureDto;
+
+
 
     private CompletedLecturesResponseDto(LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto,
                                          List<StudentInfoByLectureDto> studentsQuizzesByLectureDto,
@@ -28,9 +31,9 @@ public class CompletedLecturesResponseDto extends LectureBeforeStartingResponseD
     }
 
     public static CompletedLecturesResponseDto of(LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto,
-                    List<StudentInfoByLectureDto> studentsQuizzesByLectureDto,
+                    List<StudentInfoByLectureDto> StudentInfoByLectureDtos,
                     Lecture lecture) {
-        return new CompletedLecturesResponseDto(lectureBeforeStartingResponseDto, studentsQuizzesByLectureDto, lecture.getRealStartTime(),lecture.getRealEndTime());
+        return new CompletedLecturesResponseDto(lectureBeforeStartingResponseDto, StudentInfoByLectureDtos, lecture.getRealStartTime(),lecture.getRealEndTime());
     }
 
 }

@@ -1,5 +1,9 @@
 package com.twentyone.steachserver.domain.statistic.model;
 
+import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
+import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
+import com.twentyone.steachserver.domain.statistic.dto.StatisticsByCurriculumCategory;
+import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -10,6 +14,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "statistics")
@@ -86,4 +92,77 @@ public class RadarChartStatistic {
 
     @Column(name = "sum_lecture_minutes7")
     private Integer sumLectureMinutes7;
+
+    private RadarChartStatistic(Integer studentId) {
+        this.id = studentId;
+    }
+
+    public static RadarChartStatistic of(Integer studentId) {
+        return new RadarChartStatistic(studentId);
+    }
+    
+    public List<StatisticsByCurriculumCategory> getItems() {
+        List<StatisticsByCurriculumCategory> items = new ArrayList<>();
+        items.add(new StatisticsByCurriculumCategory(averageFocusRatio1, lectureCount1, sumLectureMinutes1));
+        items.add(new StatisticsByCurriculumCategory(averageFocusRatio2, lectureCount2, sumLectureMinutes2));
+        items.add(new StatisticsByCurriculumCategory(averageFocusRatio3, lectureCount3, sumLectureMinutes3));
+        items.add(new StatisticsByCurriculumCategory(averageFocusRatio4, lectureCount4, sumLectureMinutes4));
+        items.add(new StatisticsByCurriculumCategory(averageFocusRatio5, lectureCount5, sumLectureMinutes5));
+        items.add(new StatisticsByCurriculumCategory(averageFocusRatio6, lectureCount6, sumLectureMinutes6));
+        items.add(new StatisticsByCurriculumCategory(averageFocusRatio7, lectureCount7, sumLectureMinutes7));
+        return items;
+    } 
+
+    public void addStatistic(Curriculum curriculum, StudentLecture studentLecture) {
+        String inputCategoryName = curriculum.getCategory().name();
+        List<CurriculumCategory> categories = CurriculumCategory.getCategories();
+        for (int i = 0; i < categories.size(); i++) {
+            String categoryName = CurriculumCategory.getCategoryByIndex(i).name();
+            if (inputCategoryName.equals(categoryName)) {
+                sumStatistic(i + 1, studentLecture);
+                break;
+            }
+        }
+    }
+
+    private void sumStatistic(Integer categoryNum, StudentLecture studentLecture) {
+        switch (categoryNum) {
+            case 1 -> {
+                this.averageFocusRatio1 = this.averageFocusRatio1.add(studentLecture.getFocusRatio());
+                this.lectureCount1++;
+                this.sumLectureMinutes1 += studentLecture.getFocusTime();
+            }
+            case 2 -> {
+                this.averageFocusRatio2 = this.averageFocusRatio2.add(studentLecture.getFocusRatio());
+                this.lectureCount2++;
+                this.sumLectureMinutes2 += studentLecture.getFocusTime();
+            }
+            case 3 -> {
+                this.averageFocusRatio3 = this.averageFocusRatio3.add(studentLecture.getFocusRatio());
+                this.lectureCount3++;
+                this.sumLectureMinutes3 += studentLecture.getFocusTime();
+            }
+            case 4 -> {
+                this.averageFocusRatio4 = this.averageFocusRatio4.add(studentLecture.getFocusRatio());
+                this.lectureCount4++;
+                this.sumLectureMinutes4 += studentLecture.getFocusTime();
+            }
+            case 5 -> {
+                this.averageFocusRatio5 = this.averageFocusRatio5.add(studentLecture.getFocusRatio());
+                this.lectureCount5++;
+                this.sumLectureMinutes5 += studentLecture.getFocusTime();
+            }
+            case 6 -> {
+                this.averageFocusRatio6 = this.averageFocusRatio6.add(studentLecture.getFocusRatio());
+                this.lectureCount6++;
+                this.sumLectureMinutes6 += studentLecture.getFocusTime();
+            }
+            case 7 -> {
+                this.averageFocusRatio7 = this.averageFocusRatio7.add(studentLecture.getFocusRatio());
+                this.lectureCount7++;
+                this.sumLectureMinutes7 += studentLecture.getFocusTime();
+            }
+            default -> throw new IllegalArgumentException("Invalid category index: " + categoryNum);
+        }
+    }
 }

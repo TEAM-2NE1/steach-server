@@ -23,6 +23,8 @@ import com.twentyone.steachserver.domain.quiz.model.QQuiz;
 import com.twentyone.steachserver.domain.studentCurriculum.model.QStudentCurriculum;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
 import com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture;
+import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
+import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizByLectureDto;
 import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizDto;
 import com.twentyone.steachserver.domain.studentQuiz.model.QStudentQuiz;
 import jakarta.persistence.EntityManager;
@@ -39,6 +41,7 @@ import static com.twentyone.steachserver.domain.curriculum.model.QCurriculumDeta
 import static com.twentyone.steachserver.domain.lecture.model.QLecture.lecture;
 import static com.twentyone.steachserver.domain.member.model.QStudent.student;
 import static com.twentyone.steachserver.domain.studentCurriculum.model.QStudentCurriculum.studentCurriculum;
+import static com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture.studentLecture;
 
 
 public class LectureQueryRepository {
@@ -95,32 +98,6 @@ public class LectureQueryRepository {
         return LectureBeforeStartingResponseDto.of(lecture, simpleCurriculumByLectureDto, curriculumDetailByLectureDto, studentByLectureDtos);
     }
 
-
-    public FinalLectureInfoByTeacherDto getFinalLectureInfoByTeacher(Integer lectureId) {
-        QStudentLecture studentLecture = QStudentLecture.studentLecture;
-        QStudentQuiz studentQuiz = QStudentQuiz.studentQuiz;
-
-        List<StudentInfoByLectureDto> studentInfoByLectureDtoList = query
-                .selectFrom(studentLecture)
-                .leftJoin(studentLecture.student).fetchJoin()
-                .leftJoin(studentLecture.student.studentQuizzes, studentQuiz).fetchJoin()
-                .where(studentLecture.lecture.id.eq(lectureId))
-                .fetch()
-                .stream()
-                // studentInfoLectureDto
-                .map(ls -> new StudentInfoByLectureDto(
-                        ls.getStudent().getStudentQuizzes().stream()
-                                .map(sq -> new StudentQuizDto(sq.getScore(), sq.getStudentChoice(), sq.getStudent().getName()))
-                                .collect(Collectors.toList()),
-                        ls.getFocusRatio(),
-                        ls.getFocusTime()
-                ))
-                .collect(Collectors.toList());
-
-        return FinalLectureInfoByTeacherDto.createFinalLectureInfoByTeacherDto(studentInfoByLectureDtoList);
-    }
-
-
     public Optional<Classroom> findClassroomByLectureAndStudent(Integer lectureId, Integer studentId) {
         QLecture qLecture = lecture;
         QStudentCurriculum qStudentCurriculum = studentCurriculum;
@@ -155,4 +132,12 @@ public class LectureQueryRepository {
         return Optional.empty();
     }
 
+    public List<Student> getStudentIds(Integer lectureId) {
+        return query.selectFrom(studentLecture)
+                .where(studentLecture.lecture.id.eq(lectureId))
+                .fetch()
+                .stream()
+                .map(StudentLecture::getStudent)
+                .toList();
+    }
 }
