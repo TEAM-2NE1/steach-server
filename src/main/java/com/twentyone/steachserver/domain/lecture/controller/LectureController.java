@@ -36,18 +36,13 @@ public class LectureController {
 
     @Operation(summary = "강의에 대한 다양한 정보 반환", description = "무조건 200을 반환, 강의에 대해서 시작 전 강의면 시작 전 형태로, 끝난 강의는 끝난형태로 반환.")
     @GetMapping("/{lectureId}")
-    public ResponseEntity<LectureBeforeStartingResponseDto> getLectureInformation(@PathVariable("lectureId")Integer lectureId) {
-        LectureBeforeStartingResponseDto lectureResponseDto = lectureService.getLectureInformation(lectureId);
-//        Todo : 이제 해야함
-        //   "students": [],
-        //  "quizzes": [],
-        System.out.println(lectureResponseDto);
-        if (lectureResponseDto.getIsCompleted()){
-            CompletedLecturesResponseDto completedLecturesResponseDto = (CompletedLecturesResponseDto) lectureResponseDto;
+    public ResponseEntity<?> getLectureInformation(@PathVariable("lectureId")Integer lectureId) {
+        LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto = lectureService.getLectureInformation(lectureId);
+        if (lectureBeforeStartingResponseDto.getIsCompleted()){
+            CompletedLecturesResponseDto completedLecturesResponseDto =   lectureService.getFinalLectureInformation(lectureBeforeStartingResponseDto, lectureId);
             return ResponseEntity.ok().body(completedLecturesResponseDto);
         }
-
-        return ResponseEntity.ok().body(lectureResponseDto);
+        return ResponseEntity.ok().body(lectureBeforeStartingResponseDto);
     }
 
     @Operation(summary = "강의 수정!", description = "성공시 200 반환, 실패시 204 NO_CONTENT 반환.")
