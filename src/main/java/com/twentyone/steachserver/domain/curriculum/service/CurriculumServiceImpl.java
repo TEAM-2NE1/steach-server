@@ -10,6 +10,7 @@ import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumDetailRepository;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumRepository;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumSearchRepository;
+import com.twentyone.steachserver.domain.curriculum.validator.CurriculumValidator;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
@@ -41,6 +42,7 @@ public class CurriculumServiceImpl implements CurriculumService {
     private final StudentCurriculumRepository studentCurriculumRepository;
     private final StudentLectureRepository studentLectureRepository;
 
+    private final CurriculumValidator curriculumValidator;
     @Override
     @Transactional(readOnly = true)
     public CurriculumDetailResponse getDetail(Integer id) {
@@ -57,7 +59,7 @@ public class CurriculumServiceImpl implements CurriculumService {
         if (!(loginCredential instanceof Teacher)) {
             throw new RuntimeException("선생님만 만들 수 있습니다.");
         }
-
+        curriculumValidator.validatorMaxAttendees(request);
         //bitmask byte로 변환
         //이진수 문자열을 정수로 변환
         Byte weekdaysBitmask = bitmaskStringToByte(request.getWeekdaysBitmask());
@@ -74,7 +76,7 @@ public class CurriculumServiceImpl implements CurriculumService {
                 .endDate(LocalDate.from(request.getEndDate()))
                 .lectureStartTime(request.getLectureStartTime())
                 .lectureCloseTime(request.getLectureEndTime())
-                .maxAttendees(request.getMaxAttendees() == 0 ? 4 : request.getMaxAttendees())
+                .maxAttendees(request.getMaxAttendees())
                 .build();
         curriculumDetailRepository.save(curriculumDetail);
 
@@ -97,6 +99,8 @@ public class CurriculumServiceImpl implements CurriculumService {
 
         return CurriculumDetailResponse.fromDomain(curriculum); //관련 강의도 줄까?? 고민
     }
+
+
 
     @Override
     @Transactional
