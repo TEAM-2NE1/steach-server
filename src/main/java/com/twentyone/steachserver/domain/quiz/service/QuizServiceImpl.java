@@ -51,8 +51,9 @@ public class  QuizServiceImpl implements QuizService {
         Optional<Lecture> lectureOpt = lectureRepository.findById(lectureId);
 
         if (lectureOpt.isEmpty()) {
-            throw new RuntimeException("Lecture not found");
+            throw new IllegalArgumentException("Lecture not found");
         }
+
         return lectureOpt.get();
     }
 

@@ -17,6 +17,8 @@ import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
 import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCurriculumRepository;
+import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
+import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,8 @@ public class CurriculumServiceImpl implements CurriculumService {
     private final LectureRepository lectureRepository;
     private final CurriculumDetailRepository curriculumDetailRepository;
     private final StudentCurriculumRepository studentCurriculumRepository;
+    private final StudentLectureRepository studentLectureRepository;
+
     @Override
     @Transactional(readOnly = true)
     public CurriculumDetailResponse getDetail(Integer id) {
@@ -71,7 +75,7 @@ public class CurriculumServiceImpl implements CurriculumService {
                 .endDate(LocalDate.from(request.getEndDate()))
                 .lectureStartTime(request.getLectureStartTime())
                 .lectureCloseTime(request.getLectureEndTime())
-                .maxAttendees(request.getMaxAttendees())
+                .maxAttendees(request.getMaxAttendees() == 0 ? 4 : request.getMaxAttendees())
                 .build();
         curriculumDetailRepository.save(curriculumDetail);
 
@@ -84,7 +88,7 @@ public class CurriculumServiceImpl implements CurriculumService {
         List<LocalDateTime> selectedDates = getSelectedWeekdays(request.getStartDate(), request.getEndDate(),
                 weekdaysBitmask);
 
-        for (int i = 1; i < selectedDates.size(); i++) {
+        for (int i = 0; i < selectedDates.size(); i++) {
             LocalDateTime lectureDate = selectedDates.get(i).with(curriculumDetail.getLectureStartTime()); // 날짜에 시간 설정
             int order = i + 1;
             Lecture lecture = Lecture.of(request.getTitle() + " " + order + "강", order,
@@ -113,6 +117,9 @@ public class CurriculumServiceImpl implements CurriculumService {
         }
 
         StudentCurriculum studentCurriculum = new StudentCurriculum(student, curriculum);
+        for (Lecture lecture : curriculum.getLectures()) {
+            studentLectureRepository.save(StudentLecture.of(student, lecture));
+        }
         studentCurriculumRepository.save(studentCurriculum);
 
         curriculum.register();

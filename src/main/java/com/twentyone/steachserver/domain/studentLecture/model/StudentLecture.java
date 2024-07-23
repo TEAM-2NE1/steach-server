@@ -46,7 +46,11 @@ public class StudentLecture {
         this.lecture = lecture;
     }
 
-    public static StudentLecture createStudentLecture(Student student, Lecture lecture, Integer focusTime) {
+    public static StudentLecture of(Student student, Lecture lecture) {
+        return new StudentLecture(student, lecture);
+    }
+
+    public static StudentLecture of(Student student, Lecture lecture, Integer focusTime) {
         StudentLecture studentLecture = new StudentLecture(student, lecture);
         studentLecture.focusTime = focusTime;
         return studentLecture;
