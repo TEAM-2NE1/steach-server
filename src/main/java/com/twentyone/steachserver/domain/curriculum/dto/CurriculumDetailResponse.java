@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class CurriculumDetailResponse {
+    private Integer curriculumId;
     private String title;
     private String subTitle;
     private String intro;
@@ -38,6 +39,7 @@ public class CurriculumDetailResponse {
         String paddedWeekDaysBitmask = String.format("%0" + 7 + "d", Integer.parseInt(weekDaysBitmaskString));
 
         return CurriculumDetailResponse.builder()
+                .curriculumId(curriculum.getId())
                 .title(curriculum.getTitle())
                 .subTitle(curriculumDetail.getSubTitle())
                 .intro(curriculumDetail.getIntro())
