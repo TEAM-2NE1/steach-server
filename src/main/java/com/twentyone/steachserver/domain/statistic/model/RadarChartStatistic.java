@@ -27,71 +27,72 @@ public class RadarChartStatistic {
     @Column(name = "student_id")
     private Integer id;
 
+    // 255자 이하로 넣어주세요/
     @Column(name = "gpt_career_suggestion", length = 255)
-    private String gptCareerSuggestion;
+    private String gptCareerSuggestion = "";
 
     @Column(name = "average_focus_ratio1", precision = 5, scale = 2)
-    private BigDecimal averageFocusRatio1;
+    private BigDecimal averageFocusRatio1 = new BigDecimal(0);
 
     @Column(name = "lecture_count1")
-    private Short lectureCount1;
+    private Short lectureCount1 = 0;
 
     @Column(name = "sum_lecture_minutes1")
-    private Integer sumLectureMinutes1;
+    private Integer sumLectureMinutes1 = 0;
 
     @Column(name = "average_focus_ratio2", precision = 5, scale = 2)
-    private BigDecimal averageFocusRatio2;
+    private BigDecimal averageFocusRatio2 = new BigDecimal(0);
 
     @Column(name = "lecture_count2")
-    private Short lectureCount2;
+    private Short lectureCount2 = 0;
 
     @Column(name = "sum_lecture_minutes2")
-    private Integer sumLectureMinutes2;
+    private Integer sumLectureMinutes2 = 0;
 
     @Column(name = "average_focus_ratio3", precision = 5, scale = 2)
-    private BigDecimal averageFocusRatio3;
+    private BigDecimal averageFocusRatio3 = new BigDecimal(0);
 
     @Column(name = "lecture_count3")
-    private Short lectureCount3;
+    private Short lectureCount3 = 0;
 
     @Column(name = "sum_lecture_minutes3")
-    private Integer sumLectureMinutes3;
+    private Integer sumLectureMinutes3 = 0;
 
     @Column(name = "average_focus_ratio4", precision = 5, scale = 2)
-    private BigDecimal averageFocusRatio4;
+    private BigDecimal averageFocusRatio4 = new BigDecimal(0);
 
     @Column(name = "lecture_count4")
-    private Short lectureCount4;
+    private Short lectureCount4 = 0;
 
     @Column(name = "sum_lecture_minutes4")
-    private Integer sumLectureMinutes4;
+    private Integer sumLectureMinutes4 = 0;
 
     @Column(name = "average_focus_ratio5", precision = 5, scale = 2)
-    private BigDecimal averageFocusRatio5;
+    private BigDecimal averageFocusRatio5 = new BigDecimal(0);
 
     @Column(name = "lecture_count5")
-    private Short lectureCount5;
+    private Short lectureCount5 = 0;
 
     @Column(name = "sum_lecture_minutes5")
-    private Integer sumLectureMinutes5;
+    private Integer sumLectureMinutes5 = 0;
 
     @Column(name = "average_focus_ratio6", precision = 5, scale = 2)
-    private BigDecimal averageFocusRatio6;
+    private BigDecimal averageFocusRatio6 = new BigDecimal(0);
 
     @Column(name = "lecture_count6")
-    private Short lectureCount6;
+    private Short lectureCount6 = 0;
 
     @Column(name = "sum_lecture_minutes6")
-    private Integer sumLectureMinutes6;
+    private Integer sumLectureMinutes6 = 0;
 
     @Column(name = "average_focus_ratio7", precision = 5, scale = 2)
-    private BigDecimal averageFocusRatio7;
+    private BigDecimal averageFocusRatio7 = new BigDecimal(0);
 
     @Column(name = "lecture_count7")
-    private Short lectureCount7;
+    private Short lectureCount7 = 0;
 
     @Column(name = "sum_lecture_minutes7")
-    private Integer sumLectureMinutes7;
+    private Integer sumLectureMinutes7 = 0;
 
     private RadarChartStatistic(Integer studentId) {
         this.id = studentId;
@@ -100,7 +101,7 @@ public class RadarChartStatistic {
     public static RadarChartStatistic of(Integer studentId) {
         return new RadarChartStatistic(studentId);
     }
-    
+
     public List<StatisticsByCurriculumCategory> getItems() {
         List<StatisticsByCurriculumCategory> items = new ArrayList<>();
         items.add(new StatisticsByCurriculumCategory(averageFocusRatio1, lectureCount1, sumLectureMinutes1));
@@ -111,7 +112,7 @@ public class RadarChartStatistic {
         items.add(new StatisticsByCurriculumCategory(averageFocusRatio6, lectureCount6, sumLectureMinutes6));
         items.add(new StatisticsByCurriculumCategory(averageFocusRatio7, lectureCount7, sumLectureMinutes7));
         return items;
-    } 
+    }
 
     public void addStatistic(Curriculum curriculum, StudentLecture studentLecture) {
         String inputCategoryName = curriculum.getCategory().name();
