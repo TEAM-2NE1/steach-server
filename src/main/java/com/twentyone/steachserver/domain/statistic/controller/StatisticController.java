@@ -4,8 +4,6 @@ import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.statistic.dto.LectureStatisticsByAllStudentDto;
 import com.twentyone.steachserver.domain.statistic.dto.LectureStatisticsByAllStudentListDto;
 import com.twentyone.steachserver.domain.statistic.dto.RadarChartStatisticDto;
-import com.twentyone.steachserver.domain.statistic.dto.GPTDataRequestDto;
-import com.twentyone.steachserver.domain.statistic.model.mongo.LectureStatisticsByAllStudent;
 import com.twentyone.steachserver.domain.statistic.service.StatisticService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,8 +34,8 @@ public class StatisticController {
 
     @Operation(summary = "GPT 문장 반환 ", description = "무조건 200을 반환")
     @GetMapping("/gpt")
-    public ResponseEntity<String> getGPTStatistic(@AuthenticationPrincipal Student student, @RequestBody GPTDataRequestDto gptDataRequestDto) {
-        String gptString = statisticService.createGPTString(student, gptDataRequestDto);
+    public ResponseEntity<String> getGPTStatistic(@AuthenticationPrincipal Student student) {
+        String gptString = statisticService.createGPTString(student);
         return ResponseEntity.ok()
                 .body(gptString);
     }
