@@ -1,21 +1,9 @@
 package com.twentyone.steachserver.domain.studentLecture.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailByLectureDto;
-import com.twentyone.steachserver.domain.curriculum.dto.SimpleCurriculumByLectureDto;
-import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
-import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
-import com.twentyone.steachserver.domain.curriculum.model.QCurriculum;
-import com.twentyone.steachserver.domain.curriculum.model.QCurriculumDetail;
-import com.twentyone.steachserver.domain.lecture.dto.LectureBeforeStartingResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.StudentInfoByLectureDto;
-import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.model.QLecture;
-import com.twentyone.steachserver.domain.member.dto.StudentByLectureDto;
-import com.twentyone.steachserver.domain.member.model.QStudent;
 import com.twentyone.steachserver.domain.quiz.model.QQuiz;
-import com.twentyone.steachserver.domain.studentCurriculum.model.QStudentCurriculum;
-import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
 import com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizByLectureDto;
@@ -25,6 +13,8 @@ import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -141,7 +131,7 @@ public class StudentLectureQueryRepository {
 
             // focusRatio 계산 (졸음 비율)
             if (focusTime != null && lectureDurationMinutes > 0) {
-                long calculatedFocusRatio = focusTime / lectureDurationMinutes * 100;
+                BigDecimal calculatedFocusRatio = BigDecimal.valueOf(focusTime / lectureDurationMinutes * 100).setScale(2, RoundingMode.HALF_UP);
                 sl.updateFocusRatio(calculatedFocusRatio);
             }
 
