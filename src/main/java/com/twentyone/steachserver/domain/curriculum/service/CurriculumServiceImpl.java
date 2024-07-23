@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +43,7 @@ public class CurriculumServiceImpl implements CurriculumService {
     private final StudentLectureRepository studentLectureRepository;
 
     private final CurriculumValidator curriculumValidator;
+
     @Override
     @Transactional(readOnly = true)
     public CurriculumDetailResponse getDetail(Integer id) {
@@ -100,7 +100,6 @@ public class CurriculumServiceImpl implements CurriculumService {
 
         return CurriculumDetailResponse.fromDomain(curriculum); //관련 강의도 줄까?? 고민
     }
-
 
 
     @Override
@@ -175,6 +174,7 @@ public class CurriculumServiceImpl implements CurriculumService {
         return (byte) Integer.parseInt(bitmaskString, 2);
     }
 
+    @Override
     public List<LocalDateTime> getSelectedWeekdays(LocalDateTime startDate, LocalDateTime endDate,
                                                    int weekdaysBitmask) {
         List<LocalDateTime> selectedDates = new ArrayList<>();
