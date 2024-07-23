@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Builder
 @Entity
@@ -41,8 +41,8 @@ public class CurriculumDetail {
 
     private LocalDate startDate;
     private LocalDate endDate;
-    private LocalTime lectureStartTime;
-    private LocalTime lectureCloseTime;
+    private LocalDateTime lectureStartTime;
+    private LocalDateTime lectureCloseTime;
 
     @Builder.Default
     @Column(name = "current_attendees", columnDefinition = "TINYINT(4)")

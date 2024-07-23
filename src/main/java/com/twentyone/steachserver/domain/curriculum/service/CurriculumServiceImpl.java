@@ -68,8 +68,8 @@ public class CurriculumServiceImpl implements CurriculumService {
                 .weekdaysBitmask(weekdaysBitmask)
                 .startDate(LocalDate.from(request.getStartDate()))
                 .endDate(LocalDate.from(request.getEndDate()))
-                .lectureStartTime(LocalTime.from(request.getLectureStartTime()))
-                .lectureCloseTime(LocalTime.from(request.getLectureEndTime()))
+                .lectureStartTime(request.getLectureStartTime())
+                .lectureCloseTime(request.getLectureEndTime())
                 .maxAttendees(request.getMaxAttendees())
                 .build();
         curriculumDetailRepository.save(curriculumDetail);
