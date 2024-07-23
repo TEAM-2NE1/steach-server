@@ -9,8 +9,8 @@ import java.util.List;
 public class FinalLectureInfoByTeacherDto {
     private final List<StudentInfoByLectureDto> studentInfoByLectureDtoList;
     private BigDecimal averageFocusRatio;
-    private Integer averageSleepMinute;
-    private Integer averageQuizScore;
+    private Integer averageFocusMinute;
+    private Integer averageTotalQuizScore;
     private Integer averageCorrectNumber;
 
     private FinalLectureInfoByTeacherDto(List<StudentInfoByLectureDto> studentInfoByLectureDtoList) {
@@ -35,8 +35,8 @@ public class FinalLectureInfoByTeacherDto {
         int studentCount = studentInfoByLectureDtoList.size();
 
         finalLectureInfoByTeacherDto.averageFocusRatio = studentCount > 0 ? totalFocusRatio.divide(BigDecimal.valueOf(studentCount), 2, RoundingMode.HALF_UP) : BigDecimal.ZERO;
-        finalLectureInfoByTeacherDto.averageSleepMinute = studentCount > 0 ? totalFocusMinute / studentCount : 0;
-        finalLectureInfoByTeacherDto.averageQuizScore = studentCount > 0 ? totalQuizScore / studentCount : 0;
+        finalLectureInfoByTeacherDto.averageFocusMinute = studentCount > 0 ? totalFocusMinute / studentCount : 0;
+        finalLectureInfoByTeacherDto.averageTotalQuizScore = studentCount > 0 ? totalQuizScore / studentCount : 0;
         finalLectureInfoByTeacherDto.averageCorrectNumber = studentCount > 0 ? totalCorrectNumber / studentCount : 0;
 
         return finalLectureInfoByTeacherDto;
