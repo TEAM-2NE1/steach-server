@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -34,16 +36,16 @@ public class Quiz {
     private Lecture lecture;
 
     @OneToMany(mappedBy = "quiz")
-    private Set<StudentQuiz> studentQuizzes = new HashSet<>();
+    private List<StudentQuiz> studentQuizzes = new ArrayList<>();
 
     @OneToMany(mappedBy = "quiz")
-    private Set<QuizChoice> quizChoices = new HashSet<>();
+    private List<QuizChoice> quizChoices = new ArrayList<>();
 
     public static Quiz createQuiz(QuizRequestDto request, Lecture lecture) {
         Quiz quiz = new Quiz();
         quiz.setLecture(lecture);
         quiz.setQuestion(request.question());
-        quiz.setQuizNumber(request.quizNumber());
+        quiz.setQuizNumber(request.quizNumber()== 0 ? lecture.getQuizzes().size() + 1 : request.quizNumber());
 
         lecture.addQuiz(quiz);
         return quiz;

@@ -19,7 +19,7 @@ import java.util.Optional;
 public class QuizController {
     private final QuizService quizService;
 
-    @Operation(summary = "퀴즈 생성!?!?", description = "성공시 200 반환, 실패시 500 INTERNAL_SERVER_ERROR 반환")
+    @Operation(summary = "퀴즈 생성!", description = "성공시 200 반환, 실패시 500 INTERNAL_SERVER_ERROR 반환")
     @PostMapping("/{lectureId}")
     public ResponseEntity<QuizResponseDto> createQuiz(@PathVariable("lectureId")Integer lectureId, @RequestBody QuizRequestDto request) throws Exception {
         return quizService.createQuiz(lectureId, request)

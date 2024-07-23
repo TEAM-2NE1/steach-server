@@ -49,7 +49,7 @@ public class CurriculumDetail {
     private Integer currentAttendees = 0; //현재 수강확정인원
 
     @Column(columnDefinition = "TINYINT(4)")
-    private Integer maxAttendees; //수강정원
+    private Integer maxAttendees = 4; //수강정원
 
     public void register() {
         this.currentAttendees++;
