@@ -23,4 +23,6 @@ public interface LectureService {
     Lecture updateRealEndTime(Integer lectureId);
 
     Optional<Classroom> getClassroomByLectureAndStudent(Integer studentId, Integer lectureId);
+
+    void updateRealStartTime(Integer lectureId);
 }

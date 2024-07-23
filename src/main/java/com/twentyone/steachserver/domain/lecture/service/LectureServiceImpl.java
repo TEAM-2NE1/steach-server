@@ -10,12 +10,15 @@ import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class LectureServiceImpl implements LectureService {
 
@@ -39,16 +42,14 @@ public class LectureServiceImpl implements LectureService {
 
         LectureBeforeStartingResponseDto lectureBeforeStartingResponse = lectureQueryRepository.getLectureBeforeStartingResponse(lectureId);
 
-        if(lecture.getRealEndTime() == null){
+        if (lecture.getRealEndTime() == null) {
             return lectureBeforeStartingResponse;
         }
 
         List<StudentInfoByLectureDto> studentInfoByLecture = studentLectureQueryRepository.getStudentInfoByLecture(lectureId);
+        lectureBeforeStartingResponse.completeLecture();
 
-        CompletedLecturesResponseDto completedLecturesResponseDto = CompletedLecturesResponseDto.of(lectureBeforeStartingResponse, studentInfoByLecture, lecture);
-        completedLecturesResponseDto.completeLecture();
-
-        return completedLecturesResponseDto;
+        return CompletedLecturesResponseDto.of(lectureBeforeStartingResponse, studentInfoByLecture, lecture);
     }
 
     @Override
@@ -61,20 +62,58 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public Lecture updateRealEndTime(Integer lectureId) {
         return lectureRepository.findById(lectureId)
-                .map(lecture -> { lecture.updateRealEndTimeWithNow(); return lecture; })
+                .map(lecture -> {
+                    LocalDateTime realStartTime = lecture.getRealStartTime();
+                    System.out.println(realStartTime);
+                    if (realStartTime == null) {
+                        throw new IllegalArgumentException("lecture not started, can't update real end time");
+                    }
+                    LocalDateTime realEndTime = lecture.getRealEndTime();
+                    if (realEndTime == null) {
+                        lecture.updateRealEndTimeWithNow();
+                    }
+                    else {
+                        throw new IllegalArgumentException("lecture already ended, can't update real end time again");
+                    }
+                    return lecture;
+                })
                 .orElseThrow(() -> new IllegalArgumentException("lecture not found"));
     }
 
     @Override
-    public Optional<Classroom> getClassroomByLectureAndStudent(Integer studentId, Integer lectureId) {
-        return lectureQueryRepository.findClassroomByLectureAndStudent(lectureId, studentId);
+    @Transactional
+    public void updateRealStartTime(Integer lectureId) {
+        lectureRepository.findById(lectureId)
+                .ifPresentOrElse(
+                        lecture -> {
+                            LocalDateTime realStartTime = lecture.getRealStartTime();
+                            if (realStartTime == null) {
+                                lecture.updateRealStartTimeWithNow();
+                            }
+                            else {
+                                throw new IllegalArgumentException("lecture already started");
+                            }
+                        },
+                        () -> { throw new IllegalArgumentException("lecture not found"); }
+                );
     }
 
+
     @Override
-    public FinalLectureInfoByTeacherDto getFinalLectureInformation(Integer lectureId){
-        return lectureQueryRepository.getFinalLectureInfoByTeacher(lectureId);
+    public Optional<Classroom> getClassroomByLectureAndStudent(Integer studentId, Integer lectureId) {
+        Optional<Classroom> classroomByLectureAndStudent = lectureQueryRepository.findClassroomByLectureAndStudent(lectureId, studentId);
+        System.out.println(classroomByLectureAndStudent);
+        return classroomByLectureAndStudent;
+    }
+
+
+    @Override
+    public FinalLectureInfoByTeacherDto getFinalLectureInformation(Integer lectureId) {
+        List<StudentInfoByLectureDto> studentInfoByLecture = studentLectureQueryRepository.getStudentInfoByLecture(lectureId);
+        return FinalLectureInfoByTeacherDto.createFinalLectureInfoByTeacherDto(studentInfoByLecture);
     }
 }
 
