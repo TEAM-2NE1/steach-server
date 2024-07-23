@@ -3,6 +3,7 @@ package com.twentyone.steachserver.domain.curriculum.dto;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
+import java.time.LocalTime;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -25,8 +26,8 @@ public class CurriculumDetailResponse {
     private LocalDate startDate;
     private LocalDate endDate;
     private String weekdaysBitmask;
-    private LocalDateTime lectureStartTime;
-    private LocalDateTime lectureEndTime;
+    private LocalTime lectureStartTime;
+    private LocalTime lectureEndTime;
     private int currentAttendees;
     private int maxAttendees;
 
