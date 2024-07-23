@@ -1,10 +1,9 @@
 package com.twentyone.steachserver.domain.quiz.controller;
 
-import com.twentyone.steachserver.domain.lecture.service.LectureService;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizResponseDto;
-import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.service.QuizService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

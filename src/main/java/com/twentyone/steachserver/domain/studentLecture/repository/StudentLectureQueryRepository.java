@@ -18,6 +18,7 @@ import com.twentyone.steachserver.domain.studentCurriculum.model.QStudentCurricu
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
 import com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
+import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizByLectureDto;
 import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizDto;
 import com.twentyone.steachserver.domain.studentQuiz.model.QStudentQuiz;
 import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
@@ -28,6 +29,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -59,39 +61,32 @@ public class StudentLectureQueryRepository {
     }
 
     public List<StudentInfoByLectureDto> getStudentInfoByLecture(Integer lectureId) {
-        QLecture qLecture = lecture;
-        QStudentLecture qStudentLecture = QStudentLecture.studentLecture;
-        QStudentQuiz qStudentQuiz = QStudentQuiz.studentQuiz;
-        QStudent qStudent = QStudent.student;
+        QStudentLecture studentLecture = QStudentLecture.studentLecture;
+        QStudentQuiz studentQuiz = QStudentQuiz.studentQuiz;
+        QQuiz quiz = QQuiz.quiz;
 
-        // Lecture를 가져옴
-        Lecture lecture = query.selectFrom(qLecture)
-                .where(qLecture.id.eq(lectureId))
-                .fetchOne();
-        if (lecture == null) {
-            throw new IllegalStateException("lecture not found");
-        }
+        List<Integer> quizIds = query.select(quiz.id)
+                .from(quiz)
+                .where(quiz.lecture.id.eq(lectureId))
+                .stream().toList();
 
-        // StudentLecture 목록을 가져옴
-        List<StudentLecture> studentLectures = query.selectFrom(qStudentLecture)
-                .where(qStudentLecture.lecture.eq(lecture))
-                .fetch();
-
-        // StudentInfoByLectureDto 리스트를 생성
-        return studentLectures.stream().map(studentLecture -> {
-            // 각 StudentLecture에 대한 StudentQuiz 목록을 가져옴
-            List<StudentQuiz> studentQuizzes = query.selectFrom(qStudentQuiz)
-                    .where(qStudentQuiz.student.eq(studentLecture.getStudent()))
-                    .fetch();
-
-            // StudentQuizDto 리스트를 생성
-            List<StudentQuizDto> studentQuizDtos = studentQuizzes.stream().map(studentQuiz ->
-                    StudentQuizDto.createStudentQuizDto(studentQuiz, studentQuiz.getStudent().getName())
-            ).collect(Collectors.toList());
-
-            // StudentInfoByLectureDto 생성
-            return StudentInfoByLectureDto.of(studentQuizDtos, studentLecture);
-        }).collect(Collectors.toList());
+        // 아래의 studentQuizzes에서 quiz_id가 quizIds와 같은것들만 가져와줘
+        return query
+                .selectFrom(studentLecture)
+                .leftJoin(studentLecture.student).fetchJoin()
+                .leftJoin(studentLecture.student.studentQuizzes, studentQuiz).fetchJoin()
+                .where(studentLecture.lecture.id.eq(lectureId)
+                        .and(studentQuiz.quiz.id.in(quizIds))) // quizIds와 일치하는 studentQuiz만 조회
+                .fetch()
+                .stream()
+                .map(sl -> StudentInfoByLectureDto.of(
+                        sl.getStudent().getStudentQuizzes().stream()
+                                .filter(sq -> quizIds.contains(sq.getQuiz().getId())) // quizIds 필터링 (한번 더 확인해주는 코드)
+                                .map(StudentQuizByLectureDto::createStudentQuizByLectureDto)
+                                .collect(Collectors.toList()),
+                        sl
+                ))
+                .toList();
     }
 
 
@@ -108,11 +103,20 @@ public class StudentLectureQueryRepository {
                 .where(lecture.id.eq(lectureId))
                 .fetchOne();
 
+
+        if(realStartTime == null) {
+            throw new IllegalStateException("시작하지 않은 강의입니다. (realStartTime is null)");
+        }
+
         LocalDateTime realEndTime = query
                 .select(lecture.realEndTime)
                 .from(lecture)
                 .where(lecture.id.eq(lectureId))
                 .fetchOne();
+
+        if (realEndTime == null) {
+            throw new IllegalStateException("시작하지 않은 강의입니다. (realEndTime is null)");
+        }
 
         long lectureDurationMinutes = Duration.between(realStartTime, realEndTime).toMinutes();
 
@@ -137,7 +141,7 @@ public class StudentLectureQueryRepository {
 
             // focusRatio 계산 (졸음 비율)
             if (focusTime != null && lectureDurationMinutes > 0) {
-                long calculatedFocusRatio = focusTime / lectureDurationMinutes;
+                long calculatedFocusRatio = focusTime / lectureDurationMinutes * 100;
                 sl.updateFocusRatio(calculatedFocusRatio);
             }
 

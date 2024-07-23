@@ -24,21 +24,20 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class LectureBeforeStartingResponseDto extends LectureResponseDto{
+    private Boolean isCompleted = false;
 
     private String lectureTitle;
     private Integer lectureOrder;
-    private LocalDateTime lectureStartTime;
-    private Boolean isCompleted = false;
 
     private SimpleCurriculumByLectureDto curriculumInfo;
     private CurriculumDetailByLectureDto curriculumDetailInfo;
+
+    private LocalDateTime lectureStartTime;
 
     private List<StudentByLectureDto> students = new ArrayList<>();
 
     private List<QuizByLectureDto> quizzes = new ArrayList<>();
     private Integer numberOfQuizzes = 0;
-
-
 
 
     private LectureBeforeStartingResponseDto(Lecture lecture,

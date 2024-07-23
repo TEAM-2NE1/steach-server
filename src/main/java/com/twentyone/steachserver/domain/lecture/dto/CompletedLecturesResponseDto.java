@@ -10,13 +10,16 @@ import java.util.List;
 
 @Getter
 public class CompletedLecturesResponseDto extends LectureBeforeStartingResponseDto{
-    private final LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto;
-    private final List<StudentInfoByLectureDto> studentsQuizzesByLectureDto;
+    private final Boolean isCompleted = true;
 
     private final LocalDateTime realStartTime;
     private final LocalDateTime realEndTime;
 
-    private final Boolean isCompleted = true;
+    private final LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto;
+
+    private final List<StudentInfoByLectureDto> studentsQuizzesByLectureDto;
+
+
 
     private CompletedLecturesResponseDto(LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto,
                                          List<StudentInfoByLectureDto> studentsQuizzesByLectureDto,

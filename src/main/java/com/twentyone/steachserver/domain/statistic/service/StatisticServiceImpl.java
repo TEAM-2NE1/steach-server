@@ -14,15 +14,16 @@ import com.twentyone.steachserver.domain.statistic.repository.LectureStatisticMo
 import com.twentyone.steachserver.domain.statistic.repository.RadarChartStatisticRepository;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureQueryRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class StatisticServiceImpl implements StatisticService {
     private final CurriculumRepository curriculumRepository;

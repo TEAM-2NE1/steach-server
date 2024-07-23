@@ -1,21 +1,23 @@
 package com.twentyone.steachserver.domain.studentLecture.service;
 
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
+import com.twentyone.steachserver.domain.lecture.repository.LectureQueryRepository;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.lecture.validator.LectureValidator;
 import com.twentyone.steachserver.domain.member.repository.StudentRepository;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
-import com.twentyone.steachserver.domain.statistic.repository.LectureStatisticMongoRepository;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureQueryRepository;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
+
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class StudentLectureServiceImpl implements StudentLectureService {
 
@@ -26,6 +28,7 @@ public class StudentLectureServiceImpl implements StudentLectureService {
     private final StudentRepository studentRepository;
 
     private final LectureValidator lectureValidator;
+    private final LectureQueryRepository lectureQueryRepository;
 
 
     @Override
@@ -56,5 +59,15 @@ public class StudentLectureServiceImpl implements StudentLectureService {
     @Transactional
     public void updateStudentLectureByFinishLecture(Integer lectureId) {
         studentLectureQueryRepository.updateStudentLectureByFinishLecture(lectureId);
+    }
+
+    @Override
+    public void createStudentLectureByLecture(Integer lectureId) {
+        List<Student> students = lectureQueryRepository.getStudentIds(lectureId);
+
+        for (Student student : students) {
+            studentLectureRepository.save(StudentLecture.of(student, lectureRepository.getReferenceById(lectureId)));
+        }
+
     }
 }
