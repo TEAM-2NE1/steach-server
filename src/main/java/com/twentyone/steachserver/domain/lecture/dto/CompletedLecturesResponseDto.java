@@ -31,9 +31,9 @@ public class CompletedLecturesResponseDto extends LectureBeforeStartingResponseD
     }
 
     public static CompletedLecturesResponseDto of(LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto,
-                    List<StudentInfoByLectureDto> studentsQuizzesByLectureDto,
+                    List<StudentInfoByLectureDto> StudentInfoByLectureDtos,
                     Lecture lecture) {
-        return new CompletedLecturesResponseDto(lectureBeforeStartingResponseDto, studentsQuizzesByLectureDto, lecture.getRealStartTime(),lecture.getRealEndTime());
+        return new CompletedLecturesResponseDto(lectureBeforeStartingResponseDto, StudentInfoByLectureDtos, lecture.getRealStartTime(),lecture.getRealEndTime());
     }
 
 }
