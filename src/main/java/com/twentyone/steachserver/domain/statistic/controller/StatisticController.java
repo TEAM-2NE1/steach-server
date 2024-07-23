@@ -2,8 +2,10 @@ package com.twentyone.steachserver.domain.statistic.controller;
 
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.statistic.dto.LectureStatisticsByAllStudentDto;
+import com.twentyone.steachserver.domain.statistic.dto.LectureStatisticsByAllStudentListDto;
 import com.twentyone.steachserver.domain.statistic.dto.RadarChartStatisticDto;
 import com.twentyone.steachserver.domain.statistic.dto.GPTDataRequestDto;
+import com.twentyone.steachserver.domain.statistic.model.mongo.LectureStatisticsByAllStudent;
 import com.twentyone.steachserver.domain.statistic.service.StatisticService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Tag(name = "통계")
 @RestController
@@ -39,9 +44,16 @@ public class StatisticController {
 
     @Operation(summary = "강의에 대한 전체 학생에 대한 통계 반환 ", description = "무조건 200을 반환")
     @GetMapping("/lecture/{lectureId}")
-    public ResponseEntity<LectureStatisticsByAllStudentDto> getLectureStatisticsByAllStudent(@PathVariable("lectureId") Integer lectureId) {
-        return statisticService.getLectureStatisticsByAllStudent(lectureId)
-                .map(ls -> ResponseEntity.ok().body(LectureStatisticsByAllStudentDto.of(ls)))
-                .orElseThrow(() -> new IllegalArgumentException("lectureId : " + lectureId + " 통계가 존재하지 않습니다."));
+    public ResponseEntity<LectureStatisticsByAllStudentListDto> getLectureStatisticsByAllStudent(@PathVariable("lectureId") Integer lectureId) {
+        List<LectureStatisticsByAllStudentDto> statistics = statisticService.getLectureStatisticsByAllStudent(lectureId)
+                .stream()
+                .map(LectureStatisticsByAllStudentDto::of)
+                .collect(Collectors.toList());
+
+        if (statistics.isEmpty()) {
+            throw new IllegalArgumentException("lectureId : " + lectureId + " 통계가 존재하지 않습니다.");
+        }
+
+        return ResponseEntity.ok(new LectureStatisticsByAllStudentListDto(statistics));
     }
 }

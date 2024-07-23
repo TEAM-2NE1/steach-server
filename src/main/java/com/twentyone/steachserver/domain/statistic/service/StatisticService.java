@@ -6,14 +6,14 @@ import com.twentyone.steachserver.domain.statistic.dto.RadarChartStatisticDto;
 import com.twentyone.steachserver.domain.statistic.dto.GPTDataRequestDto;
 import com.twentyone.steachserver.domain.statistic.model.mongo.LectureStatisticsByAllStudent;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface StatisticService {
     RadarChartStatisticDto getRadarChartStatistic(Integer studentId);
 
     String createGPTString(Student student, GPTDataRequestDto gptDataRequestDto);
 
-    Optional<LectureStatisticsByAllStudent> getLectureStatisticsByAllStudent(Integer lectureId);
+    List<LectureStatisticsByAllStudent> getLectureStatisticsByAllStudent(Integer lectureId);
 
     void createStatisticsByFinalLecture(Lecture lecture);
 }
