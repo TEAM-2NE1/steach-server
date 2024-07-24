@@ -7,7 +7,6 @@ import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.statistic.dto.RadarChartStatisticDto;
 import com.twentyone.steachserver.domain.statistic.dto.StatisticsByCurriculumCategory;
-import com.twentyone.steachserver.domain.statistic.dto.GPTDataRequestDto;
 import com.twentyone.steachserver.domain.statistic.model.RadarChartStatistic;
 import com.twentyone.steachserver.domain.statistic.model.mongo.GPTDataByLecture;
 import com.twentyone.steachserver.domain.statistic.model.mongo.LectureStatisticsByAllStudent;
@@ -59,6 +58,11 @@ public class StatisticServiceImpl implements StatisticService {
 
         List<StatisticsByCurriculumCategory> items = radarChartStatistic.getItems();
 
+        if(items.stream()
+                .allMatch(statisticsByCurriculumCategory -> statisticsByCurriculumCategory.totalLectureMinute() == 0)) {
+            return RadarChartStatisticDto.of(new ArrayList<>(NUMBER_OF_CATEGORIES));
+        }
+
         BigDecimal maxFocusRatio = BigDecimal.valueOf(-1);
         int maxLectureMinutes = -1;
 
@@ -72,7 +76,13 @@ public class StatisticServiceImpl implements StatisticService {
         }
 
         // 이건 기존 값에 곱해줄 값
-        BigDecimal factorWeightingFocusRatio = BigDecimal.valueOf(WEIGHT_FOCUS_RATIO).divide(maxFocusRatio, 2, RoundingMode.HALF_UP);
+        List<Integer> list = createRadarChartScores(maxFocusRatio, maxLectureMinutes, items);
+
+        return RadarChartStatisticDto.of(list);
+    }
+
+    private List<Integer> createRadarChartScores(BigDecimal maxFocusRatio, int maxLectureMinutes, List<StatisticsByCurriculumCategory> items) {
+        BigDecimal factorWeightingFocusRatio = BigDecimal.valueOf(WEIGHT_FOCUS_RATIO).divide(maxFocusRatio, 2, RoundingMode.DOWN);
         double factorWeightingLectureMinutes = (double) WEIGHT_LECTURE_MINUTES / maxLectureMinutes;
 
         List<Integer> list = new ArrayList<>();
@@ -83,8 +93,7 @@ public class StatisticServiceImpl implements StatisticService {
             int sum = (int) (weightedFocusRatio + weightedLectureMinutes);
             list.add(sum);
         }
-
-        return RadarChartStatisticDto.of(list);
+        return list;
     }
 
     @Override
@@ -112,20 +121,21 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public List<LectureStatisticsByAllStudent> getLectureStatisticsByAllStudent(Integer lectureId) {
-        return lectureStatisticMongoRepository.findByLectureId(lectureId);
-
+    public List<LectureStatisticsByAllStudent> getLectureStatisticsByAllStudents(Integer lectureId) {
+        return lectureStatisticMongoRepository.findAllByLectureId(lectureId);
     }
+
 
     @Override
     @Transactional
     public void createStatisticsByFinalLecture(Lecture lecture) {
         List<StudentLecture> allStudentInfoByLectureId = studentLectureQueryRepository.findAllStudentInfoByLectureId(lecture.getId());
-        createLectureStatisticsByAllStudent(lecture, allStudentInfoByLectureId);
         createRadarChartStatistics(lecture.getCurriculum(), allStudentInfoByLectureId);
+        createLectureStatisticsByAllStudent(lecture, allStudentInfoByLectureId);
         createGPTData(lecture, allStudentInfoByLectureId);
     }
 
+//    Todo: 이 부분에 대해서 트래픽 처리 해줘야함
     @Transactional
     public void createRadarChartStatistics(Curriculum curriculum, List<StudentLecture> allStudentInfoByLectureId) {
         for (StudentLecture studentLecture : allStudentInfoByLectureId) {
@@ -134,7 +144,6 @@ public class StatisticServiceImpl implements StatisticService {
                     .ifPresentOrElse(
                             radarChartStatistic -> {
                                 radarChartStatistic.addStatistic(curriculum, studentLecture);
-//                                radarChartStatisticRepository.save(radarChartStatistic);
                             },
                             () -> {
                                 RadarChartStatistic newRadarChartStatistic = RadarChartStatistic.of(studentId);
@@ -149,8 +158,11 @@ public class StatisticServiceImpl implements StatisticService {
     // 음.. 먼진 모르겠지만 protected 써야지 Trancsacion 사용가능했음.
     @Transactional
     public void createLectureStatisticsByAllStudent(Lecture lecture, List<StudentLecture> allStudentInfoByLectureId) {
-        LectureStatisticsByAllStudent lectureStatisticsByAllStudent = LectureStatisticsByAllStudent.of(lecture, allStudentInfoByLectureId);
-        lectureStatisticMongoRepository.save(lectureStatisticsByAllStudent);
+        List<LectureStatisticsByAllStudent> lectureStatisticsByAllStudents = lectureStatisticMongoRepository.findAllByLectureId(lecture.getId());
+        if (!lectureStatisticsByAllStudents.isEmpty()) {
+            lectureStatisticMongoRepository.deleteAll(lectureStatisticsByAllStudents);
+        }
+        lectureStatisticMongoRepository.save(LectureStatisticsByAllStudent.of(lecture, allStudentInfoByLectureId));
     }
 
     @Transactional
@@ -159,8 +171,11 @@ public class StatisticServiceImpl implements StatisticService {
                 .orElseThrow(() -> new IllegalStateException("curriculum not found"));
 
         for (StudentLecture studentLecture : allStudentInfoByLectureId) {
-            GPTDataByLecture gptDataByLecture = GPTDataByLecture.of(lecture, curriculum, studentLecture);
-            gptDataByLectureMongoRepository.save(gptDataByLecture);
+            List<GPTDataByLecture> allByStudentNameAndLectures = gptDataByLectureMongoRepository.findAllByStudentNameAndLectureId(studentLecture.getStudent().getName(), lecture.getId());
+            if (!allByStudentNameAndLectures.isEmpty()){
+                gptDataByLectureMongoRepository.deleteAll(allByStudentNameAndLectures);
+            }
+            gptDataByLectureMongoRepository.save(GPTDataByLecture.of(lecture, curriculum, studentLecture));
         }
     }
 }
