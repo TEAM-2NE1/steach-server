@@ -43,7 +43,7 @@ public class StatisticController {
     @Operation(summary = "강의에 대한 전체 학생에 대한 통계 반환 ", description = "무조건 200을 반환")
     @GetMapping("/lecture/{lectureId}")
     public ResponseEntity<LectureStatisticsByAllStudentListDto> getLectureStatisticsByAllStudent(@PathVariable("lectureId") Integer lectureId) {
-        List<LectureStatisticsByAllStudentDto> statistics = statisticService.getLectureStatisticsByAllStudent(lectureId)
+        List<LectureStatisticsByAllStudentDto> statistics = statisticService.getLectureStatisticsByAllStudents(lectureId)
                 .stream()
                 .map(LectureStatisticsByAllStudentDto::of)
                 .collect(Collectors.toList());

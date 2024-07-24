@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,14 +105,22 @@ public class RadarChartStatistic {
 
     public List<StatisticsByCurriculumCategory> getItems() {
         List<StatisticsByCurriculumCategory> items = new ArrayList<>();
-        items.add(new StatisticsByCurriculumCategory(averageFocusRatio1, lectureCount1, sumLectureMinutes1));
-        items.add(new StatisticsByCurriculumCategory(averageFocusRatio2, lectureCount2, sumLectureMinutes2));
-        items.add(new StatisticsByCurriculumCategory(averageFocusRatio3, lectureCount3, sumLectureMinutes3));
-        items.add(new StatisticsByCurriculumCategory(averageFocusRatio4, lectureCount4, sumLectureMinutes4));
-        items.add(new StatisticsByCurriculumCategory(averageFocusRatio5, lectureCount5, sumLectureMinutes5));
-        items.add(new StatisticsByCurriculumCategory(averageFocusRatio6, lectureCount6, sumLectureMinutes6));
-        items.add(new StatisticsByCurriculumCategory(averageFocusRatio7, lectureCount7, sumLectureMinutes7));
+        add(items, averageFocusRatio1, sumLectureMinutes1);
+        add(items, averageFocusRatio2, sumLectureMinutes2);
+        add(items, averageFocusRatio3, sumLectureMinutes3);
+        add(items, averageFocusRatio4, sumLectureMinutes4);
+        add(items, averageFocusRatio5, sumLectureMinutes5);
+        add(items, averageFocusRatio6, sumLectureMinutes6);
+        add(items, averageFocusRatio7, sumLectureMinutes7);
         return items;
+    }
+
+    private void add(List<StatisticsByCurriculumCategory> items, BigDecimal averageFocusRatio, Integer sumLectureMinutes) {
+        if (sumLectureMinutes > 0) {
+            items.add(new StatisticsByCurriculumCategory(averageFocusRatio.divide(BigDecimal.valueOf(sumLectureMinutes), 2, RoundingMode.HALF_UP), sumLectureMinutes));
+        } else {
+            items.add(new StatisticsByCurriculumCategory(BigDecimal.ZERO, 0));
+        }
     }
 
     public void addStatistic(Curriculum curriculum, StudentLecture studentLecture) {

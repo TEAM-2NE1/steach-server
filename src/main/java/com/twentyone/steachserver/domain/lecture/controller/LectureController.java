@@ -3,7 +3,6 @@ package com.twentyone.steachserver.domain.lecture.controller;
 import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.classroom.dto.ClassroomResponseDto;
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
-import com.twentyone.steachserver.domain.classroom.service.ClassroomService;
 import com.twentyone.steachserver.domain.lecture.dto.CompletedLecturesResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.FinalLectureInfoByTeacherDto;
 import com.twentyone.steachserver.domain.lecture.dto.LectureBeforeStartingResponseDto;
@@ -33,7 +32,7 @@ public class LectureController {
     private final LectureService lectureService;
     private final StudentLectureService studentLectureService;
     private final StatisticService statisticService;
-    private final ClassroomService classroomService;
+
 
     @Operation(summary = "강의에 대한 다양한 정보 반환", description = "무조건 200을 반환, 강의에 대해서 시작 전 강의면 시작 전 형태로, 끝난 강의는 끝난형태로 반환.")
     @GetMapping("/{lectureId}")

@@ -129,8 +129,6 @@ public class StudentLectureQueryRepository {
         for (StudentLecture sl : studentLectures) {
             Integer focusTime = sl.getFocusTime();
 
-            System.out.println(lectureDurationMinutes);
-            System.out.println(focusTime);
             // focusRatio 계산 (졸음 비율)
             if (focusTime != null && lectureDurationMinutes > 0) {
                 BigDecimal focusTimeBD = BigDecimal.valueOf(focusTime);
@@ -142,7 +140,6 @@ public class StudentLectureQueryRepository {
                         .setScale(2, RoundingMode.HALF_UP);
 
                 sl.updateFocusRatio(calculatedFocusRatio);
-                System.out.println(calculatedFocusRatio);
             }
             System.out.println(sl);
 
