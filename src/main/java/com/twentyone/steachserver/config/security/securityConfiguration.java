@@ -33,7 +33,8 @@ public class securityConfiguration {
 
     private final String[] whiteList = {
             "/api/v1/login/**",
-            "/api/v1/*/join"
+            "/api/v1/*/join",
+            "/api/v1/check-username/*"
     };
 
     //TODO WebSecurityCustomizer로 whiteList 적용 알아보기

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class StatisticController {
     private final StatisticService statisticService;
 
+    @Secured("ROLE_STUDENT")
     @Operation(summary = "레이더 차트 통계 정보 반환 ", description = "무조건 200을 반환")
     @GetMapping
     public ResponseEntity<RadarChartStatisticDto> getRadarChartStatistic(@AuthenticationPrincipal Student student) {

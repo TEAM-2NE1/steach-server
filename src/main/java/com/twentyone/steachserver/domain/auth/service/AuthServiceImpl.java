@@ -135,4 +135,11 @@ public class AuthServiceImpl implements AuthService {
 
         return LoginResponseDto.of(accessToken, Role.TEACHER, teacher.getUsername(), teacher.getName(), teacher.getEmail());
     }
+
+    @Override
+    public CheckUsernameAvailableResponse checkUsernameAvailability(String username) {
+        boolean canUse = !loginCredentialRepository.existsByUsername(username);
+
+        return new CheckUsernameAvailableResponse(canUse);
+    }
 }
