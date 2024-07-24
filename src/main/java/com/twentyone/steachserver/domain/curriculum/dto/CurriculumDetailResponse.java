@@ -30,6 +30,7 @@ public class CurriculumDetailResponse {
     private LocalTime lectureEndTime;
     private int currentAttendees;
     private int maxAttendees;
+    private LocalDateTime createdAt;
 
     public static CurriculumDetailResponse fromDomain(Curriculum curriculum) {
         // 7을 이진수 문자열로 변환
@@ -55,6 +56,7 @@ public class CurriculumDetailResponse {
                 .lectureEndTime(curriculumDetail.getLectureCloseTime())
                 .currentAttendees(curriculumDetail.getCurrentAttendees())
                 .maxAttendees(curriculumDetail.getMaxAttendees())
+                .createdAt(curriculum.getCreatedAt())
                 .build();
     }
 }

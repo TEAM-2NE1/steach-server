@@ -14,4 +14,5 @@ public interface LectureRepository extends JpaRepository<Lecture, Integer> {
 
     @Query(value = "select * from lectures where curriculum_id = :curriculumId", nativeQuery = true)
     Optional<List<Lecture>> findByCurriculumId(@Param("curriculumId")Integer curriculumId);
+
 }

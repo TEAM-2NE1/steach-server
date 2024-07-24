@@ -60,11 +60,16 @@ public class CurriculumSearchRepository {
     }
 
     private BooleanExpression curriculumSearchKeywordEq(String search) {
-        return hasText(search) ? curriculum.title.like(search) : null;
+        if (hasText(search)) {
+            BooleanExpression titleContainsSearch = curriculum.title.contains(search);
+            BooleanExpression subtitleContainsSearch = curriculumDetail.subTitle.contains(search);
+            return titleContainsSearch.or(subtitleContainsSearch);
+        }
+        return null;
     }
 
     private BooleanExpression onlyAvailableEq(Boolean onlyAvailable) {
-        return onlyAvailable == null ? null : curriculumDetail.maxAttendees.ne(curriculumDetail.currentAttendees);
+        return (onlyAvailable == null || !onlyAvailable) ? null : curriculumDetail.maxAttendees.ne(curriculumDetail.currentAttendees);
     }
 
     private BooleanExpression curriculumCategoryEq(CurriculumCategory curriculumCategory) {
