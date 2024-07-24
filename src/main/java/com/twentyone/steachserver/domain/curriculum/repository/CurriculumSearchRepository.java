@@ -60,7 +60,7 @@ public class CurriculumSearchRepository {
     }
 
     private BooleanExpression curriculumSearchKeywordEq(String search) {
-        return hasText(search) ? curriculum.title.like(search) : null;
+        return hasText(search) ? curriculum.title.contains(search) : null;
     }
 
     private BooleanExpression onlyAvailableEq(Boolean onlyAvailable) {
