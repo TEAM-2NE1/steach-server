@@ -68,9 +68,14 @@ public class  QuizServiceImpl implements QuizService {
     public QuizResponseDto mapToDto(Quiz quiz) {
         List<String> choices = quizChoiceService.getChoices(quiz);
         List<String> answers = quizChoiceService.getAnswers(quiz);
-
         quizChoiceValidator.validateQuizChoices(choices, answers);
 
         return QuizResponseDto.createQuizResponseDto(quiz, choices, answers);
+    }
+
+
+    @Override
+    public List<Quiz> findAllByLectureId(Integer lectureId) {
+        return quizRepository.findALlByLectureId(lectureId);
     }
 }

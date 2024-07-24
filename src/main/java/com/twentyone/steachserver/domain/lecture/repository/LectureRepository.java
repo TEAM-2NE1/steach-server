@@ -13,5 +13,6 @@ public interface LectureRepository extends JpaRepository<Lecture, Integer> {
     List<Lecture> findByLectureStartDateBetween(LocalDateTime toMinute, LocalDateTime fromMinute);
 
     @Query(value = "select * from lectures where curriculum_id = :curriculumId", nativeQuery = true)
-    Optional<List<Lecture>> findByCurriculumId(@Param("curriculumId") Integer curriculumId);
+    Optional<List<Lecture>> findByCurriculumId(@Param("curriculumId")Integer curriculumId);
+
 }
