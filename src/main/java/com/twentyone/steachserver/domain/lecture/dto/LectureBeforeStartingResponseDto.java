@@ -26,6 +26,7 @@ import java.util.List;
 public class LectureBeforeStartingResponseDto extends LectureResponseDto{
     private Boolean isCompleted = false;
 
+    private Integer lectureId;
     private String lectureTitle;
     private Integer lectureOrder;
 
@@ -39,11 +40,23 @@ public class LectureBeforeStartingResponseDto extends LectureResponseDto{
     private List<QuizByLectureDto> quizzes = new ArrayList<>();
     private Integer numberOfQuizzes = 0;
 
-
+    protected LectureBeforeStartingResponseDto(LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto) {
+        this.lectureId = lectureBeforeStartingResponseDto.lectureId;
+        this.lectureTitle = lectureBeforeStartingResponseDto.lectureTitle;
+        this.lectureOrder = lectureBeforeStartingResponseDto.lectureOrder;
+        this.lectureStartTime = lectureBeforeStartingResponseDto.lectureStartTime;
+        this.curriculumInfo = lectureBeforeStartingResponseDto.curriculumInfo;
+        this.curriculumDetailInfo = lectureBeforeStartingResponseDto.curriculumDetailInfo;
+        this.students = lectureBeforeStartingResponseDto.students;
+        this.quizzes = lectureBeforeStartingResponseDto.quizzes;
+        this.numberOfQuizzes = lectureBeforeStartingResponseDto.numberOfQuizzes;
+        this.isCompleted = lectureBeforeStartingResponseDto.isCompleted;
+    }
     private LectureBeforeStartingResponseDto(Lecture lecture,
                                              SimpleCurriculumByLectureDto curriculumInfo,
                                              CurriculumDetailByLectureDto curriculumDetailInfo,
                                              List<StudentByLectureDto> studentDtos) {
+        this.lectureId = lecture.getId();
         this.lectureTitle = lecture.getTitle();
         this.lectureOrder = lecture.getLectureOrder();
         this.lectureStartTime = lecture.getLectureStartDate();
