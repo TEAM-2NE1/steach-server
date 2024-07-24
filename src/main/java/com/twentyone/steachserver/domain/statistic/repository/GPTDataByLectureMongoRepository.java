@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface GPTDataByLectureMongoRepository extends MongoRepository<GPTDataByLecture, String> {
     List<GPTDataByLecture> findAllByStudentName(String studentName);
+    List<GPTDataByLecture> findAllByStudentNameAndLectureId(String name, Integer id);
 }

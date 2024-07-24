@@ -20,6 +20,7 @@ import java.math.RoundingMode;
 public class GPTDataByLecture {
     @Id
     private String id;
+    private Integer lectureId;
     private String studentName;
     private String curriculumTitle;
     private String lectureTitle;
@@ -34,6 +35,7 @@ public class GPTDataByLecture {
 
     // Constructor
     private GPTDataByLecture(Lecture lecture, Curriculum curriculum, StudentLecture studentLecture) {
+        this.lectureId = lecture.getId();
         this.studentName = studentLecture.getStudent().getName();
         this.curriculumTitle = curriculum.getTitle();
         this.lectureTitle = lecture.getTitle();
