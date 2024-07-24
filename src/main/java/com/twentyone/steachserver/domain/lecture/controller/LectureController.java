@@ -76,6 +76,7 @@ public class LectureController {
     @GetMapping("/final/{lectureId}")
     public ResponseEntity<FinalLectureInfoByTeacherDto> getFinalLectureInformation(@PathVariable("lectureId") Integer lectureId) {
         Lecture updateLecture = lectureService.updateRealEndTime(lectureId);
+        lectureService.addVolunteerMinute(updateLecture);
         studentLectureService.updateStudentLectureByFinishLecture(lectureId);
         statisticService.createStatisticsByFinalLecture(updateLecture);
         FinalLectureInfoByTeacherDto finalLectureInfoByTeacherDto = lectureService.getFinalLectureInformation(lectureId);

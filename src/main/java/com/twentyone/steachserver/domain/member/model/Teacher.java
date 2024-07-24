@@ -70,4 +70,8 @@ public class Teacher extends LoginCredential{
             this.specialization = specialization;
         }
     }
+
+    public void updateVolunteerMinute(Integer volunteerTime) {
+        this.volunteerTime = volunteerTime;
+    }
 }

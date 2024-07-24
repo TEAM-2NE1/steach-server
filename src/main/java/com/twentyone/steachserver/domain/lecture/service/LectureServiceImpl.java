@@ -1,6 +1,7 @@
 package com.twentyone.steachserver.domain.lecture.service;
 
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
+import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.lecture.dto.*;
 import com.twentyone.steachserver.domain.lecture.dto.update.UpdateLectureRequestDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,6 +121,30 @@ public class LectureServiceImpl implements LectureService {
                 .orElseGet(() -> new ArrayList<>());
 
         return LectureListResponseDto.fromDomainList(lectures);
+    }
+
+    @Override
+    public void addVolunteerMinute(Lecture updateLecture) {
+        Integer lectureOrder = updateLecture.getLectureOrder();
+        Curriculum curriculum = updateLecture.getCurriculum();
+
+        int curriculumLectureSize = curriculum.getLectures().size();
+
+        if (curriculumLectureSize == lectureOrder) {
+            int volunteerMinute = 0;
+
+            for (Lecture lecture : curriculum.getLectures()) {
+                LocalDateTime realStartTime = lecture.getRealStartTime();
+                LocalDateTime realEndTime = lecture.getRealEndTime();
+
+                if (realStartTime != null && realEndTime != null) {
+                    int lectureDurationMinutes = Math.toIntExact(Duration.between(realStartTime, realEndTime).toMinutes());
+                    volunteerMinute += lectureDurationMinutes;
+                }
+            }
+            curriculum.getTeacher().updateVolunteerMinute(volunteerMinute);
+
+        }
     }
 
     @Override
