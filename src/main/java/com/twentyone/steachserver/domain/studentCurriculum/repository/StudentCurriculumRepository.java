@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.studentCurriculum.repository;
 
+import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculumId;
@@ -13,4 +14,5 @@ import java.util.Optional;
 public interface StudentCurriculumRepository extends JpaRepository<StudentCurriculum, StudentCurriculumId> {
     @Query("select sc from StudentCurriculum sc join sc.curriculum where sc.student = :student")
     Optional<List<StudentCurriculum>> findByStudent(@Param("student") Student student);
+    Optional<StudentCurriculum> findTop1ByStudentAndCurriculum(Student student, Curriculum curriculum);
 }

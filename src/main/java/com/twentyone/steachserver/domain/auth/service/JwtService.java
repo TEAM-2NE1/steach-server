@@ -33,7 +33,7 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String extractUsername(String token) {  //id추출
+    public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -61,13 +61,7 @@ public class JwtService {
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-
         boolean b = (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
-
-        //리프레쉬 토큰인 경우 인증처리 ㄴㄴ
-        if (extractClaim(token, (Claims claim) -> claim.get("token_type", String.class)).equals("refresh")) {
-            return false;
-        }
 
         return b;
     }

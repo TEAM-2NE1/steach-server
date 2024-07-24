@@ -14,6 +14,7 @@ import com.twentyone.steachserver.domain.member.repository.TeacherRepository;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
+import java.time.LocalTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,8 +70,8 @@ public class QuizIntegrationTest {
                 .weekdaysBitmask((byte) 7)
                 .startDate(LocalDate.from(LocalDate.now()))
                 .endDate(LocalDate.from(LocalDate.now()))
-                .lectureStartTime(LocalDateTime.now())
-                .lectureCloseTime(LocalDateTime.now())
+                .lectureStartTime(LocalTime.now())
+                .lectureCloseTime(LocalTime.now())
                 .maxAttendees(4)
                 .build();
         curriculumDetailRepository.save(curriculumDetail);
