@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.lecture.controller;
 
+import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.classroom.dto.ClassroomResponseDto;
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.classroom.service.ClassroomService;
@@ -7,6 +8,7 @@ import com.twentyone.steachserver.domain.lecture.dto.CompletedLecturesResponseDt
 import com.twentyone.steachserver.domain.lecture.dto.FinalLectureInfoByTeacherDto;
 import com.twentyone.steachserver.domain.lecture.dto.LectureBeforeStartingResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.update.UpdateLectureRequestDto;
+import com.twentyone.steachserver.domain.lecture.error.LectureTimeNotYetException;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
 import com.twentyone.steachserver.domain.member.model.Student;
@@ -17,7 +19,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,16 +60,17 @@ public class LectureController {
     @GetMapping("/check/{lectureId}")
     public ResponseEntity<?> confirmStudentByApply(@AuthenticationPrincipal Student student, @PathVariable("lectureId") Integer lectureId) {
         Boolean isCheck = lectureService.checkStudentByLecture(student.getId(), lectureId);
-        if (isCheck) {
-            Optional<Classroom> classroomOptional = lectureService.getClassroomByLectureAndStudent(student.getId(), lectureId);
-            return classroomOptional
-                    .map(classroom -> ResponseEntity.ok().
-                            body(ClassroomResponseDto.createClassroomResponseDto(classroom)))
-                    .orElseGet(() -> ResponseEntity.status(HttpStatus.FORBIDDEN).build());
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
 
+        if (!isCheck) {
+            throw new ForbiddenException("권한이 없습니다");
+        }
+
+        Optional<Classroom> classroomOptional = lectureService.getClassroomByLectureAndStudent(student.getId(), lectureId);
+        return classroomOptional
+                .map(classroom -> ResponseEntity.ok().
+                        body(ClassroomResponseDto.createClassroomResponseDto(classroom)))
+                .orElseThrow(() -> new LectureTimeNotYetException("강의 시간이 아님"));
+    }
 
     @Operation(summary = "선생님이 강의를 끝내고 관련 정보 처리 및 최종정보 반환 ", description = "무조건 200을 반환")
     @GetMapping("/final/{lectureId}")
@@ -87,5 +89,4 @@ public class LectureController {
         lectureService.updateRealStartTime(lectureId);
         return ResponseEntity.ok().build();
     }
-
 }

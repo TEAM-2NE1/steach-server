@@ -7,7 +7,6 @@ import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.statistic.dto.RadarChartStatisticDto;
 import com.twentyone.steachserver.domain.statistic.dto.StatisticsByCurriculumCategory;
-import com.twentyone.steachserver.domain.statistic.dto.GPTDataRequestDto;
 import com.twentyone.steachserver.domain.statistic.model.RadarChartStatistic;
 import com.twentyone.steachserver.domain.statistic.model.mongo.GPTDataByLecture;
 import com.twentyone.steachserver.domain.statistic.model.mongo.LectureStatisticsByAllStudent;
