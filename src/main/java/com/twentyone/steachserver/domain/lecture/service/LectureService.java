@@ -33,4 +33,6 @@ public interface LectureService {
     void updateRealStartTime(Integer lectureId);
 
     LectureListResponseDto findByCurriculum(Integer curriculumId);
+
+    void addVolunteerMinute(Lecture updateLecture);
 }
