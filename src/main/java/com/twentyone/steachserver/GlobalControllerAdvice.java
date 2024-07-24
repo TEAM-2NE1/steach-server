@@ -1,6 +1,10 @@
 package com.twentyone.steachserver;
 
+import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.curriculum.error.DuplicatedCurriculumRegistrationException;
+import com.twentyone.steachserver.domain.lecture.error.LectureTimeNotYetException;
+import com.twentyone.steachserver.global.error.ErrorCode;
+import com.twentyone.steachserver.global.error.ErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +21,24 @@ public class GlobalControllerAdvice {
     }
 
     @ExceptionHandler(DuplicatedCurriculumRegistrationException.class)
-    public ResponseEntity handleDuplicatedCurriculumRegistrationException(DuplicatedCurriculumRegistrationException e) {
+    public ResponseEntity<ErrorResponseDto> handleDuplicatedCurriculumRegistrationException(DuplicatedCurriculumRegistrationException e) {
         log.info(e.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("중복 수강신청은 불가능합니다.");
+        return getResponse(ErrorCode.DUPLICATE_REGISTRATION_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ErrorResponseDto> handleForbiddenException(ForbiddenException e) {
+        log.info(e.getMessage());
+        return getResponse(ErrorCode.INSUFFICIENT_PRIVILEGES);
+    }
+
+    @ExceptionHandler(LectureTimeNotYetException.class)
+    public ResponseEntity<ErrorResponseDto> handleLectureTimeNotYetException(LectureTimeNotYetException e) {
+        log.info(e.getMessage());
+        return getResponse(ErrorCode.LECTURE_TIME_NOT_YET);
+    }
+
+    private static ResponseEntity<ErrorResponseDto> getResponse(ErrorCode errorCode) {
+        return ResponseEntity.status(errorCode.getStatus()).body(new ErrorResponseDto(errorCode));
     }
 }
