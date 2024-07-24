@@ -51,6 +51,12 @@ dependencies {
 
     // Mongo DB
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+    // cache
+//    implementation 'org.springframework.boot:spring-boot-starter-cache'
+
+    // 처리율 제한 기능
+
 }
 
 tasks.named('test') {

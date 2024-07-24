@@ -32,5 +32,4 @@ created by: sihyunjojo
 
 
 
-<br><br><br><br><br>
-<hr>
+<br><br><br>
