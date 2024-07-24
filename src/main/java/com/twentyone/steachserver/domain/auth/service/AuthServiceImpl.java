@@ -1,11 +1,9 @@
 package com.twentyone.steachserver.domain.auth.service;
 
-import com.twentyone.steachserver.domain.auth.dto.LoginDto;
-import com.twentyone.steachserver.domain.auth.dto.LoginResponseDto;
-import com.twentyone.steachserver.domain.auth.dto.StudentSignUpDto;
-import com.twentyone.steachserver.domain.auth.dto.TeacherSignUpDto;
+import com.twentyone.steachserver.domain.auth.dto.*;
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.auth.repository.LoginCredentialRepository;
+import com.twentyone.steachserver.domain.member.model.Admin;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.member.repository.StudentRepository;
@@ -53,11 +51,29 @@ public class AuthServiceImpl implements AuthService {
         LoginCredential loginCredential = loginCredentialRepository.findByUsername(loginDto.getUsername())
                 .orElseThrow(() -> new RuntimeException("로그인 실패"));
 
+        Role role = null;
+        String username = null;
+        String name = null;
+        String email = null;
+
+        if (loginCredential instanceof Admin admin) {
+            role = Role.ADMIN;
+            name = admin.getName();
+        } else if (loginCredential instanceof Teacher teacher) {
+            role = Role.TEACHER;
+            name = teacher.getName();
+            email = teacher.getEmail();
+        } else if (loginCredential instanceof Student student)  {
+            role = Role.STUDENT;
+            name = student.getName();
+            email = student.getEmail();
+        } else {
+            throw new RuntimeException("에러");
+        }
+
         String accessToken = jwtService.generateAccessToken(loginCredential);
 
-        return LoginResponseDto.builder()
-                .token(accessToken)
-                .build();
+        return LoginResponseDto.of(accessToken, role, loginCredential.getUsername(), name, email);
     }
 
     @Transactional
@@ -93,9 +109,7 @@ public class AuthServiceImpl implements AuthService {
 
         String accessToken = jwtService.generateAccessToken(student);
 
-        return LoginResponseDto.builder()
-                .token(accessToken)
-                .build();
+        return LoginResponseDto.of(accessToken, Role.STUDENT, student.getUsername(), student.getName(), student.getEmail());
     }
 
     @Override
@@ -119,8 +133,6 @@ public class AuthServiceImpl implements AuthService {
 
         String accessToken = jwtService.generateAccessToken(teacher);
 
-        return LoginResponseDto.builder()
-                .token(accessToken)
-                .build();
+        return LoginResponseDto.of(accessToken, Role.TEACHER, teacher.getUsername(), teacher.getName(), teacher.getEmail());
     }
 }
