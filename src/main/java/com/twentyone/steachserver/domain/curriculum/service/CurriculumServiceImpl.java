@@ -21,16 +21,17 @@ import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurricul
 import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCurriculumRepository;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -162,8 +163,8 @@ public class CurriculumServiceImpl implements CurriculumService {
     }
 
     @Override
-    public CurriculumListResponse search(CurriculaSearchCondition condition) {
-        List<Curriculum> curriculumList = curriculumSearchRepository.search(condition);
+    public CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable) {
+        Page<Curriculum> curriculumList = curriculumSearchRepository.search(condition, pageable);
 
         return CurriculumListResponse.fromDomainList(curriculumList);
     }
