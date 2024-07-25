@@ -26,7 +26,7 @@ public class StatisticController {
 
     @Secured("ROLE_STUDENT")
     @Operation(summary = "레이더 차트 통계 정보 반환 ", description = "무조건 200을 반환")
-    @GetMapping
+    @GetMapping("/radar-chart")
     public ResponseEntity<RadarChartStatisticDto> getRadarChartStatistic(@AuthenticationPrincipal Student student) {
         RadarChartStatisticDto statistics = statisticService.getRadarChartStatistic(student.getId());
         return ResponseEntity
