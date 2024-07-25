@@ -7,7 +7,8 @@ public enum ErrorCode {
     LECTURE_TIME_NOT_YET(HttpStatus.FORBIDDEN, "아직 강의 시간이 아닙니다."),
     INSUFFICIENT_PRIVILEGES(HttpStatus.FORBIDDEN, "권한이 없습니다."),
     STUDENT_PRIVILEGES_REQUIRED(HttpStatus.FORBIDDEN, "학생 권한만 가능합니다."),
-    TEACHER_PRIVILEGES_REQUIRED(HttpStatus.FORBIDDEN, "강사 권한만 가능합니다.");
+    TEACHER_PRIVILEGES_REQUIRED(HttpStatus.FORBIDDEN, "강사 권한만 가능합니다."),
+    AUTH_CODE_ALREADY_IN_USE(HttpStatus.BAD_REQUEST, "이미 사용된 auth code입니다.");
 
     private HttpStatus status;
     private String message;

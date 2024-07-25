@@ -1,12 +1,10 @@
 package com.twentyone.steachserver.domain.auth.controller;
 
-import com.twentyone.steachserver.domain.auth.dto.LoginDto;
-import com.twentyone.steachserver.domain.auth.dto.LoginResponseDto;
-import com.twentyone.steachserver.domain.auth.dto.StudentSignUpDto;
-import com.twentyone.steachserver.domain.auth.dto.TeacherSignUpDto;
+import com.twentyone.steachserver.domain.auth.dto.*;
 import com.twentyone.steachserver.domain.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -43,5 +41,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginDto loginDto) {
         return ResponseEntity.ok(authService.login(loginDto));
+    }
+
+    @Operation(summary = "아이디 중복확인")
+    @GetMapping("/check-username/{username}")
+    public ResponseEntity<CheckUsernameAvailableResponse> checkUsernameAvailability(@PathVariable("username") String username) {
+        return ResponseEntity.ok(authService.checkUsernameAvailability(username));
     }
 }
