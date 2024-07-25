@@ -4,7 +4,6 @@ import com.twentyone.steachserver.domain.auth.dto.*;
 import com.twentyone.steachserver.domain.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,7 +20,7 @@ import java.io.IOException;
 public class AuthController {
     private final AuthService authService;
 
-    @Operation(summary = "학생 회원가입!")
+    @Operation(summary = "학생 회원가입!", description = "username은 빈칸 불가능, 숫자로 시작 불가능, 영어와 숫자 조합만 가능")
     @PostMapping("/student/join")
     public ResponseEntity<LoginResponseDto> signupStudent(@RequestBody StudentSignUpDto studentSignUpDto) {
         LoginResponseDto loginResponseDto = authService.signUpStudent(studentSignUpDto);
@@ -29,7 +28,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(loginResponseDto);
     }
 
-    @Operation(summary = "강사 회원가입!")
+    @Operation(summary = "강사 회원가입!", description = "username은 빈칸 불가능, 숫자로 시작 불가능, 영어와 숫자 조합만 가능/ file은 첨부하지 않아도 됨(추후 변경예정) <br/> auth_code 사용안한 것만 가능")
     @PostMapping(value = "/teacher/join", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<LoginResponseDto> signupTeacher(@RequestPart(value = "file", required = false) MultipartFile file, @RequestPart("teacherSignUpDto") TeacherSignUpDto teacherSignUpDto) throws IOException {
         LoginResponseDto loginResponseDto = authService.signUpTeacher(teacherSignUpDto, file);
