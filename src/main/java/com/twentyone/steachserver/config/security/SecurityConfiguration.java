@@ -22,7 +22,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @EnableMethodSecurity(
         securedEnabled = true,
         jsr250Enabled = true)
-public class securityConfiguration {
+public class SecurityConfiguration {
     private final JwtService jwtService;
     private final AuthenticationProvider authenticationProvider;
     private final UserDetailsService userDetailsService;
