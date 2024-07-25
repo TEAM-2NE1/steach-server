@@ -2,10 +2,7 @@ package com.twentyone.steachserver.domain.curriculum.service;
 
 import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculaSearchCondition;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumListResponse;
+import com.twentyone.steachserver.domain.curriculum.dto.*;
 import com.twentyone.steachserver.domain.curriculum.error.DuplicatedCurriculumRegistrationException;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
@@ -167,6 +164,11 @@ public class CurriculumServiceImpl implements CurriculumService {
         Page<Curriculum> curriculumList = curriculumSearchRepository.search(condition, pageable);
 
         return CurriculumListResponse.fromDomainList(curriculumList);
+    }
+
+    @Override
+    public List<SimpleCurriculumDto> getCurriculumListInOrder(CurriculaOrderType order) {
+        return curriculumSearchRepository.searchForSimpleInformationInOrder(order);
     }
 
     private byte bitmaskStringToByte(String bitmaskString) {

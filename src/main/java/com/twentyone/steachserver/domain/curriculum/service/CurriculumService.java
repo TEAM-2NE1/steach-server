@@ -1,10 +1,7 @@
 package com.twentyone.steachserver.domain.curriculum.service;
 
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculaSearchCondition;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumListResponse;
+import com.twentyone.steachserver.domain.curriculum.dto.*;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import java.time.LocalDateTime;
@@ -26,6 +23,8 @@ public interface CurriculumService {
     CurriculumListResponse getStudentsCurricula(Student student);
 
     CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable);
+
+    List<SimpleCurriculumDto> getCurriculumListInOrder(CurriculaOrderType order);
 
     List<LocalDateTime> getSelectedWeekdays(LocalDateTime startDate, LocalDateTime endDate,
                                             int weekdaysBitmask);

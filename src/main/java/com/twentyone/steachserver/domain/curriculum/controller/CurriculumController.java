@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "커리큘럼")
 @Slf4j
 @RestController
@@ -70,6 +72,20 @@ public class CurriculumController {
         CurriculumListResponse result = curriculumService.search(condition, pageable);
 
         return ResponseEntity.ok(result);
+    }
+
+    @Operation(summary = "인기 커리큘럼 조회", description = "lecture_start_time 은 날짜시간 같이 나옵니다")
+    @GetMapping("/popular-per-ratio")
+    public ResponseEntity<CurriculumListInOrderResponseDto> getPopularCurriculum(){
+        List<SimpleCurriculumDto> result = curriculumService.getCurriculumListInOrder(CurriculaOrderType.POPULAR_PER_RATIO);
+        return ResponseEntity.ok(CurriculumListInOrderResponseDto.of(result));
+    }
+
+    @Operation(summary = "최신 커리큘럼 조회", description = "lecture_start_time 은 날짜시간 같이 나옵니다")
+    @GetMapping("/latest")
+    public ResponseEntity<CurriculumListInOrderResponseDto> getLatestCurriculum(){
+        List<SimpleCurriculumDto> result = curriculumService.getCurriculumListInOrder(CurriculaOrderType.LATEST);
+        return ResponseEntity.ok(CurriculumListInOrderResponseDto.of(result));
     }
 
     @Operation(summary = "커리큘럼에 해당하는 강의 리스트 조회")
