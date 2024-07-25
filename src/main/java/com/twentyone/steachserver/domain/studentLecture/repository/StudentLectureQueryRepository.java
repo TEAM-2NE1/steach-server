@@ -2,6 +2,7 @@ package com.twentyone.steachserver.domain.studentLecture.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twentyone.steachserver.domain.lecture.dto.StudentInfoByLectureDto;
+import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.model.QLecture;
 import com.twentyone.steachserver.domain.quiz.model.QQuiz;
 import com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture;
@@ -17,10 +18,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.twentyone.steachserver.domain.curriculum.model.QCurriculum.curriculum;
@@ -50,33 +48,70 @@ public class StudentLectureQueryRepository {
                 .fetch();
     }
 
+    //    public List<StudentInfoByLectureDto> getStudentInfoByLecture(Integer lectureId) {
+//        QStudentLecture studentLecture = QStudentLecture.studentLecture;
+//        QStudentQuiz studentQuiz = QStudentQuiz.studentQuiz;
+//        QQuiz quiz = QQuiz.quiz;
+//
+//        // Fetch all quizzes for the lecture in a single query
+//        List<Integer> quizIds = query.select(quiz.id)
+//                .from(quiz)
+//                .where(quiz.lecture.id.eq(lectureId))
+//                .fetch();
+//
+//        // Fetch student lectures and their quizzes in a single optimized query
+//        List<StudentLecture> studentLectures = query
+//                .selectFrom(studentLecture)
+//                .leftJoin(studentLecture.student).fetchJoin()
+//                .leftJoin(studentLecture.student.studentQuizzes, studentQuiz).fetchJoin()
+//                .where(studentLecture.lecture.id.eq(lectureId)
+//                        .and(studentQuiz.quiz.id.in(quizIds))) // Ensure we only fetch relevant student quizzes
+//                .fetch();
+//
+//        System.out.println(studentLectures);
+//        // Transform the fetched data into the required DTOs
+//        return studentLectures.stream()
+//                .map(sl -> StudentInfoByLectureDto.of(
+//                        sl.getStudent().getStudentQuizzes().stream()
+//                                .filter(sq -> quizIds.contains(sq.getQuiz().getId())) // Filter quizzes again to be safe
+//                                .map(StudentQuizByLectureDto::createStudentQuizByLectureDto)
+//                                .collect(Collectors.toList()),
+//                        sl
+//                ))
+//                .toList();
+//    }
     public List<StudentInfoByLectureDto> getStudentInfoByLecture(Integer lectureId) {
-        QStudentLecture studentLecture = QStudentLecture.studentLecture;
-        QStudentQuiz studentQuiz = QStudentQuiz.studentQuiz;
-        QQuiz quiz = QQuiz.quiz;
+        QLecture qLecture = lecture;
+        QStudentLecture qStudentLecture = QStudentLecture.studentLecture;
+        QStudentQuiz qStudentQuiz = QStudentQuiz.studentQuiz;
 
-        List<Integer> quizIds = query.select(quiz.id)
-                .from(quiz)
-                .where(quiz.lecture.id.eq(lectureId))
-                .stream().toList();
+        // Lecture를 가져옴
+        Lecture lecture = query.selectFrom(qLecture)
+                .where(qLecture.id.eq(lectureId))
+                .fetchOne();
+        if (lecture == null) {
+            throw new IllegalStateException("lecture not found");
+        }
 
-        // 아래의 studentQuizzes에서 quiz_id가 quizIds와 같은것들만 가져와줘
-        return query
-                .selectFrom(studentLecture)
-                .leftJoin(studentLecture.student).fetchJoin()
-                .leftJoin(studentLecture.student.studentQuizzes, studentQuiz).fetchJoin()
-                .where(studentLecture.lecture.id.eq(lectureId)
-                        .and(studentQuiz.quiz.id.in(quizIds))) // quizIds와 일치하는 studentQuiz만 조회
-                .fetch()
-                .stream()
-                .map(sl -> StudentInfoByLectureDto.of(
-                        sl.getStudent().getStudentQuizzes().stream()
-                                .filter(sq -> quizIds.contains(sq.getQuiz().getId())) // quizIds 필터링 (한번 더 확인해주는 코드)
-                                .map(StudentQuizByLectureDto::createStudentQuizByLectureDto)
-                                .collect(Collectors.toList()),
-                        sl
-                ))
-                .toList();
+        // StudentLecture 목록을 가져옴
+        List<StudentLecture> studentLectures = query.selectFrom(qStudentLecture)
+                .where(qStudentLecture.lecture.eq(lecture))
+                .fetch();
+
+        // StudentInfoByLectureDto 리스트를 생성
+        return studentLectures.stream().map(studentLecture -> {
+            // 각 StudentLecture에 대한 StudentQuiz 목록을 가져옴
+            List<StudentQuiz> studentQuizzes = query.selectFrom(qStudentQuiz)
+                    .where(qStudentQuiz.student.eq(studentLecture.getStudent()))
+                    .fetch();
+
+            // StudentQuizDto 리스트를 생성
+            List<StudentQuizByLectureDto> studentQuizDtos = studentQuizzes.stream().map(StudentQuizByLectureDto::createStudentQuizByLectureDto
+            ).collect(Collectors.toList());
+
+            // StudentInfoByLectureDto 생성
+            return StudentInfoByLectureDto.of(studentQuizDtos, studentLecture);
+        }).collect(Collectors.toList());
     }
 
 
@@ -94,7 +129,7 @@ public class StudentLectureQueryRepository {
                 .fetchOne();
 
 
-        if(realStartTime == null) {
+        if (realStartTime == null) {
             throw new IllegalStateException("시작하지 않은 강의입니다. (realStartTime is null)");
         }
 

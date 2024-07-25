@@ -166,16 +166,17 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     public FinalLectureInfoByTeacherDto getFinalLectureInformation(Integer lectureId) {
-        List<StudentInfoByLectureDto> studentInfoByLecture = studentLectureQueryRepository.getStudentInfoByLecture(
-                lectureId);
+        List<StudentInfoByLectureDto> studentInfoByLecture = studentLectureQueryRepository.getStudentInfoByLecture(lectureId);
+        System.out.println(studentInfoByLecture);
         return FinalLectureInfoByTeacherDto.createFinalLectureInfoByTeacherDto(studentInfoByLecture);
     }
 
     @Override
     public CompletedLecturesResponseDto getFinalLectureInformation(
             LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto, Integer lectureId) {
-        List<StudentInfoByLectureDto> studentInfoByLecture = studentLectureQueryRepository.getStudentInfoByLecture(
-                lectureId);
+
+        List<StudentInfoByLectureDto> studentInfoByLecture = studentLectureQueryRepository.getStudentInfoByLecture(lectureId);
+        System.out.println(studentInfoByLecture);
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new IllegalArgumentException("lecture not found"));
         return CompletedLecturesResponseDto.of(lectureBeforeStartingResponseDto, studentInfoByLecture, lecture);
