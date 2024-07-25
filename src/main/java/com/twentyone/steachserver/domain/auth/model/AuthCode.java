@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.auth.model;
 
+import com.twentyone.steachserver.domain.auth.error.AuthCodeAlreadyInUseException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -12,7 +13,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "auth_codes")
 public class AuthCode {
-    @Id @Column(length = 30)
+    @Id
+    @Column(length = 30)
     private String authCode;
 
     @Column(nullable = false)
@@ -27,7 +29,7 @@ public class AuthCode {
 
     public void register() {
         if (isRegistered) {
-            throw new RuntimeException("에러");
+            throw new AuthCodeAlreadyInUseException("이미 등록된 authCode");
         }
 
         this.isRegistered = true;

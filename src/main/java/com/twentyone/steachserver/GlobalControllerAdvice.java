@@ -1,5 +1,6 @@
 package com.twentyone.steachserver;
 
+import com.twentyone.steachserver.domain.auth.error.AuthCodeAlreadyInUseException;
 import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.curriculum.error.DuplicatedCurriculumRegistrationException;
 import com.twentyone.steachserver.domain.lecture.error.LectureTimeNotYetException;
@@ -36,6 +37,12 @@ public class GlobalControllerAdvice {
     public ResponseEntity<ErrorResponseDto> handleLectureTimeNotYetException(LectureTimeNotYetException e) {
         log.info(e.getMessage());
         return getResponse(ErrorCode.LECTURE_TIME_NOT_YET);
+    }
+
+    @ExceptionHandler(AuthCodeAlreadyInUseException.class)
+    public ResponseEntity<ErrorResponseDto> handleAuthCodeAlreadyInUseException(AuthCodeAlreadyInUseException e) {
+        log.info(e.getMessage());
+        return getResponse(ErrorCode.AUTH_CODE_ALREADY_IN_USE);
     }
 
     private static ResponseEntity<ErrorResponseDto> getResponse(ErrorCode errorCode) {
