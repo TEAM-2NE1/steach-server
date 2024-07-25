@@ -2,19 +2,23 @@ package com.twentyone.steachserver.domain.curriculum.repository;
 
 import static com.twentyone.steachserver.domain.curriculum.model.QCurriculum.*;
 import static com.twentyone.steachserver.domain.curriculum.model.QCurriculumDetail.*;
+import static com.twentyone.steachserver.domain.member.model.QTeacher.teacher;
 import static io.jsonwebtoken.lang.Strings.hasText;
 
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculaOrderType;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculaSearchCondition;
+import com.twentyone.steachserver.domain.curriculum.dto.SimpleCurriculumDto;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import org.springframework.stereotype.Repository;
+import org.yaml.snakeyaml.constructor.Constructor;
 
 @Repository
 public class CurriculumSearchRepository {
@@ -54,9 +58,34 @@ public class CurriculumSearchRepository {
         switch (order) {
             case LATEST -> type = curriculum.createdAt.desc();
             case POPULAR -> type = curriculumDetail.currentAttendees.desc();
+            case POPULAR_PER_RATIO -> type = curriculumDetail.currentAttendees.divide(curriculumDetail.maxAttendees).desc();
         }
 
         return type;
+    }
+
+    public List<SimpleCurriculumDto> searchForSimpleInformationInOrder(CurriculaOrderType order) {
+        JPAQuery<SimpleCurriculumDto> query = queryFactory
+                .select(Projections.constructor(
+                        SimpleCurriculumDto.class,
+                        curriculum.curriculumDetail.bannerImgUrl,
+                        curriculum.title,
+                        curriculum.curriculumDetail.intro,
+                        curriculum.curriculumDetail.maxAttendees,
+                        curriculum.curriculumDetail.currentAttendees,
+                        curriculum.createdAt,
+                        curriculum.teacher.name
+                ))
+                .from(curriculum)
+                .join(curriculum.curriculumDetail, curriculumDetail)
+                .join(curriculum.teacher, teacher)
+                .where(
+                        onlyAvailableEq(true)
+                )
+                .orderBy(getOrder(order))
+                .limit(7);
+
+        return query.fetch();
     }
 
     private BooleanExpression curriculumSearchKeywordEq(String search) {
@@ -75,4 +104,5 @@ public class CurriculumSearchRepository {
     private BooleanExpression curriculumCategoryEq(CurriculumCategory curriculumCategory) {
         return curriculumCategory == null ? null : curriculum.category.eq(curriculumCategory);
     }
+
 }
