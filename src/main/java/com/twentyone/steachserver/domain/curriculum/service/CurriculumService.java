@@ -17,10 +17,10 @@ public interface CurriculumService {
     void registration(LoginCredential credential, Integer curriculaId);
 
     @Transactional(readOnly = true)
-    CurriculumListResponse getTeachersCurricula(Teacher teacher);
+    CurriculumListResponse getTeachersCurricula(Teacher teacher, Pageable pageable);
 
     @Transactional(readOnly = true)
-    CurriculumListResponse getStudentsCurricula(Student student);
+    CurriculumListResponse getStudentsCurricula(Student student, Pageable pageable);
 
     CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable);
 

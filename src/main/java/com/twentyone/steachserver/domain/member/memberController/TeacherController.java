@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,10 +41,15 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.updateInfo(request, teacher));
     }
 
-    @Operation(summary = "선생님이 강의하는 커리큘럼 조회")
+    @Operation(summary = "선생님이 강의하는 커리큘럼 조회", description = "currentPageNumber: 현재 몇 페이지, totalPage: 전체 페이지 개수, pageSize: 한 페이지당 원소 개수(n개씩보기)")
     @GetMapping("/curricula")
-    public ResponseEntity<CurriculumListResponse> getMyCourses(@AuthenticationPrincipal Teacher teacher) {
-        CurriculumListResponse curriculumListResponse = curriculumService.getTeachersCurricula(teacher);
+    public ResponseEntity<CurriculumListResponse> getMyCourses(@AuthenticationPrincipal Teacher teacher,
+                                                               @RequestParam(value = "pageSize", required = false, defaultValue = "100") Integer pageSize,
+                                                               @RequestParam(value = "currentPageNumber", required = false, defaultValue = "1") Integer currentPageNumber) {
+        int pageNumber = currentPageNumber - 1; //입력은 1부터 시작, 실제로는 0부터 시작
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        CurriculumListResponse curriculumListResponse = curriculumService.getTeachersCurricula(teacher, pageable);
 
         return ResponseEntity.ok(curriculumListResponse);
     }

@@ -6,9 +6,7 @@ import com.twentyone.steachserver.domain.curriculum.dto.*;
 import com.twentyone.steachserver.domain.curriculum.error.DuplicatedCurriculumRegistrationException;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
-import com.twentyone.steachserver.domain.curriculum.repository.CurriculumDetailRepository;
-import com.twentyone.steachserver.domain.curriculum.repository.CurriculumRepository;
-import com.twentyone.steachserver.domain.curriculum.repository.CurriculumSearchRepository;
+import com.twentyone.steachserver.domain.curriculum.repository.*;
 import com.twentyone.steachserver.domain.curriculum.validator.CurriculumValidator;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
@@ -138,25 +136,25 @@ public class CurriculumServiceImpl implements CurriculumService {
 
     @Override
     @Transactional(readOnly = true)
-    public CurriculumListResponse getTeachersCurricula(Teacher teacher) {
-        List<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher)
-                .orElseGet(ArrayList::new);
+    public CurriculumListResponse getTeachersCurricula(Teacher teacher, Pageable pageable) {
+        Page<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher, pageable);
 
         return CurriculumListResponse.fromDomainList(curriculumList);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public CurriculumListResponse getStudentsCurricula(Student student) {
-        List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student)
-                .orElseGet(ArrayList::new);
+    public CurriculumListResponse getStudentsCurricula(Student student, Pageable pageable) {
+        Page<StudentCurriculum> studentsCurriculaPage = studentCurriculumRepository.findByStudent(student, pageable);
+        List<StudentCurriculum> studentsCurricula = studentsCurriculaPage.getContent();
 
         List<Curriculum> curriculaList = new ArrayList<>();
         for (StudentCurriculum studentCurriculum : studentsCurricula) {
             curriculaList.add(studentCurriculum.getCurriculum());
         }
 
-        return CurriculumListResponse.fromDomainList(curriculaList);
+        return CurriculumListResponse.fromDomainList(curriculaList, studentsCurriculaPage.getPageable().getPageNumber(),
+                studentsCurriculaPage.getTotalPages(), studentsCurriculaPage.getPageable().getPageSize());
     }
 
     @Override

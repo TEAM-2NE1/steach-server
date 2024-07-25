@@ -4,6 +4,8 @@ import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import jakarta.persistence.LockModeType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -21,7 +23,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Integer>
     Optional<Curriculum> findByIdWithDetail(@Param("id") Integer id);
 
     @Query("select c from Curriculum  c join c.curriculumDetail where c.teacher = :teacher")
-    Optional<List<Curriculum>> findAllByTeacher(@Param("teacher") Teacher teacher);
+    Page<Curriculum> findAllByTeacher(@Param("teacher") Teacher teacher, Pageable pageable);
 
     Optional<Curriculum> findByLecturesContaining(Lecture lecture);
 }
