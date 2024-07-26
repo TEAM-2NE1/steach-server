@@ -74,15 +74,15 @@ public class CurriculumController {
         return ResponseEntity.ok(result);
     }
 
-    @Operation(summary = "인기 커리큘럼 조회", description = "lecture_start_time 은 날짜시간 같이 나옵니다")
-    @GetMapping("/popular-per-ratio")
+    @Operation(summary = "[메인페이지] 인기 커리큘럼 조회", description = "lecture_start_time 은 날짜시간 같이 나옵니다")
+    @GetMapping("/main/popular-per-ratio")
     public ResponseEntity<CurriculumListInOrderResponseDto> getPopularCurriculum(){
         List<SimpleCurriculumDto> result = curriculumService.getCurriculumListInOrder(CurriculaOrderType.POPULAR_PER_RATIO);
         return ResponseEntity.ok(CurriculumListInOrderResponseDto.of(result));
     }
 
-    @Operation(summary = "최신 커리큘럼 조회", description = "lecture_start_time 은 날짜시간 같이 나옵니다")
-    @GetMapping("/latest")
+    @Operation(summary = "[메인페이지] 최신 커리큘럼 조회", description = "lecture_start_time 은 날짜시간 같이 나옵니다")
+    @GetMapping("/main/latest")
     public ResponseEntity<CurriculumListInOrderResponseDto> getLatestCurriculum(){
         List<SimpleCurriculumDto> result = curriculumService.getCurriculumListInOrder(CurriculaOrderType.LATEST);
         return ResponseEntity.ok(CurriculumListInOrderResponseDto.of(result));
