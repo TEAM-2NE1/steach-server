@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 public class CurriculumDetailResponse {
     private Integer curriculumId;
+    private String teacherName;
     private String title;
     private String subTitle;
     private String intro;
@@ -42,6 +43,7 @@ public class CurriculumDetailResponse {
 
         return CurriculumDetailResponse.builder()
                 .curriculumId(curriculum.getId())
+                .teacherName(curriculum.getTeacher().getName())
                 .title(curriculum.getTitle())
                 .subTitle(curriculumDetail.getSubTitle())
                 .intro(curriculumDetail.getIntro())
@@ -51,6 +53,29 @@ public class CurriculumDetailResponse {
                 .bannerImgUrl(curriculumDetail.getBannerImgUrl())
                 .startDate(curriculumDetail.getStartDate())
                 .endDate(curriculumDetail.getEndDate() != null ? curriculumDetail.getEndDate() : null)
+                .weekdaysBitmask(paddedWeekDaysBitmask)
+                .lectureStartTime(curriculumDetail.getLectureStartTime())
+                .lectureEndTime(curriculumDetail.getLectureCloseTime())
+                .currentAttendees(curriculumDetail.getCurrentAttendees())
+                .maxAttendees(curriculumDetail.getMaxAttendees())
+                .createdAt(curriculum.getCreatedAt())
+                .build();
+    }
+    public static CurriculumDetailResponse fromDomainBySimple(Curriculum curriculum) {
+        // 7을 이진수 문자열로 변환
+        CurriculumDetail curriculumDetail = curriculum.getCurriculumDetail();
+        String weekDaysBitmaskString = Integer.toBinaryString(curriculumDetail.getWeekdaysBitmask());
+
+        // 길이가 7이 되도록 0으로 패딩
+        String paddedWeekDaysBitmask = String.format("%0" + 7 + "d", Integer.parseInt(weekDaysBitmaskString));
+
+        return CurriculumDetailResponse.builder()
+                .curriculumId(curriculum.getId())
+                .teacherName(curriculum.getTeacher().getName())
+                .title(curriculum.getTitle())
+                .intro(curriculumDetail.getIntro())
+                .bannerImgUrl(curriculumDetail.getBannerImgUrl())
+                .startDate(curriculumDetail.getStartDate())
                 .weekdaysBitmask(paddedWeekDaysBitmask)
                 .lectureStartTime(curriculumDetail.getLectureStartTime())
                 .lectureEndTime(curriculumDetail.getLectureCloseTime())
