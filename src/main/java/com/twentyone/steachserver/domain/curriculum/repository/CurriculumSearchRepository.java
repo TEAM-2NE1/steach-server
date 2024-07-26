@@ -35,6 +35,7 @@ public class CurriculumSearchRepository {
                 .select(curriculum)
                 .from(curriculum)
                 .join(curriculum.curriculumDetail, curriculumDetail).fetchJoin()
+                .join(curriculum.teacher, teacher).fetchJoin()
                 .where(
                         curriculumCategoryEq(condition.getCurriculumCategory()),
                         onlyAvailableEq(condition.getOnlyAvailable()),
