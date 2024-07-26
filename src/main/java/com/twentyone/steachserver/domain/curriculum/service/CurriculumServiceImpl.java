@@ -30,8 +30,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
+@Slf4j
+@Transactional
 @RequiredArgsConstructor
 public class CurriculumServiceImpl implements CurriculumService {
     private final CurriculumRepository curriculumRepository;
@@ -188,6 +189,7 @@ public class CurriculumServiceImpl implements CurriculumService {
         return selectedDates;
     }
 
+    @Transactional
     @Override
     public CurriculumDetailResponse updateCurriculum(Integer curriculumId, Teacher teacher, CurriculumAddRequest request) {
         Curriculum curriculum = curriculumRepository.findById(curriculumId)
@@ -214,7 +216,7 @@ public class CurriculumServiceImpl implements CurriculumService {
                 request.getMaxAttendees()
         );
 
-        return null;
+        return CurriculumDetailResponse.fromDomain(curriculum);
     }
 
     private int getBitmaskForDayOfWeek(DayOfWeek dayOfWeek) {
