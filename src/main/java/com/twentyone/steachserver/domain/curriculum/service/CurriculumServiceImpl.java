@@ -164,11 +164,6 @@ public class CurriculumServiceImpl implements CurriculumService {
         return CurriculumListResponse.fromDomainList(curriculumList);
     }
 
-    @Override
-    public List<SimpleCurriculumDto> getCurriculumListInOrder(CurriculaOrderType order) {
-        return curriculumSearchRepository.searchForSimpleInformationInOrder(order);
-    }
-
     private byte bitmaskStringToByte(String bitmaskString) {
         if (bitmaskString.length() != 7) {
             throw new RuntimeException("bitmask 이상함");

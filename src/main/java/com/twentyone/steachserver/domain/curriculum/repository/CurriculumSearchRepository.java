@@ -12,7 +12,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculaOrderType;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculaSearchCondition;
-import com.twentyone.steachserver.domain.curriculum.dto.SimpleCurriculumDto;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import jakarta.persistence.EntityManager;
@@ -71,30 +70,6 @@ public class CurriculumSearchRepository {
         }
 
         return type;
-    }
-
-    public List<SimpleCurriculumDto> searchForSimpleInformationInOrder(CurriculaOrderType order) {
-        JPAQuery<SimpleCurriculumDto> query = queryFactory
-                .select(Projections.constructor(
-                        SimpleCurriculumDto.class,
-                        curriculum.curriculumDetail.bannerImgUrl,
-                        curriculum.title,
-                        curriculum.curriculumDetail.intro,
-                        curriculum.curriculumDetail.maxAttendees,
-                        curriculum.curriculumDetail.currentAttendees,
-                        curriculum.createdAt,
-                        curriculum.teacher.name
-                ))
-                .from(curriculum)
-                .join(curriculum.curriculumDetail, curriculumDetail)
-                .join(curriculum.teacher, teacher)
-                .where(
-                        onlyAvailableEq(true)
-                )
-                .orderBy(getOrder(order))
-                .limit(7);
-
-        return query.fetch();
     }
 
     private BooleanExpression curriculumSearchKeywordEq(String search) {
