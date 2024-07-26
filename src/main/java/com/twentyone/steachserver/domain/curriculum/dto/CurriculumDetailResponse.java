@@ -4,6 +4,8 @@ import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import java.time.LocalTime;
+
+import com.twentyone.steachserver.util.WeekdayBitmaskUtil;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -35,7 +37,7 @@ public class CurriculumDetailResponse {
     public static CurriculumDetailResponse fromDomain(Curriculum curriculum) {
         // 7을 이진수 문자열로 변환
         CurriculumDetail curriculumDetail = curriculum.getCurriculumDetail();
-        String weekDaysBitmaskString = Integer.toBinaryString(curriculumDetail.getWeekdaysBitmask());
+        String weekDaysBitmaskString = WeekdayBitmaskUtil.convert(curriculumDetail.getWeekdaysBitmask());
 
         // 길이가 7이 되도록 0으로 패딩
         String paddedWeekDaysBitmask = String.format("%0" + 7 + "d", Integer.parseInt(weekDaysBitmaskString));

@@ -2,12 +2,12 @@ package com.twentyone.steachserver.domain.curriculum.dto;
 
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.time.LocalDate;
 import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
@@ -20,8 +20,8 @@ public class CurriculumAddRequest {
     private CurriculumCategory category;
     private String subCategory;
     private String bannerImgUrl;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate; //시작
+    private LocalDate endDate;
 
     @Schema(description = "Lecture start time in HH:mm:ss format", example = "0100101")
     private String weekdaysBitmask;
