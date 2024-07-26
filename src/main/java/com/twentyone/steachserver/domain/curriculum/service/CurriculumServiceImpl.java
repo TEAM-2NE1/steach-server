@@ -164,12 +164,7 @@ public class CurriculumServiceImpl implements CurriculumService {
     public CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable) {
         Page<Curriculum> curriculumList = curriculumSearchRepository.search(condition, pageable);
 
-        return CurriculumListResponse.fromDomainList(curriculumList);
-    }
-
-    @Override
-    public List<SimpleCurriculumDto> getCurriculumListInOrder(CurriculaOrderType order) {
-        return curriculumSearchRepository.searchForSimpleInformationInOrder(order);
+        return CurriculumListResponse.fromSimpleDomainList(curriculumList);
     }
 
     @Override

@@ -50,7 +50,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(whiteList).permitAll()
                         .requestMatchers(swaggerWhiteList).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/curricula/main/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/curricula/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/lectures/*").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()

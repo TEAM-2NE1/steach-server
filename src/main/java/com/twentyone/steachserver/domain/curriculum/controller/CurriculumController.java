@@ -55,7 +55,7 @@ public class CurriculumController {
         return ResponseEntity.ok().build(); //TODO 반환값
     }
 
-    @Operation(summary = "커리큘럼 리스트 조회/검색", description = "lecture_start_time 은 날짜시간 같이 나옵니다."
+    @Operation(summary = "커리큘럼 리스트 조회/검색", description = "lecture_start_time 은 날짜시간 같이 나옵니다. /n"
             + "pageSize: 한 페이지당 원소 개수(n개씩보기), currentPageNumber: 현재 몇 페이지, totalPage: 전체 페이지 개수")
     @GetMapping
     public ResponseEntity<CurriculumListResponse> getCurricula(
@@ -67,27 +67,12 @@ public class CurriculumController {
             @RequestParam(value = "currentPageNumber", required = false, defaultValue = "1") Integer currentPageNumber) {
         CurriculaSearchCondition condition = new CurriculaSearchCondition(curriculumCategory, order, onlyAvailable,
                 search);
-
         int pageNumber = currentPageNumber - 1; //입력은 1부터 시작, 실제로는 0부터 시작
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
         CurriculumListResponse result = curriculumService.search(condition, pageable);
 
         return ResponseEntity.ok(result);
-    }
-
-    @Operation(summary = "[메인페이지] 인기 커리큘럼 조회", description = "lecture_start_time 은 날짜시간 같이 나옵니다")
-    @GetMapping("/main/popular-per-ratio")
-    public ResponseEntity<CurriculumListInOrderResponseDto> getPopularCurriculum(){
-        List<SimpleCurriculumDto> result = curriculumService.getCurriculumListInOrder(CurriculaOrderType.POPULAR_PER_RATIO);
-        return ResponseEntity.ok(CurriculumListInOrderResponseDto.of(result));
-    }
-
-    @Operation(summary = "[메인페이지] 최신 커리큘럼 조회", description = "lecture_start_time 은 날짜시간 같이 나옵니다")
-    @GetMapping("/main/latest")
-    public ResponseEntity<CurriculumListInOrderResponseDto> getLatestCurriculum(){
-        List<SimpleCurriculumDto> result = curriculumService.getCurriculumListInOrder(CurriculaOrderType.LATEST);
-        return ResponseEntity.ok(CurriculumListInOrderResponseDto.of(result));
     }
 
     @Operation(summary = "커리큘럼에 해당하는 강의 리스트 조회")
