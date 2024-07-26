@@ -28,4 +28,6 @@ public interface CurriculumService {
 
     List<LocalDateTime> getSelectedWeekdays(LocalDateTime startDate, LocalDateTime endDate,
                                             int weekdaysBitmask);
+
+    CurriculumDetailResponse updateCurriculum(Integer curriculumId, Teacher teacher, CurriculumAddRequest request);
 }
