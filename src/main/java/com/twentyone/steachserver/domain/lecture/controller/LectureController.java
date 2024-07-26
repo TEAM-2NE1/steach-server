@@ -34,7 +34,7 @@ public class LectureController {
     private final StatisticService statisticService;
 
 
-    @Operation(summary = "강의에 대한 다양한 정보 반환", description = "무조건 200을 반환, 강의에 대해서 시작 전 강의면 시작 전 형태로, 끝난 강의는 끝난형태로 반환.")
+    @Operation(summary = "[공통] 강의에 대한 다양한 정보 반환", description = "무조건 200을 반환, 강의에 대해서 시작 전 강의면 시작 전 형태로, 끝난 강의는 끝난형태로 반환.")
     @GetMapping("/{lectureId}")
     public ResponseEntity<?> getLectureInformation(@PathVariable("lectureId") Integer lectureId) {
         LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto = lectureService.getLectureInformation(lectureId);
@@ -45,7 +45,7 @@ public class LectureController {
         return ResponseEntity.ok().body(lectureBeforeStartingResponseDto);
     }
 
-    @Operation(summary = "강의 수정!", description = "성공시 200 반환, 실패시 204 NO_CONTENT 반환.")
+    @Operation(summary = "[선생님] 강의 수정!", description = "성공시 200 반환, 실패시 204 NO_CONTENT 반환.")
     @PatchMapping("/{lectureId}")
     public ResponseEntity<?> updateLectureInformation(@PathVariable("lectureId") Integer lectureId, @RequestBody UpdateLectureRequestDto updatelectureRequestDto) {
         return lectureService.updateLectureInformation(lectureId, updatelectureRequestDto)
@@ -53,7 +53,7 @@ public class LectureController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
     }
 
-    @Operation(summary = "강의를 들을 학생인지 확인!",
+    @Operation(summary = "[학생] 강의를 들을 학생인지 확인!",
             description = "권한이 있으면 200과 sessionId 반환, 권한 있는데 강의 시작 전이면 403," +
                     "권한이 없으면 401, 학생이 아닌 권한이면 500")
     @GetMapping("/check/{lectureId}")
@@ -71,7 +71,7 @@ public class LectureController {
                 .orElseThrow(() -> new LectureTimeNotYetException("강의 시간이 아님"));
     }
 
-    @Operation(summary = "선생님이 강의를 끝내고 관련 정보 처리 및 최종정보 반환 ", description = "무조건 200을 반환")
+    @Operation(summary = "[선생님] 선생님이 강의를 끝내고 관련 정보 처리 및 최종정보 반환 ", description = "무조건 200을 반환")
     @GetMapping("/final/{lectureId}")
     public ResponseEntity<FinalLectureInfoByTeacherDto> getFinalLectureInformation(@PathVariable("lectureId") Integer lectureId) {
         Lecture updateLecture = lectureService.updateRealEndTime(lectureId);
