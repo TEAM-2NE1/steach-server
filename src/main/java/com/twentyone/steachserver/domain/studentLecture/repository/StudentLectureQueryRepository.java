@@ -13,6 +13,7 @@ import com.twentyone.steachserver.domain.studentQuiz.model.QStudentQuiz;
 import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -30,13 +31,15 @@ import static com.twentyone.steachserver.domain.studentLecture.model.QStudentLec
 import static com.twentyone.steachserver.domain.studentQuiz.model.QStudentQuiz.studentQuiz;
 
 public class StudentLectureQueryRepository {
-    private final JPAQueryFactory query;
+
     private final EntityManager em;
+    private final JPAQueryFactory query;
 
     public StudentLectureQueryRepository(EntityManager em) {
-        this.query = new JPAQueryFactory(em);
         this.em = em;
+        this.query = new JPAQueryFactory(em);
     }
+
 
     public List<StudentLecture> findAllStudentInfoByLectureId(Integer lectureId) {
         return query

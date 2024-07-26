@@ -8,6 +8,7 @@ import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.studentCurriculum.model.QStudentCurriculum;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
 import jakarta.persistence.EntityManager;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,8 +17,9 @@ import java.util.Optional;
 import static com.twentyone.steachserver.domain.classroom.model.QClassroom.classroom;
 import static com.twentyone.steachserver.domain.studentCurriculum.model.QStudentCurriculum.studentCurriculum;
 
-
+@Repository
 public class ClassroomQueryRepository {
+
     private final JPAQueryFactory query;
 
     public ClassroomQueryRepository(EntityManager em) {
