@@ -159,21 +159,11 @@ public class CurriculumServiceImpl implements CurriculumService {
                 studentsCurriculaPage.getTotalPages(), studentsCurriculaPage.getPageable().getPageSize());
     }
 
-//    @Override
-//    public CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable) {
-//        Page<Curriculum> curriculumList = curriculumSearchRepository.search(condition, pageable);
-//
-//        return CurriculumListResponse.fromDomainList(curriculumList);
-//    }
-
     @Override
-    public CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable, Boolean detailed) {
+    public CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable) {
         Page<Curriculum> curriculumList = curriculumSearchRepository.search(condition, pageable);
-        if (!detailed) {
-            return CurriculumListResponse.fromDomainList(curriculumList);
-        }
-        return CurriculumListResponse.fromSimpleDomainList(curriculumList);
 
+        return CurriculumListResponse.fromSimpleDomainList(curriculumList);
     }
 
     @Override
