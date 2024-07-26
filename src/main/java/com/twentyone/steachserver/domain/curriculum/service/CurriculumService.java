@@ -22,8 +22,11 @@ public interface CurriculumService {
     @Transactional(readOnly = true)
     CurriculumListResponse getStudentsCurricula(Student student, Pageable pageable);
 
-    CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable);
+//    CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable);
+
+    CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable, Boolean detailed);
 
     List<LocalDateTime> getSelectedWeekdays(LocalDateTime startDate, LocalDateTime endDate,
                                             int weekdaysBitmask);
+
 }
