@@ -25,7 +25,7 @@ public class StatisticController {
     private final StatisticService statisticService;
 
     @Secured("ROLE_STUDENT")
-    @Operation(summary = "레이더 차트 통계 정보 반환 ", description = "무조건 200을 반환")
+    @Operation(summary = "[학생] 레이더 차트 통계 정보 반환 ", description = "무조건 200을 반환")
     @GetMapping("/radar-chart")
     public ResponseEntity<RadarChartStatisticDto> getRadarChartStatistic(@AuthenticationPrincipal Student student) {
         RadarChartStatisticDto statistics = statisticService.getRadarChartStatistic(student.getId());
@@ -34,7 +34,7 @@ public class StatisticController {
                 .body(statistics);
     }
 
-    @Operation(summary = "GPT 문장 반환 ", description = "무조건 200을 반환")
+    @Operation(summary = "[학생] GPT 문장 반환 ", description = "무조건 200을 반환")
     @GetMapping("/gpt")
     public ResponseEntity<String> getGPTStatistic(@AuthenticationPrincipal Student student) {
         String gptString = statisticService.createGPTString(student);
@@ -42,7 +42,7 @@ public class StatisticController {
                 .body(gptString);
     }
 
-    @Operation(summary = "강의에 대한 전체 학생에 대한 통계 반환 ", description = "무조건 200을 반환")
+    @Operation(summary = "[강사] 강의에 대한 전체 학생에 대한 통계 반환 ", description = "무조건 200을 반환")
     @GetMapping("/lecture/{lectureId}")
     public ResponseEntity<LectureStatisticsByAllStudentListDto> getLectureStatisticsByAllStudent(@PathVariable("lectureId") Integer lectureId) {
         List<LectureStatisticsByAllStudentDto> statistics = statisticService.getLectureStatisticsByAllStudents(lectureId)

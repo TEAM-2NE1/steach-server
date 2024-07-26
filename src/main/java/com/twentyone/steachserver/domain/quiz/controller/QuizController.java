@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class QuizController {
     private final QuizService quizService;
 
-    @Operation(summary = "퀴즈 생성!", description = "성공시 200 반환, 실패시 500 INTERNAL_SERVER_ERROR 반환")
+    @Operation(summary = "[강사] 퀴즈 생성!", description = "성공시 200 반환, 실패시 500 INTERNAL_SERVER_ERROR 반환")
     @PostMapping("/{lectureId}")
     public ResponseEntity<QuizResponseDto> createQuiz(@PathVariable("lectureId")Integer lectureId, @RequestBody QuizRequestDto request) throws Exception {
         return quizService.createQuiz(lectureId, request)
@@ -31,7 +31,7 @@ public class QuizController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
-    @Operation(summary = "퀴즈 조회!", description = "성공시 200 반환, 실패시 204 NOT_FOUND 반환")
+    @Operation(summary = "[강사?] 퀴즈 조회!", description = "성공시 200 반환, 실패시 204 NOT_FOUND 반환")
     @GetMapping("/{quizId}")
     public ResponseEntity<QuizResponseDto> getQuizResponseDto(@PathVariable("quizId") Integer quizId) {
         return quizService.findById(quizId)
@@ -39,7 +39,7 @@ public class QuizController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @Operation(summary = "강의에 대한 퀴즈 조회!", description = "무조건 200 반환")
+    @Operation(summary = "[강사?] 강의에 대한 퀴즈 조회!", description = "무조건 200 반환")
     @GetMapping("/lecture/{lectureId}/")
     public ResponseEntity<QuizzesResponseDto> getQuizzesResponseDto(@PathVariable("lectureId")Integer lectureId) {
         List<Quiz> quizzes = quizService.findAllByLectureId(lectureId);
