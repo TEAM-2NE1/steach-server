@@ -1,6 +1,7 @@
 package com.twentyone.steachserver.config;
 
 import com.twentyone.steachserver.domain.classroom.repository.ClassroomQueryRepository;
+import com.twentyone.steachserver.domain.curriculum.repository.CurriculumSearchRepository;
 import com.twentyone.steachserver.domain.lecture.repository.LectureQueryRepository;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureQueryRepository;
 import jakarta.persistence.EntityManager;
@@ -27,5 +28,10 @@ public class ConstructConfiguration {
     @Bean
     public ClassroomQueryRepository classroomQueryRepository() {
         return new ClassroomQueryRepository(em);
+    }
+
+    @Bean
+    public CurriculumSearchRepository curriculumSearchRepository() {
+        return new CurriculumSearchRepository(em);
     }
 }
