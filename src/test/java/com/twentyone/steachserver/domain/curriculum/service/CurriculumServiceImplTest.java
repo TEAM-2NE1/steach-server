@@ -12,14 +12,18 @@ import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCurriculumRepository;
+import com.twentyone.steachserver.util.DateTimeUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,6 +68,9 @@ class CurriculumServiceImplTest {
     @Mock
     private CurriculumValidator curriculumValidator;
 
+    @MockBean
+    private DateTimeUtil dateTimeUtil;
+
     private Teacher teacher;
     private Student student;
 
@@ -93,11 +100,11 @@ class CurriculumServiceImplTest {
         assertEquals(curriculumDetailResponse.getCategory(), CURRICULUM_CATEGORY);
         assertEquals(curriculumDetailResponse.getSubCategory(), SUB_CATEGORY);
         assertEquals(curriculumDetailResponse.getBannerImgUrl(), BANNER_IMG_URL);
-        assertEquals(String.format(String.valueOf(request.getStartDate())), NOW.toLocalDate().format(dateFormatter));
-        assertEquals(String.format(String.valueOf(request.getEndDate())), NOW.toLocalDate().format(dateFormatter));
+        assertEquals(DateTimeUtil.convert(request.getStartDate()), DateTimeUtil.convert(LocalDate.from(NOW)));
+        assertEquals(DateTimeUtil.convert(request.getEndDate()), DateTimeUtil.convert(LocalDate.from(NOW)));
         assertEquals(curriculumDetailResponse.getWeekdaysBitmask(), WEEKDAY_BITMASK);
-        assertEquals(String.format(request.getLectureStartTime().format(timeFormatter)), NOW.toLocalTime().format(timeFormatter));
-        assertEquals(String.format(request.getLectureEndTime().format(timeFormatter)), NOW.toLocalTime().format(timeFormatter));
+        assertEquals(DateTimeUtil.convert(request.getLectureStartTime()), DateTimeUtil.convert(LocalTime.from(NOW)));
+        assertEquals(DateTimeUtil.convert(request.getLectureEndTime()), DateTimeUtil.convert(LocalTime.from(NOW)));
         assertEquals(curriculumDetailResponse.getMaxAttendees(), MAX_ATTENDEES);
         //then
 //        assertEquals(curriculumDetailResponse.getTitle(), TITLE);
