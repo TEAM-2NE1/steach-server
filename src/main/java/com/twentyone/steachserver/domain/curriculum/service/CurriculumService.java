@@ -6,6 +6,7 @@ import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface CurriculumService {
@@ -16,12 +17,12 @@ public interface CurriculumService {
     void registration(LoginCredential credential, Integer curriculaId);
 
     @Transactional(readOnly = true)
-    CurriculumListResponse getTeachersCurricula(Teacher teacher);
+    CurriculumListResponse getTeachersCurricula(Teacher teacher, Pageable pageable);
 
     @Transactional(readOnly = true)
-    CurriculumListResponse getStudentsCurricula(Student student);
+    CurriculumListResponse getStudentsCurricula(Student student, Pageable pageable);
 
-    CurriculumListResponse search(CurriculaSearchCondition condition);
+    CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable);
 
     List<SimpleCurriculumDto> getCurriculumListInOrder(CurriculaOrderType order);
 

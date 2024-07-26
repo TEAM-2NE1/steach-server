@@ -1,7 +1,7 @@
 package com.twentyone.steachserver.domain.curriculum.repository;
 
-import static com.twentyone.steachserver.domain.curriculum.model.QCurriculum.*;
-import static com.twentyone.steachserver.domain.curriculum.model.QCurriculumDetail.*;
+import static com.twentyone.steachserver.domain.curriculum.model.QCurriculum.curriculum;
+import static com.twentyone.steachserver.domain.curriculum.model.QCurriculumDetail.curriculumDetail;
 import static com.twentyone.steachserver.domain.member.model.QTeacher.teacher;
 import static io.jsonwebtoken.lang.Strings.hasText;
 
@@ -17,8 +17,10 @@ import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import jakarta.persistence.EntityManager;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import org.yaml.snakeyaml.constructor.Constructor;
 
 @Repository
 public class CurriculumSearchRepository {
@@ -28,7 +30,7 @@ public class CurriculumSearchRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public List<Curriculum> search(CurriculaSearchCondition condition) {
+    public Page<Curriculum> search(CurriculaSearchCondition condition, Pageable pageable) {
         //select s from curriculum s join curriculum_details d where d.title like :search
         JPAQuery<Curriculum> query = queryFactory
                 .select(curriculum)
@@ -45,7 +47,14 @@ public class CurriculumSearchRepository {
             query.orderBy(orderSpecifier);
         }
 
-        return query.fetch();
+        long total = query.fetchCount();
+
+        query.offset(pageable.getOffset())
+                .limit(pageable.getPageSize());
+
+        List<Curriculum> results = query.fetch();
+
+        return new PageImpl(results, pageable, total);
     }
 
     private OrderSpecifier<?> getOrder(CurriculaOrderType order) {
@@ -104,5 +113,4 @@ public class CurriculumSearchRepository {
     private BooleanExpression curriculumCategoryEq(CurriculumCategory curriculumCategory) {
         return curriculumCategory == null ? null : curriculum.category.eq(curriculumCategory);
     }
-
 }

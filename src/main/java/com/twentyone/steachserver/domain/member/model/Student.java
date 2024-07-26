@@ -62,11 +62,11 @@ public class Student extends LoginCredential {
     }
 
     public void updateInfo(String name, String email) {
-        if (name != null) {
+        if (name != null && !name.equals("")) {
             this.name = name;
         }
 
-        if (email != null) {
+        if (email != null && !email.equals("")) {
             this.email = email;
         }
     }

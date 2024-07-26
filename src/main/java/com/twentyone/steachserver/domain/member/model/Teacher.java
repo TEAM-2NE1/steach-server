@@ -50,25 +50,17 @@ public class Teacher extends LoginCredential{
     }
 
     public void updateInfo(String name, String email, String briefIntroduction, String academicBackground, String specialization) {
-        if (name != null) {
+        if (name != null && !name.equals("")) {
             this.name = name;
         }
 
-        if (email != null) {
+        if (email != null && !email.equals("")) {
             this.email = email;
         }
 
-        if (briefIntroduction != null) {
-            this.briefIntroduction = briefIntroduction;
-        }
-
-        if (academicBackground != null) {
-            this.academicBackground = academicBackground;
-        }
-
-        if (specialization != null) {
-            this.specialization = specialization;
-        }
+        this.briefIntroduction = briefIntroduction;
+        this.academicBackground = academicBackground;
+        this.specialization = specialization;
     }
 
     public void updateVolunteerMinute(Integer volunteerTime) {

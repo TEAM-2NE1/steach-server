@@ -6,9 +6,7 @@ import com.twentyone.steachserver.domain.curriculum.dto.*;
 import com.twentyone.steachserver.domain.curriculum.error.DuplicatedCurriculumRegistrationException;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
-import com.twentyone.steachserver.domain.curriculum.repository.CurriculumDetailRepository;
-import com.twentyone.steachserver.domain.curriculum.repository.CurriculumRepository;
-import com.twentyone.steachserver.domain.curriculum.repository.CurriculumSearchRepository;
+import com.twentyone.steachserver.domain.curriculum.repository.*;
 import com.twentyone.steachserver.domain.curriculum.validator.CurriculumValidator;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
@@ -18,16 +16,17 @@ import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurricul
 import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCurriculumRepository;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -137,30 +136,30 @@ public class CurriculumServiceImpl implements CurriculumService {
 
     @Override
     @Transactional(readOnly = true)
-    public CurriculumListResponse getTeachersCurricula(Teacher teacher) {
-        List<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher)
-                .orElseGet(ArrayList::new);
+    public CurriculumListResponse getTeachersCurricula(Teacher teacher, Pageable pageable) {
+        Page<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher, pageable);
 
         return CurriculumListResponse.fromDomainList(curriculumList);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public CurriculumListResponse getStudentsCurricula(Student student) {
-        List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student)
-                .orElseGet(ArrayList::new);
+    public CurriculumListResponse getStudentsCurricula(Student student, Pageable pageable) {
+        Page<StudentCurriculum> studentsCurriculaPage = studentCurriculumRepository.findByStudent(student, pageable);
+        List<StudentCurriculum> studentsCurricula = studentsCurriculaPage.getContent();
 
         List<Curriculum> curriculaList = new ArrayList<>();
         for (StudentCurriculum studentCurriculum : studentsCurricula) {
             curriculaList.add(studentCurriculum.getCurriculum());
         }
 
-        return CurriculumListResponse.fromDomainList(curriculaList);
+        return CurriculumListResponse.fromDomainList(curriculaList, studentsCurriculaPage.getPageable().getPageNumber(),
+                studentsCurriculaPage.getTotalPages(), studentsCurriculaPage.getPageable().getPageSize());
     }
 
     @Override
-    public CurriculumListResponse search(CurriculaSearchCondition condition) {
-        List<Curriculum> curriculumList = curriculumSearchRepository.search(condition);
+    public CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable) {
+        Page<Curriculum> curriculumList = curriculumSearchRepository.search(condition, pageable);
 
         return CurriculumListResponse.fromDomainList(curriculumList);
     }
