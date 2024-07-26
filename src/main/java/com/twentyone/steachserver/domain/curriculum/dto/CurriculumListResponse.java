@@ -29,6 +29,19 @@ public class CurriculumListResponse extends PageableDto {
 
         return response;
     }
+    public static CurriculumListResponse fromSimpleDomainList(Page<Curriculum> curriculumList) {
+        CurriculumListResponse response = new CurriculumListResponse();
+        List<CurriculumDetailResponse> responseList = response.curricula;
+
+        for (Curriculum curriculum : curriculumList) {
+            responseList.add(CurriculumDetailResponse.fromDomainBySimple(curriculum));
+        }
+
+        response.currentPageNumber = curriculumList.getPageable().getPageNumber() + 1;
+        response.totalPage = curriculumList.getTotalPages();
+        response.pageSize = curriculumList.getPageable().getPageSize();
+
+        return response;    }
 
     public static CurriculumListResponse fromDomainList(List<Curriculum> curriculaList, int pageNumber, int totalPages,
                                                         int pageSize) {
@@ -45,4 +58,6 @@ public class CurriculumListResponse extends PageableDto {
 
         return response;
     }
+
+
 }

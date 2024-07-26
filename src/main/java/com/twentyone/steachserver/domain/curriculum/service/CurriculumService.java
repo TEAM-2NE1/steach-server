@@ -24,8 +24,6 @@ public interface CurriculumService {
 
     CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable);
 
-    List<SimpleCurriculumDto> getCurriculumListInOrder(CurriculaOrderType order);
-
     List<LocalDateTime> getSelectedWeekdays(LocalDateTime startDate, LocalDateTime endDate,
                                             int weekdaysBitmask);
 
