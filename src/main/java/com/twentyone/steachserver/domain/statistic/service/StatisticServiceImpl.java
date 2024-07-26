@@ -107,7 +107,7 @@ public class StatisticServiceImpl implements StatisticService {
         List<GPTDataByLecture> gptDataByLectures = gptDataByLectureMongoRepository.findAllByStudentName(student.getName());
 
         if (gptDataByLectures.isEmpty())
-            throw new IllegalArgumentException("student name : " + student.getName() + "의 GPT 데이터가 존재하지 않습니다.");
+            throw new IllegalArgumentException("학생 " + student.getName() + "의 GPT 데이터가 존재하지 않습니다.");
 
         for (GPTDataByLecture gptDataByLecture : gptDataByLectures) {
             sb.append("Lecture title: ").append(gptDataByLecture.getLectureTitle());
