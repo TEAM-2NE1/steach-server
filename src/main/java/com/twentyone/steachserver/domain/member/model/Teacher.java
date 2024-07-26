@@ -37,6 +37,13 @@ public class Teacher extends LoginCredential{
     @OneToMany(mappedBy = "teacher")
     List<Curriculum> curriculumList;
 
+    @Override
+    public boolean equals(Object obj) {
+        Teacher teacher = (Teacher) obj;
+
+        return teacher.getId().equals(this.getId());
+    }
+
     public static Teacher of(String username, String password, String name, String email, String pathQualification) {
         Teacher teacher = new Teacher();
 

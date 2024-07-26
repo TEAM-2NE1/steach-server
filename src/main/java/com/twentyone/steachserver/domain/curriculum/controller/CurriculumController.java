@@ -6,6 +6,7 @@ import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.service.CurriculumService;
 import com.twentyone.steachserver.domain.lecture.dto.LectureListResponseDto;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
+import com.twentyone.steachserver.domain.member.model.Teacher;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -83,5 +85,15 @@ public class CurriculumController {
         LectureListResponseDto byCurriculum = lectureService.findByCurriculum(curriculumId);
 
         return ResponseEntity.ok(byCurriculum);
+    }
+
+    @Secured("ROLE_TEACHER")
+    @Operation(summary = "커리큘럼 수정")
+    @PatchMapping("/{curriculum_id}")
+    public ResponseEntity<CurriculumDetailResponse> updateCurriculum(
+            @PathVariable("curriculum_id") Integer curriculumId,
+            @RequestBody CurriculumAddRequest request,
+            @AuthenticationPrincipal Teacher teacher) {
+        return ResponseEntity.ok(curriculumService.updateCurriculum(curriculumId, teacher, request));
     }
 }

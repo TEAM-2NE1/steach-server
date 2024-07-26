@@ -21,6 +21,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.twentyone.steachserver.util.WeekdayBitmaskUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -60,7 +62,7 @@ public class CurriculumServiceImpl implements CurriculumService {
         curriculumValidator.validatorMaxAttendees(request);
         //bitmask byte로 변환
         //이진수 문자열을 정수로 변환
-        Byte weekdaysBitmask = bitmaskStringToByte(request.getWeekdaysBitmask());
+        Byte weekdaysBitmask = WeekdayBitmaskUtil.convert(request.getWeekdaysBitmask());
 
         //detail 만들기
         CurriculumDetail curriculumDetail = CurriculumDetail.builder()
@@ -70,8 +72,8 @@ public class CurriculumServiceImpl implements CurriculumService {
                 .information(request.getInformation())
                 .bannerImgUrl(request.getBannerImgUrl())
                 .weekdaysBitmask(weekdaysBitmask)
-                .startDate(LocalDate.from(request.getStartDate()))
-                .endDate(LocalDate.from(request.getEndDate()))
+                .startDate(request.getStartDate())
+                .endDate(request.getEndDate())
                 .lectureStartTime(request.getLectureStartTime())
                 .lectureCloseTime(request.getLectureEndTime())
                 .maxAttendees(request.getMaxAttendees())
@@ -84,7 +86,7 @@ public class CurriculumServiceImpl implements CurriculumService {
 
         //lecture 만들기
         //날짜 오름차순대로 들어감
-        List<LocalDateTime> selectedDates = getSelectedWeekdays(request.getStartDate(), request.getEndDate(),
+        List<LocalDateTime> selectedDates = getSelectedWeekdays(request.getStartDate().atStartOfDay(), request.getEndDate().atStartOfDay(),
                 weekdaysBitmask);
 
         for (int i = 0; i < selectedDates.size(); i++) {
@@ -174,18 +176,6 @@ public class CurriculumServiceImpl implements CurriculumService {
 
     }
 
-    private byte bitmaskStringToByte(String bitmaskString) {
-        if (bitmaskString.length() != 7) {
-            throw new RuntimeException("bitmask 이상함");
-        }
-
-        if (!bitmaskString.matches("[01]*")) {
-            throw new RuntimeException("bitmask 이상함");
-        }
-
-        return (byte) Integer.parseInt(bitmaskString, 2);
-    }
-
     @Override
     public List<LocalDateTime> getSelectedWeekdays(LocalDateTime startDate, LocalDateTime endDate,
                                                    int weekdaysBitmask) {
@@ -201,6 +191,35 @@ public class CurriculumServiceImpl implements CurriculumService {
         }
 
         return selectedDates;
+    }
+
+    @Override
+    public CurriculumDetailResponse updateCurriculum(Integer curriculumId, Teacher teacher, CurriculumAddRequest request) {
+        Curriculum curriculum = curriculumRepository.findById(curriculumId)
+                .orElseThrow(() -> new RuntimeException("해당하는 커리큘럼이 없습니다"));//TODO 404
+
+        if (!curriculum.getTeacher().equals(teacher)) {
+            throw new ForbiddenException("권한이 없는 접근");
+        }
+
+        //null일 경우 update되지 않음
+        curriculum.update(
+                request.getTitle(),
+                request.getSubTitle(),
+                request.getIntro(),
+                request.getInformation(),
+                request.getCategory(),
+                request.getSubCategory(),
+                request.getBannerImgUrl(),
+                request.getStartDate(),
+                request.getEndDate(),
+                request.getWeekdaysBitmask(),
+                request.getLectureStartTime(),
+                request.getLectureEndTime(),
+                request.getMaxAttendees()
+        );
+
+        return null;
     }
 
     private int getBitmaskForDayOfWeek(DayOfWeek dayOfWeek) {
