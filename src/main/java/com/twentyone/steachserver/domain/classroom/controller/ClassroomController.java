@@ -28,7 +28,7 @@ public class ClassroomController {
     private final ClassroomService classroomService;
     private final StudentLectureService studentLectureService;
 
-    @Operation(summary = "[공통] 전체 강의에서 다가오는 강의들을 반환!", description = "무조건 200을 반환하며 남은 시간이 90분에서 ~ 30분 사이 남은 classroom을 만들어줍니다. 혹시 필요하다면 사용하세영")
+    @Operation(summary = "[인증된 사용자] 전체 강의에서 다가오는 강의들을 반환!", description = "무조건 200을 반환하며 남은 시간이 90분에서 ~ 30분 사이 남은 classroom을 만들어줍니다. 혹시 필요하다면 사용하세영")
     @GetMapping("/upcoming")
     public ResponseEntity<?> upcoming() {
         UpComingClassRooms classrooms = classroomService.upcomingClassroom();
