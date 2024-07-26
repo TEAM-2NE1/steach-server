@@ -27,7 +27,7 @@ public class StudentController {
     private final StudentService studentService;
     private final CurriculumService curriculumService;
 
-    @Operation(summary = "학생 회원정보 조회")
+    @Operation(summary = "[학생] 회원정보 조회")
     @GetMapping
     public ResponseEntity<StudentInfoResponse> getInfo(@AuthenticationPrincipal Student student) {
         StudentInfoResponse response = studentService.getInfo(student);
@@ -35,13 +35,13 @@ public class StudentController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "학생 회원정보 수정", description = "name과 email은 값을 null이나 빈칸으로 넣어줄 경우 값이 변경되지 않습니다! 빈칸이 되면 안되기 때문..")
+    @Operation(summary = "[학생] 회원정보 수정", description = "name과 email은 값을 null이나 빈칸으로 넣어줄 경우 값이 변경되지 않습니다! 빈칸이 되면 안되기 때문..")
     @PatchMapping
     public ResponseEntity<StudentInfoResponse> updateInfo(@RequestBody StudentInfoRequest request, @AuthenticationPrincipal Student student) {
         return ResponseEntity.ok(studentService.updateInfo(request, student));
     }
 
-    @Operation(summary = "학생이 수강하는 커리큘럼 조회", description = "currentPageNumber: 현재 몇 페이지, totalPage: 전체 페이지 개수, pageSize: 한 페이지당 원소 개수(n개씩보기)")
+    @Operation(summary = "[학생] 학생이 수강하는 커리큘럼 조회", description = "currentPageNumber: 현재 몇 페이지, totalPage: 전체 페이지 개수, pageSize: 한 페이지당 원소 개수(n개씩보기)")
     @GetMapping("/curricula")
     public ResponseEntity<CurriculumListResponse> getMyCourses(@AuthenticationPrincipal Student student,
                                                                @RequestParam(value = "pageSize", required = false, defaultValue = "100") Integer pageSize,
