@@ -30,6 +30,7 @@ import static com.twentyone.steachserver.domain.studentCurriculum.model.QStudent
 import static com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture.studentLecture;
 import static com.twentyone.steachserver.domain.studentQuiz.model.QStudentQuiz.studentQuiz;
 
+@Repository
 public class StudentLectureQueryRepository {
 
     private final EntityManager em;
