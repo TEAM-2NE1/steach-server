@@ -36,6 +36,7 @@ public class CurriculumController {
         return ResponseEntity.ok(detail);
     }
 
+    @Secured("ROLE_TEACHER")
     @Operation(summary = "[강사] 커리큘럼 생성!")
     @PostMapping
     public ResponseEntity<CurriculumDetailResponse> createCurriculum(
