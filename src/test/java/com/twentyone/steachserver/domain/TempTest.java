@@ -3,22 +3,19 @@ package com.twentyone.steachserver.domain;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twentyone.steachserver.domain.auth.dto.LoginDto;
 import com.twentyone.steachserver.domain.auth.dto.TeacherSignUpDto;
-import com.twentyone.steachserver.domain.auth.service.JwtService;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.member.dto.TeacherInfoRequest;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -31,6 +28,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -38,18 +37,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 /**
- * @Nested 어노테이션은 JUnit 5에서 사용되는 것으로, 중첩된(non-static) 테스트 클래스임을 나타냅니다. 중첩된 테스트 클래스는 JUnit 5의 강력한 기능으로, 테스트 케이스를 더 세분화된 방식으로 조직할 수 있게 합니다. 이를 통해 관련된 테스트 케이스를 함께 그룹화하고, 테스트 구조를 더 읽기 쉽고 유지보수하기 쉽게 만들 수 있습니다.
- * @Nested 어노테이션의 장점
- * 논리적 그룹화: 관련된 테스트 케이스를 함께 그룹화하여, 테스트가 어떤 맥락에서 실행되는지 이해하기 쉽게 합니다.
- * 공유된 설정 및 해제: 중첩된 클래스는 고유한 @BeforeEach, @AfterEach, @BeforeAll, @AfterAll 메서드를 가질 수 있어, 특정 테스트 그룹에 대해 별도의 설정 및 해제 작업을 수행할 수 있습니다.
- * 캡슐화: 중첩된 클래스는 테스트 로직을 캡슐화하여, 테스트 간의 상호 간섭 위험을 줄여줍니다.
+ * Integration tests with JUnit 5 and Spring Boot.
  */
-@Nested
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(OrderAnnotation.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@RequiredArgsConstructor()
-class IntegrationTests {
+@RequiredArgsConstructor
+class TempTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -58,30 +54,26 @@ class IntegrationTests {
     @Autowired
     private WebApplicationContext context;
 
-    private final String authCode;
-    /**
-     * SecurityMockMvcConfigurers.springSecurity() : Spring Security를 Spring MVC 테스트와 통합할 때 필요한 모든 초기 세팅을 수행한다.
-     */
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
-
     }
 
-    @Test()
-    @DisplayName("선생님 controller, 커리큘럼 생성, 조회")
-    void testTeacherSignupTo() throws Exception {
-        String teacherUsername = "t" + UUID.randomUUID().toString().substring(0, 8);
-        String teacherEmail = "sihyun" + UUID.randomUUID().toString().substring(0, 9) + "@gmail.com";
-        String teacherName = "teacherSihyun";
-        final String teacherPassword = "password!!";
+    final String teacherUsername = "t" + UUID.randomUUID().toString().substring(0, 8);
+    final String teacherName = "teacherSihyun";
+    final String teacherPassword = "password!!";
+    final String teacherEmail = "sihyun" + UUID.randomUUID().toString().substring(0, 4) + "@gmail.com";
 
 
-        String teacherAuthToken;
+    private String teacherAuthToken;
+    private Integer curriculumId;
 
+    @Test
+    @Order(1)
+    void testTeacherSignupAndLogin() throws Exception {
         // 아이디 중복 확인
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/check-username/" + teacherUsername))
                 .andExpect(status().isOk())
@@ -103,12 +95,6 @@ class IntegrationTests {
                         .file(teacherSignUpDtoJson))
                 .andExpect(status().isCreated());
 
-        // 아이디 중복 확인 (이미 사용 중인 닉네임임을 확인합니다)
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/check-username/" + teacherUsername))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.can_use").value(false));
-
-
         // 로그인
         LoginDto loginDto = LoginDto.builder()
                 .username(teacherUsername)
@@ -129,42 +115,15 @@ class IntegrationTests {
             throw new RuntimeException("JWT token not found in the login response");
         }
 
-
-        // 강사 회원정보 조회
-        mockMvc.perform(get("/api/v1/teachers")
-                        .header("Authorization", "Bearer " + teacherAuthToken))
+        // 아이디 중복 확인 (이미 사용 중인 닉네임임을 확인합니다)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/check-username/" + teacherUsername))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value(teacherUsername))
-                .andExpect(jsonPath("$.name").value(teacherName))
-                .andExpect(jsonPath("$.email").value(teacherEmail));
+                .andExpect(jsonPath("$.can_use").value(false));
+    }
 
-
-        // 강사 회원정보 수정
-        teacherEmail = "sihyun" + UUID.randomUUID().toString().substring(0, 10) + "@gmail.com";
-        teacherName = "조시현";
-
-        TeacherInfoRequest updateRequest = TeacherInfoRequest.builder()
-                .name(teacherName)
-                .email(teacherEmail)
-                .pathQualification("updatedPathQualification")
-                .briefIntroduction("updatedBriefIntroduction")
-                .academicBackground("updatedAcademicBackground")
-                .specialization("updatedSpecialization")
-                .build();
-
-        mockMvc.perform(patch("/api/v1/teachers")
-                        .header("Authorization", "Bearer " + teacherAuthToken)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value(teacherUsername))
-                .andExpect(jsonPath("$.name").value(teacherName))
-                .andExpect(jsonPath("$.email").value(teacherEmail))
-                .andExpect(jsonPath("$.brief_introduction").value("updatedBriefIntroduction"))
-                .andExpect(jsonPath("$.academic_background").value("updatedAcademicBackground"))
-                .andExpect(jsonPath("$.specialization").value("updatedSpecialization"));
-
-
+    @Test
+    @Order(2)
+    void testCreateCurriculum() throws Exception {
         // 커리큘럼 생성
         CurriculumAddRequest curriculumRequest = CurriculumAddRequest.builder()
                 .title("새로운 커리큘럼")
@@ -194,18 +153,17 @@ class IntegrationTests {
                 .getResponse()
                 .getContentAsString();
 
-        /**
-         * JSONPath는 JSON 데이터를 탐색하고 쿼리하기 위한 표현식 언어입니다.
-         * $.title와 같은 JSONPath 표현식은 JSON 객체 내에서 특정 필드를 선택하는 데 사용됩니다.
-         * 여기서 $.title는 루트 객체 아래에 있는 title 필드를 의미합니다.
-         * JSONPath는 XML에서 사용되는 XPath와 유사하지만 JSON 데이터를 처리하도록 설계되었습니다.
-         */
-        // 4. 제작 커리큘럼 조회
+        // 제작 커리큘럼 조회
         CurriculumDetailResponse createdCurriculum = objectMapper.readValue(responseContent, CurriculumDetailResponse.class);
-        Integer curriculumId = createdCurriculum.getCurriculumId();
+        curriculumId = createdCurriculum.getCurriculumId();
+    }
+
+    @Test
+    @Order(3)
+    void testGetCurriculum() throws Exception {
         mockMvc.perform(get("/api/v1/curricula/" + curriculumId)
-                .header("Authorization", "Bearer " + teacherAuthToken) // JWT 토큰 추가
-                .contentType(MediaType.APPLICATION_JSON))
+                        .header("Authorization", "Bearer " + teacherAuthToken) // JWT 토큰 추가
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("새로운 커리큘럼"))
                 .andExpect(jsonPath("$.sub_title").value("부제목"))
@@ -220,8 +178,11 @@ class IntegrationTests {
                 .andExpect(jsonPath("$.lecture_start_time").value(LocalTime.of(10, 0).toString()))
                 .andExpect(jsonPath("$.lecture_end_time").value(LocalTime.of(12, 0).toString()))
                 .andExpect(jsonPath("$.max_attendees").value(4));
+    }
 
-
+    @Test
+    @Order(4)
+    void testGetTeacherCurricula() throws Exception {
         // 강사가 강의하는 커리큘럼 목록 조회
         ResultActions myCourses = mockMvc.perform(get("/api/v1/teachers/curricula")
                         .header("Authorization", "Bearer " + teacherAuthToken)
@@ -249,5 +210,40 @@ class IntegrationTests {
                 .andExpect(jsonPath("$.page_size").value(10));
     }
 
+    @Test
+    @Order(5)
+    void testGetTeacherInfo() throws Exception {
+        // 강사 회원정보 조회
+        mockMvc.perform(get("/api/v1/teachers")
+                        .header("Authorization", "Bearer " + teacherAuthToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value(teacherUsername))
+                .andExpect(jsonPath("$.name").value(teacherName))
+                .andExpect(jsonPath("$.email").value(teacherEmail));
+    }
 
+    @Test
+    @Order(6)
+    void testUpdateTeacherInfo() throws Exception {
+        // 강사 회원정보 수정
+        TeacherInfoRequest updateRequest = TeacherInfoRequest.builder()
+                .name("updatedName")
+                .email("updatedEmail@gmail.com")
+                .pathQualification("updatedPathQualification")
+                .briefIntroduction("updatedBriefIntroduction")
+                .academicBackground("updatedAcademicBackground")
+                .specialization("updatedSpecialization")
+                .build();
+
+        mockMvc.perform(patch("/api/v1/teachers")
+                        .header("Authorization", "Bearer " + teacherAuthToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("updatedName"))
+                .andExpect(jsonPath("$.email").value("updatedEmail@gmail.com"))
+                .andExpect(jsonPath("$.brief_introduction").value("updatedBriefIntroduction"))
+                .andExpect(jsonPath("$.academic_background").value("updatedAcademicBackground"))
+                .andExpect(jsonPath("$.specialization").value("updatedSpecialization"));
+    }
 }
