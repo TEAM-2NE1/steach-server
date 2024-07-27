@@ -69,6 +69,11 @@ task copyYML(type: Copy){
         include "*.yml"
         into 'src/main/resources'
     }
+    copy {
+        from './steach-server-submodule/test'
+        include "*.yml"
+        into 'src/test/resources'
+    }
 }
 
 // queryDSL

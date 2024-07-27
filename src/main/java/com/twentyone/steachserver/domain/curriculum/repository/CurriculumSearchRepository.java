@@ -5,6 +5,7 @@ import static com.twentyone.steachserver.domain.curriculum.model.QCurriculumDeta
 import static com.twentyone.steachserver.domain.member.model.QTeacher.teacher;
 import static io.jsonwebtoken.lang.Strings.hasText;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -19,9 +20,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public class CurriculumSearchRepository {
     private final JPAQueryFactory queryFactory;
 
@@ -47,14 +46,23 @@ public class CurriculumSearchRepository {
             query.orderBy(orderSpecifier);
         }
 
-        long total = query.fetchCount();
+        List<Curriculum> queryResults = query.fetch();
+
+        long total = queryResults.size();
 
         query.offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
 
-        List<Curriculum> results = query.fetch();
+//        List<Curriculum> results = queryResults.getResults();
 
-        return new PageImpl(results, pageable, total);
+        return new PageImpl<>(queryResults, pageable, total);
+
+//        query.offset(pageable.getOffset())
+//                .limit(pageable.getPageSize());
+//
+//        List<Curriculum> results = query.fetch();
+//
+//        return new PageImpl(results, pageable, total);
     }
 
     private OrderSpecifier<?> getOrder(CurriculaOrderType order) {
