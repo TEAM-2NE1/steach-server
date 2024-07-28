@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Transactional(readOnly = true)
 @Slf4j
@@ -141,5 +142,16 @@ public class AuthServiceImpl implements AuthService {
         boolean canUse = !loginCredentialRepository.existsByUsername(username);
 
         return new CheckUsernameAvailableResponse(canUse);
+    }
+
+    @Override
+    public Boolean checkPassword(LoginCredential loginCredential, MemberCheckPasswordRequestDto checkPasswordRequestDto) {
+        String password = checkPasswordRequestDto.password();
+
+        LoginCredential realLoginCredential= loginCredentialRepository.findByUsername(loginCredential.getUsername())
+                .orElseThrow(() -> new RuntimeException("없는 사용자 입니다."));
+
+        String realPasswordEncode = realLoginCredential.getPassword();
+        return passwordEncoder.matches(password, realPasswordEncode);
     }
 }
