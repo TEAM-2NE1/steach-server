@@ -8,7 +8,6 @@ import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.member.dto.TeacherInfoRequest;
 import lombok.RequiredArgsConstructor;
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +27,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -37,15 +34,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 /**
- * Integration tests with JUnit 5 and Spring Boot.
+ * @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+ * 역할: JUnit 5에서 테스트 클래스의 인스턴스 생명주기를 제어합니다.
+ * 설명: Lifecycle.PER_CLASS를 사용하면 테스트 클래스의 인스턴스가 클래스당 하나만 생성됩니다. 기본적으로 JUnit 5는 각 테스트 메서드마다 새로운 테스트 클래스 인스턴스를 생성하지만, PER_CLASS를 사용하면 테스트 클래스당 하나의 인스턴스만 생성되므로 테스트 메서드 간의 상태를 공유할 수 있습니다.
+ * @TestMethodOrder(OrderAnnotation.class)
+ * 역할: 테스트 메서드의 실행 순서를 지정합니다.
+ * 설명: OrderAnnotation을 사용하면 @Order 어노테이션을 통해 각 테스트 메서드의 실행 순서를 명시적으로 정의할 수 있습니다. 이를 통해 특정 순서대로 테스트를 실행할 수 있습니다.
+ * @SpringBootTest
+ * 역할: 스프링 부트 애플리케이션 컨텍스트를 로드합니다.
+ * 설명: 통합 테스트를 실행하기 위해 전체 스프링 부트 애플리케이션 컨텍스트를 로드합니다. 이를 통해 실제 애플리케이션 환경에서 테스트를 수행할 수 있습니다. 모든 빈이 로드되고, 실제 애플리케이션과 유사한 환경에서 테스트가 실행됩니다.
+ * @AutoConfigureMockMvc
+ * 역할: MockMvc를 자동으로 구성합니다.
+ * 설명: MockMvc를 자동으로 설정하여 웹 애플리케이션의 컨트롤러 테스트를 쉽게 할 수 있게 합니다. 이를 통해 HTTP 요청 및 응답을 시뮬레이션하여 테스트할 수 있습니다.
+ * @ActiveProfiles("test")
+ * 역할: 테스트 환경에서 사용할 스프링 프로파일을 지정합니다.
+ * 설명: test 프로파일을 활성화하여 테스트 실행 시 특정 설정 파일이나 빈 설정을 사용하도록 합니다. 이를 통해 개발, 테스트, 프로덕션 등 환경별로 다른 설정을 쉽게 적용할 수 있습니다.
+ * @RequiredArgsConstructor
+ * 역할: Lombok 라이브러리의 어노테이션으로, final 필드와 @NonNull 필드를 포함하는 생성자를 자동으로 생성합니다.
+ * 설명: 의존성 주입을 위해 final 필드와 @NonNull 필드를 포함한 생성자를 자동으로 생성해 줍니다. 이를 통해 필드 주입 대신 생성자 주입을 사용할 수 있으며, 생성자를 통해 필요한 의존성을 주입받을 수 있습니다.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(OrderAnnotation.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@RequiredArgsConstructor
-class TempTest {
+class TeacherLoginToCurriculumCreationIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -73,6 +86,7 @@ class TempTest {
 
     @Test
     @Order(1)
+    @DisplayName("아이디 중복확인, 강사 회원가입, 로그인")
     void testTeacherSignupAndLogin() throws Exception {
         // 아이디 중복 확인
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/check-username/" + teacherUsername))
@@ -123,6 +137,7 @@ class TempTest {
 
     @Test
     @Order(2)
+    @DisplayName("강사가 커리큘럼 생성")
     void testCreateCurriculum() throws Exception {
         // 커리큘럼 생성
         CurriculumAddRequest curriculumRequest = CurriculumAddRequest.builder()
@@ -160,6 +175,7 @@ class TempTest {
 
     @Test
     @Order(3)
+    @DisplayName("커리큘럼 조회")
     void testGetCurriculum() throws Exception {
         mockMvc.perform(get("/api/v1/curricula/" + curriculumId)
                         .header("Authorization", "Bearer " + teacherAuthToken) // JWT 토큰 추가
@@ -182,6 +198,7 @@ class TempTest {
 
     @Test
     @Order(4)
+    @DisplayName("강사가 강의하는 커리큘럼 목록 조회")
     void testGetTeacherCurricula() throws Exception {
         // 강사가 강의하는 커리큘럼 목록 조회
         ResultActions myCourses = mockMvc.perform(get("/api/v1/teachers/curricula")
@@ -212,6 +229,7 @@ class TempTest {
 
     @Test
     @Order(5)
+    @DisplayName("강사 회원 정보 조회")
     void testGetTeacherInfo() throws Exception {
         // 강사 회원정보 조회
         mockMvc.perform(get("/api/v1/teachers")
@@ -224,6 +242,7 @@ class TempTest {
 
     @Test
     @Order(6)
+    @DisplayName("강사 회원 정보 수정")
     void testUpdateTeacherInfo() throws Exception {
         // 강사 회원정보 수정
         TeacherInfoRequest updateRequest = TeacherInfoRequest.builder()
