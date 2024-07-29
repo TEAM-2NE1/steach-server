@@ -8,6 +8,7 @@ import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -41,7 +42,7 @@ public class StudentController {
                     "<br/> ✅ /check/password 를 통해 발급받은 임시 토큰을 넣어줘야 성공합니다. 아니면 403이 나옴"
     )
     @PatchMapping
-    public ResponseEntity<StudentInfoResponse> updateInfo(@RequestBody StudentInfoRequest request, @AuthenticationPrincipal Student student) {
+    public ResponseEntity<StudentInfoResponse> updateInfo(@RequestBody @Valid StudentInfoRequest request, @AuthenticationPrincipal Student student) {
         return ResponseEntity.ok(studentService.updateInfo(request, student));
     }
 
