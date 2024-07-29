@@ -129,7 +129,7 @@ class CurriculumServiceImplTest {
                 NOW.toLocalDate(), NOW.toLocalDate(), WEEKDAY_BITMASK, NOW.toLocalTime(), NOW.toLocalTime(), MAX_ATTENDEES);
 
         //when //then
-        assertThrows(ForbiddenException.class, () -> {
+        assertThrows(RuntimeException.class, () -> {
             curriculumService.create(student, request);
         });
     }

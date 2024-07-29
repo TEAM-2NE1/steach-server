@@ -12,11 +12,11 @@ public record QuizResponseDto(
         List<String> choices,
         List<String> answers
 ) {
-    public static QuizResponseDto createQuizResponseDto(Integer lectureId, QuizRequestDto request) {
+    public static QuizResponseDto createQuizResponseDto(Integer lectureId, QuizRequestDto request, Integer quizId) {
         allStrip(request.choices());
         allStrip(request.answers());
         return new QuizResponseDto(
-                request.quizId(),
+                quizId,
                 lectureId,
                 request.quizNumber(),
                 request.question(),
