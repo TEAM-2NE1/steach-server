@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class TempTokenServiceImpl implements TempTokenService {
+public class PasswordAuthTokenServiceImpl implements PasswordAuthTokenService {
     private final JwtService jwtService;
 
     @Override
-    public void validateToken(String token, LoginCredential credential) {
-        if (!jwtService.isTempTokenValid(token, credential)) {
+    public void validateToken(String passwordAuthToken, LoginCredential credential) {
+        if (!jwtService.isPasswordAuthTokenValid(passwordAuthToken, credential)) {
             throw new ForbiddenException("토큰이 유효하지 않음");
         }
     }

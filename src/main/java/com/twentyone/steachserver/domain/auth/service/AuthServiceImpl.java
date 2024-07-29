@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Transactional(readOnly = true)
 @Slf4j
@@ -159,6 +158,6 @@ public class AuthServiceImpl implements AuthService {
             throw new ForbiddenException("패스워드 일치하지 않음");
         }
 
-        return MemberCheckPasswordResponseDto.of(jwtService.generateTempToken(loginCredential));
+        return MemberCheckPasswordResponseDto.of(jwtService.generatePasswordAuthToken(loginCredential));
     }
 }

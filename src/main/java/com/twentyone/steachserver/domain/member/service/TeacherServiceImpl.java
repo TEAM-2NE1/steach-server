@@ -1,6 +1,6 @@
 package com.twentyone.steachserver.domain.member.service;
 
-import com.twentyone.steachserver.domain.auth.service.TempTokenService;
+import com.twentyone.steachserver.domain.auth.service.PasswordAuthTokenService;
 import com.twentyone.steachserver.domain.member.dto.TeacherInfoRequest;
 import com.twentyone.steachserver.domain.member.dto.TeacherInfoResponse;
 import com.twentyone.steachserver.domain.member.model.Teacher;
@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class TeacherServiceImpl implements TeacherService {
-    private final TempTokenService tempTokenService;
+    private final PasswordAuthTokenService passwordAuthTokenService;
 
     @Override
     public TeacherInfoResponse getInfo(Teacher teacher) {
@@ -23,7 +23,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public TeacherInfoResponse updateInfo(TeacherInfoRequest request, Teacher teacher) {
         //임시토큰 검증
-        tempTokenService.validateToken(request.getTempToken(), teacher);
+        passwordAuthTokenService.validateToken(request.getPasswordAuthToken(), teacher);
 
         teacher.updateInfo(request.getName(), request.getEmail(), request.getBriefIntroduction(), request.getAcademicBackground(), request.getSpecialization());
 

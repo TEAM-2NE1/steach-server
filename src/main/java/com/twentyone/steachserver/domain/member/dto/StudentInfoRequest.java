@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class StudentInfoRequest {
     private String name;
     private String email;
-    private String tempToken; //수정을 위한 임시토큰 -> check/password API이용
+    private String passwordAuthToken; //수정을 위한 임시토큰 -> check/password API이용
 }
