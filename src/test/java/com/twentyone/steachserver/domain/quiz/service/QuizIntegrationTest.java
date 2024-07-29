@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.quiz.service;
 
+import com.twentyone.steachserver.SteachTest;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
@@ -30,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
-public class QuizIntegrationTest {
+public class QuizIntegrationTest extends SteachTest {
     public static final String CHOICE1 = "asdf";
     public static final String CHOICE2 = "qwer";
     public static final int QUIZ_NUMBER = 1;

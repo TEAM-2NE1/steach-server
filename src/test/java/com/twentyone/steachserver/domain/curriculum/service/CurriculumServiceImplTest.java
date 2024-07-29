@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.curriculum.service;
 
+import com.twentyone.steachserver.SteachTest;
 import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
@@ -30,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-class CurriculumServiceImplTest {
+class CurriculumServiceImplTest extends SteachTest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     public static final String NAME = "name";

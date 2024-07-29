@@ -3,6 +3,7 @@ package com.twentyone.steachserver.domain.curriculum.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.twentyone.steachserver.SteachTest;
 import com.twentyone.steachserver.domain.auth.service.AuthService;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
@@ -33,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest
-public class CurriculumServiceIntegrationTest {
+public class CurriculumServiceIntegrationTest extends SteachTest {
     public static final String TITLE = "title";
     public static final String SUB_TITLE = "subTitle";
     public static final String INTRO = "intro";
