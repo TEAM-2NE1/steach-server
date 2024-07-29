@@ -54,7 +54,7 @@ public class AuthControllerIntegrationTest extends ControllerIntegrationTest {
         강사_로그인_정보.put("password", "1234");
 
         강사_추가_정보 = new HashMap<>();
-        강사_추가_정보.put("name", "teacherSihyun");
+        강사_추가_정보.put("nickname", "teacherSihyun");
         강사_추가_정보.put("email", "sihyun" + UUID.randomUUID().toString().substring(0, 4) + "@gmail.com");
 
 
@@ -88,11 +88,11 @@ public class AuthControllerIntegrationTest extends ControllerIntegrationTest {
         TeacherSignUpDto teacherSignUpDto = TeacherSignUpDto.builder()
                 .username(강사_로그인_정보.get("username"))
                 .password(강사_로그인_정보.get("password"))
-                .name(강사_추가_정보.get("name"))
+                .nickname(강사_추가_정보.get("nickname"))
                 .email(강사_추가_정보.get("email"))
                 .build();
 
-        return given()
+        return given().log().all()
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
 //                .multiPart("image", resume, "application/multipart/form-data")
                 .multiPart("image", "resume.png", "dummy content".getBytes(), MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -107,7 +107,7 @@ public class AuthControllerIntegrationTest extends ControllerIntegrationTest {
                 .statusCode(HttpStatus.CREATED.value())
                 .body("role", equalTo(role))
                 .body("email", equalTo(강사_추가_정보.get("email")))
-                .body("name", equalTo(강사_추가_정보.get("name")));
+                .body("nickname", equalTo(강사_추가_정보.get("nickname")));
 
         String token = 회원가입.jsonPath().getString("token");
 

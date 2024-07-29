@@ -103,7 +103,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
     @Order(1)
     @DisplayName("강사 회원가입")
     void testTeacherSignup() throws Exception {
-        강사_로그인_아이디 = "t" + UUID.randomUUID().toString().substring(0, 8);
+        강사_로그인_아이디 = "test" + UUID.randomUUID().toString().substring(0, 6);
 
         // given
         강사_로그인_정보 = Map.of(
@@ -111,7 +111,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
                 "password", "teacherPassword");
 
         강사_추가_정보 = Map.of(
-                "name", "teacherSihyun",
+                "nickname", "teacherSihyun",
                 "email", "sihyun" + UUID.randomUUID().toString().substring(0, 4) + "@gmail.com");
 
         // when
@@ -233,7 +233,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
         학생_로그인_정보.put("password", "1234");
 
         학생_추가_정보 = new HashMap<>();
-        학생_추가_정보.put("name", "시현");
+        학생_추가_정보.put("nickname", "시현");
         학생_추가_정보.put("email", "ssh" + UUID.randomUUID().toString().substring(0, 4) + "@gmail.com");
         // when
         Response 학생_회원가입 = 학생_회원가입(학생_로그인_정보, 학생_추가_정보, 인증_코드);
@@ -249,7 +249,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
         TeacherSignUpDto teacherSignUpDto = TeacherSignUpDto.builder()
                 .username(강사_로그인_정보.get("username"))
                 .password(강사_로그인_정보.get("password"))
-                .name(강사_추가_정보.get("name"))
+                .nickname(강사_추가_정보.get("nickname"))
                 .email(강사_추가_정보.get("email"))
                 .build();
 
@@ -268,7 +268,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.CREATED.value())
                 .body("role", equalTo(role))
                 .body("email", equalTo(강사_추가_정보.get("email")))
-                .body("name", equalTo(강사_추가_정보.get("name")));
+                .body("nickname", equalTo(강사_추가_정보.get("nickname")));
 
         String token = 강사_회원가입.jsonPath().getString("token");
 
@@ -298,7 +298,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("role", equalTo(role))
                 .body("email", equalTo(강사_추가_정보.get("email")))
-                .body("name", equalTo(강사_추가_정보.get("name")));
+                .body("nickname", equalTo(강사_추가_정보.get("nickname")));
 
         String token = 로그인.jsonPath().getString("token");
 
@@ -438,7 +438,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
         StudentSignUpDto studentSignUpDto = StudentSignUpDto.builder()
                 .username(학생_로그인_정보.get("username"))
                 .password(학생_로그인_정보.get("password"))
-                .name(학생_추가_정보.get("name"))
+                .nickname(학생_추가_정보.get("nickname"))
                 .email(학생_추가_정보.get("email"))
                 .auth_code(인증_코드.get(0))
                 .build();
@@ -454,7 +454,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
         학생_회원가입.then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("username", equalTo(학생_로그인_정보.get("username")))
-                .body("name", equalTo(학생_추가_정보.get("name")))
+                .body("nickname", equalTo(학생_추가_정보.get("nickname")))
                 .body("email", equalTo(학생_추가_정보.get("email")));
 
         String token = 학생_회원가입.jsonPath().getString("token");
