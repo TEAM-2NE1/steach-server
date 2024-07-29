@@ -62,11 +62,23 @@ public class JwtService {
         return generateToken(new HashMap<>(), userDetails, "temp", tempTokenValidTime);
     }
 
+    //TODO isAccessTokenValid로 변경
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         boolean b = (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
 
         return b;
+    }
+
+    public boolean isTempTokenValid(String token, UserDetails userDetails) {
+        try {
+            final String username = extractUsername(token);
+            boolean b = (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+
+            return b;
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
     public boolean isTokenExpired(String token) {

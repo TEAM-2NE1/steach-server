@@ -16,4 +16,5 @@ public class TeacherInfoRequest {
     private String briefIntroduction;
     private String academicBackground;
     private String specialization;
+    private String tempToken;
 }
