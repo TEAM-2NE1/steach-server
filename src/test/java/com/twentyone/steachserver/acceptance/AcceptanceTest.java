@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.acceptance;
 
+import com.twentyone.steachserver.SteachTest;
 import com.twentyone.steachserver.helper.DatabaseCleanup;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,11 @@ import org.springframework.test.context.ActiveProfiles;
 import io.restassured.RestAssured;
 import org.springframework.transaction.annotation.Transactional;
 
-import static io.restassured.RestAssured.UNDEFINED_PORT;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
+import static com.jayway.jsonpath.internal.path.PathCompiler.fail;
+import static io.restassured.RestAssured.UNDEFINED_PORT;
 
 
 /**
@@ -24,6 +28,49 @@ import static io.restassured.RestAssured.UNDEFINED_PORT;
  * <p>
  * 3. 코드의 일관성 유지
  * 모든 테스트 클래스가 동일한 초기화 및 설정 절차를 따르도록 강제할 수 있습니다. 이렇게 하면 테스트 환경이 일관되게 유지되어 테스트 결과의 신뢰성을 높일 수 있습니다.
+ *
+ * @SpringBootTest(webEnvironment = RANDOM_PORT)는 통합 테스트를 위해 전체 애플리케이션 컨텍스트를 로드하고, 임의의 포트에서 애플리케이션을 실행하여 테스트 환경을 설정합니다. 이는 실제 운영 환경과 유사한 조건에서 애플리케이션을 테스트할 수 있게 하며, 포트 충돌을 피할 수 있도록 합니다.
+ * 이 예제에서는 @SpringBootTest(webEnvironment = RANDOM_PORT)를 사용하여 임의의 포트에서 서버를 시작하고, @LocalServerPort를 통해 해당 포트를 주입받아 테스트에 사용하고 있습니다. TestRestTemplate을 사용하여 실제 서버에 요청을 보내고 응답을 검증합니다.
+ * 다른 webEnvironment 옵션
+ * webEnvironment 속성은 여러 가지 값을 가질 수 있습니다:
+ * <p>
+ * MOCK (기본값):
+ * <p>
+ * 서블릿 환경을 모킹하여 실제 서버를 시작하지 않습니다.
+ * 주로 컨트롤러 레벨의 테스트에 사용됩니다.
+ * DEFINED_PORT:
+ * <p>
+ * 기본적으로 정의된 포트(일반적으로 application.properties에 설정된 포트)에서 서버를 시작합니다.
+ * 특정 포트에서 테스트를 수행해야 할 때 사용됩니다.
+ * RANDOM_PORT:
+ * <p>
+ * 임의의 포트에서 서버를 시작합니다.
+ * 포트 충돌을 피하고 격리된 테스트 환경을 만들 때 유용합니다.
+ * NONE:
+ * <p>
+ * 웹 환경을 시작하지 않습니다.
+ * 일반적인 스프링 컨텍스트를 로드하여 비웹 애플리케이션을 테스트할 때 사용됩니다.
+ * @SpringBootTest(webEnvironment = RANDOM_PORT)는 통합 테스트를 위해 전체 애플리케이션 컨텍스트를 로드하고, 임의의 포트에서 애플리케이션을 실행하여 테스트 환경을 설정합니다. 이는 실제 운영 환경과 유사한 조건에서 애플리케이션을 테스트할 수 있게 하며, 포트 충돌을 피할 수 있도록 합니다.
+ * 이 예제에서는 @SpringBootTest(webEnvironment = RANDOM_PORT)를 사용하여 임의의 포트에서 서버를 시작하고, @LocalServerPort를 통해 해당 포트를 주입받아 테스트에 사용하고 있습니다. TestRestTemplate을 사용하여 실제 서버에 요청을 보내고 응답을 검증합니다.
+ * 다른 webEnvironment 옵션
+ * webEnvironment 속성은 여러 가지 값을 가질 수 있습니다:
+ * <p>
+ * MOCK (기본값):
+ * <p>
+ * 서블릿 환경을 모킹하여 실제 서버를 시작하지 않습니다.
+ * 주로 컨트롤러 레벨의 테스트에 사용됩니다.
+ * DEFINED_PORT:
+ * <p>
+ * 기본적으로 정의된 포트(일반적으로 application.properties에 설정된 포트)에서 서버를 시작합니다.
+ * 특정 포트에서 테스트를 수행해야 할 때 사용됩니다.
+ * RANDOM_PORT:
+ * <p>
+ * 임의의 포트에서 서버를 시작합니다.
+ * 포트 충돌을 피하고 격리된 테스트 환경을 만들 때 유용합니다.
+ * NONE:
+ * <p>
+ * 웹 환경을 시작하지 않습니다.
+ * 일반적인 스프링 컨텍스트를 로드하여 비웹 애플리케이션을 테스트할 때 사용됩니다.
  */
 
 /**
@@ -51,24 +98,12 @@ import static io.restassured.RestAssured.UNDEFINED_PORT;
  */
 
 /**
- * @Nested
- * 프로젝트가 점점 커져갈수록 테스트 코드도 커져간다. 수많은 테스트 중 특정한 테스트의 수행 결과들을 찾기가 어렵다. 이때, Nested 애노테이션을 이용하여 테스트를 다음과 같이 계층형으로 구성할 수 있다.
- * 같은 관심사의 테스트를 모아둘 수 있기 때문에 내가 원하는 테스트를 열어서 수행 결과들을 볼 수 있어 테스트 가독성이 향상되어 보기 한층 더 편했다.
- * @TestMethodOrder(OrderAnnotation.class)
- * 역할: 테스트 메서드의 실행 순서를 지정합니다.
- * 설명: OrderAnnotation을 사용하면 @Order 어노테이션을 통해 각 테스트 메서드의 실행 순서를 명시적으로 정의할 수 있습니다. 이를 통해 특정 순서대로 테스트를 실행할 수 있습니다.
  * @SpringBootTest
  * 역할: 스프링 부트 애플리케이션 컨텍스트를 로드합니다.
  * 설명: 통합 테스트를 실행하기 위해 전체 스프링 부트 애플리케이션 컨텍스트를 로드합니다. 이를 통해 실제 애플리케이션 환경에서 테스트를 수행할 수 있습니다. 모든 빈이 로드되고, 실제 애플리케이션과 유사한 환경에서 테스트가 실행됩니다.
- * @AutoConfigureMockMvc
- * 역할: MockMvc를 자동으로 구성합니다.
- * 설명: MockMvc를 자동으로 설정하여 웹 애플리케이션의 컨트롤러 테스트를 쉽게 할 수 있게 합니다. 이를 통해 HTTP 요청 및 응답을 시뮬레이션하여 테스트할 수 있습니다.
- * @ActiveProfiles("test")
- * 역할: 테스트 환경에서 사용할 스프링 프로파일을 지정합니다.
- * 설명: test 프로파일을 활성화하여 테스트 실행 시 특정 설정 파일이나 빈 설정을 사용하도록 합니다. 이를 통해 개발, 테스트, 프로덕션 등 환경별로 다른 설정을 쉽게 적용할 수 있습니다.
- * @RequiredArgsConstructor
- * 역할: Lombok 라이브러리의 어노테이션으로, final 필드와 @NonNull 필드를 포함하는 생성자를 자동으로 생성합니다.
- * 설명: 의존성 주입을 위해 final 필드와 @NonNull 필드를 포함한 생성자를 자동으로 생성해 줍니다. 이를 통해 필드 주입 대신 생성자 주입을 사용할 수 있으며, 생성자를 통해 필요한 의존성을 주입받을 수 있습니다.
+ * @TestMethodOrder(OrderAnnotation.class)
+ * 역할: 테스트 메서드의 실행 순서를 지정합니다.
+ * 설명: OrderAnnotation을 사용하면 @Order 어노테이션을 통해 각 테스트 메서드의 실행 순서를 명시적으로 정의할 수 있습니다. 이를 통해 특정 순서대로 테스트를 실행할 수 있습니다.
  * @TestInstance(TestInstance.Lifecycle.PER_CLASS)를 사용하지 않으면, 각 테스트 메서드는 독립적으로 실행되며, 테스트 클래스의 인스턴스는 각 테스트 메서드마다 새로 생성됩니다.
  * 이는 테스트 메서드가 인스턴스 변수의 상태를 공유하지 않음을 의미합니다.
  * @TestInstance(TestInstance.Lifecycle.PER_CLASS) 역할: JUnit 5에서 테스트 클래스의 인스턴스 생명주기를 제어합니다.
@@ -103,12 +138,10 @@ import static io.restassured.RestAssured.UNDEFINED_PORT;
 
 // 수용 테스트는 시스템이 최종 사용자의 요구사항을 충족하는지를 확인하는 테스트입니다.
 // 이는 전체 시스템이 기대한 대로 동작하는지, 사용자의 시나리오를 통해 확인합니다.
-@Nested
-@ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public abstract class AcceptanceTest {
+public abstract class AcceptanceTest extends SteachTest {
 
     @LocalServerPort
     protected int port;
@@ -119,6 +152,9 @@ public abstract class AcceptanceTest {
     // 해당 메서드를 구현체에 한 번 더 적어줄 필요가 없음.
     @BeforeAll
     void setUp() {
+        if (!Files.exists(Paths.get("src/main/resources/application-test.yml"))) {
+            fail("application-test.yml 파일이 존재하지 않습니다.");
+        }
         // 설명: 이 조건문은 RestAssured의 포트가 아직 설정되지 않았는지를 확인합니다.
         // 목적: 테스트 실행 시, RestAssured의 포트가 아직 설정되지 않았다면, 이를 LocalServerPort에서 가져온 포트로 설정하려는 의도입니다.
         if (RestAssured.port == UNDEFINED_PORT) {
