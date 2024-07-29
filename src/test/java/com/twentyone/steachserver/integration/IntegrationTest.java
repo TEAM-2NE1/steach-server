@@ -22,6 +22,8 @@ import java.nio.file.Paths;
  * 설명: 의존성 주입을 위해 final 필드와 @NonNull 필드를 포함한 생성자를 자동으로 생성해 줍니다. 이를 통해 필드 주입 대신 생성자 주입을 사용할 수 있으며, 생성자를 통해 필요한 의존성을 주입받을 수 있습니다.
  */
 
+// @SpringBootTest 기본적으로 MOCK 환경에서 애플리케이션 컨텍스트를 로드합니다.
+// @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) 내장 서버를 임의의 포트에서 시작하여 실제 네트워크 요청을 테스트할 수 있습니다.
 @Transactional
 @SpringBootTest
 public abstract class IntegrationTest extends SteachTest {
