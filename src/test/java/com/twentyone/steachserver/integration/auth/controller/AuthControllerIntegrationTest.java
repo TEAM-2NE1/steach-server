@@ -6,19 +6,20 @@ import com.twentyone.steachserver.domain.auth.dto.TeacherSignUpDto;
 import com.twentyone.steachserver.integration.ControllerIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AuthControllerIntegrationTest extends ControllerIntegrationTest {
 
 
@@ -48,13 +49,14 @@ public class AuthControllerIntegrationTest extends ControllerIntegrationTest {
     @DisplayName("강사 회원가입")
     void testTeacherSignup() throws Exception {
         // given
-        강사_로그인_정보 = Map.of(
-                "username", 강사_로그인_아이디,
-                "password", "teacherPassword");
+        강사_로그인_정보 = new HashMap<>();
+        강사_로그인_정보.put("username", 강사_로그인_아이디);
+        강사_로그인_정보.put("password", "1234");
 
-        강사_추가_정보 = Map.of(
-                "name", "teacherSihyun",
-                "email", "sihyun" + UUID.randomUUID().toString().substring(0, 4) + "@gmail.com");
+        강사_추가_정보 = new HashMap<>();
+        강사_추가_정보.put("name", "teacherSihyun");
+        강사_추가_정보.put("email", "sihyun" + UUID.randomUUID().toString().substring(0, 4) + "@gmail.com");
+
 
         // when
         Response 회원가입 = 회원가입(강사_로그인_정보, 강사_추가_정보);
