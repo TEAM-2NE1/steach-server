@@ -7,7 +7,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static com.jayway.jsonpath.internal.path.PathCompiler.fail;
+import static org.assertj.core.api.Fail.fail;
+
 
 /**
  * @Nested
@@ -22,7 +23,8 @@ import static com.jayway.jsonpath.internal.path.PathCompiler.fail;
 public class SteachTest {
     @BeforeAll
     public static void checkTestProfile() {
-        if (!Files.exists(Paths.get("src/main/resources/application-test.yml"))) {
+        System.out.println("application-test.yml 파일여부 확인(test_db 사용 여부)");
+        if (!Files.exists(Paths.get("src/test/resources/application-test.yml"))) {
             fail("application-test.yml 파일이 존재하지 않습니다.");
         }
     }
