@@ -45,8 +45,9 @@ import static org.hamcrest.Matchers.*;
 // 이는 전체 시스템이 기대한 대로 동작하는지, 사용자의 시나리오를 통해 확인합니다.
 // 전체 시스템의 생성 로직만 해서 최대한 성공로직 내가 테스트하고 싶은 메인 로직만 구현해야한다.
 // // 수정이나 조회 같은게 아닌 생성만 쭈우우우욱 하고 맨 마지막에 진짜 확인하고 싶었던 최종 그거만 확인하는 느낌(사실 진짜 확인하고 싶었던 이런것도 안해도됨)
-@DisplayName("강사의 수업 인수 테스트")
-public class TeacherLectureAcceptanceTest extends AcceptanceTest {
+@DisplayName("프로젝트 메인 기능 인수 테스트")
+public class MainAcceptanceTest extends AcceptanceTest {
+
 
     /**
      * ParameterizeTest Permalink
