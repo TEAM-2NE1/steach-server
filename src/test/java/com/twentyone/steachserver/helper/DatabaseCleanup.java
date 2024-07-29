@@ -16,6 +16,12 @@ import java.util.stream.Collectors;
  * 실제로 인수 테스트를 작성하면서 똑같은 테스트임에도 불구하고 테스트 격리가 잘되지 않아서 실행할 때마다 성공 여부가 달라지는 경험을 해본 적이 있을 것이다.
  * 이는 테스트가 진행되는 순서와 데이터베이스 초기 상태가 보장되지 않기 때문에 발생한 것이다.
  */
+
+/**
+ * TRUNCATE 쿼리는 앞서 살펴본 DELTE로 테이블을 초기화하는 방법보다는 상당히 괜찮은 방법이다. API 요청도 필요 없고, DELTE를 하기 위해서 하나씩 SELECT(조회)를 할 필요도 없다.
+ * JPA의 경우 deleteAll, deleteById메서드를 호출하면 곧 바로 DELETE 쿼리가 수행되는 것이아니라 SELECT로 조회한 뒤에 DELETE가 나간다.
+ * 그뿐만 아니라 삭제를 수행할 때 트랜잭션 로그 공간을 적게 사용하고, DELETE는 행마다 락(lock)을거는데 비해 TRUNCATE은 락(lock)을 거는 수가 상대적으로 적은 시간에 테이블 초기화를 할 수 있는 장점이 있다.
+ */
 @Service
 @Profile("test") // ActiveProfile("test")가 선언된 곳에서만 해당 빈을 생성 및 주입할 수 있다.
 public class DatabaseCleanup implements InitializingBean {
