@@ -1,5 +1,6 @@
-package com.twentyone.steachserver.domain.auth.dto;
+package com.twentyone.steachserver.config.security;
 
+import com.twentyone.steachserver.domain.auth.dto.JwtExceptionResponse;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
