@@ -22,12 +22,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.twentyone.steachserver.global.error.ResourceNotFoundException;
 import com.twentyone.steachserver.util.WeekdayBitmaskUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -209,6 +209,19 @@ public class CurriculumServiceImpl implements CurriculumService {
         );
 
         return CurriculumDetailResponse.fromDomain(curriculum);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCurriculum(Teacher teacher, Integer curriculumId) {
+        Curriculum curriculum = curriculumRepository.findById(curriculumId)
+                .orElseThrow(() -> new ResourceNotFoundException("커리큘럼을 찾을 수 없음"));
+
+        if (!curriculum.getTeacher().equals(teacher)) {
+            throw new ForbiddenException("커리큘럼을 만든 사람이 아님. 권한없음");
+        }
+
+        curriculumRepository.delete(curriculum);
     }
 
     private int getBitmaskForDayOfWeek(DayOfWeek dayOfWeek) {
