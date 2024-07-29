@@ -67,6 +67,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public Optional<LectureBeforeStartingResponseDto> updateLectureInformation(Integer lectureId,
                                                                                UpdateLectureRequestDto lectureRequestDto) {
         Lecture lecture = lectureRepository.findById(lectureId)
