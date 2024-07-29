@@ -1,10 +1,7 @@
 package com.twentyone.steachserver.acceptance;
 
 import com.twentyone.steachserver.helper.DatabaseCleanup;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -72,7 +69,13 @@ import static io.restassured.RestAssured.UNDEFINED_PORT;
  * @RequiredArgsConstructor
  * 역할: Lombok 라이브러리의 어노테이션으로, final 필드와 @NonNull 필드를 포함하는 생성자를 자동으로 생성합니다.
  * 설명: 의존성 주입을 위해 final 필드와 @NonNull 필드를 포함한 생성자를 자동으로 생성해 줍니다. 이를 통해 필드 주입 대신 생성자 주입을 사용할 수 있으며, 생성자를 통해 필요한 의존성을 주입받을 수 있습니다.
- */
+ * @TestInstance(TestInstance.Lifecycle.PER_CLASS)를 사용하지 않으면, 각 테스트 메서드는 독립적으로 실행되며, 테스트 클래스의 인스턴스는 각 테스트 메서드마다 새로 생성됩니다.
+ * 이는 테스트 메서드가 인스턴스 변수의 상태를 공유하지 않음을 의미합니다.
+ * @TestInstance(TestInstance.Lifecycle.PER_CLASS) 역할: JUnit 5에서 테스트 클래스의 인스턴스 생명주기를 제어합니다.
+ * 설명: Lifecycle.PER_CLASS를 사용하면 테스트 클래스의 인스턴스가 클래스당 하나만 생성됩니다.
+ * 기본적으로 JUnit 5는 각 테스트 메서드마다 새로운 테스트 클래스 인스턴스를 생성하지만, PER_CLASS를 사용하면 테스트 클래스당 하나의 인스턴스만 생성되므로 테스트 메서드 간의 상태를 공유할 수 있습니다.
+ *
+ * /
 
 // 보스독님의 블로그에서 인수 테스트는 Mock 프레임워크를 사용하지 않고 최대한 실 서비스 환경과 동일한 환경에서 테스트 되어야 한다는 것을 알게 되었다
 // 서비스 디비(X) Mock객체로 인한 가짜 디비로 테스트가 아닌 진짜 DB로 해야함.
@@ -97,8 +100,12 @@ import static io.restassured.RestAssured.UNDEFINED_PORT;
  * 따라서 아무리 테스트 코드에 @Transactional 어노테이션이 있다고 하더라도 호출되는 쪽은 다른 스레드에서 새로운 트랜잭션으로 커밋하기 때문에 롤백 전략이 무의미해지는 것이다.
  */
 //@Transactional
+
+// 수용 테스트는 시스템이 최종 사용자의 요구사항을 충족하는지를 확인하는 테스트입니다.
+// 이는 전체 시스템이 기대한 대로 동작하는지, 사용자의 시나리오를 통해 확인합니다.
 @Nested
 @ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class AcceptanceTest {
