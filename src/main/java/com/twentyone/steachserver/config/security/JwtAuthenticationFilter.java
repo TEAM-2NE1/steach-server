@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 userDetails = this.userDetailsService.loadUserByUsername(userId);
             } catch (UsernameNotFoundException e) {
-                throw new JwtException("찾을 수 없는 사용자");
+                throw new JwtException("[JwtToken] 찾을 수 없는 사용자");
             }
 
             jwtService.validateToken(jwt, userDetails);

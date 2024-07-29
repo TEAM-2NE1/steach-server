@@ -16,4 +16,6 @@ public interface AuthService {
     CheckUsernameAvailableResponse checkUsernameAvailability(String username);
 
     MemberCheckPasswordResponseDto checkPassword(LoginCredential loginCredential, MemberCheckPasswordRequestDto checkPasswordRequestDto);
+
+    void deleteMember(LoginCredential loginCredential);
 }

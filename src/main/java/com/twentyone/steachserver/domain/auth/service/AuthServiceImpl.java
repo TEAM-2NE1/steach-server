@@ -160,4 +160,9 @@ public class AuthServiceImpl implements AuthService {
 
         return MemberCheckPasswordResponseDto.of(jwtService.generatePasswordAuthToken(loginCredential));
     }
+
+    @Override
+    public void deleteMember(LoginCredential loginCredential) {
+        loginCredentialRepository.delete(loginCredential);
+    }
 }
