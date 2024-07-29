@@ -152,9 +152,6 @@ public abstract class AcceptanceTest extends SteachTest {
     // 해당 메서드를 구현체에 한 번 더 적어줄 필요가 없음.
     @BeforeAll
     void setUp() {
-        if (!Files.exists(Paths.get("src/main/resources/application-test.yml"))) {
-            fail("application-test.yml 파일이 존재하지 않습니다.");
-        }
         // 설명: 이 조건문은 RestAssured의 포트가 아직 설정되지 않았는지를 확인합니다.
         // 목적: 테스트 실행 시, RestAssured의 포트가 아직 설정되지 않았다면, 이를 LocalServerPort에서 가져온 포트로 설정하려는 의도입니다.
         if (RestAssured.port == UNDEFINED_PORT) {
