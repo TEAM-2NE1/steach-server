@@ -162,6 +162,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public void deleteMember(LoginCredential loginCredential) {
         loginCredentialRepository.delete(loginCredential);
     }
