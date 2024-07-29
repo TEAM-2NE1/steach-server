@@ -3,6 +3,7 @@ package com.twentyone.steachserver.domain.quiz.service;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.twentyone.steachserver.SteachTest;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
 import com.twentyone.steachserver.domain.quiz.repository.QuizChoiceRepository;
@@ -18,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Disabled //테스트 실패가 너무 많아서 고쳐야할 것 같습니다
-public class QuizChoiceServiceImplTest {
+public class QuizChoiceServiceImplTest extends SteachTest {
 
     @InjectMocks
     private QuizChoiceServiceImpl quizChoiceService;

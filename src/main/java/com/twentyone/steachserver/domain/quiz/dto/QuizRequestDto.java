@@ -1,5 +1,10 @@
 package com.twentyone.steachserver.domain.quiz.dto;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 /**
@@ -14,6 +19,7 @@ import java.util.List;
  *   ] // 중복가능
  * }
  */
+@Builder
 public record QuizRequestDto(Integer quizNumber, String question, List<String> choices, List<String> answers) {
 
 }
