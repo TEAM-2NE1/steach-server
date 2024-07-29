@@ -354,7 +354,7 @@ public class TeacherLectureAcceptanceTest extends AcceptanceTest {
     void 퀴즈_정보_확인(Response 퀴즈_생성, Map<String, Object> 퀴즈_정보) {
         퀴즈_생성.then()
                 .statusCode(HttpStatus.CREATED.value())
-                .body("quizNumber", equalTo(퀴즈_정보.get("quizNumber")))
+                .body("quiz_number", equalTo(퀴즈_정보.get("quizNumber")))
                 .body("question", equalTo(퀴즈_정보.get("question")))
                 .body("choices", equalTo(퀴즈_정보.get("choices")))
                 .body("answers", equalTo(퀴즈_정보.get("answers")));
