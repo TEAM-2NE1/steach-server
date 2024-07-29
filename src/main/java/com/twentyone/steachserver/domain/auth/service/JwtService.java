@@ -1,8 +1,6 @@
 package com.twentyone.steachserver.domain.auth.service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -70,6 +68,16 @@ public class JwtService {
         return b;
     }
 
+    public void validateToken(String token, UserDetails userDetails) {
+//        if (isTokenExpired(token)) {
+//            throw new ExpiredJwtException();
+//        }
+        final String username = extractUsername(token);
+        if (!username.equals(userDetails.getUsername())) {
+            throw new JwtException("사용자 에러");
+        }
+    }
+
     public boolean isPasswordAuthTokenValid(String token, UserDetails userDetails) {
         try {
             final String username = extractUsername(token);
@@ -100,7 +108,6 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
     }
 
     private SecretKey getSignInKey() {

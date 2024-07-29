@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         jwt = authHeader.substring(7); //Bearer 제외
-        userId = jwtService.extractUsername(jwt);
+        userId = jwtService.extractUsername(jwt); //만료여부도 여기서 잡아줌
 
         if (userId == null) {
             throw new JwtException("유효하지 않은 토큰");
@@ -53,25 +53,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 throw new JwtException("찾을 수 없는 사용자");
             }
 
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                if (!userDetails.isAccountNonLocked()) {
-                    throw new JwtException("유효하지 않은 토큰");
-                }
+            jwtService.validateToken(jwt, userDetails);
 
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null, //credentials가 없는 사용자 사용
-                        userDetails.getAuthorities()
-                );
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null, //credentials가 없는 사용자 사용
+                    userDetails.getAuthorities()
+            );
 
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
+            authToken.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request)
+            );
 
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            } else {
-                throw new JwtException("유효하지 않은 토큰");
-            }
+            SecurityContextHolder.getContext().setAuthentication(authToken);
         }
 
         filterChain.doFilter(request, response);
