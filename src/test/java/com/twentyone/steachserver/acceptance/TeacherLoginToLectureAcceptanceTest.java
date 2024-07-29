@@ -3,7 +3,6 @@ package com.twentyone.steachserver.acceptance;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twentyone.steachserver.domain.auth.dto.LoginDto;
-import com.twentyone.steachserver.domain.auth.dto.Role;
 import com.twentyone.steachserver.domain.auth.dto.TeacherSignUpDto;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
@@ -11,22 +10,21 @@ import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.member.dto.TeacherInfoRequest;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 
-import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 
 /**
  * RestAssured를 사용하는 이유
@@ -83,13 +81,15 @@ public class TeacherLoginToLectureAcceptanceTest extends AcceptanceTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private String teacherAuthToken;
-    private Integer curriculumId;
-
     String 강사_로그인_아이디;
     Map<String, String> 강사_로그인_정보;
     Map<String, String> 강사_추가_정보;
     String 강사_토큰_정보;
+    String 강사_권한;
+
+    Map<String, Object> 커리큘럼_기본_정보;
+    Integer 커리큘럼_PK;
+    Map<String, Integer> 커리큘럼_페이징_정보;
 
     // 테스트 대상 메서드에 @Test를 붙이면 해당 메서드가 속한 클래스는 ‘테스트 클래스’로서 동작하며, 각 메서드는 독립적인 테스트가 된다.
     // 하지만, 테스트마다 테스트 컨텍스트를 매번 새로 생성하게 된다면 오버헤드가 크기 때문에 전체 테스트의 실행 속도가 느려져셔 개발자의 생산성이 떨어진다.
@@ -97,7 +97,7 @@ public class TeacherLoginToLectureAcceptanceTest extends AcceptanceTest {
     @Test
     @Order(1)
     @DisplayName("아이디 중복 검사")
-    void testCheckDuplicateUsername(){
+    void testCheckDuplicateUsername() {
         // given
         강사_로그인_아이디 = "t" + UUID.randomUUID().toString().substring(0, 8);
         // when
@@ -106,21 +106,6 @@ public class TeacherLoginToLectureAcceptanceTest extends AcceptanceTest {
         아이디_중복_확인_응답_검증(아이디_중복_확인, true);
     }
 
-
-    Response 아이디_중복_확인(String 강사_로그인_아이디) {
-        return
-                RestAssured
-                .given().log().all()
-                .when()
-                .get("/api/v1/check-username/" + 강사_로그인_아이디)
-                .then().log().all()
-                .extract().response();
-    }
-
-    void 아이디_중복_확인_응답_검증(Response 아이디_중복_확인, boolean expectedAvailability) {
-        아이디_중복_확인.then().statusCode(HttpStatus.OK.value())
-                .body("can_use", equalTo(expectedAvailability));
-    }
 
     @Test
     @Order(2)
@@ -135,120 +120,91 @@ public class TeacherLoginToLectureAcceptanceTest extends AcceptanceTest {
                 "name", "teacherSihyun",
                 "email", "sihyun" + UUID.randomUUID().toString().substring(0, 4) + "@gmail.com");
 
-//        File resume = new File("src/test/resources/resume.png");
         // when
         Response 회원가입 = 회원가입(강사_로그인_정보, 강사_추가_정보);
 //        Response 회원가입 = 회원가입(강사_로그인_정보, 강사_추가_정보, resume);
 
         // Then
-        teacherAuthToken = 회원가입_정보_확인(회원가입, 강사_추가_정보, "TEACHER");
-
+        강사_권한 = "TEACHER";
+        강사_토큰_정보 = 회원가입_정보_확인(회원가입, 강사_추가_정보, 강사_권한);
     }
 
-    Response 회원가입(Map<String, String> 강사_로그인_정보, Map<String, String> 강사_추가_정보) throws JsonProcessingException {
-        TeacherSignUpDto teacherSignUpDto = TeacherSignUpDto.builder()
-                .username(강사_로그인_정보.get("username"))
-                .password(강사_로그인_정보.get("password"))
-                .name(강사_추가_정보.get("name"))
-                .email(강사_추가_정보.get("email"))
-                .build();
-
-        return given()
-                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-//                .multiPart("image", resume, "application/multipart/form-data")
-                .multiPart("image", "resume.png", "dummy content".getBytes(), MediaType.APPLICATION_OCTET_STREAM_VALUE)
-                .multiPart("teacherSignUpDto", objectMapper.writeValueAsString(teacherSignUpDto), MediaType.APPLICATION_JSON_VALUE)
-                .when().log().all()
-                .post("/api/v1/teacher/join");
-    }
-
-    String 회원가입_정보_확인(Response 회원가입, Map<String, String> 강사_추가_정보, String role) {
-        회원가입
-                .then()
-                .statusCode(HttpStatus.CREATED.value())
-                .body("role", equalTo(role))
-                .body("email", equalTo(강사_추가_정보.get("email")))
-                .body("name", equalTo(강사_추가_정보.get("name")));
-
-        String token = 회원가입.jsonPath().getString("token");
-
-        if (token.isEmpty()) {
-            throw new RuntimeException("JWT token not found in the login response");
-        }
-        return token;
-    }
 
     @Test
     @Order(3)
     @DisplayName("강사 로그인")
     void testTeacherSignupAndLogin() throws Exception {
-        // when
         // given
+        // when
         Response 로그인 = 로그인(강사_로그인_정보);
         // then
-        강사_토큰_정보 = 로그인_정보_확인(로그인, 강사_추가_정보, "TEACHER");
+        강사_토큰_정보 = 로그인_정보_확인(로그인, 강사_추가_정보, 강사_권한);
     }
-
-    Response 로그인(Map<String, String> 강사_로그인_정보) throws JsonProcessingException {
-        LoginDto loginDto = LoginDto.builder()
-                .username(강사_로그인_정보.get("username"))
-                .password(강사_로그인_정보.get("password"))
-                .build();
-
-        return RestAssured
-                .given().log().all()
-                .body(objectMapper.writeValueAsString(loginDto))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().log().all()
-                .post("/api/v1/login");
-    }
-
-    String 로그인_정보_확인(Response 로그인, Map<String, String> 강사_추가_정보, String role) {
-        로그인
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .body("role", equalTo(role))
-                .body("email", equalTo(강사_추가_정보.get("email")))
-                .body("name", equalTo(강사_추가_정보.get("name")));
-
-        String token = 로그인.jsonPath().getString("token");
-
-        if (token.isEmpty()) {
-            throw new RuntimeException("JWT token not found in the login response");
-        }
-        return token;
-    }
-
-
 
 
     @Test
     @Order(4)
     @DisplayName("강사가 커리큘럼 생성")
     void testCreateCurriculum() throws Exception {
-        curriculumId = 커리큘럼_생성(teacherAuthToken, "새로운 커리큘럼", "부제목", "소개", "정보", CurriculumCategory.EDUCATION, "하위 카테고리", "http://example.com/banner.jpg", LocalDate.now(), LocalDate.now().plusDays(10), "1111100", LocalTime.of(10, 0), LocalTime.of(12, 0), 4);
+        // given
+        커리큘럼_기본_정보 = new HashMap<>();
+        커리큘럼_기본_정보.put("title", "새로운 커리큘럼");
+        커리큘럼_기본_정보.put("subTitle", "부제목");
+        커리큘럼_기본_정보.put("intro", "소개");
+        커리큘럼_기본_정보.put("information", "정보");
+        커리큘럼_기본_정보.put("category", CurriculumCategory.EDUCATION);
+        커리큘럼_기본_정보.put("subCategory", "하위 카테고리");
+        커리큘럼_기본_정보.put("bannerImgUrl", "http://example.com/banner.jpg");
+        커리큘럼_기본_정보.put("startDate", LocalDate.now());
+        커리큘럼_기본_정보.put("endDate", LocalDate.now().plusDays(10));
+        커리큘럼_기본_정보.put("weekdaysBitmask", "1111100");
+        커리큘럼_기본_정보.put("lectureStartTime", LocalTime.of(10, 0));
+        커리큘럼_기본_정보.put("lectureEndTime", LocalTime.of(12, 0));
+        커리큘럼_기본_정보.put("maxAttendees", 4);
+        // when
+        Response 커리큘럼_생성 = 커리큘럼_생성(강사_토큰_정보, 커리큘럼_기본_정보);
+        // then
+        커리큘럼_PK = 커리큘럼_생성_확인(커리큘럼_생성, 커리큘럼_기본_정보);
     }
 
     @Test
     @Order(5)
     @DisplayName("커리큘럼 조회")
-    void testGetCurriculum() throws Exception {
-        커리큘럼_조회(teacherAuthToken, curriculumId, "새로운 커리큘럼", "부제목", "소개", "정보", CurriculumCategory.EDUCATION.toString(), "하위 카테고리", "http://example.com/banner.jpg", LocalDate.now(), LocalDate.now().plusDays(10), "1111100", LocalTime.of(10, 0), LocalTime.of(12, 0), 4);
+    void testGetCurriculum() {
+        // given
+        // when
+        Response 커리큘럼_조회 = 커리큘럼_조회();
+
+        // then
+        커리큘럼_조회_확인(커리큘럼_조회, 커리큘럼_기본_정보);
     }
 
     @Test
     @Order(6)
     @DisplayName("강사가 강의하는 커리큘럼 목록 조회")
-    void testGetTeacherCurricula() throws Exception {
-        강사_강의_커리큘럼_목록_조회(teacherAuthToken, 1, 1, 10, "새로운 커리큘럼", "부제목", "소개", "정보", CurriculumCategory.EDUCATION.toString(), "하위 카테고리", "http://example.com/banner.jpg", LocalDate.now(), LocalDate.now().plusDays(10), "1111100", LocalTime.of(10, 0), LocalTime.of(12, 0), 4);
+    void testGetTeacherCurricula() {
+//     given
+        커리큘럼_페이징_정보 = new HashMap<>();
+        커리큘럼_페이징_정보.put("currentPageNumber", 1);
+        커리큘럼_페이징_정보.put("pageSize", 2);
+        //
+//     when
+        Response 강사_커리큘럼_조회 = 강사_커리큘럼_조회(강사_토큰_정보, 커리큘럼_페이징_정보);
+//     then
+        강사_커리큘럼_조회_확인(강사_커리큘럼_조회, 커리큘럼_기본_정보, 커리큘럼_페이징_정보);
     }
 
-//    @Test
-//    @Order(7)
-//    @DisplayName("강사 회원 정보 조회")
-//    void testGetTeacherInfo() throws Exception {
-//        강사_회원정보_조회(teacherAuthToken, 강사_로그인_아이디, 강사_추가_정보);
-//    }
+    @Test
+    @Order(7)
+    @DisplayName("강사 회원 정보 조회")
+    void testGetTeacherInfo() throws Exception {
+        // given
+        // when
+        Response 강사_회원정보_조회 = 강사_회원정보_조회(강사_토큰_정보);
+        // then
+        강사_회원정보_확인(강사_회원정보_조회, 강사_로그인_아이디, 강사_추가_정보);
+
+    }
 //
 //    @Test
 //    @Order(8)
@@ -291,103 +247,207 @@ public class TeacherLoginToLectureAcceptanceTest extends AcceptanceTest {
 //        ;
 //    }
 
+    Response 아이디_중복_확인(String 강사_로그인_아이디) {
+        return
+                RestAssured
+                        .given().log().all()
+                        .when()
+                        .get("/api/v1/check-username/" + 강사_로그인_아이디)
+                        .then().log().all()
+                        .extract().response();
+    }
 
-    private Integer 커리큘럼_생성(String token, String title, String subTitle, String intro, String information, CurriculumCategory category, String subCategory, String bannerImgUrl, LocalDate startDate, LocalDate endDate, String weekdaysBitmask, LocalTime lectureStartTime, LocalTime lectureEndTime, int maxAttendees) throws Exception {
-        CurriculumAddRequest curriculumRequest = CurriculumAddRequest.builder()
-                .title(title)
-                .subTitle(subTitle)
-                .intro(intro)
-                .information(information)
-                .category(category)
-                .subCategory(subCategory)
-                .bannerImgUrl(bannerImgUrl)
-                .startDate(startDate)
-                .endDate(endDate)
-                .weekdaysBitmask(weekdaysBitmask)
-                .lectureStartTime(lectureStartTime)
-                .lectureEndTime(lectureEndTime)
-                .maxAttendees(maxAttendees)
+    void 아이디_중복_확인_응답_검증(Response 아이디_중복_확인, boolean expectedAvailability) {
+        아이디_중복_확인.then().statusCode(HttpStatus.OK.value())
+                .body("can_use", equalTo(expectedAvailability));
+    }
+
+    Response 회원가입(Map<String, String> 강사_로그인_정보, Map<String, String> 강사_추가_정보) throws JsonProcessingException {
+        TeacherSignUpDto teacherSignUpDto = TeacherSignUpDto.builder()
+                .username(강사_로그인_정보.get("username"))
+                .password(강사_로그인_정보.get("password"))
+                .name(강사_추가_정보.get("name"))
+                .email(강사_추가_정보.get("email"))
                 .build();
 
-        Response response = 선생님_토큰(token)
+        return given()
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+//                .multiPart("image", resume, "application/multipart/form-data")
+                .multiPart("image", "resume.png", "dummy content".getBytes(), MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                .multiPart("teacherSignUpDto", objectMapper.writeValueAsString(teacherSignUpDto), MediaType.APPLICATION_JSON_VALUE)
+                .when().log().all()
+                .post("/api/v1/teacher/join");
+    }
+
+    String 회원가입_정보_확인(Response 회원가입, Map<String, String> 강사_추가_정보, String role) {
+        회원가입
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("role", equalTo(role))
+                .body("email", equalTo(강사_추가_정보.get("email")))
+                .body("name", equalTo(강사_추가_정보.get("name")));
+
+        String token = 회원가입.jsonPath().getString("token");
+
+        if (token.isEmpty()) {
+            throw new RuntimeException("JWT token not found in the login response");
+        }
+        return token;
+    }
+
+
+    Response 로그인(Map<String, String> 강사_로그인_정보) throws JsonProcessingException {
+        LoginDto loginDto = LoginDto.builder()
+                .username(강사_로그인_정보.get("username"))
+                .password(강사_로그인_정보.get("password"))
+                .build();
+
+        return RestAssured
+                .given().log().all()
+                .body(objectMapper.writeValueAsString(loginDto))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().log().all()
+                .post("/api/v1/login");
+    }
+
+    String 로그인_정보_확인(Response 로그인, Map<String, String> 강사_추가_정보, String role) {
+        로그인
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("role", equalTo(role))
+                .body("email", equalTo(강사_추가_정보.get("email")))
+                .body("name", equalTo(강사_추가_정보.get("name")));
+
+        String token = 로그인.jsonPath().getString("token");
+
+        if (token.isEmpty()) {
+            throw new RuntimeException("JWT token not found in the login response");
+        }
+        return token;
+    }
+
+    Response 커리큘럼_생성(String 강사_토큰_정보, Map<String, Object> 커리큘럼_기본_정보) throws Exception {
+        CurriculumAddRequest curriculumRequest = CurriculumAddRequest.builder()
+                .title((String) 커리큘럼_기본_정보.get("title"))
+                .subTitle((String) 커리큘럼_기본_정보.get("subTitle"))
+                .intro((String) 커리큘럼_기본_정보.get("intro"))
+                .information((String) 커리큘럼_기본_정보.get("information"))
+                .category((CurriculumCategory) 커리큘럼_기본_정보.get("category"))
+                .subCategory((String) 커리큘럼_기본_정보.get("subCategory"))
+                .bannerImgUrl((String) 커리큘럼_기본_정보.get("bannerImgUrl"))
+                .startDate((LocalDate) 커리큘럼_기본_정보.get("startDate"))
+                .endDate((LocalDate) 커리큘럼_기본_정보.get("endDate"))
+                .weekdaysBitmask((String) 커리큘럼_기본_정보.get("weekdaysBitmask"))
+                .lectureStartTime((LocalTime) 커리큘럼_기본_정보.get("lectureStartTime"))
+                .lectureEndTime((LocalTime) 커리큘럼_기본_정보.get("lectureEndTime"))
+                .maxAttendees((Integer) 커리큘럼_기본_정보.get("maxAttendees"))
+                .build();
+
+        return given()
+                .header("Authorization", "Bearer " + 강사_토큰_정보)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(objectMapper.writeValueAsString(curriculumRequest))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post("/api/v1/curricula")
-                .then()
-                .statusCode(200)
-                .body("title", equalTo(title))
-                .extract()
-                .response();
+                .post("/api/v1/curricula");
 
-        CurriculumDetailResponse createdCurriculum = objectMapper.readValue(response.asString(), CurriculumDetailResponse.class);
+    }
+
+    Integer 커리큘럼_생성_확인(Response 커리큘럼_생성, Map<String, Object> 커리큘럼_기본_정보) throws JsonProcessingException {
+        String s = 커리큘럼_생성.body().prettyPrint();
+        System.out.println(s);
+        커리큘럼_생성
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("title", equalTo(커리큘럼_기본_정보.get("title"))).body("title", equalTo(커리큘럼_기본_정보.get("title")))
+                .body("sub_title", equalTo(커리큘럼_기본_정보.get("subTitle"))).body("title", equalTo(커리큘럼_기본_정보.get("title")))
+                .body("intro", equalTo(커리큘럼_기본_정보.get("intro")))
+                .body("information", equalTo(커리큘럼_기본_정보.get("information")))
+                .body("category", equalTo(커리큘럼_기본_정보.get("category").toString()))
+                .body("banner_img_url", equalTo(커리큘럼_기본_정보.get("bannerImgUrl")))
+                .body("start_date", equalTo(커리큘럼_기본_정보.get("startDate").toString()))
+                .body("end_date", equalTo(커리큘럼_기본_정보.get("endDate").toString()))
+                .body("weekdays_bitmask", equalTo(커리큘럼_기본_정보.get("weekdaysBitmask")))
+                .body("lecture_start_time", equalTo(커리큘럼_기본_정보.get("lectureStartTime").toString()))
+                .body("lecture_end_time", equalTo(커리큘럼_기본_정보.get("lectureEndTime").toString()))
+                .body("max_attendees", equalTo(커리큘럼_기본_정보.get("maxAttendees")));
+
+        CurriculumDetailResponse createdCurriculum = objectMapper.readValue(커리큘럼_생성.asString(), CurriculumDetailResponse.class);
         return createdCurriculum.getCurriculumId();
     }
 
-    private void 커리큘럼_조회(String token, Integer curriculumId, String title, String subTitle, String intro, String information, String category, String subCategory, String bannerImgUrl, LocalDate startDate, LocalDate endDate, String weekdaysBitmask, LocalTime lectureStartTime, LocalTime lectureEndTime, int maxAttendees) {
-        선생님_토큰(token)
-                .when()
-                .get("/api/v1/curricula/" + curriculumId)
-                .then()
-                .statusCode(200)
-                .body("title", equalTo(title))
-                .body("sub_title", equalTo(subTitle))
-                .body("intro", equalTo(intro))
-                .body("information", equalTo(information))
-                .body("category", equalTo(category))
-                .body("sub_category", equalTo(subCategory))
-                .body("banner_img_url", equalTo(bannerImgUrl))
-                .body("start_date", equalTo(startDate.toString()))
-                .body("end_date", equalTo(endDate.toString()))
-                .body("weekdays_bitmask", equalTo(weekdaysBitmask))
-                .body("lecture_start_time", equalTo(lectureStartTime.toString()))
-                .body("lecture_end_time", equalTo(lectureEndTime.toString()))
-                .body("max_attendees", equalTo(maxAttendees));
-    }
-
-    private static RequestSpecification 선생님_토큰(String token) {
+    Response 커리큘럼_조회() {
         return given()
-                .header("Authorization", "Bearer " + token);
+                .when()
+                .get("/api/v1/curricula/" + 커리큘럼_PK);
     }
 
-    private void 강사_강의_커리큘럼_목록_조회(String token, int expectedCurriculumCount, int currentPageNumber, int pageSize, String title, String subTitle, String intro, String information, String category, String subCategory, String bannerImgUrl, LocalDate startDate, LocalDate endDate, String weekdaysBitmask, LocalTime lectureStartTime, LocalTime lectureEndTime, int maxAttendees) {
-        given()
-                .header("Authorization", "Bearer " + token)
-                .param("pageSize", String.valueOf(pageSize))
-                .param("currentPageNumber", String.valueOf(currentPageNumber))
-                .when()
-                .get("/api/v1/teachers/curricula")
+    void 커리큘럼_조회_확인(Response 커리큘럼_조회, Map<String, Object> 커리큘럼_기본_정보) {
+        커리큘럼_조회
                 .then()
-                .statusCode(200)
-                .body("curricula", hasSize(expectedCurriculumCount))
-                .body("curricula[0].title", equalTo(title))
-                .body("curricula[0].sub_title", equalTo(subTitle))
-                .body("curricula[0].intro", equalTo(intro))
-                .body("curricula[0].information", equalTo(information))
-                .body("curricula[0].category", equalTo(category))
-                .body("curricula[0].sub_category", equalTo(subCategory))
-                .body("curricula[0].banner_img_url", equalTo(bannerImgUrl))
-                .body("curricula[0].start_date", equalTo(startDate.toString()))
-                .body("curricula[0].end_date", equalTo(endDate.toString()))
-                .body("curricula[0].weekdays_bitmask", equalTo(weekdaysBitmask))
-                .body("curricula[0].lecture_start_time", equalTo(lectureStartTime.toString()))
-                .body("curricula[0].lecture_end_time", equalTo(lectureEndTime.toString()))
-                .body("curricula[0].max_attendees", equalTo(maxAttendees))
-                .body("current_page_number", equalTo(currentPageNumber))
-                .body("total_page", equalTo(1))
-                .body("page_size", equalTo(pageSize));
+                .statusCode(HttpStatus.OK.value())
+                .body("title", equalTo(커리큘럼_기본_정보.get("title")))
+                .body("intro", equalTo(커리큘럼_기본_정보.get("intro")))
+                .body("information", equalTo(커리큘럼_기본_정보.get("information")))
+                .body("category", equalTo(커리큘럼_기본_정보.get("category").toString()))
+                .body("banner_img_url", equalTo(커리큘럼_기본_정보.get("bannerImgUrl")))
+                .body("start_date", equalTo(커리큘럼_기본_정보.get("startDate").toString()))
+                .body("end_date", equalTo(커리큘럼_기본_정보.get("endDate").toString()))
+                .body("weekdays_bitmask", equalTo(커리큘럼_기본_정보.get("weekdaysBitmask")))
+                .body("lecture_start_time", equalTo(커리큘럼_기본_정보.get("lectureStartTime").toString()))
+                .body("lecture_end_time", equalTo(커리큘럼_기본_정보.get("lectureEndTime").toString()))
+                .body("max_attendees", equalTo(커리큘럼_기본_정보.get("maxAttendees")));
     }
 
-    private void 강사_회원정보_조회(String token, String username, String name, String email) {
-        given()
-                .header("Authorization", "Bearer " + token)
+    Response 강사_커리큘럼_조회(String 강사_토큰_정보, Map<String, Integer> 페이징_정보) {
+        return given()
+                .header("Authorization", "Bearer " + 강사_토큰_정보)
+                .param("pageSize", String.valueOf(페이징_정보.get("pageSize")))
+                .param("currentPageNumber", String.valueOf(페이징_정보.get("currentPageNumber")))
                 .when()
-                .get("/api/v1/teachers")
+                .get("/api/v1/teachers/curricula");
+    }
+
+    void 강사_커리큘럼_조회_확인(Response 강사_커리큘럼_조회, Map<String, Object> 커리큘럼_기본_정보, Map<String, Integer> 커리큘럼_페이징_정보) {
+        int pageSize = 커리큘럼_페이징_정보.get("pageSize");
+        int currentPageNumber = 커리큘럼_페이징_정보.get("currentPageNumber");
+        int 나타내는_총개수 = pageSize * currentPageNumber;
+
+        강사_커리큘럼_조회
                 .then()
-                .statusCode(200)
-                .body("username", equalTo(username))
-                .body("name", equalTo(name))
-                .body("email", equalTo(email));
+                .statusCode(HttpStatus.OK.value())
+                .body("curricula", hasSize(1))
+                .body("curricula", hasSize(lessThan(나타내는_총개수)))
+                .body("curricula[0].title", equalTo(커리큘럼_기본_정보.get("title")))
+                .body("curricula[0].sub_title", equalTo(커리큘럼_기본_정보.get("subTitle")))
+                .body("curricula[0].intro", equalTo(커리큘럼_기본_정보.get("intro")))
+                .body("curricula[0].information", equalTo(커리큘럼_기본_정보.get("information")))
+                .body("curricula[0].category", equalTo(커리큘럼_기본_정보.get("category").toString()))
+                .body("curricula[0].sub_category", equalTo(커리큘럼_기본_정보.get("subCategory")))
+                .body("curricula[0].banner_img_url", equalTo(커리큘럼_기본_정보.get("bannerImgUrl")))
+                .body("curricula[0].start_date", equalTo(커리큘럼_기본_정보.get("startDate").toString()))
+                .body("curricula[0].end_date", equalTo(커리큘럼_기본_정보.get("endDate").toString()))
+                .body("curricula[0].weekdays_bitmask", equalTo(커리큘럼_기본_정보.get("weekdaysBitmask")))
+                .body("curricula[0].lecture_start_time", equalTo(커리큘럼_기본_정보.get("lectureStartTime").toString()))
+                .body("curricula[0].lecture_end_time", equalTo(커리큘럼_기본_정보.get("lectureEndTime").toString()))
+                .body("curricula[0].max_attendees", equalTo(커리큘럼_기본_정보.get("maxAttendees")));
+    }
+
+
+    Response 강사_회원정보_조회(String 강사_토큰_정보) {
+        return given()
+                .header("Authorization", "Bearer " + 강사_토큰_정보)
+                .when()
+                .get("/api/v1/teachers");
+    }
+
+    void 강사_회원정보_확인(Response 강사_회원정보_조회, String 강사_로그인_아이디, Map<String, String> 강사_추가_정보) {
+        강사_회원정보_조회
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("username", equalTo(강사_로그인_아이디))
+                .body("name", equalTo(강사_추가_정보.get("name")))
+                .body("email", equalTo(강사_추가_정보.get("email")));
     }
 
     private void 강사_회원정보_수정(String token, String name, String email, String pathQualification, String briefIntroduction, String academicBackground, String specialization) throws Exception {
