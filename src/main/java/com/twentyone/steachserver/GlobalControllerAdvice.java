@@ -2,6 +2,7 @@ package com.twentyone.steachserver;
 
 import com.twentyone.steachserver.domain.auth.error.AuthCodeAlreadyInUseException;
 import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
+import com.twentyone.steachserver.domain.auth.error.UnAuthorizedException;
 import com.twentyone.steachserver.domain.curriculum.error.DuplicatedCurriculumRegistrationException;
 import com.twentyone.steachserver.domain.lecture.error.LectureTimeNotYetException;
 import com.twentyone.steachserver.global.error.ErrorCode;
@@ -50,6 +51,12 @@ public class GlobalControllerAdvice {
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException e) {
         log.info(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(UnAuthorizedException.class)
+    public ResponseEntity<String> handleUnAuthorizedException(UnAuthorizedException e) {
+        log.info(e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
     private static ResponseEntity<ErrorResponseDto> getResponse(ErrorCode errorCode) {

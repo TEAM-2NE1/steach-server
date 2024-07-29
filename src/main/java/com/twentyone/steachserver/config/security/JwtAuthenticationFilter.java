@@ -48,12 +48,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails;
             try {
+                //로그인 아이디로 사용자를 찾는다
                 userDetails = this.userDetailsService.loadUserByUsername(userId);
             } catch (UsernameNotFoundException e) {
                 throw new JwtException("[JwtToken] 찾을 수 없는 사용자");
             }
-
-            jwtService.validateToken(jwt, userDetails);
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     userDetails,
