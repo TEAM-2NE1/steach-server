@@ -24,7 +24,7 @@ public class JwtService {
     private String SECRET_KEY;
 
     public static long accessTokenValidTime = Duration.ofMinutes(200).toMillis(); // 만료시간 30분
-    public static long passwordAuthTokenValidTime = Duration.ofMinutes(1).toMillis(); // 만료시간 1분
+    public static long passwordAuthTokenValidTime = Duration.ofMinutes(60).toMillis(); // 만료시간 1분
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
