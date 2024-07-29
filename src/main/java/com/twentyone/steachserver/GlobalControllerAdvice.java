@@ -46,7 +46,7 @@ public class GlobalControllerAdvice {
         return getResponse(ErrorCode.AUTH_CODE_ALREADY_IN_USE);
     }
 
-    @ExceptionHandler(AuthCodeAlreadyInUseException.class)
+    @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException e) {
         log.info(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
