@@ -1,6 +1,7 @@
 package com.twentyone.steachserver.domain.auth.controller;
 
 import com.twentyone.steachserver.domain.auth.dto.*;
+import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,5 +48,11 @@ public class AuthController {
     @GetMapping("/check-username/{username}")
     public ResponseEntity<CheckUsernameAvailableResponse> checkUsernameAvailability(@PathVariable("username") String username) {
         return ResponseEntity.ok(authService.checkUsernameAvailability(username));
+    }
+
+    @Operation(summary = "[All] 비밀번호 체크")
+    @PostMapping("/check/password")
+    public ResponseEntity<MemberCheckPasswordResponseDto> checkPassword(@AuthenticationPrincipal LoginCredential loginCredential, @RequestBody MemberCheckPasswordRequestDto checkPasswordRequestDto) {
+        return ResponseEntity.ok(MemberCheckPasswordResponseDto.of(authService.checkPassword(loginCredential, checkPasswordRequestDto)));
     }
 }

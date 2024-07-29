@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,10 +57,6 @@ public class CurriculumServiceImpl implements CurriculumService {
     @Override
     @Transactional
     public CurriculumDetailResponse create(LoginCredential loginCredential, CurriculumAddRequest request) {
-        //Teacher 인지 학인
-        if (!(loginCredential instanceof Teacher)) {
-            throw new ForbiddenException("선생님만 만들 수 있습니다.");
-        }
         curriculumValidator.validatorMaxAttendees(request);
         //bitmask byte로 변환
         //이진수 문자열을 정수로 변환
