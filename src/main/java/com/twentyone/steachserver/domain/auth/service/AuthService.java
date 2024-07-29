@@ -15,5 +15,5 @@ public interface AuthService {
 
     CheckUsernameAvailableResponse checkUsernameAvailability(String username);
 
-    Boolean checkPassword(LoginCredential loginCredential, MemberCheckPasswordRequestDto checkPasswordRequestDto);
+    MemberCheckPasswordResponseDto checkPassword(LoginCredential loginCredential, MemberCheckPasswordRequestDto checkPasswordRequestDto);
 }

@@ -6,6 +6,7 @@ import com.twentyone.steachserver.domain.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Slf4j
 @Tag(name = "인증")
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -50,9 +52,12 @@ public class AuthController {
         return ResponseEntity.ok(authService.checkUsernameAvailability(username));
     }
 
-    @Operation(summary = "[All] 비밀번호 체크")
+    @Operation(summary = "[인증된 사용자] 비밀번호 체크")
     @PostMapping("/check/password")
     public ResponseEntity<MemberCheckPasswordResponseDto> checkPassword(@AuthenticationPrincipal LoginCredential loginCredential, @RequestBody MemberCheckPasswordRequestDto checkPasswordRequestDto) {
-        return ResponseEntity.ok(MemberCheckPasswordResponseDto.of(authService.checkPassword(loginCredential, checkPasswordRequestDto)));
+
+        log.info(checkPasswordRequestDto.password());
+
+        return ResponseEntity.ok(authService.checkPassword(loginCredential, checkPasswordRequestDto));
     }
 }

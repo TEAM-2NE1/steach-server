@@ -26,6 +26,7 @@ public class JwtService {
     private String SECRET_KEY;
 
     public static long accessTokenValidTime = Duration.ofMinutes(200).toMillis(); // 만료시간 30분
+    public static long tempTokenValidTime = Duration.ofMinutes(1).toMillis(); // 만료시간 1분
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
@@ -40,15 +41,13 @@ public class JwtService {
     public String generateToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails,
-            String tokenType //access, refresh
+            String tokenType, //access, refresh
+            long durationTime
     ) {
-        long durationTime = accessTokenValidTime;
-
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + durationTime))
                 .claim("token_type", tokenType)
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
@@ -56,7 +55,11 @@ public class JwtService {
     }
 
     public String generateAccessToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails, "access");
+        return generateToken(new HashMap<>(), userDetails, "access", accessTokenValidTime);
+    }
+
+    public String generateTempToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails, "temp", tempTokenValidTime);
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {

@@ -1,6 +1,7 @@
 package com.twentyone.steachserver.domain.auth.service;
 
 import com.twentyone.steachserver.domain.auth.dto.*;
+import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.auth.repository.LoginCredentialRepository;
 import com.twentyone.steachserver.domain.member.model.Admin;
@@ -145,13 +146,19 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Boolean checkPassword(LoginCredential loginCredential, MemberCheckPasswordRequestDto checkPasswordRequestDto) {
+    public MemberCheckPasswordResponseDto checkPassword(LoginCredential loginCredential, MemberCheckPasswordRequestDto checkPasswordRequestDto) {
         String password = checkPasswordRequestDto.password();
 
-        LoginCredential realLoginCredential= loginCredentialRepository.findByUsername(loginCredential.getUsername())
-                .orElseThrow(() -> new RuntimeException("없는 사용자 입니다."));
+        //TODO OSIV 성능관련 찾아보기
+//        LoginCredential realLoginCredential= loginCredentialRepository.findByUsername(loginCredential.getUsername())
+//                .orElseThrow(() -> new RuntimeException("없는 사용자 입니다."));
 
-        String realPasswordEncode = realLoginCredential.getPassword();
-        return passwordEncoder.matches(password, realPasswordEncode);
+        String realPasswordEncode = loginCredential.getPassword();
+
+        if (!passwordEncoder.matches(password, realPasswordEncode)) {
+            throw new ForbiddenException("패스워드 일치하지 않음");
+        }
+
+        return MemberCheckPasswordResponseDto.of(jwtService.generateTempToken(loginCredential));
     }
 }
