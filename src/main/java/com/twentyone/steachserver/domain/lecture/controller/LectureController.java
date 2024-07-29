@@ -85,6 +85,7 @@ public class LectureController {
     @Operation(summary = "선생님이 강의 시작을 누르면 강의 리얼 시작시간이 들어가는 메서드", description = "무조건 200을 반환")
     @PatchMapping("/start/{lectureId}")
     public ResponseEntity<?> updateRealStartTime(@PathVariable("lectureId") Integer lectureId) {
+//        Todo: 자신꺼 아니면 안되게 처리해줘야하나 고민
         lectureService.updateRealStartTime(lectureId);
         return ResponseEntity.ok().build();
     }
