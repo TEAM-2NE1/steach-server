@@ -9,6 +9,7 @@ import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.lecture.dto.LectureListResponseDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
+import com.twentyone.steachserver.helper.CastObject;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.hamcrest.Matchers;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
+import static com.twentyone.steachserver.helper.CastObject.castList;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
@@ -196,16 +198,7 @@ public class TeacherLectureAcceptanceTest extends AcceptanceTest {
         퀴즈_정보_확인(퀴즈_생성, 퀴즈_정보);
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> List<T> castList(Object obj, Class<T> clazz) {
-        if (obj instanceof List<?>) {
-            List<?> list = (List<?>) obj;
-            if (list.isEmpty() || clazz.isInstance(list.get(0))) {
-                return (List<T>) list;
-            }
-        }
-        throw new ClassCastException("Failed to cast object to List<" + clazz.getName() + ">");
-    }
+
 
     // 수업 시작
     // 학생의 접속
