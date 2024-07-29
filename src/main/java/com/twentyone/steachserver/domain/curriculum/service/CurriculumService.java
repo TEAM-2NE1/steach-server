@@ -28,4 +28,6 @@ public interface CurriculumService {
                                             int weekdaysBitmask);
 
     CurriculumDetailResponse updateCurriculum(Integer curriculumId, Teacher teacher, CurriculumAddRequest request);
+
+    void deleteCurriculum(Teacher teacher, Integer curriculumId);
 }

@@ -1,18 +1,23 @@
 package com.twentyone.steachserver.domain.auth.controller;
 
 import com.twentyone.steachserver.domain.auth.dto.*;
+import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Slf4j
 @Tag(name = "인증")
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -46,5 +51,19 @@ public class AuthController {
     @GetMapping("/check-username/{username}")
     public ResponseEntity<CheckUsernameAvailableResponse> checkUsernameAvailability(@PathVariable("username") String username) {
         return ResponseEntity.ok(authService.checkUsernameAvailability(username));
+    }
+
+    @Operation(summary = "[인증된 사용자] 비밀번호 체크", description = "60분짜리 임시토큰이 발급됩니다. 회원정보 수정 시 사용합니다.")
+    @PostMapping("/check/password")
+    public ResponseEntity<MemberCheckPasswordResponseDto> checkPassword(@AuthenticationPrincipal LoginCredential loginCredential, @RequestBody MemberCheckPasswordRequestDto checkPasswordRequestDto) {
+        return ResponseEntity.ok(authService.checkPassword(loginCredential, checkPasswordRequestDto));
+    }
+
+    @Operation(summary = "[인증된 사용자] 회원 삭제", description = "강사일 때, 내가 만든 커리큘럼은 삭제되지 않음")
+    @DeleteMapping("/member")
+    public ResponseEntity<Void> deleteMember(@AuthenticationPrincipal LoginCredential loginCredential) {
+        authService.deleteMember(loginCredential);
+
+        return ResponseEntity.ok().build();
     }
 }

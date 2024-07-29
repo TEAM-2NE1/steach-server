@@ -1,6 +1,7 @@
 package com.twentyone.steachserver.domain.auth.service;
 
 import com.twentyone.steachserver.domain.auth.dto.*;
+import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.auth.repository.LoginCredentialRepository;
 import com.twentyone.steachserver.domain.member.model.Admin;
@@ -104,7 +105,7 @@ public class AuthServiceImpl implements AuthService {
         String encodedPassword = passwordEncoder.encode(studentSignUpDto.getPassword());
 
         //student 저장
-        Student student = Student.of(studentSignUpDto.getUsername(), encodedPassword, studentSignUpDto.getName(), studentSignUpDto.getEmail());
+        Student student = Student.of(studentSignUpDto.getUsername(), encodedPassword, studentSignUpDto.getNickname(), studentSignUpDto.getEmail());
         studentRepository.save(student);
 
         String accessToken = jwtService.generateAccessToken(student);
@@ -127,7 +128,7 @@ public class AuthServiceImpl implements AuthService {
         String encodedPassword = passwordEncoder.encode(teacherSignUpDto.getPassword());
 
         //Teacher 저장
-        Teacher teacher = Teacher.of(teacherSignUpDto.getUsername(), encodedPassword, teacherSignUpDto.getName(),
+        Teacher teacher = Teacher.of(teacherSignUpDto.getUsername(), encodedPassword, teacherSignUpDto.getNickname(),
                 teacherSignUpDto.getEmail(), fileName);
         teacherRepository.save(teacher);
 
@@ -141,5 +142,28 @@ public class AuthServiceImpl implements AuthService {
         boolean canUse = !loginCredentialRepository.existsByUsername(username);
 
         return new CheckUsernameAvailableResponse(canUse);
+    }
+
+    @Override
+    public MemberCheckPasswordResponseDto checkPassword(LoginCredential loginCredential, MemberCheckPasswordRequestDto checkPasswordRequestDto) {
+        String password = checkPasswordRequestDto.password();
+
+        //TODO OSIV 성능관련 찾아보기
+//        LoginCredential realLoginCredential= loginCredentialRepository.findByUsername(loginCredential.getUsername())
+//                .orElseThrow(() -> new RuntimeException("없는 사용자 입니다."));
+
+        String realPasswordEncode = loginCredential.getPassword();
+
+        if (!passwordEncoder.matches(password, realPasswordEncode)) {
+            throw new ForbiddenException("패스워드 일치하지 않음");
+        }
+
+        return MemberCheckPasswordResponseDto.of(jwtService.generatePasswordAuthToken(loginCredential));
+    }
+
+    @Override
+    @Transactional
+    public void deleteMember(LoginCredential loginCredential) {
+        loginCredentialRepository.delete(loginCredential);
     }
 }

@@ -7,6 +7,7 @@ import com.twentyone.steachserver.domain.lecture.dto.LectureBeforeStartingRespon
 import com.twentyone.steachserver.domain.lecture.dto.LectureListResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.update.UpdateLectureRequestDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
+import com.twentyone.steachserver.domain.member.model.Teacher;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,4 +36,6 @@ public interface LectureService {
     LectureListResponseDto findByCurriculum(Integer curriculumId);
 
     void addVolunteerMinute(Lecture updateLecture);
+
+    void delete(Integer lectureId, Teacher teacher);
 }

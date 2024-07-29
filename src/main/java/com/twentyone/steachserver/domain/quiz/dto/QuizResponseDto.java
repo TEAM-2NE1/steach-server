@@ -5,16 +5,18 @@ import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import java.util.List;
 
 public record QuizResponseDto(
+        Integer quizId,
         Integer lectureId,
         Integer quizNumber,
         String question,
         List<String> choices,
         List<String> answers
 ) {
-    public static QuizResponseDto createQuizResponseDto(Integer lectureId, QuizRequestDto request) {
+    public static QuizResponseDto createQuizResponseDto(Integer lectureId, QuizRequestDto request, Integer quizId) {
         allStrip(request.choices());
         allStrip(request.answers());
         return new QuizResponseDto(
+                quizId,
                 lectureId,
                 request.quizNumber(),
                 request.question(),
@@ -27,6 +29,7 @@ public record QuizResponseDto(
         allStrip(choices);
         allStrip(answers);
         return new QuizResponseDto(
+                quiz.getId(),
                 quiz.getLecture().getId(),
                 quiz.getQuizNumber(),
                 quiz.getQuestion(),
