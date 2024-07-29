@@ -8,7 +8,6 @@ import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.lecture.dto.LectureListResponseDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
@@ -25,7 +24,6 @@ import static com.twentyone.steachserver.helper.CastObject.castList;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-
 /**
  * RestAssured를 사용하는 이유
  * 실제 네트워크 요청: RestAssured는 실제 HTTP 요청을 통해 테스트를 수행하므로, 클라이언트와 서버 간의 통신을 포함한 엔드 투 엔드 테스트를 수행할 수 있습니다. 이는 MockMvc와 같은 도구와 비교했을 때 실제 서비스 환경과 더 유사합니다.
@@ -35,18 +33,18 @@ import static org.hamcrest.Matchers.*;
  * 자동화된 테스트: RestAssured를 사용하면 자동화된 테스트 스크립트를 작성하여 지속적인 통합 및 배포(CI/CD) 파이프라인에 쉽게 통합할 수 있습니다.
  */
 
-
 // Jacoco: Java 코드의 커버리지를 체크하는 라이브러리
 // 테스트가 한글로 되어 있어 가독성이 전체적으로 크게 향상된 것이 이 단점을 덮고도 남을 장점이 아닌가 한다.
 
 // 수용 테스트는 시스템이 최종 사용자의 요구사항을 충족하는지를 확인하는 테스트입니다.
 // 이는 전체 시스템이 기대한 대로 동작하는지, 사용자의 시나리오를 통해 확인합니다.
 // 전체 시스템의 생성 로직만 해서 최대한 성공로직 내가 테스트하고 싶은 메인 로직만 구현해야한다.
-// // 수정이나 조회 같은게 아닌 생성만 쭈우우우욱 하고 맨 마지막에 진짜 확인하고 싶었던 최종 그거만 확인하는 느낌(사실 진짜 확인하고 싶었던 이런것도 안해도됨)
+    
+// 수정이나 조회 같은게 아닌 생성만 쭈우우우욱 하고 맨 마지막에 진짜 확인하고 싶었던 최종 그거만 확인하는 느낌(사실 진짜 확인하고 싶었던 이런것도 안해도됨)
 @DisplayName("프로젝트 메인 기능 인수 테스트")
 public class MainAcceptanceTest extends AcceptanceTest {
 
-
+// 사용해봐야하는디
     /**
      * ParameterizeTest Permalink
      * 여러 가지 인자 값들을 테스트하고 싶은데 여러 개의 메서드들을 생성하기는 비용이 너무 커진다. 하나의 메서드에서 모든 인자 값들을 테스트해 볼 수 없을까?
@@ -122,7 +120,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
 
         // Then
         강사_권한 = "TEACHER";
-        강사_토큰_정보 = 회원가입_정보_확인(강사_회원가입, 강사_추가_정보, 강사_권한);
+        강사_토큰_정보 = 강사_회원가입_정보_확인(강사_회원가입, 강사_추가_정보, 강사_권한);
     }
 
 
@@ -240,34 +238,11 @@ public class MainAcceptanceTest extends AcceptanceTest {
         // when
         Response 학생_회원가입 = 학생_회원가입(학생_로그인_정보, 학생_추가_정보, 인증_코드);
         // then
-//        학생_회원가입_확인(학생_회원가입, 학생_로그인_정보, 학생_추가_정보, 인증_코드);
-    }
-
-    private Response 학생_회원가입(Map<String, String> 학생_로그인_정보, Map<String, String> 학생_추가_정보, List<String> 인증_코드) throws JsonProcessingException {
-        StudentSignUpDto studentSignUpDto = StudentSignUpDto.builder()
-                .username(학생_로그인_정보.get("username"))
-                .password(학생_로그인_정보.get("password"))
-                .name(학생_추가_정보.get("name"))
-                .email(학생_추가_정보.get("email"))
-                .auth_code(인증_코드.get(0))
-                .build();
-
-        return given().log().all()
-                .when().log().all()
-                .body(objectMapper.writeValueAsString(studentSignUpDto))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .post("/api/v1/student/join");
-    }
-
-    private void 학생_회원가입_확인(Response 학생_회원가입) {
-        학생_회원가입.then()
-                .statusCode(HttpStatus.CREATED.value());
-//                .body("username", equalTo());
-
+        학생_토큰_정보 = 학생_회원가입_정보_확인(학생_회원가입, 학생_로그인_정보, 학생_추가_정보, 인증_코드);
     }
 
     // 예외 사항 가정하지 말고 정상적인 테스트만 작성
-//    Todo: 학생 회원가입, 로그인, 수강신청, 퀴즈 및 집중도 추가
+//    Todo: 학생 로그인, 수강신청, 퀴즈 및 집중도 추가
 //    Todo: 강사 수업 종료(통계 계산), 최통 통계 확인
 
     Response 강사_회원가입(Map<String, String> 강사_로그인_정보, Map<String, String> 강사_추가_정보) throws JsonProcessingException {
@@ -287,15 +262,15 @@ public class MainAcceptanceTest extends AcceptanceTest {
                 .post("/api/v1/teacher/join");
     }
 
-    String 회원가입_정보_확인(Response 회원가입, Map<String, String> 강사_추가_정보, String role) {
-        회원가입
+    String 강사_회원가입_정보_확인(Response 강사_회원가입, Map<String, String> 강사_추가_정보, String role) {
+        강사_회원가입
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("role", equalTo(role))
                 .body("email", equalTo(강사_추가_정보.get("email")))
                 .body("name", equalTo(강사_추가_정보.get("name")));
 
-        String token = 회원가입.jsonPath().getString("token");
+        String token = 강사_회원가입.jsonPath().getString("token");
 
         if (token.isEmpty()) {
             throw new RuntimeException("JWT token not found in the login response");
@@ -361,7 +336,6 @@ public class MainAcceptanceTest extends AcceptanceTest {
 
     Integer 커리큘럼_생성_확인(Response 커리큘럼_생성, Map<String, Object> 커리큘럼_기본_정보) throws JsonProcessingException {
         String s = 커리큘럼_생성.body().prettyPrint();
-        System.out.println(s);
         커리큘럼_생성
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -398,7 +372,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
         return lectureListResponse.getLectures().get(0).getLectureId();
     }
 
-    private Response 퀴즈_생성(Integer 첫번째_강의_pk, Map<String, Object> 퀴즈_정보) throws JsonProcessingException {
+    Response 퀴즈_생성(Integer 첫번째_강의_pk, Map<String, Object> 퀴즈_정보) throws JsonProcessingException {
         List<String> choices = castList(퀴즈_정보.get("choices"), String.class);
         List<String> answers = castList(퀴즈_정보.get("answers"), String.class);
 
@@ -460,5 +434,35 @@ public class MainAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value());
     }
 
+    Response 학생_회원가입(Map<String, String> 학생_로그인_정보, Map<String, String> 학생_추가_정보, List<String> 인증_코드) throws JsonProcessingException {
+        StudentSignUpDto studentSignUpDto = StudentSignUpDto.builder()
+                .username(학생_로그인_정보.get("username"))
+                .password(학생_로그인_정보.get("password"))
+                .name(학생_추가_정보.get("name"))
+                .email(학생_추가_정보.get("email"))
+                .auth_code(인증_코드.get(0))
+                .build();
+
+        return given().log().all()
+                .when().log().all()
+                .body(objectMapper.writeValueAsString(studentSignUpDto))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .post("/api/v1/student/join");
+    }
+
+    String 학생_회원가입_정보_확인(Response 학생_회원가입, Map<String, String> 학생_로그인_정보, Map<String, String> 학생_추가_정보, List<String> 인증_코드) {
+        학생_회원가입.then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("username", equalTo(학생_로그인_정보.get("username")))
+                .body("name", equalTo(학생_추가_정보.get("name")))
+                .body("email", equalTo(학생_추가_정보.get("email")));
+
+        String token = 학생_회원가입.jsonPath().getString("token");
+
+        if (token.isEmpty()) {
+            throw new RuntimeException("JWT token not found in the login response");
+        }
+        return token;
+    }
 
 }
