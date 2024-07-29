@@ -7,9 +7,11 @@ import com.twentyone.steachserver.domain.auth.dto.TeacherSignUpDto;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
-import com.twentyone.steachserver.domain.member.dto.TeacherInfoRequest;
+import com.twentyone.steachserver.domain.lecture.dto.LectureListResponseDto;
+import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,13 +20,11 @@ import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
+
 
 /**
  * RestAssured를 사용하는 이유
@@ -35,18 +35,16 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
  * 자동화된 테스트: RestAssured를 사용하면 자동화된 테스트 스크립트를 작성하여 지속적인 통합 및 배포(CI/CD) 파이프라인에 쉽게 통합할 수 있습니다.
  */
 
-/**
- * @TestInstance(TestInstance.Lifecycle.PER_CLASS) 역할: JUnit 5에서 테스트 클래스의 인스턴스 생명주기를 제어합니다.
- * 설명: Lifecycle.PER_CLASS를 사용하면 테스트 클래스의 인스턴스가 클래스당 하나만 생성됩니다.
- * 기본적으로 JUnit 5는 각 테스트 메서드마다 새로운 테스트 클래스 인스턴스를 생성하지만, PER_CLASS를 사용하면 테스트 클래스당 하나의 인스턴스만 생성되므로 테스트 메서드 간의 상태를 공유할 수 있습니다.
- */
+
 // Jacoco: Java 코드의 커버리지를 체크하는 라이브러리
 // 테스트가 한글로 되어 있어 가독성이 전체적으로 크게 향상된 것이 이 단점을 덮고도 남을 장점이 아닌가 한다.
 
-// Spring에서 테스트 메서드에 @Transactional 어노테이션을 사용하면, 기본적으로 테스트가 종료된 후 트랜잭션이 자동으로 롤백됩니다.
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+// 수용 테스트는 시스템이 최종 사용자의 요구사항을 충족하는지를 확인하는 테스트입니다.
+// 이는 전체 시스템이 기대한 대로 동작하는지, 사용자의 시나리오를 통해 확인합니다.
+// 전체 시스템의 생성 로직만 해서 최대한 성공로직 내가 테스트하고 싶은 메인 로직만 구현해야한다.
+// // 수정이나 조회 같은게 아닌 생성만 쭈우우우욱 하고 맨 마지막에 진짜 확인하고 싶었던 최종 그거만 확인하는 느낌(사실 진짜 확인하고 싶었던 이런것도 안해도됨)
 @DisplayName("강사의 수업 인수 테스트")
-public class TeacherLoginToLectureAcceptanceTest extends AcceptanceTest {
+public class TeacherLectureAcceptanceTest extends AcceptanceTest {
 
     /**
      * ParameterizeTest Permalink
@@ -89,28 +87,20 @@ public class TeacherLoginToLectureAcceptanceTest extends AcceptanceTest {
 
     Map<String, Object> 커리큘럼_기본_정보;
     Integer 커리큘럼_PK;
-    Map<String, Integer> 커리큘럼_페이징_정보;
+
+    Integer 첫번째_강의_PK;
+    Map<String, Object> 퀴즈_정보;
+
 
     // 테스트 대상 메서드에 @Test를 붙이면 해당 메서드가 속한 클래스는 ‘테스트 클래스’로서 동작하며, 각 메서드는 독립적인 테스트가 된다.
     // 하지만, 테스트마다 테스트 컨텍스트를 매번 새로 생성하게 된다면 오버헤드가 크기 때문에 전체 테스트의 실행 속도가 느려져셔 개발자의 생산성이 떨어진다.
     // 이때문에 테스트 컨텍스트는 자신이 담당하는 테스트 인스턴스에 대한 컨텍스트 관리 및 캐싱 기능을 제공한다!
     @Test
     @Order(1)
-    @DisplayName("아이디 중복 검사")
-    void testCheckDuplicateUsername() {
-        // given
-        강사_로그인_아이디 = "t" + UUID.randomUUID().toString().substring(0, 8);
-        // when
-        Response 아이디_중복_확인 = 아이디_중복_확인(강사_로그인_아이디);
-        // then
-        아이디_중복_확인_응답_검증(아이디_중복_확인, true);
-    }
-
-
-    @Test
-    @Order(2)
     @DisplayName("강사 회원가입")
     void testTeacherSignup() throws Exception {
+        강사_로그인_아이디 = "t" + UUID.randomUUID().toString().substring(0, 8);
+
         // given
         강사_로그인_정보 = Map.of(
                 "username", 강사_로그인_아이디,
@@ -131,7 +121,7 @@ public class TeacherLoginToLectureAcceptanceTest extends AcceptanceTest {
 
 
     @Test
-    @Order(3)
+    @Order(2)
     @DisplayName("강사 로그인")
     void testTeacherSignupAndLogin() throws Exception {
         // given
@@ -143,7 +133,7 @@ public class TeacherLoginToLectureAcceptanceTest extends AcceptanceTest {
 
 
     @Test
-    @Order(4)
+    @Order(3)
     @DisplayName("강사가 커리큘럼 생성")
     void testCreateCurriculum() throws Exception {
         // given
@@ -154,7 +144,7 @@ public class TeacherLoginToLectureAcceptanceTest extends AcceptanceTest {
         커리큘럼_기본_정보.put("information", "정보");
         커리큘럼_기본_정보.put("category", CurriculumCategory.EDUCATION);
         커리큘럼_기본_정보.put("subCategory", "하위 카테고리");
-        커리큘럼_기본_정보.put("bannerImgUrl", "http://example.com/banner.jpg");
+        커리큘럼_기본_정보.put("bannerImgUrl", "https://example.com/banner.jpg");
         커리큘럼_기본_정보.put("startDate", LocalDate.now());
         커리큘럼_기본_정보.put("endDate", LocalDate.now().plusDays(10));
         커리큘럼_기본_정보.put("weekdaysBitmask", "1111100");
@@ -168,99 +158,61 @@ public class TeacherLoginToLectureAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @Order(4)
+    @DisplayName("커리큘럼에_해당하는_강의_조회")
+    void testGetLecturesByCurriculum() throws Exception {
+        // given
+        // when
+        Response 커리큘럼에_해당하는_강의_조회 = 커리큘럼의_강의_조회(커리큘럼_PK);
+        // then
+        첫번째_강의_PK = 커리큘럼의_강의_확인(커리큘럼에_해당하는_강의_조회);
+    }
+
+
+    // 퀴즈 생성
     @Order(5)
-    @DisplayName("커리큘럼 조회")
-    void testGetCurriculum() {
+    @DisplayName("강사가 첫번째 강의의 퀴즈 생성")
+    void testCreateQuiz() throws JsonProcessingException {
         // given
+        List<String> 퀴즈_보기_정보 = new ArrayList<>();
+        퀴즈_보기_정보.add("가");
+        퀴즈_보기_정보.add("나");
+        퀴즈_보기_정보.add("다");
+        퀴즈_보기_정보.add("라");
+
+        List<String> 퀴즈_정답_정보 = new ArrayList<>();
+        퀴즈_정답_정보.add("가");
+
+        퀴즈_정보 = new HashMap<>();
+        퀴즈_정보.put("quizNumber", 1);
+        퀴즈_정보.put("question", "가,나,다,라 중 가장 먼저 나오는 것은?");
+        퀴즈_정보.put("choices", 퀴즈_보기_정보);
+        퀴즈_정보.put("answers", 퀴즈_정답_정보);
+
+
         // when
-        Response 커리큘럼_조회 = 커리큘럼_조회();
-
+        Response 퀴즈_생성 = 퀴즈_생성(첫번째_강의_PK, 퀴즈_정보);
         // then
-        커리큘럼_조회_확인(커리큘럼_조회, 커리큘럼_기본_정보);
+        퀴즈_정보_확인(퀴즈_생성, 퀴즈_정보);
     }
 
-    @Test
-    @Order(6)
-    @DisplayName("강사가 강의하는 커리큘럼 목록 조회")
-    void testGetTeacherCurricula() {
-//     given
-        커리큘럼_페이징_정보 = new HashMap<>();
-        커리큘럼_페이징_정보.put("currentPageNumber", 1);
-        커리큘럼_페이징_정보.put("pageSize", 2);
-        //
-//     when
-        Response 강사_커리큘럼_조회 = 강사_커리큘럼_조회(강사_토큰_정보, 커리큘럼_페이징_정보);
-//     then
-        강사_커리큘럼_조회_확인(강사_커리큘럼_조회, 커리큘럼_기본_정보, 커리큘럼_페이징_정보);
+    @SuppressWarnings("unchecked")
+    private <T> List<T> castList(Object obj, Class<T> clazz) {
+        if (obj instanceof List<?>) {
+            List<?> list = (List<?>) obj;
+            if (list.isEmpty() || clazz.isInstance(list.get(0))) {
+                return (List<T>) list;
+            }
+        }
+        throw new ClassCastException("Failed to cast object to List<" + clazz.getName() + ">");
     }
 
-    @Test
-    @Order(7)
-    @DisplayName("강사 회원 정보 조회")
-    void testGetTeacherInfo() throws Exception {
-        // given
-        // when
-        Response 강사_회원정보_조회 = 강사_회원정보_조회(강사_토큰_정보);
-        // then
-        강사_회원정보_확인(강사_회원정보_조회, 강사_로그인_아이디, 강사_추가_정보);
+    // 수업 시작
+    // 학생의 접속
+    // 학생의 퀴즈, 집중도
+    // 수업 정료
+    // 최종 통계
 
-    }
-//
-//    @Test
-//    @Order(8)
-//    @DisplayName("강사 회원 정보 수정")
-//    void testUpdateTeacherInfo() throws Exception {
-//        강사_회원정보_수정(teacherAuthToken, "updatedName", "updatedEmail@gmail.com", "updatedPathQualification", "updatedBriefIntroduction", "updatedAcademicBackground", "updatedSpecialization");
-//    }
-
-//    @Test
-//    @Order(9)
-//    @DisplayName("강사 회원 정보 수정")
-//    void testUpdateTeacherInfo() throws Exception {
-//        강사_회원정보_수정(teacherAuthToken, "updatedName", "updatedEmail@gmail.com", "updatedPathQualification", "updatedBriefIntroduction", "updatedAcademicBackground", "updatedSpecialization");
-//    }
-//
-//    @Test
-//    @Order(7)
-//    @DisplayName("강의의 퀴즈 생성")
-//    void testCreateQuiz() throws Exception {
-//        퀴즈 생성
-//        (teacherAuthToken, "updatedName", "updatedEmail@gmail.com", "updatedPathQualification", "updatedBriefIntroduction", "updatedAcademicBackground", "updatedSpecialization")
-//        ;
-//    }
-//
-//    @Test
-//    @Order(8)
-//    @DisplayName("강의의 퀴즈 조회")
-//    void testCreateQuiz() throws Exception {
-//        퀴즈 조회
-//        (teacherAuthToken, "updatedName", "updatedEmail@gmail.com", "updatedPathQualification", "updatedBriefIntroduction", "updatedAcademicBackground", "updatedSpecialization")
-//        ;
-//    }
-//
-//    @Test
-//    @Order(8)
-//    @DisplayName("강의의 퀴즈 조회")
-//    void testCreateQuiz() throws Exception {
-//        퀴즈 조회
-//        (teacherAuthToken, "updatedName", "updatedEmail@gmail.com", "updatedPathQualification", "updatedBriefIntroduction", "updatedAcademicBackground", "updatedSpecialization")
-//        ;
-//    }
-
-    Response 아이디_중복_확인(String 강사_로그인_아이디) {
-        return
-                RestAssured
-                        .given().log().all()
-                        .when()
-                        .get("/api/v1/check-username/" + 강사_로그인_아이디)
-                        .then().log().all()
-                        .extract().response();
-    }
-
-    void 아이디_중복_확인_응답_검증(Response 아이디_중복_확인, boolean expectedAvailability) {
-        아이디_중복_확인.then().statusCode(HttpStatus.OK.value())
-                .body("can_use", equalTo(expectedAvailability));
-    }
 
     Response 회원가입(Map<String, String> 강사_로그인_정보, Map<String, String> 강사_추가_정보) throws JsonProcessingException {
         TeacherSignUpDto teacherSignUpDto = TeacherSignUpDto.builder()
@@ -376,102 +328,48 @@ public class TeacherLoginToLectureAcceptanceTest extends AcceptanceTest {
         return createdCurriculum.getCurriculumId();
     }
 
-    Response 커리큘럼_조회() {
+    Response 커리큘럼의_강의_조회(Integer 커리큘럼_pk) {
         return given()
                 .when()
-                .get("/api/v1/curricula/" + 커리큘럼_PK);
+                .get("/api/v1/curricula/" + 커리큘럼_pk + "/lectures");
     }
 
-    void 커리큘럼_조회_확인(Response 커리큘럼_조회, Map<String, Object> 커리큘럼_기본_정보) {
-        커리큘럼_조회
+    Integer 커리큘럼의_강의_확인(Response 커리큘럼의_강의_조회) throws JsonProcessingException {
+        커리큘럼의_강의_조회
                 .then()
-                .statusCode(HttpStatus.OK.value())
-                .body("title", equalTo(커리큘럼_기본_정보.get("title")))
-                .body("intro", equalTo(커리큘럼_기본_정보.get("intro")))
-                .body("information", equalTo(커리큘럼_기본_정보.get("information")))
-                .body("category", equalTo(커리큘럼_기본_정보.get("category").toString()))
-                .body("banner_img_url", equalTo(커리큘럼_기본_정보.get("bannerImgUrl")))
-                .body("start_date", equalTo(커리큘럼_기본_정보.get("startDate").toString()))
-                .body("end_date", equalTo(커리큘럼_기본_정보.get("endDate").toString()))
-                .body("weekdays_bitmask", equalTo(커리큘럼_기본_정보.get("weekdaysBitmask")))
-                .body("lecture_start_time", equalTo(커리큘럼_기본_정보.get("lectureStartTime").toString()))
-                .body("lecture_end_time", equalTo(커리큘럼_기본_정보.get("lectureEndTime").toString()))
-                .body("max_attendees", equalTo(커리큘럼_기본_정보.get("maxAttendees")));
+                .body("lectures[0]", Matchers.notNullValue());
+        // 응답을 LectureListResponseDto 객체로 변환
+        LectureListResponseDto lectureListResponse = objectMapper.readValue(커리큘럼의_강의_조회.asString(), LectureListResponseDto.class);
+        // 첫 번째 LectureResponseDto의 id 값 가져오기
+        return lectureListResponse.getLectures().get(0).getLectureId();
     }
 
-    Response 강사_커리큘럼_조회(String 강사_토큰_정보, Map<String, Integer> 페이징_정보) {
-        return given()
-                .header("Authorization", "Bearer " + 강사_토큰_정보)
-                .param("pageSize", String.valueOf(페이징_정보.get("pageSize")))
-                .param("currentPageNumber", String.valueOf(페이징_정보.get("currentPageNumber")))
-                .when()
-                .get("/api/v1/teachers/curricula");
-    }
+    private Response 퀴즈_생성(Integer 첫번째_강의_pk, Map<String, Object> 퀴즈_정보) throws JsonProcessingException {
+        List<String> choices = castList(퀴즈_정보.get("choices"), String.class);
+        List<String> answers = castList(퀴즈_정보.get("answers"), String.class);
 
-    void 강사_커리큘럼_조회_확인(Response 강사_커리큘럼_조회, Map<String, Object> 커리큘럼_기본_정보, Map<String, Integer> 커리큘럼_페이징_정보) {
-        int pageSize = 커리큘럼_페이징_정보.get("pageSize");
-        int currentPageNumber = 커리큘럼_페이징_정보.get("currentPageNumber");
-        int 나타내는_총개수 = pageSize * currentPageNumber;
-
-        강사_커리큘럼_조회
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .body("curricula", hasSize(1))
-                .body("curricula", hasSize(lessThan(나타내는_총개수)))
-                .body("curricula[0].title", equalTo(커리큘럼_기본_정보.get("title")))
-                .body("curricula[0].sub_title", equalTo(커리큘럼_기본_정보.get("subTitle")))
-                .body("curricula[0].intro", equalTo(커리큘럼_기본_정보.get("intro")))
-                .body("curricula[0].information", equalTo(커리큘럼_기본_정보.get("information")))
-                .body("curricula[0].category", equalTo(커리큘럼_기본_정보.get("category").toString()))
-                .body("curricula[0].sub_category", equalTo(커리큘럼_기본_정보.get("subCategory")))
-                .body("curricula[0].banner_img_url", equalTo(커리큘럼_기본_정보.get("bannerImgUrl")))
-                .body("curricula[0].start_date", equalTo(커리큘럼_기본_정보.get("startDate").toString()))
-                .body("curricula[0].end_date", equalTo(커리큘럼_기본_정보.get("endDate").toString()))
-                .body("curricula[0].weekdays_bitmask", equalTo(커리큘럼_기본_정보.get("weekdaysBitmask")))
-                .body("curricula[0].lecture_start_time", equalTo(커리큘럼_기본_정보.get("lectureStartTime").toString()))
-                .body("curricula[0].lecture_end_time", equalTo(커리큘럼_기본_정보.get("lectureEndTime").toString()))
-                .body("curricula[0].max_attendees", equalTo(커리큘럼_기본_정보.get("maxAttendees")));
-    }
-
-
-    Response 강사_회원정보_조회(String 강사_토큰_정보) {
-        return given()
-                .header("Authorization", "Bearer " + 강사_토큰_정보)
-                .when()
-                .get("/api/v1/teachers");
-    }
-
-    void 강사_회원정보_확인(Response 강사_회원정보_조회, String 강사_로그인_아이디, Map<String, String> 강사_추가_정보) {
-        강사_회원정보_조회
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .body("username", equalTo(강사_로그인_아이디))
-                .body("name", equalTo(강사_추가_정보.get("name")))
-                .body("email", equalTo(강사_추가_정보.get("email")));
-    }
-
-    private void 강사_회원정보_수정(String token, String name, String email, String pathQualification, String briefIntroduction, String academicBackground, String specialization) throws Exception {
-        TeacherInfoRequest updateRequest = TeacherInfoRequest.builder()
-                .name(name)
-                .email(email)
-                .pathQualification(pathQualification)
-                .briefIntroduction(briefIntroduction)
-                .academicBackground(academicBackground)
-                .specialization(specialization)
+        QuizRequestDto quizRequestDto = QuizRequestDto.builder()
+                .quizNumber((Integer) 퀴즈_정보.get("quizNumber"))
+                .question(퀴즈_정보.get("question").toString())
+                .choices(choices)
+                .answers(answers)
                 .build();
 
-        given()
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(objectMapper.writeValueAsString(updateRequest))
+        return given()
+                .header("Authorization", "Bearer " + 강사_토큰_정보) // 토큰 정보 설정
+                .contentType("application/json")
+                .body(objectMapper.writeValueAsString(quizRequestDto))
                 .when()
-                .patch("/api/v1/teachers")
-                .then()
-                .statusCode(200)
-                .body("name", equalTo(name))
-                .body("email", equalTo(email))
-                .body("brief_introduction", equalTo(briefIntroduction))
-                .body("academic_background", equalTo(academicBackground))
-                .body("specialization", equalTo(specialization));
+                .post("/api/v1/quizzes/" + 첫번째_강의_pk);
     }
+
+    void 퀴즈_정보_확인(Response 퀴즈_생성, Map<String, Object> 퀴즈_정보) {
+        퀴즈_생성.then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("quizNumber", equalTo(퀴즈_정보.get("quizNumber")))
+                .body("question", equalTo(퀴즈_정보.get("question")))
+                .body("choices", equalTo(퀴즈_정보.get("choices")))
+                .body("answers", equalTo(퀴즈_정보.get("answers")));
+    }
+
 }
