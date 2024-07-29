@@ -170,8 +170,7 @@ public class TeacherLectureAcceptanceTest extends AcceptanceTest {
         첫번째_강의_PK = 커리큘럼의_강의_확인(커리큘럼에_해당하는_강의_조회);
     }
 
-
-    // 퀴즈 생성
+    @Test
     @Order(5)
     @DisplayName("강사가 첫번째 강의의 퀴즈 생성")
     void testCreateQuiz() throws JsonProcessingException {
@@ -191,20 +190,16 @@ public class TeacherLectureAcceptanceTest extends AcceptanceTest {
         퀴즈_정보.put("choices", 퀴즈_보기_정보);
         퀴즈_정보.put("answers", 퀴즈_정답_정보);
 
-
         // when
         Response 퀴즈_생성 = 퀴즈_생성(첫번째_강의_PK, 퀴즈_정보);
         // then
         퀴즈_정보_확인(퀴즈_생성, 퀴즈_정보);
     }
 
-
-
-    // 수업 시작
-    // 학생의 접속
-    // 학생의 퀴즈, 집중도
-    // 수업 정료
-    // 최종 통계
+    // 예외 사항 가정하지 말고 정상적인 테스트만 작성
+//    Todo: 강사 수업 시작
+//    Todo: 학생 회원가입, 로그인, 수강신청, 퀴즈 및 집중도 추가
+//    Todo: 강사 수업 종료(통계 계산), 최통 통계 확인
 
 
     Response 회원가입(Map<String, String> 강사_로그인_정보, Map<String, String> 강사_추가_정보) throws JsonProcessingException {
