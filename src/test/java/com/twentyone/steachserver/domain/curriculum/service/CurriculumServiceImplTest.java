@@ -128,6 +128,8 @@ class CurriculumServiceImplTest {
         CurriculumAddRequest request = new CurriculumAddRequest(TITLE, SUB_TITLE, INTRO, INFORMATION, CURRICULUM_CATEGORY, SUB_CATEGORY, BANNER_IMG_URL,
                 NOW.toLocalDate(), NOW.toLocalDate(), WEEKDAY_BITMASK, NOW.toLocalTime(), NOW.toLocalTime(), MAX_ATTENDEES);
 
+//        Fixme: 권한관련 처리는 controller에서 했으니 service에서 처리해주는거보다 controller 단에서 처리해주는게 좋아보입니다.
+        // 추가로 이 부분이 실패처리됩니다.
         //when //then
         assertThrows(ForbiddenException.class, () -> {
             curriculumService.create(student, request);
