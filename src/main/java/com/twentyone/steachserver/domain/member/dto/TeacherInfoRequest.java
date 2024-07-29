@@ -13,7 +13,6 @@ public class TeacherInfoRequest {
     private String name;
     private String email;
     private String password;
-    private String pathQualification;
     private String briefIntroduction;
     private String academicBackground;
     private String specialization;

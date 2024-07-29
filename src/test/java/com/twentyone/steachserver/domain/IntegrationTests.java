@@ -146,7 +146,7 @@ class IntegrationTests {
         TeacherInfoRequest updateRequest = TeacherInfoRequest.builder()
                 .name(teacherName)
                 .email(teacherEmail)
-                .pathQualification("updatedPathQualification")
+//                .pathQualification("updatedPathQualification")
                 .briefIntroduction("updatedBriefIntroduction")
                 .academicBackground("updatedAcademicBackground")
                 .specialization("updatedSpecialization")

@@ -229,7 +229,7 @@ class TempTest {
         TeacherInfoRequest updateRequest = TeacherInfoRequest.builder()
                 .name("updatedName")
                 .email("updatedEmail@gmail.com")
-                .pathQualification("updatedPathQualification")
+//                .pathQualification("updatedPathQualification")
                 .briefIntroduction("updatedBriefIntroduction")
                 .academicBackground("updatedAcademicBackground")
                 .specialization("updatedSpecialization")

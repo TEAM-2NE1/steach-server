@@ -55,9 +55,6 @@ public class AuthController {
     @Operation(summary = "[인증된 사용자] 비밀번호 체크", description = "60분짜리 임시토큰이 발급됩니다. 회원정보 수정 시 사용합니다.")
     @PostMapping("/check/password")
     public ResponseEntity<MemberCheckPasswordResponseDto> checkPassword(@AuthenticationPrincipal LoginCredential loginCredential, @RequestBody MemberCheckPasswordRequestDto checkPasswordRequestDto) {
-
-        log.info(checkPasswordRequestDto.password());
-
         return ResponseEntity.ok(authService.checkPassword(loginCredential, checkPasswordRequestDto));
     }
 }
