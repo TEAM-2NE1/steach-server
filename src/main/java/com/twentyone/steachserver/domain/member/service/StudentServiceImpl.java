@@ -7,6 +7,7 @@ import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final PasswordAuthTokenService passwordAuthTokenService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public StudentInfoResponse getInfo(Student student) {
@@ -29,7 +31,8 @@ public class StudentServiceImpl implements StudentService {
         //TODO 403 401 정하기
         passwordAuthTokenService.validateToken(request.getPasswordAuthToken(), student);
 
-        student.updateInfo(request.getName(), request.getEmail());
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        student.updateInfo(request.getName(), request.getEmail(), encodedPassword);
 
         return StudentInfoResponse.fromDomain(student);
     }

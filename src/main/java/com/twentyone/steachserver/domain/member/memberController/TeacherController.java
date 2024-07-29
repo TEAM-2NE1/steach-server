@@ -35,7 +35,7 @@ public class TeacherController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "[강사] 회원정보 수정", description = "name과 email은 값을 null이나 빈칸으로 넣어줄 경우 값이 변경되지 않습니다! 빈칸이 되면 안되기 때문..")
+    @Operation(summary = "[강사] 회원정보 수정", description = "name, email, password는 값을 null이나 빈칸으로 넣어줄 경우 값이 변경되지 않습니다! 빈칸이 되면 안되기 때문.. <br/>")
     @PatchMapping
     public ResponseEntity<TeacherInfoResponse> updateInfo(@RequestBody TeacherInfoRequest request, @AuthenticationPrincipal Teacher teacher) {
         return ResponseEntity.ok(teacherService.updateInfo(request, teacher));

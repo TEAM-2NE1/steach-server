@@ -61,13 +61,17 @@ public class Student extends LoginCredential {
         this.studentCurricula.add(studentCurriculum);
     }
 
-    public void updateInfo(String name, String email) {
+    public void updateInfo(String name, String email, String password) {
         if (name != null && !name.equals("")) {
             this.name = name;
         }
 
         if (email != null && !email.equals("")) {
             this.email = email;
+        }
+
+        if (password != null & !password.equals("")) {
+            this.setPassword(password);
         }
     }
 }
