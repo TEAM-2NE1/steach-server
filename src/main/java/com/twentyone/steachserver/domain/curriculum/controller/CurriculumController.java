@@ -94,4 +94,14 @@ public class CurriculumController {
             @AuthenticationPrincipal Teacher teacher) {
         return ResponseEntity.ok(curriculumService.updateCurriculum(curriculumId, teacher, request));
     }
+
+    @Secured("ROLE_TEACHER")
+    @DeleteMapping("/{curriculum_id}")
+    public ResponseEntity<Void> deleteCurriculum(
+            @PathVariable("curriculum_id") Integer curriculumId,
+            @AuthenticationPrincipal Teacher teacher) {
+        curriculumService.deleteCurriculum(teacher, curriculumId);
+
+        return ResponseEntity.ok().build();
+    }
 }

@@ -8,7 +8,6 @@ import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.member.dto.TeacherInfoRequest;
 import lombok.RequiredArgsConstructor;
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +27,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -83,7 +80,7 @@ class TempTest {
         TeacherSignUpDto teacherSignUpDto = TeacherSignUpDto.builder()
                 .username(teacherUsername)
                 .password(teacherPassword)
-                .name(teacherName) // 필수 필드 설정
+                .nickname(teacherName) // 필수 필드 설정
                 .email(teacherEmail)
                 .build();
 
@@ -227,9 +224,8 @@ class TempTest {
     void testUpdateTeacherInfo() throws Exception {
         // 강사 회원정보 수정
         TeacherInfoRequest updateRequest = TeacherInfoRequest.builder()
-                .name("updatedName")
+                .nickname("updatedName")
                 .email("updatedEmail@gmail.com")
-                .pathQualification("updatedPathQualification")
                 .briefIntroduction("updatedBriefIntroduction")
                 .academicBackground("updatedAcademicBackground")
                 .specialization("updatedSpecialization")
