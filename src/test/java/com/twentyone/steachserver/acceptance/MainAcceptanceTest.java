@@ -197,11 +197,43 @@ public class MainAcceptanceTest extends AcceptanceTest {
         퀴즈_정보_확인(퀴즈_생성, 퀴즈_정보);
     }
 
+    @Test
+    @Order(6)
+    @DisplayName("강사 수업 시작")
+    void testStartLecture() throws JsonProcessingException {
+        // given
+        // when
+        Response 수업_시작 = 수업_시작(첫번째_강의_PK);
+        // then
+        수업_시작_확인(수업_시작);
+    }
+
+
+    Response 수업_시작(Integer 첫번째_강의_pk) {
+        return given()
+                .header("Authorization", "Bearer " + 강사_토큰_정보)
+                .when()
+                .patch("api/v1/lectures/start/" +첫번째_강의_pk);
+    }
+
+    void 수업_시작_확인(Response 수업_시작) {
+        수업_시작.then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+
     // 예외 사항 가정하지 말고 정상적인 테스트만 작성
-//    Todo: 강사 수업 시작
 //    Todo: 학생 회원가입, 로그인, 수강신청, 퀴즈 및 집중도 추가
 //    Todo: 강사 수업 종료(통계 계산), 최통 통계 확인
 
+    Response 강사_로그인(Map<String, String> 강사_로그인_정보) {
+        return given()
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .formParam("username",강사_로그인_정보.get("username"))
+                .formParam("password",강사_로그인_정보.get("password"))
+                .when().log().all()
+                .post("/api/v1/teacher/login");
+    }
 
     Response 회원가입(Map<String, String> 강사_로그인_정보, Map<String, String> 강사_추가_정보) throws JsonProcessingException {
         TeacherSignUpDto teacherSignUpDto = TeacherSignUpDto.builder()
