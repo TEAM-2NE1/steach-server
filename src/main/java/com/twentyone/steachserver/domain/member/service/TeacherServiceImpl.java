@@ -28,7 +28,7 @@ public class TeacherServiceImpl implements TeacherService {
         passwordAuthTokenService.validateToken(request.getPasswordAuthToken(), teacher);
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        teacher.updateInfo(request.getName(), request.getEmail(), request.getBriefIntroduction(), request.getAcademicBackground(), request.getSpecialization(), encodedPassword);
+        teacher.updateInfo(request.getNickname(), request.getEmail(), request.getBriefIntroduction(), request.getAcademicBackground(), request.getSpecialization(), encodedPassword);
 
         return TeacherInfoResponse.fromDomain(teacher);
     }

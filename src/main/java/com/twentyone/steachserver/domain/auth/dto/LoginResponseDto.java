@@ -2,7 +2,6 @@ package com.twentyone.steachserver.domain.auth.dto;
 
 import com.twentyone.steachserver.domain.member.dto.MemberInfoResponse;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,13 +12,13 @@ public class LoginResponseDto extends MemberInfoResponse {
     private String token;
     private Role role;
 
-    public static LoginResponseDto of(String token, Role role, String username, String name, String email) {
+    public static LoginResponseDto of(String token, Role role, String username, String nickname, String email) {
         LoginResponseDto dto = new LoginResponseDto();
 
         dto.token = token;
         dto.role = role;
         dto.username = username;
-        dto.name = name;
+        dto.nickname = nickname;
         dto.email = email;
 
         return dto;

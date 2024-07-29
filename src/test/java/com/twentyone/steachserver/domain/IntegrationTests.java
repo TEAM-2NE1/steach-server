@@ -3,7 +3,6 @@ package com.twentyone.steachserver.domain;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twentyone.steachserver.domain.auth.dto.LoginDto;
 import com.twentyone.steachserver.domain.auth.dto.TeacherSignUpDto;
-import com.twentyone.steachserver.domain.auth.service.JwtService;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
@@ -18,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -91,7 +89,7 @@ class IntegrationTests {
         TeacherSignUpDto teacherSignUpDto = TeacherSignUpDto.builder()
                 .username(teacherUsername)
                 .password(teacherPassword)
-                .name(teacherName) // 필수 필드 설정
+                .nickname(teacherName) // 필수 필드 설정
                 .email(teacherEmail)
                 .build();
 
@@ -144,7 +142,7 @@ class IntegrationTests {
         teacherName = "조시현";
 
         TeacherInfoRequest updateRequest = TeacherInfoRequest.builder()
-                .name(teacherName)
+                .nickname(teacherName)
                 .email(teacherEmail)
 //                .pathQualification("updatedPathQualification")
                 .briefIntroduction("updatedBriefIntroduction")

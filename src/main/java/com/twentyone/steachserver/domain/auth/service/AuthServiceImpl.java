@@ -105,7 +105,7 @@ public class AuthServiceImpl implements AuthService {
         String encodedPassword = passwordEncoder.encode(studentSignUpDto.getPassword());
 
         //student 저장
-        Student student = Student.of(studentSignUpDto.getUsername(), encodedPassword, studentSignUpDto.getName(), studentSignUpDto.getEmail());
+        Student student = Student.of(studentSignUpDto.getUsername(), encodedPassword, studentSignUpDto.getNickname(), studentSignUpDto.getEmail());
         studentRepository.save(student);
 
         String accessToken = jwtService.generateAccessToken(student);
@@ -128,7 +128,7 @@ public class AuthServiceImpl implements AuthService {
         String encodedPassword = passwordEncoder.encode(teacherSignUpDto.getPassword());
 
         //Teacher 저장
-        Teacher teacher = Teacher.of(teacherSignUpDto.getUsername(), encodedPassword, teacherSignUpDto.getName(),
+        Teacher teacher = Teacher.of(teacherSignUpDto.getUsername(), encodedPassword, teacherSignUpDto.getNickname(),
                 teacherSignUpDto.getEmail(), fileName);
         teacherRepository.save(teacher);
 

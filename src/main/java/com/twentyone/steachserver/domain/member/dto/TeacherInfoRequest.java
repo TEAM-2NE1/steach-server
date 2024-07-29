@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeacherInfoRequest {
-    private String name;
+    private String nickname;
     private String email;
     private String password;
     private String briefIntroduction;

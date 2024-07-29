@@ -32,7 +32,7 @@ public class StudentServiceImpl implements StudentService {
         passwordAuthTokenService.validateToken(request.getPasswordAuthToken(), student);
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        student.updateInfo(request.getName(), request.getEmail(), encodedPassword);
+        student.updateInfo(request.getNickname(), request.getEmail(), encodedPassword);
 
         return StudentInfoResponse.fromDomain(student);
     }

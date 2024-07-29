@@ -7,6 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class MemberInfoResponse {
     protected String username;
-    protected String name;
+    protected String nickname;
     protected String email;
 }
