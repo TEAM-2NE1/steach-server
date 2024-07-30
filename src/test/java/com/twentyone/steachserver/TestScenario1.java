@@ -155,41 +155,41 @@ public class TestScenario1 {
         Quiz quiz1 = quizService.createQuiz(lectureId1, quizRequestDto1).get();
 
         student1 = studentRepository.findById(student1.getId()).get();
-        StudentQuizRequestDto studentQuizRequestDto1 = new StudentQuizRequestDto(90, "O", "asdf");
+        StudentQuizRequestDto studentQuizRequestDto1 = new StudentQuizRequestDto(90, "O");
         studentQuizService.createStudentQuiz(student1, quiz1.getId(), studentQuizRequestDto1);
 
         student2 = studentRepository.findById(student2.getId()).get();
-        StudentQuizRequestDto studentQuizRequestDto2 = new StudentQuizRequestDto(80, "O", "qwer");
+        StudentQuizRequestDto studentQuizRequestDto2 = new StudentQuizRequestDto(80, "O");
         studentQuizService.createStudentQuiz(student2, quiz1.getId(), studentQuizRequestDto2);
 
         student3 = studentRepository.findById(student3.getId()).get();
-        StudentQuizRequestDto studentQuizRequestDto3 = new StudentQuizRequestDto(0, "X", "zxcv");
+        StudentQuizRequestDto studentQuizRequestDto3 = new StudentQuizRequestDto(0, "X");
         studentQuizService.createStudentQuiz(student3, quiz1.getId(), studentQuizRequestDto3);
 
         // FIXME ========================
         QuizRequestDto quizRequestDto2 = new QuizRequestDto(2, "자바 컬렉션이 아닌것은?", List.of("List", "Set", "Vector", "HashMap"), List.of("Vector"));
         Quiz quiz2 = quizService.createQuiz(lectureId1, quizRequestDto2).get();
 
-        StudentQuizRequestDto studentQuizRequestDto4 = new StudentQuizRequestDto(90, "Vector", "asdf");
+        StudentQuizRequestDto studentQuizRequestDto4 = new StudentQuizRequestDto(90, "Vector");
         studentQuizService.createStudentQuiz(student1, quiz2.getId(), studentQuizRequestDto4);
 
-        StudentQuizRequestDto studentQuizRequestDto5 = new StudentQuizRequestDto(100, "Vector", "qwer");
+        StudentQuizRequestDto studentQuizRequestDto5 = new StudentQuizRequestDto(100, "Vector");
         studentQuizService.createStudentQuiz(student2, quiz2.getId(), studentQuizRequestDto5);
 
-        StudentQuizRequestDto studentQuizRequestDto6 = new StudentQuizRequestDto(0, "HashMap", "zxcv");
+        StudentQuizRequestDto studentQuizRequestDto6 = new StudentQuizRequestDto(0, "HashMap");
         studentQuizService.createStudentQuiz(student3, quiz2.getId(), studentQuizRequestDto6);
 
         // FIXME ========================
         QuizRequestDto quizRequestDto3 = new QuizRequestDto(2, "자바는 플랫폼 종속적이다?", List.of("O", "X"), List.of("O"));
         Quiz quiz3 = quizService.createQuiz(lectureId1, quizRequestDto3).get();
 
-        StudentQuizRequestDto studentQuizRequestDto7 = new StudentQuizRequestDto(90, "O", "asdf");
+        StudentQuizRequestDto studentQuizRequestDto7 = new StudentQuizRequestDto(90, "O");
         studentQuizService.createStudentQuiz(student1, quiz3.getId(), studentQuizRequestDto7);
 
-        StudentQuizRequestDto studentQuizRequestDto8 = new StudentQuizRequestDto(100, "O", "qwer");
+        StudentQuizRequestDto studentQuizRequestDto8 = new StudentQuizRequestDto(100, "O");
         studentQuizService.createStudentQuiz(student2, quiz3.getId(), studentQuizRequestDto8);
 
-        StudentQuizRequestDto studentQuizRequestDto9 = new StudentQuizRequestDto(0, "X", "zxcv");
+        StudentQuizRequestDto studentQuizRequestDto9 = new StudentQuizRequestDto(0, "X");
         studentQuizService.createStudentQuiz(student3, quiz3.getId(), studentQuizRequestDto9);
 
         FocusTimeRequestDto focusTimeRequestDto = new FocusTimeRequestDto(10);
@@ -217,39 +217,39 @@ public class TestScenario1 {
         quizRequestDto1 = new QuizRequestDto(1, "객체지향 5대원칙이 아닌것은?", List.of("OCP", "LSP", "RIP", "DIP"), List.of("RIP"));
         quiz1 = quizService.createQuiz(lectureId1, quizRequestDto1).get();
 
-        studentQuizRequestDto1 = new StudentQuizRequestDto(90, "RIP", "asdf");
+        studentQuizRequestDto1 = new StudentQuizRequestDto(90, "RIP");
         studentQuizService.createStudentQuiz(student1, quiz1.getId(), studentQuizRequestDto1);
 
-        studentQuizRequestDto2 = new StudentQuizRequestDto(80, "RIP", "qwer");
+        studentQuizRequestDto2 = new StudentQuizRequestDto(80, "RIP");
         studentQuizService.createStudentQuiz(student2, quiz1.getId(), studentQuizRequestDto2);
 
-        studentQuizRequestDto3 = new StudentQuizRequestDto(100, "RIP", "zxcv");
+        studentQuizRequestDto3 = new StudentQuizRequestDto(100, "RIP");
         studentQuizService.createStudentQuiz(student3, quiz1.getId(), studentQuizRequestDto3);
 
         // FIXME ========================
         quizRequestDto2 = new QuizRequestDto(2, "자바에서 MinHeap을 구현하는 방법은?", List.of("Heap", "PriorityQueue"), List.of("PriorityQueue"));
         quiz2 = quizService.createQuiz(lectureId1, quizRequestDto2).get();
 
-        studentQuizRequestDto4 = new StudentQuizRequestDto(90, "PriorityQueue", "asdf");
+        studentQuizRequestDto4 = new StudentQuizRequestDto(90, "PriorityQueue");
         studentQuizService.createStudentQuiz(student1, quiz2.getId(), studentQuizRequestDto4);
 
-        studentQuizRequestDto5 = new StudentQuizRequestDto(0, "Heap", "qwer");
+        studentQuizRequestDto5 = new StudentQuizRequestDto(0, "Heap");
         studentQuizService.createStudentQuiz(student2, quiz2.getId(), studentQuizRequestDto5);
 
-        studentQuizRequestDto6 = new StudentQuizRequestDto(0, "Heap", "zxcv");
+        studentQuizRequestDto6 = new StudentQuizRequestDto(0, "Heap");
         studentQuizService.createStudentQuiz(student3, quiz2.getId(), studentQuizRequestDto6);
 
         // FIXME ========================
         quizRequestDto3 = new QuizRequestDto(2, "클래스의 가장 최고조상은?", List.of("Object", "ANCESTOR"), List.of("Object"));
         quiz3 = quizService.createQuiz(lectureId1, quizRequestDto3).get();
 
-        studentQuizRequestDto7 = new StudentQuizRequestDto(90, "Object", "asdf");
+        studentQuizRequestDto7 = new StudentQuizRequestDto(90, "Object");
         studentQuizService.createStudentQuiz(student1, quiz3.getId(), studentQuizRequestDto7);
 
-        studentQuizRequestDto8 = new StudentQuizRequestDto(80, "Object", "qwer");
+        studentQuizRequestDto8 = new StudentQuizRequestDto(80, "Object");
         studentQuizService.createStudentQuiz(student2, quiz3.getId(), studentQuizRequestDto8);
 
-        studentQuizRequestDto9 = new StudentQuizRequestDto(100, "Object", "zxcv");
+        studentQuizRequestDto9 = new StudentQuizRequestDto(100, "Object");
         studentQuizService.createStudentQuiz(student3, quiz3.getId(), studentQuizRequestDto9);
 
         studentLectureService.saveTimeFocusTime(student1.getId(), lectureId1, 10);
