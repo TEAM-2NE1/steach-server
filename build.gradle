@@ -84,14 +84,15 @@ task copyYML(type: Copy) {
 }
 
 // jacoco 테스트 커버리지
+def jacocoDir = "$buildDir/customJacocoReportDir"
+
 jacoco {
     // JaCoCo 버전
     toolVersion = "0.8.12"
 
 //  테스트결과 리포트를 저장할 경로 변경
 //  default는 "$/jacoco"
-    reportsDirectory = layout.buildDirectory.dir("$buildDir/customJacocoReportDir")
-//    reportsDir = file("$buildDir/customJacocoReportDir")
+    reportsDirectory = layout.buildDirectory.dir(jacocoDir)
 }
 
 test {
@@ -112,9 +113,36 @@ jacocoTestReport {
 //  xml.destination file("$buildDir/jacoco.xml")
     }
     finalizedBy 'jacocoTestCoverageVerification'
+
+    // QueryDSL QDomain 제외시키기
+    def QDomains = []
+
+    for (qPattern in '**/QA'..'**/QZ') {
+        QDomains.add(qPattern + '*')
+    }
+    afterEvaluate {
+        classDirectories.setFrom(
+                // 그 외의 매칭되는 클래스도 제외 대상
+                files(classDirectories.files.collect {
+                    fileTree(dir: it, excludes: [
+                            "**/*Application*",
+                            "**/*Config*",
+                            "**/*Dto*",
+                            "**/*Request*",
+                            "**/*Response*",
+                            "**/*Exception*"
+                    ] + QDomains)
+                })
+        )
+    }
 }
 
 jacocoTestCoverageVerification {
+    def QDomains = []
+    // qPattern = "*.QA","*.QB","*.QC", ... "*.QZ"
+    for (qPattern in '*.QA'..'*.QZ') {
+        QDomains.add(qPattern + '*')
+    }
     violationRules {
         rule {
             // 'element'가 없으면 프로젝트의 전체 파일을 합친 값을 기준으로 합니다.
@@ -174,10 +202,13 @@ jacocoTestCoverageVerification {
             }
             // 커버리지 체크를 제외할 클래스들
             excludes = [
-                '*.test.*',
-//                '**/generated',
-                    '*.Q*'
-            ]
+                    "**.*Application*",
+                    "**.*Config*",
+                    "**.*Dto*",
+                    "**.*Request*",
+                    "**.*Response*",
+                    "**.*Exception*"
+            ] + QDomains
         }
     }
 }
