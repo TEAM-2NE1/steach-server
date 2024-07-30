@@ -22,21 +22,47 @@ import java.util.List;
 
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class LectureBeforeStartingResponseDto extends LectureResponseDto{
+    private Boolean isCompleted = false;
+
+    private Integer lectureId;
+    private String lectureTitle;
+    private Integer lectureOrder;
+
     private SimpleCurriculumByLectureDto curriculumInfo;
     private CurriculumDetailByLectureDto curriculumDetailInfo;
+
+    private LocalDateTime lectureStartTime;
 
     private List<StudentByLectureDto> students = new ArrayList<>();
 
     private List<QuizByLectureDto> quizzes = new ArrayList<>();
-    private Integer numberOfQuizzes;
-    private Boolean isCompleted = false;
+    private Integer numberOfQuizzes = 0;
 
+    protected LectureBeforeStartingResponseDto(LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto) {
+        this.lectureId = lectureBeforeStartingResponseDto.lectureId;
+        this.lectureTitle = lectureBeforeStartingResponseDto.lectureTitle;
+        this.lectureOrder = lectureBeforeStartingResponseDto.lectureOrder;
+        this.lectureStartTime = lectureBeforeStartingResponseDto.lectureStartTime;
+        this.curriculumInfo = lectureBeforeStartingResponseDto.curriculumInfo;
+        this.curriculumDetailInfo = lectureBeforeStartingResponseDto.curriculumDetailInfo;
+        this.students = lectureBeforeStartingResponseDto.students;
+        this.quizzes = lectureBeforeStartingResponseDto.quizzes;
+        this.numberOfQuizzes = lectureBeforeStartingResponseDto.numberOfQuizzes;
+        this.isCompleted = lectureBeforeStartingResponseDto.isCompleted;
+    }
     private LectureBeforeStartingResponseDto(Lecture lecture,
                                              SimpleCurriculumByLectureDto curriculumInfo,
                                              CurriculumDetailByLectureDto curriculumDetailInfo,
                                              List<StudentByLectureDto> studentDtos) {
+        this.lectureId = lecture.getId();
+        this.lectureTitle = lecture.getTitle();
+        this.lectureOrder = lecture.getLectureOrder();
+        this.lectureStartTime = lecture.getLectureStartDate();
+
+        this.numberOfQuizzes = lecture.getNumberOfQuizzes();
+
         this.curriculumInfo = curriculumInfo;
         this.curriculumDetailInfo = curriculumDetailInfo;
 
@@ -45,8 +71,6 @@ public class LectureBeforeStartingResponseDto extends LectureResponseDto{
             QuizByLectureDto quizByLectureDto = QuizByLectureDto.of(quiz);
             this.quizzes.add(quizByLectureDto);
         }
-
-        this.numberOfQuizzes = quizList.size();
 
         this.students = studentDtos;
     }

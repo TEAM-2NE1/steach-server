@@ -9,13 +9,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public record QuizByLectureDto(Integer quizNumber,
+public record QuizByLectureDto(Integer quizId,
+                               Integer quizNumber,
                                String question,
                                List<String> choiceSentences,
                                List<String> answers
 ) {
     public static QuizByLectureDto of(Quiz quiz) {
-        Set<QuizChoice> quizChoices = quiz.getQuizChoices();
+        List<QuizChoice> quizChoices = quiz.getQuizChoices();
         List<String> choiceSentences = new ArrayList<>();
         List<String> answers = new ArrayList<>();
 
@@ -26,6 +27,6 @@ public record QuizByLectureDto(Integer quizNumber,
                 answers.add(choiceSentence);
             }
         }
-        return new QuizByLectureDto(quiz.getQuizNumber(), quiz.getQuestion(), choiceSentences, answers);
+        return new QuizByLectureDto(quiz.getId(), quiz.getQuizNumber(), quiz.getQuestion(), choiceSentences, answers);
     }
 }

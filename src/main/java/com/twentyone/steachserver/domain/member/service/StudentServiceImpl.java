@@ -1,22 +1,39 @@
 package com.twentyone.steachserver.domain.member.service;
 
+import com.twentyone.steachserver.domain.auth.service.PasswordAuthTokenService;
+import com.twentyone.steachserver.domain.member.dto.StudentInfoRequest;
+import com.twentyone.steachserver.domain.member.dto.StudentInfoResponse;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class StudentServiceImpl implements StudentService{
+public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
+    private final PasswordAuthTokenService passwordAuthTokenService;
+    private final PasswordEncoder passwordEncoder;
+
     @Override
-    public Optional<Student> findStudentById(Integer id) {
-        return studentRepository.findById(id);
+    public StudentInfoResponse getInfo(Student student) {
+        return StudentInfoResponse.fromDomain(student);
     }
+
     @Override
-    public Optional<Student> findStudentByUsername(String username) {
-        return studentRepository.findByUsername(username);
+    @Transactional
+    public StudentInfoResponse updateInfo(StudentInfoRequest request, Student student) {
+        //TODO 403 401 정하기
+        passwordAuthTokenService.validateToken(request.getPasswordAuthToken(), student);
+
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        student.updateInfo(request.getNickname(), request.getEmail(), encodedPassword);
+
+        return StudentInfoResponse.fromDomain(student);
     }
 }

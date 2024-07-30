@@ -1,6 +1,9 @@
 package com.twentyone.steachserver.domain.auth.model;
 
 import com.twentyone.steachserver.config.domain.BaseTimeEntity;
+import com.twentyone.steachserver.domain.member.model.Admin;
+import com.twentyone.steachserver.domain.member.model.Student;
+import com.twentyone.steachserver.domain.member.model.Teacher;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,14 +12,15 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @DiscriminatorColumn 어노테이션은 상속된 엔티티 타입을 구분하는 컬럼을 지정합니다. 이 컬럼은 엔티티 타입을 식별하기 위한 추가 컬럼으로, @Inheritance(strategy = InheritanceType.SINGLE_TABLE) 또는 @Inheritance(strategy = InheritanceType.JOINED) 전략에서 주로 사용됩니다.
- *
+ * <p>
  * name: 데이터베이스 테이블에 생성될 컬럼의 이름을 지정합니다. 여기서는 "type"이라고 지정하였습니다.
  * discriminatorType: 구분 컬럼의 데이터 타입을 지정합니다. 기본값은 DiscriminatorType.STRING이며, 문자열 타입으로 저장됩니다.
  * length: 구분 컬럼의 길이를 지정합니다. 기본값은 31입니다.
@@ -43,7 +47,15 @@ public class LoginCredential extends BaseTimeEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        if (this instanceof Teacher) {
+            return Collections.singletonList(new SimpleGrantedAuthority("ROLE_TEACHER"));
+        } else if (this instanceof Student) {
+            return Collections.singletonList(new SimpleGrantedAuthority("ROLE_STUDENT"));
+        } else if (this instanceof Admin) {
+            return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @Override

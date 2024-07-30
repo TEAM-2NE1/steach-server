@@ -8,5 +8,8 @@ import java.util.Optional;
 
 public interface ClassroomService {
     UpComingClassRooms upcomingClassroom();
-    Optional<Classroom> getClassroomByLectureAndStudent(Integer studentId, Integer lectureId);
+
+    Optional<Classroom> getClassroomBySessionIdAndStudent(Integer studentId, String sessionId);
+
+    Classroom createClassroom(Integer lectureId);
 }

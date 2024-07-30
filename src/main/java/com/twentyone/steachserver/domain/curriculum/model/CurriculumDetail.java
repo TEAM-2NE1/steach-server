@@ -1,13 +1,15 @@
 package com.twentyone.steachserver.domain.curriculum.model;
 
+import com.twentyone.steachserver.domain.curriculum.service.CurriculumServiceImpl;
+import com.twentyone.steachserver.util.WeekdayBitmaskUtil;
 import jakarta.persistence.*;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Builder
 @Entity
@@ -41,17 +43,35 @@ public class CurriculumDetail {
 
     private LocalDate startDate;
     private LocalDate endDate;
-    private LocalTime lectureStartTime;
+    private LocalTime lectureStartTime; //LocalTIme맞으니까 만지지마 주효림
     private LocalTime lectureCloseTime;
 
     @Builder.Default
     @Column(name = "current_attendees", columnDefinition = "TINYINT(4)")
     private Integer currentAttendees = 0; //현재 수강확정인원
 
+    @Builder.Default
     @Column(columnDefinition = "TINYINT(4)")
-    private Integer maxAttendees; //수강정원
+    private Integer maxAttendees = 4; //수강정원
 
     public void register() {
         this.currentAttendees++;
+    }
+
+    public void update(
+            String subTitle, String intro, String information, String subCategory, String bannerImgUrl,
+            LocalDate startDate, LocalDate endDate, String weekdaysBitmask, LocalTime lectureStartTime,
+            LocalTime lectureEndTime, int maxAttendees) {
+        this.subTitle = subTitle;
+        this.intro = intro;
+        this.information = information;
+        this.subCategory = subCategory;
+        this.bannerImgUrl = bannerImgUrl;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.weekdaysBitmask = WeekdayBitmaskUtil.convert(weekdaysBitmask);
+        this.lectureStartTime = lectureStartTime;
+        this.lectureCloseTime = lectureEndTime;
+        this.maxAttendees = maxAttendees;
     }
 }

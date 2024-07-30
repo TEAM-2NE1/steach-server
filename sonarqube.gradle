@@ -1,0 +1,18 @@
+//sonarqube
+sonarqube {
+    properties {
+        property "sonar.projectName", "Steach"
+        property "sonar.projectKey", "2ne1_steach_server"
+        property "sonar.host.url", "http://steach.ssafy.io:9000"
+        property "sonar.login", "squ_88c9fcb9d2041d7b4a6a810955888d173c0aeb12"
+        property "sonar.language", "java"
+        property 'sonar.projectVersion', '1.1.0-SNAPSHOT'
+        property "sonar.sourceEncoding", "UTF-8"
+        property 'sonar.coverage.jacoco.xmlReportPaths', '${buildDir}/reports/jacoco/test/jacocoTestReport.xml'
+        property 'sonar.java.binaries', '${buildDir}/classes'
+        property 'sonar.test.inclusions', '**/*Test.java'
+        property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/**'
+        property "sonar.sources", "src/main/java"
+
+    }
+}

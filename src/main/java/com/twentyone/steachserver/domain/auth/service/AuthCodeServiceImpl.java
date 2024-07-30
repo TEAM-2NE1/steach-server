@@ -59,9 +59,12 @@ public class AuthCodeServiceImpl implements AuthCodeService {
     }
 
     @Override
-    public void validate(String authCode) {
-        authCodeRepository.findById(authCode)
+    @Transactional
+    public void validateAndApply(String authCode) {
+        AuthCode findAuthCode = authCodeRepository.findById(authCode)
                 .orElseThrow(() -> new RuntimeException("찾을 수 없는 코드"));
+
+        findAuthCode.register();
     }
 
     private void validAuthCode(String authCodeWord) {

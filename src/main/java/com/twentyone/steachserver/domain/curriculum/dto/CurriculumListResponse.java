@@ -1,26 +1,21 @@
 package com.twentyone.steachserver.domain.curriculum.dto;
 
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
-import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
+import com.twentyone.steachserver.global.dto.PageableDto;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CurriculumListResponse {
-    // @Builder를 사용할 때 초기화 표현식이 무시된다
-    // 아래 표현식을 통해서 빌더에서 초기화를 할 수 있다.
-    @Builder.Default
+public class CurriculumListResponse extends PageableDto {
     private List<CurriculumDetailResponse> curricula = new ArrayList<>();
 
-    public static CurriculumListResponse fromDomainList(List<Curriculum> curriculaList) {
+    public static CurriculumListResponse fromDomainList(Page<Curriculum> curriculaList) {
         CurriculumListResponse response = new CurriculumListResponse();
         List<CurriculumDetailResponse> responseList = response.curricula;
 
@@ -28,6 +23,41 @@ public class CurriculumListResponse {
             responseList.add(CurriculumDetailResponse.fromDomain(curriculum));
         }
 
+        response.currentPageNumber = curriculaList.getPageable().getPageNumber() + 1;
+        response.totalPage = curriculaList.getTotalPages();
+        response.pageSize = curriculaList.getPageable().getPageSize();
+
         return response;
     }
+    public static CurriculumListResponse fromSimpleDomainList(Page<Curriculum> curriculumList) {
+        CurriculumListResponse response = new CurriculumListResponse();
+        List<CurriculumDetailResponse> responseList = response.curricula;
+
+        for (Curriculum curriculum : curriculumList) {
+            responseList.add(CurriculumDetailResponse.fromDomainBySimple(curriculum));
+        }
+
+        response.currentPageNumber = curriculumList.getPageable().getPageNumber() + 1;
+        response.totalPage = curriculumList.getTotalPages();
+        response.pageSize = curriculumList.getPageable().getPageSize();
+
+        return response;    }
+
+    public static CurriculumListResponse fromDomainList(List<Curriculum> curriculaList, int pageNumber, int totalPages,
+                                                        int pageSize) {
+        CurriculumListResponse response = new CurriculumListResponse();
+        List<CurriculumDetailResponse> responseList = response.curricula;
+
+        for (Curriculum curriculum : curriculaList) {
+            responseList.add(CurriculumDetailResponse.fromDomain(curriculum));
+        }
+
+        response.currentPageNumber = pageNumber + 1;
+        response.totalPage = totalPages;
+        response.pageSize = pageSize;
+
+        return response;
+    }
+
+
 }

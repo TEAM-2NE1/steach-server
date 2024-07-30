@@ -9,10 +9,20 @@ import java.util.List;
 public class QuizChoiceValidator {
 
     public void validateQuizChoices(List<String> choices, List<String> answers) {
+        validateNull(choices, answers);
         validateEmptyList(choices, "Choices cannot be empty");
         validateEmptyList(answers, "Answers cannot be empty");
         if (answers.size() > choices.size()) {
             throw new IllegalArgumentException("Answers cannot be more than choices");
+        }
+    }
+
+    public static void validateNull(List<String> choices, List<String> answers) {
+        if (choices == null) {
+            throw new NullPointerException("Choices cannot be empty");
+        }
+        if (answers == null) {
+            throw new NullPointerException("Answers cannot be empty");
         }
     }
 

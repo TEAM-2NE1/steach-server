@@ -10,5 +10,5 @@ public interface AuthCodeService {
 
     AuthCodeAuthenticateResponse authenticate(AuthCodeAuthenticateRequest request);
 
-    void validate(String authCode);
+    void validateAndApply(String authCode);
 }

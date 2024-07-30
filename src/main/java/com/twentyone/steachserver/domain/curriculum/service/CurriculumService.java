@@ -1,12 +1,13 @@
 package com.twentyone.steachserver.domain.curriculum.service;
 
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumListResponse;
-import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
-
-import java.util.Optional;
+import com.twentyone.steachserver.domain.curriculum.dto.*;
+import com.twentyone.steachserver.domain.member.model.Student;
+import com.twentyone.steachserver.domain.member.model.Teacher;
+import java.time.LocalDateTime;
+import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface CurriculumService {
     CurriculumDetailResponse getDetail(Integer id);
@@ -15,5 +16,18 @@ public interface CurriculumService {
 
     void registration(LoginCredential credential, Integer curriculaId);
 
-    CurriculumListResponse getMyCourses(LoginCredential credential);
+    @Transactional(readOnly = true)
+    CurriculumListResponse getTeachersCurricula(Teacher teacher, Pageable pageable);
+
+    @Transactional(readOnly = true)
+    CurriculumListResponse getStudentsCurricula(Student student, Pageable pageable);
+
+    CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable);
+
+    List<LocalDateTime> getSelectedWeekdays(LocalDateTime startDate, LocalDateTime endDate,
+                                            int weekdaysBitmask);
+
+    CurriculumDetailResponse updateCurriculum(Integer curriculumId, Teacher teacher, CurriculumAddRequest request);
+
+    void deleteCurriculum(Teacher teacher, Integer curriculumId);
 }

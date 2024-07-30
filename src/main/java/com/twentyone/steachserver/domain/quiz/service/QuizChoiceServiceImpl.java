@@ -4,14 +4,15 @@ import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
 import com.twentyone.steachserver.domain.quiz.repository.QuizChoiceRepository;
 import com.twentyone.steachserver.domain.quiz.validator.QuizChoiceValidator;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class QuizChoiceServiceImpl implements QuizChoiceService{
     private final QuizChoiceRepository quizChoiceRepository;
@@ -20,7 +21,7 @@ public class QuizChoiceServiceImpl implements QuizChoiceService{
 
     @Override
     @Transactional
-    public void createQuizChoices(List<String> choices, List<String> answers, Quiz savedQuiz) throws Exception{
+    public void createQuizChoices(List<String> choices, List<String> answers, Quiz savedQuiz) throws RuntimeException {
         quizChoiceValidator.validateQuizChoices(choices, answers);
 
         int answerCount = 0;

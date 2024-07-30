@@ -9,8 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "quizzes")
@@ -29,21 +29,21 @@ public class Quiz {
     @Column(name = "question", nullable = false)
     private String question;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", referencedColumnName = "id")
     private Lecture lecture;
 
     @OneToMany(mappedBy = "quiz")
-    private Set<StudentQuiz> studentQuizzes = new HashSet<>();
+    private List<StudentQuiz> studentQuizzes = new ArrayList<>();
 
     @OneToMany(mappedBy = "quiz")
-    private Set<QuizChoice> quizChoices = new HashSet<>();
+    private List<QuizChoice> quizChoices = new ArrayList<>();
 
     public static Quiz createQuiz(QuizRequestDto request, Lecture lecture) {
         Quiz quiz = new Quiz();
         quiz.setLecture(lecture);
         quiz.setQuestion(request.question());
-        quiz.setQuizNumber(request.quizNumber());
+        quiz.setQuizNumber((request.quizNumber() == null || request.quizNumber()== 0)? lecture.getQuizzes().size() + 1 : request.quizNumber());
 
         lecture.addQuiz(quiz);
         return quiz;

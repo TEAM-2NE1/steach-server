@@ -1,40 +1,50 @@
 package com.twentyone.steachserver.domain.curriculum.service;
 
+import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
-import com.twentyone.steachserver.domain.curriculum.dto.CurriculumListResponse;
+import com.twentyone.steachserver.domain.curriculum.dto.*;
+import com.twentyone.steachserver.domain.curriculum.error.DuplicatedCurriculumRegistrationException;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
-import com.twentyone.steachserver.domain.curriculum.repository.CurriculumDetailRepository;
-import com.twentyone.steachserver.domain.curriculum.repository.CurriculumRepository;
+import com.twentyone.steachserver.domain.curriculum.repository.*;
+import com.twentyone.steachserver.domain.curriculum.validator.CurriculumValidator;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
 import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCurriculumRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
+import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-@Slf4j
+import com.twentyone.steachserver.global.error.ResourceNotFoundException;
+import com.twentyone.steachserver.util.WeekdayBitmaskUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
+@Slf4j
+@Transactional
 @RequiredArgsConstructor
 public class CurriculumServiceImpl implements CurriculumService {
     private final CurriculumRepository curriculumRepository;
+    private final CurriculumSearchRepository curriculumSearchRepository;
     private final LectureRepository lectureRepository;
     private final CurriculumDetailRepository curriculumDetailRepository;
     private final StudentCurriculumRepository studentCurriculumRepository;
+    private final StudentLectureRepository studentLectureRepository;
+
+    private final CurriculumValidator curriculumValidator;
+
     @Override
     @Transactional(readOnly = true)
     public CurriculumDetailResponse getDetail(Integer id) {
@@ -47,14 +57,10 @@ public class CurriculumServiceImpl implements CurriculumService {
     @Override
     @Transactional
     public CurriculumDetailResponse create(LoginCredential loginCredential, CurriculumAddRequest request) {
-        //Teacher 인지 학인
-        if (!(loginCredential instanceof Teacher)) {
-            throw new RuntimeException("선생님만 만들 수 있습니다.");
-        }
-
+        curriculumValidator.validatorMaxAttendees(request);
         //bitmask byte로 변환
         //이진수 문자열을 정수로 변환
-        Byte weekdaysBitmask = bitmaskStringToByte(request.getWeekdaysBitmask());
+        Byte weekdaysBitmask = WeekdayBitmaskUtil.convert(request.getWeekdaysBitmask());
 
         //detail 만들기
         CurriculumDetail curriculumDetail = CurriculumDetail.builder()
@@ -64,10 +70,10 @@ public class CurriculumServiceImpl implements CurriculumService {
                 .information(request.getInformation())
                 .bannerImgUrl(request.getBannerImgUrl())
                 .weekdaysBitmask(weekdaysBitmask)
-                .startDate(LocalDate.from(request.getStartDate()))
-                .endDate(LocalDate.from(request.getEndDate()))
-                .lectureStartTime(LocalTime.from(request.getLectureStartTime()))
-                .lectureCloseTime(LocalTime.from(request.getLectureEndTime()))
+                .startDate(request.getStartDate())
+                .endDate(request.getEndDate())
+                .lectureStartTime(request.getLectureStartTime())
+                .lectureCloseTime(request.getLectureEndTime())
                 .maxAttendees(request.getMaxAttendees())
                 .build();
         curriculumDetailRepository.save(curriculumDetail);
@@ -78,19 +84,20 @@ public class CurriculumServiceImpl implements CurriculumService {
 
         //lecture 만들기
         //날짜 오름차순대로 들어감
-        List<LocalDateTime> selectedDates = getSelectedWeekdays(request.getStartDate(), request.getEndDate(),
+        List<LocalDateTime> selectedDates = getSelectedWeekdays(request.getStartDate().atStartOfDay(), request.getEndDate().atStartOfDay(),
                 weekdaysBitmask);
 
         for (int i = 0; i < selectedDates.size(); i++) {
-            LocalDateTime lectureDate = selectedDates.get(i);
+            LocalDateTime lectureDate = selectedDates.get(i).with(curriculumDetail.getLectureStartTime()); // 날짜에 시간 설정
             int order = i + 1;
-            Lecture lecture = Lecture.of(request.getTitle() + " " + order + "강", i, lectureDate,
-                    request.getLectureStartTime(), request.getLectureEndTime(), curriculum);
+            Lecture lecture = Lecture.of(request.getTitle() + " " + order + "강", order,
+                    lectureDate, curriculum);
             lectureRepository.save(lecture);
         }
 
         return CurriculumDetailResponse.fromDomain(curriculum); //관련 강의도 줄까?? 고민
     }
+
 
     @Override
     @Transactional
@@ -109,7 +116,19 @@ public class CurriculumServiceImpl implements CurriculumService {
             throw new RuntimeException("수강정원이 다 찼습니다.");
         }
 
+        studentCurriculumRepository.findTop1ByStudentAndCurriculum(student, curriculum)
+                .ifPresent(sc -> {
+                    throw new DuplicatedCurriculumRegistrationException("중복 수강신청 불가능");
+                });
+
         StudentCurriculum studentCurriculum = new StudentCurriculum(student, curriculum);
+
+        if (curriculum.getLectures() != null) {
+            for (Lecture lecture : curriculum.getLectures()) {
+                studentLectureRepository.save(StudentLecture.of(student, lecture));
+            }
+        }
+
         studentCurriculumRepository.save(studentCurriculum);
 
         curriculum.register();
@@ -117,47 +136,35 @@ public class CurriculumServiceImpl implements CurriculumService {
 
     @Override
     @Transactional(readOnly = true)
-    public CurriculumListResponse getMyCourses(LoginCredential credential) {
-        if (credential instanceof Student student) {
-            return getStudentCourses(student);
-        } else if (credential instanceof Teacher teacher) {
-            return getTeacherCourses(teacher);
-        } else {
-            throw new RuntimeException("에러");
-        }
-    }
-
-    private CurriculumListResponse getTeacherCourses(Teacher teacher) {
-        List<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher)
-                .orElseGet(ArrayList::new);
+    public CurriculumListResponse getTeachersCurricula(Teacher teacher, Pageable pageable) {
+        Page<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher, pageable);
 
         return CurriculumListResponse.fromDomainList(curriculumList);
     }
 
-    private CurriculumListResponse getStudentCourses(Student student) {
-        List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student)
-                .orElseGet(ArrayList::new);
+    @Override
+    @Transactional(readOnly = true)
+    public CurriculumListResponse getStudentsCurricula(Student student, Pageable pageable) {
+        Page<StudentCurriculum> studentsCurriculaPage = studentCurriculumRepository.findByStudent(student, pageable);
+        List<StudentCurriculum> studentsCurricula = studentsCurriculaPage.getContent();
 
         List<Curriculum> curriculaList = new ArrayList<>();
         for (StudentCurriculum studentCurriculum : studentsCurricula) {
             curriculaList.add(studentCurriculum.getCurriculum());
         }
 
-        return CurriculumListResponse.fromDomainList(curriculaList);
+        return CurriculumListResponse.fromDomainList(curriculaList, studentsCurriculaPage.getPageable().getPageNumber(),
+                studentsCurriculaPage.getTotalPages(), studentsCurriculaPage.getPageable().getPageSize());
     }
 
-    private byte bitmaskStringToByte(String bitmaskString) {
-        if (bitmaskString.length() != 7) {
-            throw new RuntimeException("bitmask 이상함");
-        }
+    @Override
+    public CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable) {
+        Page<Curriculum> curriculumList = curriculumSearchRepository.search(condition, pageable);
 
-        if (!bitmaskString.matches("[01]*")) {
-            throw new RuntimeException("bitmask 이상함");
-        }
-
-        return (byte) Integer.parseInt(bitmaskString, 2);
+        return CurriculumListResponse.fromSimpleDomainList(curriculumList);
     }
 
+    @Override
     public List<LocalDateTime> getSelectedWeekdays(LocalDateTime startDate, LocalDateTime endDate,
                                                    int weekdaysBitmask) {
         List<LocalDateTime> selectedDates = new ArrayList<>();
@@ -172,6 +179,49 @@ public class CurriculumServiceImpl implements CurriculumService {
         }
 
         return selectedDates;
+    }
+
+    @Transactional
+    @Override
+    public CurriculumDetailResponse updateCurriculum(Integer curriculumId, Teacher teacher, CurriculumAddRequest request) {
+        Curriculum curriculum = curriculumRepository.findById(curriculumId)
+                .orElseThrow(() -> new RuntimeException("해당하는 커리큘럼이 없습니다"));//TODO 404
+
+        if (!curriculum.getTeacher().equals(teacher)) {
+            throw new ForbiddenException("권한이 없는 접근");
+        }
+
+        //null일 경우 update되지 않음
+        curriculum.update(
+                request.getTitle(),
+                request.getSubTitle(),
+                request.getIntro(),
+                request.getInformation(),
+                request.getCategory(),
+                request.getSubCategory(),
+                request.getBannerImgUrl(),
+                request.getStartDate(),
+                request.getEndDate(),
+                request.getWeekdaysBitmask(),
+                request.getLectureStartTime(),
+                request.getLectureEndTime(),
+                request.getMaxAttendees()
+        );
+
+        return CurriculumDetailResponse.fromDomain(curriculum);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCurriculum(Teacher teacher, Integer curriculumId) {
+        Curriculum curriculum = curriculumRepository.findById(curriculumId)
+                .orElseThrow(() -> new ResourceNotFoundException("커리큘럼을 찾을 수 없음"));
+
+        if (!curriculum.getTeacher().equals(teacher)) {
+            throw new ForbiddenException("커리큘럼을 만든 사람이 아님. 권한없음");
+        }
+
+        curriculumRepository.delete(curriculum);
     }
 
     private int getBitmaskForDayOfWeek(DayOfWeek dayOfWeek) {

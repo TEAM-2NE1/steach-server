@@ -14,12 +14,12 @@ public class StudentCurriculum {
     @EmbeddedId
     private StudentCurriculumId id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("curriculumId")
     @JoinColumn(name = "curriculum_id", referencedColumnName = "id")
     private Curriculum curriculum;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("studentId")
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
@@ -30,5 +30,8 @@ public class StudentCurriculum {
         this.id = StudentCurriculumId.createStudentCurriculumId(student.getId(), curriculum.getId());
         this.student = student;
         this.curriculum = curriculum;
+
+        student.addCurriculum(this);
+        curriculum.addStudentCurriculum(this);
     }
 }

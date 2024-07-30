@@ -22,7 +22,7 @@ public class QuizChoice {
     @Column(name = "choice_sentence", nullable = false)
     private String choiceSentence;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id", referencedColumnName = "id")
     private Quiz quiz;
 
