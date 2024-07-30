@@ -1,0 +1,13 @@
+//sonarqube
+sonarqube {
+    properties {
+        property "sonar.projectKey", "프로젝트_키"
+        property "sonar.projectName", "프로젝트_이름"
+        property "sonar.host.url", "http://소나큐브_서버_주소:9000"
+        property "sonar.login", "소나큐브_토큰"
+        property "sonar.sources", "src/main/java"
+        property "sonar.language", "java"
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+    }
+}
