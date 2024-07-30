@@ -21,7 +21,8 @@ public class GPTDataByLecture {
     @Id
     private String id;
     private Integer lectureId;
-    private String studentName;
+    private String studentName; //삭제?
+    private Integer studentId;
     private String curriculumTitle;
     private String lectureTitle;
     private CurriculumCategory category;
@@ -37,6 +38,7 @@ public class GPTDataByLecture {
     private GPTDataByLecture(Lecture lecture, Curriculum curriculum, StudentLecture studentLecture) {
         this.lectureId = lecture.getId();
         this.studentName = studentLecture.getStudent().getName();
+        this.studentId = studentLecture.getStudent().getId();
         this.curriculumTitle = curriculum.getTitle();
         this.lectureTitle = lecture.getTitle();
         this.category = curriculum.getCategory();

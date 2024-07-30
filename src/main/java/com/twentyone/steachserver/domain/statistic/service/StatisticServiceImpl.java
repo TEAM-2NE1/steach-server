@@ -104,7 +104,9 @@ public class StatisticServiceImpl implements StatisticService {
                 "Based on these statistics, I can make career recommendations based on the student's interests and aptitudes." +
                 "Food biotech, math teacher, software developer, etc.").append("\n");
 
-        List<GPTDataByLecture> gptDataByLectures = gptDataByLectureMongoRepository.findAllByStudentName(student.getName());
+        //studentName은 바뀔 수 있기 때문에, 이름을 바꿨을 경우 gpt 데이터 누락 발생가능. studentId로 바꿨습니다. 주석은 나중에 지울게요
+//        List<GPTDataByLecture> gptDataByLectures = gptDataByLectureMongoRepository.findAllByStudentName(student.getName());
+        List<GPTDataByLecture> gptDataByLectures = gptDataByLectureMongoRepository.findAllByStudentId(student.getId());
 
         if (gptDataByLectures.isEmpty())
             throw new IllegalArgumentException("학생 " + student.getName() + "의 GPT 데이터가 존재하지 않습니다.");
@@ -171,7 +173,7 @@ public class StatisticServiceImpl implements StatisticService {
                 .orElseThrow(() -> new IllegalStateException("curriculum not found"));
 
         for (StudentLecture studentLecture : allStudentInfoByLectureId) {
-            List<GPTDataByLecture> allByStudentNameAndLectures = gptDataByLectureMongoRepository.findAllByStudentNameAndLectureId(studentLecture.getStudent().getName(), lecture.getId());
+            List<GPTDataByLecture> allByStudentNameAndLectures = gptDataByLectureMongoRepository.findAllByStudentIdAndLectureId(studentLecture.getStudent().getId(), lecture.getId());
             if (!allByStudentNameAndLectures.isEmpty()){
                 gptDataByLectureMongoRepository.deleteAll(allByStudentNameAndLectures);
             }
