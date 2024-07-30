@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 설명
@@ -23,6 +24,7 @@ import lombok.*;
  * 상위 클래스에 @Inheritance 주석만 있으면 상속이 가능합니다.
  * 하위 클래스의 @PrimaryKeyJoinColumn 주석은 선택사항이며 외래 키 매핑을 사용자 정의해야 하는 경우에만 사용됩니다. 상위 클래스에 '@Id' 필드가 있고 상속 전략이 정의된 경우 위 설정이 올바르게 작동해야 합니다.
  */
+@Slf4j
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PROTECTED)
 @Entity
@@ -73,5 +75,9 @@ public class Student extends LoginCredential {
         if (password != null & !password.equals("")) {
             this.setPassword(password);
         }
+    }
+
+    public void addStudentLecture(StudentLecture studentLecture) {
+        this.studentLectures.add(studentLecture);
     }
 }
