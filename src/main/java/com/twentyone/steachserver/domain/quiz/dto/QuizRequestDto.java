@@ -1,9 +1,5 @@
 package com.twentyone.steachserver.domain.quiz.dto;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.List;
 
 /**

@@ -30,7 +30,7 @@ public class QuizController {
     @PostMapping("/{lectureId}")
     public ResponseEntity<QuizResponseDto> createQuiz(@PathVariable("lectureId")Integer lectureId, @RequestBody QuizRequestDto request) throws Exception {
         return quizService.createQuiz(lectureId, request)
-                .map(quiz -> ResponseEntity.status(HttpStatus.CREATED).body(QuizResponseDto.createQuizResponseDto(lectureId, request)))
+                .map(quiz -> ResponseEntity.status(HttpStatus.CREATED).body(QuizResponseDto.createQuizResponseDto(lectureId, request, quiz.getId())))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 

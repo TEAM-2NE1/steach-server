@@ -23,8 +23,8 @@ public class JwtService {
     @Value("${jwt.secretKey}")
     private String SECRET_KEY;
 
-    public static long accessTokenValidTime = Duration.ofMinutes(200).toMillis(); // 만료시간 30분
-    public static long passwordAuthTokenValidTime = Duration.ofMinutes(60).toMillis(); // 만료시간 1분
+    public static long accessTokenValidTime = Duration.ofMinutes(200).toMillis(); // 만료시간 200분
+    public static long passwordAuthTokenValidTime = Duration.ofMinutes(60).toMillis(); // 만료시간 60분
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
@@ -66,16 +66,6 @@ public class JwtService {
         boolean b = (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
 
         return b;
-    }
-
-    public void validateToken(String token, UserDetails userDetails) {
-//        if (isTokenExpired(token)) {
-//            throw new ExpiredJwtException();
-//        }
-        final String username = extractUsername(token);
-        if (!username.equals(userDetails.getUsername())) {
-            throw new JwtException("사용자 에러");
-        }
     }
 
     public boolean isPasswordAuthTokenValid(String token, UserDetails userDetails) {
