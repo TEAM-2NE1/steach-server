@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.domain.gpt;
+package com.twentyone.steachserver.domain.gpt.service;
 
 import java.io.IOException;
 import java.net.URI;

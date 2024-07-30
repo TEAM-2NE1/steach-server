@@ -1,8 +1,9 @@
-package com.twentyone.steachserver.domain.gpt;
+package com.twentyone.steachserver.domain.gpt.controller;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.twentyone.steachserver.domain.gpt.service.GPTService;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.statistic.service.StatisticService;
 import lombok.RequiredArgsConstructor;
