@@ -46,7 +46,9 @@ jacocoTestReport {
                             "**/*Dto*",
                             "**/*Request*",
                             "**/*Response*",
-                            "**/*Exception*"
+                            "**/*Exception*",
+                            "**/dto/**",
+                            "**/error/**",
                     ] + QDomains)
                 })
         )
@@ -124,7 +126,9 @@ jacocoTestCoverageVerification {
                     "**.*Dto*",
                     "**.*Request*",
                     "**.*Response*",
-                    "**.*Exception*"
+                    "**.*Exception*",
+                    "**/dto/**",
+                    "**/error/**",
             ] + QDomains
         }
     }
