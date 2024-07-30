@@ -4,6 +4,7 @@ import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Student;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -38,7 +39,8 @@ public class StudentLecture {
     @JoinColumn(name = "lecture_id", referencedColumnName = "id")
     private Lecture lecture;
 
-    protected StudentLecture() {}
+    protected StudentLecture() {
+    }
 
     private StudentLecture(Student student, Lecture lecture) {
         this.id = StudentLectureId.createStudentLectureId(student.getId(), lecture.getId());
@@ -58,6 +60,10 @@ public class StudentLecture {
 
     public void sumFocusTime(Integer focusTime) {
         this.focusTime += focusTime;
+    }
+
+    public void updateNewFocusTime(Integer focusTime) {
+        this.focusTime = focusTime;
     }
 
     public void updateFocusRatio(BigDecimal focusRatio) {
