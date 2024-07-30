@@ -5,7 +5,6 @@ import com.twentyone.steachserver.domain.member.model.Student;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
@@ -47,12 +46,17 @@ public class StudentLecture {
     }
 
     public static StudentLecture of(Student student, Lecture lecture) {
-        return new StudentLecture(student, lecture);
+        StudentLecture studentLecture = new StudentLecture(student, lecture);
+        student.addStudentLecture(studentLecture);
+        lecture.addStudentLecture(studentLecture);
+
+        return studentLecture;
     }
 
     public static StudentLecture of(Student student, Lecture lecture, Integer focusTime) {
         StudentLecture studentLecture = new StudentLecture(student, lecture);
         studentLecture.focusTime = focusTime;
+
         return studentLecture;
     }
 

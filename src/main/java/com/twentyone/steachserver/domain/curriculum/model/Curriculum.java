@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,14 +36,14 @@ public class Curriculum extends BaseTimeEntity {
     private Teacher teacher;
 
     @OneToMany(mappedBy = "curriculum")
-    private List<Lecture> lectures;
+    private List<Lecture> lectures = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.EAGER) //항상 필요한 정보들이 detail에 들어가있음(생성날짜 등)
     @JoinColumn(name = "curriculum_detail_id")
     private CurriculumDetail curriculumDetail;
 
     @OneToMany(mappedBy = "curriculum")
-    private List<StudentCurriculum> studentCurricula;
+    private List<StudentCurriculum> studentCurricula = new ArrayList<>();
 
     public static Curriculum of(String title, CurriculumCategory category, Teacher teacher, CurriculumDetail curriculumDetail) {
         Curriculum curriculum = new Curriculum();
@@ -70,5 +71,13 @@ public class Curriculum extends BaseTimeEntity {
                 subTitle, intro, information, subCategory, bannerImgUrl, startDate, endDate, weekdaysBitmask,
                 lectureStartTime, lectureEndTime, maxAttendees
         );
+    }
+
+    public void addStudentCurriculum(StudentCurriculum studentCurriculum) {
+        this.studentCurricula.add(studentCurriculum);
+    }
+
+    public void addLecture(Lecture lecture) {
+        this.lectures.add(lecture);
     }
 }

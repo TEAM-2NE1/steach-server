@@ -58,6 +58,8 @@ public class Lecture {
         lecture.lectureOrder = lectureOrder;
         lecture.lectureStartDate = lectureStartTime;
         lecture.curriculum = curriculum;
+
+        curriculum.addLecture(lecture);
         return lecture;
     }
 
@@ -83,4 +85,7 @@ public class Lecture {
     }
 
 
+    public void addStudentLecture(StudentLecture studentLecture) {
+        this.studentLectures.add(studentLecture);
+    }
 }

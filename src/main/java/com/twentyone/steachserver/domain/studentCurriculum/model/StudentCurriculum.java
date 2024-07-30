@@ -30,5 +30,8 @@ public class StudentCurriculum {
         this.id = StudentCurriculumId.createStudentCurriculumId(student.getId(), curriculum.getId());
         this.student = student;
         this.curriculum = curriculum;
+
+        student.addCurriculum(this);
+        curriculum.addStudentCurriculum(this);
     }
 }

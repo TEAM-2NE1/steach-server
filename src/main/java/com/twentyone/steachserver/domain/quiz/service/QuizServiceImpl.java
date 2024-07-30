@@ -34,7 +34,7 @@ public class  QuizServiceImpl implements QuizService {
 
     @Override
     @Transactional
-    public Optional<Quiz> createQuiz(Integer lectureId, QuizRequestDto request) throws Exception {
+    public Optional<Quiz> createQuiz(Integer lectureId, QuizRequestDto request) throws RuntimeException {
         Lecture lecture = getLecture(lectureId);
 
         Quiz quiz = Quiz.createQuiz(request, lecture);
