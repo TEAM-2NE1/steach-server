@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@DisplayName("강사 인증 통합 테스트")
 public class TeacherAuthControllerIntegrationTest extends ControllerIntegrationTest {
 
     @Autowired
@@ -36,11 +37,12 @@ public class TeacherAuthControllerIntegrationTest extends ControllerIntegrationT
 
     Map<String, String> 강사_수정_기본_정보;
 
+
     @Test
     @Order(1)
     @DisplayName("강사 회원가입")
     void testTeacherSignup() throws Exception {
-        강사_로그인_아이디 = "t" + UUID.randomUUID().toString().substring(0, 8);
+        강사_로그인_아이디 = "te" + UUID.randomUUID().toString().substring(0, 6);
 
         // given
         강사_로그인_정보 = Map.of(
@@ -48,7 +50,7 @@ public class TeacherAuthControllerIntegrationTest extends ControllerIntegrationT
                 "password", "teacherPassword");
 
         강사_추가_정보 = Map.of(
-                "name", "teacherSihyun",
+                "nickname", "teacherSihyun",
                 "email", "sihyun" + UUID.randomUUID().toString().substring(0, 4) + "@gmail.com");
 
         // when
@@ -89,7 +91,7 @@ public class TeacherAuthControllerIntegrationTest extends ControllerIntegrationT
         // given
         강사_수정_기본_정보 = new HashMap<>();
         강사_수정_기본_정보.put("username", "teach" + UUID.randomUUID().toString().substring(0, 4));
-        강사_수정_기본_정보.put("name", "dummyName");
+        강사_수정_기본_정보.put("nickname", "dummyName");
         강사_수정_기본_정보.put("email", "sisi" + UUID.randomUUID().toString().substring(0, 4) + "@gmail.com");
         강사_수정_기본_정보.put("briefIntroduction", "This is a brief introduction.");
         강사_수정_기본_정보.put("academicBackground", "PhD in Computer Science");
@@ -104,11 +106,12 @@ public class TeacherAuthControllerIntegrationTest extends ControllerIntegrationT
         TeacherSignUpDto teacherSignUpDto = TeacherSignUpDto.builder()
                 .username(강사_로그인_정보.get("username"))
                 .password(강사_로그인_정보.get("password"))
-                .name(강사_추가_정보.get("name"))
+                .nickname(강사_추가_정보.get("nickname"))
                 .email(강사_추가_정보.get("email"))
                 .build();
 
-        return given()
+
+        return given().log().all()
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
 //                .multiPart("image", resume, "application/multipart/form-data")
                 .multiPart("image", "resume.png", "dummy content".getBytes(), MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -123,7 +126,7 @@ public class TeacherAuthControllerIntegrationTest extends ControllerIntegrationT
                 .statusCode(HttpStatus.CREATED.value())
                 .body("role", equalTo(role))
                 .body("email", equalTo(강사_추가_정보.get("email")))
-                .body("name", equalTo(강사_추가_정보.get("name")));
+                .body("nickname", equalTo(강사_추가_정보.get("nickname")));
 
         String token = 회원가입.jsonPath().getString("token");
 
@@ -153,7 +156,7 @@ public class TeacherAuthControllerIntegrationTest extends ControllerIntegrationT
                 .statusCode(HttpStatus.OK.value())
                 .body("role", equalTo(role))
                 .body("email", equalTo(강사_추가_정보.get("email")))
-                .body("name", equalTo(강사_추가_정보.get("name")));
+                .body("nickname", equalTo(강사_추가_정보.get("nickname")));
 
         String token = 로그인.jsonPath().getString("token");
 
@@ -175,15 +178,14 @@ public class TeacherAuthControllerIntegrationTest extends ControllerIntegrationT
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("username", equalTo(강사_로그인_아이디))
-                .body("name", equalTo(강사_추가_정보.get("name")))
+                .body("nickname", equalTo(강사_추가_정보.get("nickname")))
                 .body("email", equalTo(강사_추가_정보.get("email")));
     }
 
     Response 강사_회원정보_수정(String 강사_토큰_정보, Map<String, String> 강사_수정_기본_정보) throws Exception {
         TeacherInfoRequest updateRequest = TeacherInfoRequest.builder()
-                .name(강사_수정_기본_정보.get("name"))
+                .nickname(강사_수정_기본_정보.get("nickname"))
                 .email(강사_수정_기본_정보.get("email"))
-                .pathQualification(강사_수정_기본_정보.get("pathQualification"))
                 .briefIntroduction(강사_수정_기본_정보.get("briefIntroduction"))
                 .academicBackground(강사_수정_기본_정보.get("academicBackground"))
                 .specialization(강사_수정_기본_정보.get("specialization"))
@@ -203,7 +205,7 @@ public class TeacherAuthControllerIntegrationTest extends ControllerIntegrationT
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("username", equalTo(강사_로그인_아이디))
-                .body("name", equalTo(강사_수정_기본_정보.get("name")))
+                .body("nickname", equalTo(강사_수정_기본_정보.get("nickname")))
                 .body("email", equalTo(강사_수정_기본_정보.get("email")))
                 .body("specialization", equalTo(강사_수정_기본_정보.get("specialization")))
                 .body("brief_introduction", equalTo(강사_수정_기본_정보.get("briefIntroduction")))

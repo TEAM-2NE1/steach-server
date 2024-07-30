@@ -25,6 +25,7 @@ import java.util.UUID;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
+@DisplayName("강사의 커리큘럼 통합 테스트")
 public class CurriculumControllerIntegrationTest extends TeacherAuthControllerIntegrationTest {
 
     @Autowired

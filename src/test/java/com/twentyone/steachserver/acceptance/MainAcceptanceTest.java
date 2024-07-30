@@ -3,14 +3,19 @@ package com.twentyone.steachserver.acceptance;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twentyone.steachserver.domain.auth.dto.*;
+import com.twentyone.steachserver.domain.classroom.dto.FocusTimeRequestDto;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.lecture.dto.LectureListResponseDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
+import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizRequestDto;
 import io.restassured.response.Response;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +24,7 @@ import org.springframework.http.MediaType;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static com.twentyone.steachserver.helper.CastObject.castList;
 import static io.restassured.RestAssured.given;
@@ -39,7 +45,7 @@ import static org.hamcrest.Matchers.*;
 // 수용 테스트는 시스템이 최종 사용자의 요구사항을 충족하는지를 확인하는 테스트입니다.
 // 이는 전체 시스템이 기대한 대로 동작하는지, 사용자의 시나리오를 통해 확인합니다.
 // 전체 시스템의 생성 로직만 해서 최대한 성공로직 내가 테스트하고 싶은 메인 로직만 구현해야한다.
-    
+
 // 수정이나 조회 같은게 아닌 생성만 쭈우우우욱 하고 맨 마지막에 진짜 확인하고 싶었던 최종 그거만 확인하는 느낌(사실 진짜 확인하고 싶었던 이런것도 안해도됨)
 @DisplayName("프로젝트 메인 기능 인수 테스트")
 public class MainAcceptanceTest extends AcceptanceTest {
@@ -89,12 +95,28 @@ public class MainAcceptanceTest extends AcceptanceTest {
     Integer 첫번째_강의_PK;
     Map<String, Object> 퀴즈_정보;
 
-    List<String> 인증_코드;
+    Integer 생성_개수 = 4;
+    List<String> 인증_코드들;
 
     String 학생_로그인_아이디;
     Map<String, String> 학생_로그인_정보;
     Map<String, String> 학생_추가_정보;
-    String 학생_토큰_정보;
+    List<String> 학생_토큰들 = new ArrayList<>();
+    // 단순한 파라미터화된 테스트에는 static Stream<학생_회원가입_정보> 학생_회원가입_정보들() 방식을, 복잡한 초기화가 필요한 경우에는 @BeforeAll을 사용하는 것이 좋습니다.
+
+    // 추가: 학생 회원가입 정보 제공 메서드
+    static Stream<Arguments> 학생_회원가입_정보들() {
+        return Stream.of(
+                Arguments.of("testS1", "applepass", "apple", "testS1@example.com", 0),
+                Arguments.of("testS2", "bananapass", "banana", "testS2@example.com", 1),
+                Arguments.of("testS3", "chickenpass", "chicken", "testS3@example.com", 2),
+                Arguments.of("testS4", "pearpass", "pear", "testS4@example.com", 3)
+        );
+    }
+
+    Stream<Arguments> 학생_토큰들() {
+        return this.학생_토큰들.stream().map(Arguments::of);
+    }
 
     // 테스트 대상 메서드에 @Test를 붙이면 해당 메서드가 속한 클래스는 ‘테스트 클래스’로서 동작하며, 각 메서드는 독립적인 테스트가 된다.
     // 하지만, 테스트마다 테스트 컨텍스트를 매번 새로 생성하게 된다면 오버헤드가 크기 때문에 전체 테스트의 실행 속도가 느려져셔 개발자의 생산성이 떨어진다.
@@ -103,7 +125,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
     @Order(1)
     @DisplayName("강사 회원가입")
     void testTeacherSignup() throws Exception {
-        강사_로그인_아이디 = "t" + UUID.randomUUID().toString().substring(0, 8);
+        강사_로그인_아이디 = "test" + UUID.randomUUID().toString().substring(0, 6);
 
         // given
         강사_로그인_정보 = Map.of(
@@ -111,7 +133,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
                 "password", "teacherPassword");
 
         강사_추가_정보 = Map.of(
-                "name", "teacherSihyun",
+                "nickname", "teacherSihyun",
                 "email", "sihyun" + UUID.randomUUID().toString().substring(0, 4) + "@gmail.com");
 
         // when
@@ -199,15 +221,41 @@ public class MainAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @Order(5)
+    @Order(1)
     @DisplayName("인증 코드 생성")
     void testCreateCode() throws JsonProcessingException {
         // given
-        Integer 생성_개수 = 4;
         // when
         Response 인증_코드_생성 = 인증_코드_생성(생성_개수, 강사_토큰_정보);
         // then
-        인증_코드 = 인증_코드_생성_확인(인증_코드_생성, 생성_개수);
+        인증_코드들 = 인증_코드_생성_확인(인증_코드_생성, 생성_개수);
+    }
+
+    @Order(2)
+    @DisplayName("학생 회원 가입")
+    @ParameterizedTest
+    @MethodSource("학생_회원가입_정보들")
+    void testStudentSignUp(String username,
+                           String password,
+                           String nickname,
+                           String email,
+                           Integer number) throws JsonProcessingException {
+        // given
+        학생_로그인_아이디 = "s" + UUID.randomUUID().toString().substring(0, 7);
+
+        학생_로그인_정보 = new HashMap<>();
+        학생_로그인_정보.put("username", username);
+        학생_로그인_정보.put("password", password);
+
+        학생_추가_정보 = new HashMap<>();
+        학생_추가_정보.put("nickname", nickname);
+        학생_추가_정보.put("email", email);
+        // when
+        Response 학생_회원가입 = 학생_회원가입(학생_로그인_정보, 학생_추가_정보, 인증_코드들.get(number));
+        // then
+        String 학생_토큰 = 학생_회원가입_정보_확인(학생_회원가입, 학생_로그인_정보, 학생_추가_정보);
+        // 추가 작업
+        학생_토큰들.add(학생_토큰);
     }
 
     @Test
@@ -221,35 +269,69 @@ public class MainAcceptanceTest extends AcceptanceTest {
         수업_시작_확인(수업_시작);
     }
 
-    @Test
+
     @Order(6)
-    @DisplayName("학생 회원 가입")
-    void testStudentSignUp() throws JsonProcessingException {
+    @DisplayName("학생의 커리큘럼 수강 신청")
+    @ParameterizedTest
+    @MethodSource("학생_토큰들")
+    void testStudentEnroll(String 학생_토큰) throws JsonProcessingException {
         // given
-        학생_로그인_아이디 = "s" + UUID.randomUUID().toString().substring(0, 7);
-
-        학생_로그인_정보 = new HashMap<>();
-        학생_로그인_정보.put("username", 학생_로그인_아이디);
-        학생_로그인_정보.put("password", "1234");
-
-        학생_추가_정보 = new HashMap<>();
-        학생_추가_정보.put("name", "시현");
-        학생_추가_정보.put("email", "ssh" + UUID.randomUUID().toString().substring(0, 4) + "@gmail.com");
         // when
-        Response 학생_회원가입 = 학생_회원가입(학생_로그인_정보, 학생_추가_정보, 인증_코드);
+        Response 커리큘럼_수강_신청 = 커리큘럼_수강_신청(커리큘럼_PK, 학생_토큰);
         // then
-        학생_토큰_정보 = 학생_회원가입_정보_확인(학생_회원가입, 학생_로그인_정보, 학생_추가_정보, 인증_코드);
+        커리큘럼_수강_신청_확인(커리큘럼_수강_신청);
     }
 
-    // 예외 사항 가정하지 말고 정상적인 테스트만 작성
-//    Todo: 학생 로그인, 수강신청, 퀴즈 및 집중도 추가
-//    Todo: 강사 수업 종료(통계 계산), 최통 통계 확인
+    @Order(7)
+    @DisplayName("학생의 퀴즈 정답 전달")
+    @ParameterizedTest
+    @MethodSource("학생_토큰들")
+    void testStudentQuiz(String 학생_토큰) throws JsonProcessingException {
+        // given
+        int 점수 = (int) (Math.random() * 2) * 50;
+        String 고른_정답;
+        if (점수 != 0) 고른_정답 = "가";
+        else {
+            고른_정답 = castList(퀴즈_정보.get("choices"), String.class).get((int) (Math.random() * 2) + 1);
+        }
+        // when
+        Response 학생_퀴즈_전달 = 학생_퀴즈_전달(첫번째_강의_PK, 점수, 고른_정답, 학생_토큰);
+
+        // then
+        학생_퀴즈_전달_확인(학생_퀴즈_전달, 점수, 고른_정답);
+    }
+
+    @Order(7)
+    @DisplayName("학생의 집중도 전달")
+    @ParameterizedTest
+    @MethodSource("학생_토큰들")
+    void testStudentFocusTime(String 학생_토큰) throws JsonProcessingException {
+        // given
+        Integer 집중_시간 = (int) (Math.random() * 5);
+
+        // when
+        Response 학생_집중도_전달 = 학생_집중도_전달(첫번째_강의_PK, 집중_시간, 학생_토큰);
+
+        // then
+        학생_집중도_전달_확인(학생_집중도_전달);
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("강사의 수업 종료(통계 계산)")
+    void testTeacherSignUp() throws JsonProcessingException {
+        // given
+        // when
+        Response 수업_종료 = 수업_종료(첫번째_강의_PK);
+        // then
+        수업_종료_통계_확인(수업_종료);
+    }
 
     Response 강사_회원가입(Map<String, String> 강사_로그인_정보, Map<String, String> 강사_추가_정보) throws JsonProcessingException {
         TeacherSignUpDto teacherSignUpDto = TeacherSignUpDto.builder()
                 .username(강사_로그인_정보.get("username"))
                 .password(강사_로그인_정보.get("password"))
-                .name(강사_추가_정보.get("name"))
+                .nickname(강사_추가_정보.get("nickname"))
                 .email(강사_추가_정보.get("email"))
                 .build();
 
@@ -268,7 +350,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.CREATED.value())
                 .body("role", equalTo(role))
                 .body("email", equalTo(강사_추가_정보.get("email")))
-                .body("name", equalTo(강사_추가_정보.get("name")));
+                .body("nickname", equalTo(강사_추가_정보.get("nickname")));
 
         String token = 강사_회원가입.jsonPath().getString("token");
 
@@ -298,7 +380,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("role", equalTo(role))
                 .body("email", equalTo(강사_추가_정보.get("email")))
-                .body("name", equalTo(강사_추가_정보.get("name")));
+                .body("nickname", equalTo(강사_추가_정보.get("nickname")));
 
         String token = 로그인.jsonPath().getString("token");
 
@@ -400,7 +482,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
                 .body("answers", equalTo(퀴즈_정보.get("answers")));
     }
 
-    Response 인증_코드_생성(Integer 생성_개수,String 강사_토큰_정보) throws JsonProcessingException {
+    Response 인증_코드_생성(Integer 생성_개수, String 강사_토큰_정보) throws JsonProcessingException {
         AuthCodeRequest authCodeRequest = AuthCodeRequest.builder()
                 .numberOfCode(생성_개수).build();
         return given().log().all()
@@ -434,13 +516,13 @@ public class MainAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value());
     }
 
-    Response 학생_회원가입(Map<String, String> 학생_로그인_정보, Map<String, String> 학생_추가_정보, List<String> 인증_코드) throws JsonProcessingException {
+    Response 학생_회원가입(Map<String, String> 학생_로그인_정보, Map<String, String> 학생_추가_정보, String 인증_코드) throws JsonProcessingException {
         StudentSignUpDto studentSignUpDto = StudentSignUpDto.builder()
                 .username(학생_로그인_정보.get("username"))
                 .password(학생_로그인_정보.get("password"))
-                .name(학생_추가_정보.get("name"))
+                .nickname(학생_추가_정보.get("nickname"))
                 .email(학생_추가_정보.get("email"))
-                .auth_code(인증_코드.get(0))
+                .auth_code(인증_코드)
                 .build();
 
         return given().log().all()
@@ -450,11 +532,11 @@ public class MainAcceptanceTest extends AcceptanceTest {
                 .post("/api/v1/student/join");
     }
 
-    String 학생_회원가입_정보_확인(Response 학생_회원가입, Map<String, String> 학생_로그인_정보, Map<String, String> 학생_추가_정보, List<String> 인증_코드) {
+    String 학생_회원가입_정보_확인(Response 학생_회원가입, Map<String, String> 학생_로그인_정보, Map<String, String> 학생_추가_정보) {
         학생_회원가입.then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("username", equalTo(학생_로그인_정보.get("username")))
-                .body("name", equalTo(학생_추가_정보.get("name")))
+                .body("nickname", equalTo(학생_추가_정보.get("nickname")))
                 .body("email", equalTo(학생_추가_정보.get("email")));
 
         String token = 학생_회원가입.jsonPath().getString("token");
@@ -463,6 +545,67 @@ public class MainAcceptanceTest extends AcceptanceTest {
             throw new RuntimeException("JWT token not found in the login response");
         }
         return token;
+    }
+
+    Response 커리큘럼_수강_신청(Integer 커리큘럼_pk, String 학생_토큰) {
+        return given().log().all()
+                .header("Authorization", "Bearer " + 학생_토큰)
+                .when().log().all()
+                .post("api/v1/curricula/" + 커리큘럼_pk + "/apply");
+    }
+
+    void 커리큘럼_수강_신청_확인(Response 커리큘럼_수강_신청) {
+        커리큘럼_수강_신청.then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    Response 학생_퀴즈_전달(Integer 첫번째_강의_pk, Integer 점수, String 고른_답, String 학생_토큰) throws JsonProcessingException {
+        StudentQuizRequestDto quizRequest = StudentQuizRequestDto.builder()
+                .score(점수)
+                .studentChoice(고른_답)
+                .build();
+
+        return given().log().all()
+                .header("Authorization", "Bearer " + 학생_토큰)
+                .body(objectMapper.writeValueAsString(quizRequest))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().log().all()
+                .post("/api/v1/studentsQuizzes/" + 첫번째_강의_pk);
+    }
+
+    void 학생_퀴즈_전달_확인(Response 학생_퀴즈_전달, Integer 점수, String 고른_답) {
+        학생_퀴즈_전달.then()
+                .statusCode(HttpStatus.OK.value())
+                .body("score", equalTo(점수))
+                .body("student_choice", equalTo(고른_답));
+    }
+
+    Response 학생_집중도_전달(Integer 첫번째_강의_pk, Integer 강의_집중도, String 학생_토큰) throws JsonProcessingException {
+        FocusTimeRequestDto focusTimeRequest = new FocusTimeRequestDto(강의_집중도);
+
+        return given().log().all()
+                .header("Authorization", "Bearer " + 학생_토큰)
+                .body(objectMapper.writeValueAsString(focusTimeRequest))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().log().all()
+                .post("api/v1/studentsLectures/focus-time/" + 첫번째_강의_pk);
+    }
+
+    void 학생_집중도_전달_확인(Response 학생_집중도_전달) {
+        학생_집중도_전달.then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    Response 수업_종료(Integer 첫번째_강의_pk) {
+        return given().log().all()
+                .header("Authorization", "Bearer " + 강사_토큰_정보)
+                .when()
+                .get("/api/v1/lectures/final/" + 첫번째_강의_pk);
+    }
+
+    void 수업_종료_통계_확인(Response 수업_종료) {
+        수업_종료.then()
+                .statusCode(HttpStatus.OK.value());
     }
 
 }
