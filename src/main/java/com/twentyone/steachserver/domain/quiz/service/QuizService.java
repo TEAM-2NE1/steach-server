@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface QuizService {
     // Quiz methods
-    Optional<Quiz> createQuiz(Integer lectureId, QuizRequestDto request) throws Exception;
+    Optional<Quiz> createQuiz(Integer lectureId, QuizRequestDto request) throws RuntimeException;
 
     Optional<Quiz> findById(Integer quizId);
 
