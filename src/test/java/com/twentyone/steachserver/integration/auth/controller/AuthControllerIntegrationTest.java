@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@DisplayName("인증 컨트롤러 통합 테스트")
 public class AuthControllerIntegrationTest extends ControllerIntegrationTest {
 
 
