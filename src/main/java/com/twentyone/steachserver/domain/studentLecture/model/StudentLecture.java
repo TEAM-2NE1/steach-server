@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.studentLecture.model;
 
+import com.twentyone.steachserver.config.domain.BaseTimeEntity;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Student;
 import jakarta.persistence.*;
@@ -12,7 +13,7 @@ import java.math.RoundingMode;
 @Setter(value = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "students_lectures")
-public class StudentLecture {
+public class StudentLecture extends BaseTimeEntity {
     @EmbeddedId
     private StudentLectureId id;
 
