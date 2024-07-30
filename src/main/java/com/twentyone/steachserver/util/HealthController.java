@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.config;
+package com.twentyone.steachserver.util;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
