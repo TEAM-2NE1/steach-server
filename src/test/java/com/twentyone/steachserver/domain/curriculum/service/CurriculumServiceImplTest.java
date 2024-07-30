@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.curriculum.service;
 
+import com.twentyone.steachserver.SteachTest;
 import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
@@ -14,6 +15,7 @@ import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCurriculumRepository;
 import com.twentyone.steachserver.util.DateTimeUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,7 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-class CurriculumServiceImplTest {
+@DisplayName("커리큘럼 테스트")
+class CurriculumServiceImplTest extends SteachTest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     public static final String NAME = "name";
@@ -128,6 +131,8 @@ class CurriculumServiceImplTest {
         CurriculumAddRequest request = new CurriculumAddRequest(TITLE, SUB_TITLE, INTRO, INFORMATION, CURRICULUM_CATEGORY, SUB_CATEGORY, BANNER_IMG_URL,
                 NOW.toLocalDate(), NOW.toLocalDate(), WEEKDAY_BITMASK, NOW.toLocalTime(), NOW.toLocalTime(), MAX_ATTENDEES);
 
+//        Fixme: 권한관련 처리는 controller에서 했으니 service에서 처리해주는거보다 controller 단에서 처리해주는게 좋아보입니다.
+        // 추가로 이 부분이 실패처리됩니다.
         //when //then
         assertThrows(RuntimeException.class, () -> {
             curriculumService.create(student, request);
