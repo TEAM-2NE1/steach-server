@@ -3,6 +3,7 @@ package com.twentyone.steachserver.domain.curriculum.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.twentyone.steachserver.SteachTest;
 import com.twentyone.steachserver.domain.auth.service.AuthService;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -33,7 +35,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest
-public class CurriculumServiceIntegrationTest {
+@DisplayName("커리큘럼 서비스 통합 테스트")
+public class CurriculumServiceIntegrationTest extends SteachTest {
     public static final String TITLE = "title";
     public static final String SUB_TITLE = "subTitle";
     public static final String INTRO = "intro";
@@ -79,7 +82,7 @@ public class CurriculumServiceIntegrationTest {
         //given
         CurriculumAddRequest request = new CurriculumAddRequest(TITLE, SUB_TITLE, INTRO, INFORMATION,
                 CURRICULUM_CATEGORY, SUB_CATEGORY, BANNER_IMG_URL,
-                NOW, NOW, WEEKDAY_BITMASK, NOW.toLocalTime(), NOW.toLocalTime(), MAX_ATTENDEES);
+                NOW.toLocalDate(), NOW.toLocalDate(), WEEKDAY_BITMASK, NOW.toLocalTime(), NOW.toLocalTime(), MAX_ATTENDEES);
         CurriculumDetailResponse curriculumDetailResponse = curriculumService.create(teacher, request);
         Integer curriculumId = curriculumDetailResponse.getCurriculumId();
 
@@ -171,7 +174,7 @@ public class CurriculumServiceIntegrationTest {
         //given
         CurriculumAddRequest request = new CurriculumAddRequest(TITLE, SUB_TITLE, INTRO, INFORMATION,
                 CURRICULUM_CATEGORY, SUB_CATEGORY, BANNER_IMG_URL,
-                NOW, NOW, WEEKDAY_BITMASK, NOW.toLocalTime(), NOW.toLocalTime(), MAX_ATTENDEES);
+                NOW.toLocalDate(), NOW.toLocalDate(), WEEKDAY_BITMASK, NOW.toLocalTime(), NOW.toLocalTime(), MAX_ATTENDEES);
         CurriculumDetailResponse curriculumDetailResponse = curriculumService.create(teacher, request);
         Integer curriculumId = curriculumDetailResponse.getCurriculumId();
 

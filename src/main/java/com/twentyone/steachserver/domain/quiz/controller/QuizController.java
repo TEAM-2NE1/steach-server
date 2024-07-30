@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.quiz.controller;
 
+import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizResponseDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizzesResponseDto;
@@ -11,6 +12,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +30,7 @@ public class QuizController {
     @PostMapping("/{lectureId}")
     public ResponseEntity<QuizResponseDto> createQuiz(@PathVariable("lectureId")Integer lectureId, @RequestBody QuizRequestDto request) throws Exception {
         return quizService.createQuiz(lectureId, request)
-                .map(quiz -> ResponseEntity.status(HttpStatus.CREATED).body(QuizResponseDto.createQuizResponseDto(lectureId, request)))
+                .map(quiz -> ResponseEntity.status(HttpStatus.CREATED).body(QuizResponseDto.createQuizResponseDto(lectureId, request, quiz.getId())))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
@@ -50,5 +53,13 @@ public class QuizController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok().body(QuizzesResponseDto.of(quizResponseDtos));
+    }
+
+    @Secured("ROLE_TEACHER")
+    @DeleteMapping("/{quiz_id}")
+    public ResponseEntity<QuizResponseDto> deleteQuiz(@PathVariable("quiz_id")Integer quizId, @AuthenticationPrincipal Teacher teacher) {
+        quizService.delete(quizId, teacher);
+
+        return ResponseEntity.ok().build();
     }
 }

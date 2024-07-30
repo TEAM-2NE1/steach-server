@@ -10,7 +10,7 @@ public class StudentInfoResponse extends MemberInfoResponse {
     public static StudentInfoResponse fromDomain(Student student) {
         StudentInfoResponse response = new StudentInfoResponse();
         response.username = student.getUsername();
-        response.name = student.getName();
+        response.nickname = student.getName();
         response.email = student.getEmail();
 
         return response;

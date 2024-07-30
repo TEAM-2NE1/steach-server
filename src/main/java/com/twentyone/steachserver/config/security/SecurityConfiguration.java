@@ -1,6 +1,5 @@
 package com.twentyone.steachserver.config.security;
 
-import com.twentyone.steachserver.domain.auth.dto.JwtExceptionFilter;
 import com.twentyone.steachserver.domain.auth.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +22,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
         securedEnabled = true,
         jsr250Enabled = true)
 public class SecurityConfiguration {
+    private static final String API_PREFIX = "/api/v1";
+
     private final JwtService jwtService;
     private final AuthenticationProvider authenticationProvider;
     private final UserDetailsService userDetailsService;
@@ -33,9 +34,9 @@ public class SecurityConfiguration {
     };
 
     private final String[] whiteList = {
-            "/api/v1/login/**",
-            "/api/v1/*/join",
-            "/api/v1/check-username/*"
+            API_PREFIX + "/login/**",
+            API_PREFIX + "/*/join",
+            API_PREFIX + "/check-username/*",
     };
 
     //TODO WebSecurityCustomizer로 whiteList 적용 알아보기
@@ -50,9 +51,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(whiteList).permitAll()
                         .requestMatchers(swaggerWhiteList).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/curricula/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/lectures/*").permitAll()
-                        .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, API_PREFIX + "/curricula/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, API_PREFIX + "/lectures/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider)

@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class StudentSignUpDto {
     private String username;
     private String password;
-    private String name;
+    private String nickname;
     private String auth_code;
     private String email;
 }

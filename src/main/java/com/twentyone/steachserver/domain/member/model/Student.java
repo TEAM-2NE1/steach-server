@@ -47,12 +47,12 @@ public class Student extends LoginCredential {
     @OneToMany(mappedBy = "student")
     private List<StudentLecture> studentLectures = new ArrayList<>();
 
-    public static Student of(String username, String password, String name, String email) {
+    public static Student of(String username, String password, String nickname, String email) {
         Student student = new Student();
         student.setUsername(username);
         student.setPassword(password);
         student.setEmail(email);
-        student.name = name;
+        student.name = nickname;
 
         return student;
     }
@@ -61,13 +61,17 @@ public class Student extends LoginCredential {
         this.studentCurricula.add(studentCurriculum);
     }
 
-    public void updateInfo(String name, String email) {
-        if (name != null && !name.equals("")) {
-            this.name = name;
+    public void updateInfo(String nickname, String email, String password) {
+        if (nickname != null && !nickname.equals("")) {
+            this.name = nickname;
         }
 
         if (email != null && !email.equals("")) {
             this.email = email;
+        }
+
+        if (password != null & !password.equals("")) {
+            this.setPassword(password);
         }
     }
 }

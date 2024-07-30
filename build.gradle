@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.7'
     id 'io.spring.dependency-management' version '1.1.5'
+    id 'jacoco'
+
 }
 
 group = 'com.twentyone'
@@ -27,10 +29,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-//    runtimeOnly 'com.mysql:mysql-connector-j'
+    compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    testCompileOnly 'org.projectlombok:lombok:' // 테스트 컴파일 타임에 Lombok 사용
+    testAnnotationProcessor 'org.projectlombok:lombok:' // 테스트 주석 처리기 추가
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -57,18 +61,129 @@ dependencies {
 
     // 처리율 제한 기능
 
+    // test
+    testImplementation 'io.rest-assured:rest-assured:5.5.0'
+
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
 
-task copyYML(type: Copy){
+task copyYML(type: Copy) {
     copy {
         from './steach-server-submodule'
         include "*.yml"
         into 'src/main/resources'
     }
+    copy {
+        from './steach-server-submodule/test'
+        include "*.yml"
+        into 'src/test/resources'
+    }
+}
+
+// jacoco 테스트 커버리지
+jacoco {
+    // JaCoCo 버전
+    toolVersion = "0.8.12"
+
+//  테스트결과 리포트를 저장할 경로 변경
+//  default는 "$/jacoco"
+    reportsDirectory = layout.buildDirectory.dir("$buildDir/customJacocoReportDir")
+//    reportsDir = file("$buildDir/customJacocoReportDir")
+}
+
+test {
+    dependsOn copyYML
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test // jacocoTestReport 작업이 test 작업에 종속되도록 설정
+    reports {
+        // 원하는 리포트를 켜고 끌 수 있습니다.
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+//  각 리포트 타입 마다 리포트 저장 경로를 설정할 수 있습니다.
+//  html.destination file("$buildDir/jacocoHtml")
+//  xml.destination file("$buildDir/jacoco.xml")
+    }
+    finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            // 'element'가 없으면 프로젝트의 전체 파일을 합친 값을 기준으로 합니다.
+            // 위의 리포트에서 'Total'로 표시된 부분입니다.
+            limit {
+                // 'counter'를 지정하지 않으면 default는 'INSTRUCTION'
+                // 'value'를 지정하지 않으면 default는 'COVEREDRATIO'
+                //  이 규칙은 프로젝트의 전체 커버리지를 검증합니다.
+                minimum = 0.01
+            }
+        }
+
+        // 여러 룰을 생성할 수 있습니다.
+        rule {
+            // 룰을 간단히 켜고 끌 수 있습니다.
+            enabled = false
+
+            // 룰을 체크할 단위는 클래스 단위
+            element = 'CLASS'
+
+            /**
+             * Branch Coverage (분기 커버리지)
+             설명: 코드 내의 모든 분기(branch) 구문이 테스트되는지를 확인합니다.
+             세부 사항:
+             분기는 조건문(if, switch 등) 내에서 발생합니다.
+             예를 들어, if (condition)이 있을 때, condition이 true일 때와 false일 때 두 가지 경우 모두 테스트가 되는지를 확인합니다.
+             목표: 코드의 모든 분기점이 테스트되는 것을 보장하여, 논리적 경로의 결함을 줄입니다.
+             */
+            // 브랜치 커버리지를 최소한 90% 만족시켜야 합니다.
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.50
+            }
+
+            /**
+             *
+             Line Coverage (라인 커버리지)
+             설명: 코드 내의 각 코드 라인이 테스트되는지를 확인합니다.
+             세부 사항:
+             한 라인이 최소한 한 번 실행되면 해당 라인은 커버된 것으로 간주됩니다.
+             코드의 모든 라인이 테스트에서 실행되는지를 확인합니다.
+             목표: 가능한 모든 코드가 실행되어 테스트되지 않은 코드 부분이 없도록 합니다.
+             */
+            // 라인 커버리지를 최소한 80% 만족시켜야 합니다.
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.10
+            }
+
+            // 빈 줄을 제외한 코드의 라인수를 최대 200라인으로 제한합니다.
+            limit {
+                counter = 'LINE'
+                value = 'TOTALCOUNT'
+                maximum = 200
+            }
+            // 커버리지 체크를 제외할 클래스들
+            excludes = [
+                '*.test.*',
+//                '**/generated',
+                    '*.Q*'
+            ]
+        }
+    }
+}
+
+check {
+    dependsOn jacocoTestCoverageVerification
 }
 
 // queryDSL
@@ -79,7 +194,7 @@ tasks.withType(JavaCompile) {
 }
 
 sourceSets {
-    main.java.srcDirs += [ querydslDir ]
+    main.java.srcDirs += [querydslDir]
 }
 
 clean {

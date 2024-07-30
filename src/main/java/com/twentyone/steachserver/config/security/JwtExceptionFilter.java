@@ -1,5 +1,7 @@
-package com.twentyone.steachserver.domain.auth.dto;
+package com.twentyone.steachserver.config.security;
 
+import com.twentyone.steachserver.domain.auth.dto.JwtExceptionResponse;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,16 +16,18 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws ServletException, IOException {
         try {
             chain.doFilter(req, res);
-        } catch (JwtException | IOException ex) {
-            setErrorResponse(HttpStatus.UNAUTHORIZED, res, ex);
+        } catch (ExpiredJwtException e) {
+            setErrorResponse(HttpStatus.UNAUTHORIZED, res, "만료된 토큰입니다.");
+        } catch (JwtException | IOException e) {
+            setErrorResponse(HttpStatus.UNAUTHORIZED, res, e.getMessage());
         }
     }
 
-    public void setErrorResponse(HttpStatus status, HttpServletResponse res, Throwable ex) throws IOException {
+    public void setErrorResponse(HttpStatus status, HttpServletResponse res, String errorMessage) throws IOException {
         res.setStatus(status.value());
         res.setContentType("application/json; charset=UTF-8");
 
-        JwtExceptionResponse jwtExceptionResponse = new JwtExceptionResponse(status, ex.getMessage());
+        JwtExceptionResponse jwtExceptionResponse = new JwtExceptionResponse(status, errorMessage);
         res.getWriter().write(jwtExceptionResponse.convertToJson());
     }
 }

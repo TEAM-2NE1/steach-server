@@ -11,6 +11,7 @@ import com.twentyone.steachserver.domain.lecture.error.LectureTimeNotYetExceptio
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
 import com.twentyone.steachserver.domain.member.model.Student;
+import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.statistic.service.StatisticService;
 import com.twentyone.steachserver.domain.studentLecture.service.StudentLectureService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,11 +29,9 @@ import java.util.Optional;
 @RequestMapping("/api/v1/lectures")
 @RequiredArgsConstructor
 public class LectureController {
-
     private final LectureService lectureService;
     private final StudentLectureService studentLectureService;
     private final StatisticService statisticService;
-
 
     @Operation(summary = "[공통] 강의에 대한 다양한 정보 반환", description = "무조건 200을 반환, 강의에 대해서 시작 전 강의면 시작 전 형태로, 끝난 강의는 끝난형태로 반환.")
     @GetMapping("/{lectureId}")
@@ -85,7 +84,15 @@ public class LectureController {
     @Operation(summary = "선생님이 강의 시작을 누르면 강의 리얼 시작시간이 들어가는 메서드", description = "무조건 200을 반환")
     @PatchMapping("/start/{lectureId}")
     public ResponseEntity<?> updateRealStartTime(@PathVariable("lectureId") Integer lectureId) {
+//        Todo: 자신꺼 아니면 안되게 처리해줘야하나 고민
         lectureService.updateRealStartTime(lectureId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{lectureId}")
+    public ResponseEntity<?> deleteLecture(@PathVariable("lectureId") Integer lectureId, @AuthenticationPrincipal Teacher teacher) {
+        lectureService.delete(lectureId, teacher);
+
         return ResponseEntity.ok().build();
     }
 }

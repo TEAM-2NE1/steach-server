@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.lecture.service;
 
+import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.lecture.dto.*;
@@ -10,10 +11,12 @@ import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 
 import com.twentyone.steachserver.domain.lecture.validator.LectureValidator;
 import com.twentyone.steachserver.domain.member.model.Student;
+import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.member.repository.StudentRepository;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureQueryRepository;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
+import com.twentyone.steachserver.global.error.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,12 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class LectureServiceImpl implements LectureService {
-
     private final LectureRepository lectureRepository;
     private final LectureQueryRepository lectureQueryRepository;
     private final StudentRepository studentRepository;
@@ -66,6 +67,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public Optional<LectureBeforeStartingResponseDto> updateLectureInformation(Integer lectureId,
                                                                                UpdateLectureRequestDto lectureRequestDto) {
         Lecture lecture = lectureRepository.findById(lectureId)
@@ -143,8 +145,20 @@ public class LectureServiceImpl implements LectureService {
                 }
             }
             curriculum.getTeacher().updateVolunteerMinute(volunteerMinute);
-
         }
+    }
+
+    @Override
+    @Transactional
+    public void delete(Integer lectureId, Teacher teacher) {
+        Lecture lecture = lectureRepository.findById(lectureId)
+                .orElseThrow(() -> new ResourceNotFoundException("lecture not found"));
+
+        if (!lecture.getCurriculum().getTeacher().equals(teacher)) {
+            throw new ForbiddenException("커리큘럼을 만든 사람만 수정이 가능. 권한이 없음");
+        }
+
+        lectureRepository.delete(lecture);
     }
 
     @Override
@@ -181,6 +195,5 @@ public class LectureServiceImpl implements LectureService {
                 .orElseThrow(() -> new IllegalArgumentException("lecture not found"));
         return CompletedLecturesResponseDto.of(lectureBeforeStartingResponseDto, studentInfoByLecture, lecture);
     }
-
 }
 
