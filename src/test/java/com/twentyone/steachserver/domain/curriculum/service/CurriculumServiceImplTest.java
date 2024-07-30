@@ -15,6 +15,7 @@ import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCurriculumRepository;
 import com.twentyone.steachserver.util.DateTimeUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("커리큘럼 테스트")
 class CurriculumServiceImplTest extends SteachTest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";

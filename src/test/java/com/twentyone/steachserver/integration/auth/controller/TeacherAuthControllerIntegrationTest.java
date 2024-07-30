@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@DisplayName("강사 인증 통합 테스트")
 public class TeacherAuthControllerIntegrationTest extends ControllerIntegrationTest {
 
     @Autowired
@@ -108,6 +109,7 @@ public class TeacherAuthControllerIntegrationTest extends ControllerIntegrationT
                 .nickname(강사_추가_정보.get("nickname"))
                 .email(강사_추가_정보.get("email"))
                 .build();
+
 
         return given().log().all()
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
