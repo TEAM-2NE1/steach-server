@@ -61,6 +61,30 @@ public class CurriculumSearchRepository {
         return new PageImpl<>(results, pageable, total);
     }
 
+    public List<Curriculum> search(CurriculaSearchCondition condition) {
+        // 카운트 쿼리 (페이지네이션 없이)
+//        select s from curriculum s join curriculum_details d where d.title like :search
+//        System.out.println("search");
+        JPAQuery<Curriculum> countQuery = queryFactory
+                .select(curriculum)
+                .from(curriculum)
+                .join(curriculum.curriculumDetail, curriculumDetail)
+                .join(curriculum.teacher, teacher)
+                .where(
+                        curriculumCategoryEq(condition.getCurriculumCategory()),
+                        onlyAvailableEq(condition.getOnlyAvailable()),
+                        curriculumSearchKeywordEq(condition.getSearch())
+                );
+
+        OrderSpecifier<?> orderSpecifier = getOrder(condition.getOrder());
+        if (orderSpecifier != null) {
+            countQuery.orderBy(orderSpecifier);
+        }
+
+        List<Curriculum> results = countQuery.fetch();
+
+        return results;
+    }
 
 //    public Page<Curriculum> search(CurriculaSearchCondition condition, Pageable pageable) {
 //        //select s from curriculum s join curriculum_details d where d.title like :search

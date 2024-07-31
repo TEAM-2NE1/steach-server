@@ -57,21 +57,29 @@ public class CurriculumController {
     }
 
     @Operation(summary = "[All] 커리큘럼 리스트 조회/검색", description = "lecture_start_time 은 날짜시간 같이 나옵니다. /n"
-            + "pageSize: 한 페이지당 원소 개수(n개씩보기), currentPageNumber: 현재 몇 페이지, totalPage: 전체 페이지 개수")
+            + "pageSize: 한 페이지당 원소 개수(n개씩보기), currentPageNumber: 현재 몇 페이지, totalPage: 전체 페이지 개수 \n"
+            + "pageSize나 currentPageNumber를 null로 줄 경우 전부 다 줌")
     @GetMapping
     public ResponseEntity<CurriculumListResponse> getCurricula(
             @RequestParam(value = "curriculum_category", required = false) CurriculumCategory curriculumCategory,
             @RequestParam(value = "order", required = false) CurriculaOrderType order,
             @RequestParam(value = "only_available", required = false) Boolean onlyAvailable,
             @RequestParam(value = "search", required = false) String search,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "100") Integer pageSize,
-            @RequestParam(value = "currentPageNumber", required = false, defaultValue = "1") Integer currentPageNumber) {
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "currentPageNumber", required = false) Integer currentPageNumber) {
         CurriculaSearchCondition condition = new CurriculaSearchCondition(curriculumCategory, order, onlyAvailable,
                 search);
-        int pageNumber = currentPageNumber - 1; //입력은 1부터 시작, 실제로는 0부터 시작
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        CurriculumListResponse result = null;
 
-        CurriculumListResponse result = curriculumService.search(condition, pageable);
+        if (pageSize != null && currentPageNumber != null) {
+            //페이징 처리
+            int pageNumber = currentPageNumber - 1; //입력은 1부터 시작, 실제로는 0부터 시작
+            Pageable pageable = PageRequest.of(pageNumber, pageSize);
+            result = curriculumService.search(condition, pageable);
+        } else {
+            //페이징 없이 처리
+            result = curriculumService.search(condition);
+        }
 
         return ResponseEntity.ok(result);
     }

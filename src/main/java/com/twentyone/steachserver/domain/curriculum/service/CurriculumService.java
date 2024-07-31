@@ -24,6 +24,8 @@ public interface CurriculumService {
 
     CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable);
 
+    CurriculumListResponse search(CurriculaSearchCondition condition);
+
     List<LocalDateTime> getSelectedWeekdays(LocalDateTime startDate, LocalDateTime endDate,
                                             int weekdaysBitmask);
 

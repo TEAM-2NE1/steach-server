@@ -159,7 +159,16 @@ public class CurriculumServiceImpl implements CurriculumService {
 
     @Override
     public CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable) {
+        //페이징 처리
         Page<Curriculum> curriculumList = curriculumSearchRepository.search(condition, pageable);
+
+        return CurriculumListResponse.fromSimpleDomainList(curriculumList);
+    }
+
+    @Override
+    public CurriculumListResponse search(CurriculaSearchCondition condition) {
+        //페이징 없이 처리
+        List<Curriculum> curriculumList = curriculumSearchRepository.search(condition);
 
         return CurriculumListResponse.fromSimpleDomainList(curriculumList);
     }
