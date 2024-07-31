@@ -16,5 +16,9 @@ import java.util.Optional;
 public interface StudentCurriculumRepository extends JpaRepository<StudentCurriculum, StudentCurriculumId> {
     @Query("select sc from StudentCurriculum sc join sc.curriculum where sc.student = :student")
     Page<StudentCurriculum> findByStudent(@Param("student") Student student, Pageable pageable);
+
+    @Query("select sc from StudentCurriculum sc join sc.curriculum where sc.student = :student")
+    List<StudentCurriculum> findByStudent(@Param("student") Student student);
+
     Optional<StudentCurriculum> findTop1ByStudentAndCurriculum(Student student, Curriculum curriculum);
 }
