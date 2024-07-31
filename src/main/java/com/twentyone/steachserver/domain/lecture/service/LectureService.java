@@ -30,7 +30,7 @@ public interface LectureService {
 
     void updateRealStartTime(Integer lectureId);
 
-    WeekLectureListResponseDto findByCurriculum(Integer curriculumId);
+    AllLecturesInCurriculaResponseDto findByCurriculum(Integer curriculumId);
 
     void addVolunteerMinute(Lecture updateLecture);
 

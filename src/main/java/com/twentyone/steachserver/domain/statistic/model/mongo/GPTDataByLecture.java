@@ -11,7 +11,6 @@ import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 @Document(collection = "gpt_data_by_lecture")
 @Getter
@@ -21,7 +20,6 @@ public class GPTDataByLecture {
     @Id
     private String id;
     private Integer lectureId;
-    private String studentName; //삭제?
     private Integer studentId;
     private String curriculumTitle;
     private String lectureTitle;
@@ -37,7 +35,6 @@ public class GPTDataByLecture {
     // Constructor
     private GPTDataByLecture(Lecture lecture, Curriculum curriculum, StudentLecture studentLecture) {
         this.lectureId = lecture.getId();
-        this.studentName = studentLecture.getStudent().getName();
         this.studentId = studentLecture.getStudent().getId();
         this.curriculumTitle = curriculum.getTitle();
         this.lectureTitle = lecture.getTitle();

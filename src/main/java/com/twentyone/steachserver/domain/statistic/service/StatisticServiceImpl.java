@@ -104,8 +104,6 @@ public class StatisticServiceImpl implements StatisticService {
                 "Based on these statistics, I can make career recommendations based on the student's interests and aptitudes." +
                 "Food biotech, math teacher, software developer, etc.").append("\n");
 
-        //studentName은 바뀔 수 있기 때문에, 이름을 바꿨을 경우 gpt 데이터 누락 발생가능. studentId로 바꿨습니다. 주석은 나중에 지울게요
-//        List<GPTDataByLecture> gptDataByLectures = gptDataByLectureMongoRepository.findAllByStudentName(student.getName());
         List<GPTDataByLecture> gptDataByLectures = gptDataByLectureMongoRepository.findAllByStudentId(student.getId());
 
         if (gptDataByLectures.isEmpty())

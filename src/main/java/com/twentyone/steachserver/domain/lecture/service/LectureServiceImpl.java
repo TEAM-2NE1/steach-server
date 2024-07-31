@@ -120,7 +120,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
-    public WeekLectureListResponseDto findByCurriculum(Integer curriculumId) {
+    public AllLecturesInCurriculaResponseDto findByCurriculum(Integer curriculumId) {
         List<Lecture> lectures = lectureRepository.findByCurriculumId(curriculumId)
                 .orElseGet(() -> new ArrayList<>());
 
@@ -148,7 +148,7 @@ public class LectureServiceImpl implements LectureService {
             }
         }
 
-        return WeekLectureListResponseDto.of(lecturesByWeek, lectures.size());
+        return AllLecturesInCurriculaResponseDto.of(lecturesByWeek, lectures.size());
     }
 
     @Override

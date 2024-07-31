@@ -11,13 +11,13 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class WeekLectureListResponseDto {
+public class AllLecturesInCurriculaResponseDto {
     private Integer lectureCount;
     private Integer weekCount;
     private Map<Integer, List<LectureResponseDto>> lectures;
 
-    public static WeekLectureListResponseDto of(Map<Integer, List<LectureResponseDto>> lectures, Integer lectureCount) {
-        WeekLectureListResponseDto dto = new WeekLectureListResponseDto();
+    public static AllLecturesInCurriculaResponseDto of(Map<Integer, List<LectureResponseDto>> lectures, Integer lectureCount) {
+        AllLecturesInCurriculaResponseDto dto = new AllLecturesInCurriculaResponseDto();
         dto.lectureCount = lectureCount;
         dto.weekCount = lectures.size();
         dto.lectures = lectures;

@@ -4,7 +4,7 @@ import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.curriculum.dto.*;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.service.CurriculumService;
-import com.twentyone.steachserver.domain.lecture.dto.WeekLectureListResponseDto;
+import com.twentyone.steachserver.domain.lecture.dto.AllLecturesInCurriculaResponseDto;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import io.swagger.v3.oas.annotations.Operation;
@@ -84,21 +84,12 @@ public class CurriculumController {
 
     @Operation(summary = "[All] 커리큘럼에 해당하는 강의 리스트 조회")
     @GetMapping("/{curriculum_id}/lectures")
-    public ResponseEntity<WeekLectureListResponseDto> getLecturesByCurriculum(
+    public ResponseEntity<AllLecturesInCurriculaResponseDto> getLecturesByCurriculum(
             @PathVariable("curriculum_id") Integer curriculumId) {
-        WeekLectureListResponseDto byCurriculum = lectureService.findByCurriculum(curriculumId);
+        AllLecturesInCurriculaResponseDto byCurriculum = lectureService.findByCurriculum(curriculumId);
 
         return ResponseEntity.ok(byCurriculum);
     }
-
-//    @Operation(summary = "[All] 커리큘럼에 해당하는 강의 리스트 조회")
-//    @GetMapping("/{curriculum_id}/lectures")
-//    public ResponseEntity<LectureListResponseDto> getLecturesByCurriculum(
-//            @PathVariable("curriculum_id") Integer curriculumId) {
-//        LectureListResponseDto byCurriculum = lectureService.findByCurriculum(curriculumId);
-//
-//        return ResponseEntity.ok(byCurriculum);
-//    }
 
     @Secured("ROLE_TEACHER")
     @Operation(summary = "[강사, 관련사용자] 커리큘럼 수정", description = "커리큘럼을 만든 사람만 수정가능합니다")

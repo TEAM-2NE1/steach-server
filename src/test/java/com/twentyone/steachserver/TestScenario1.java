@@ -8,7 +8,7 @@ import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.service.CurriculumService;
 import com.twentyone.steachserver.domain.lecture.dto.LectureResponseDto;
-import com.twentyone.steachserver.domain.lecture.dto.WeekLectureListResponseDto;
+import com.twentyone.steachserver.domain.lecture.dto.AllLecturesInCurriculaResponseDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
 import com.twentyone.steachserver.domain.member.model.Student;
@@ -21,7 +21,6 @@ import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.service.QuizService;
 import com.twentyone.steachserver.domain.statistic.service.StatisticService;
-import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.service.StudentLectureService;
 import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizRequestDto;
 import com.twentyone.steachserver.domain.studentQuiz.service.StudentQuizService;
@@ -131,8 +130,8 @@ public class TestScenario1 {
         Integer curriculumId = curriculumDetailResponse.getCurriculumId();
 
         /* FIXME 6. 강의 리스트 받기 */
-        WeekLectureListResponseDto weekLectureListResponseDto = lectureService.findByCurriculum(curriculumId);
-        Map<Integer, List<LectureResponseDto>> lecturesMap = weekLectureListResponseDto.getLectures();
+        AllLecturesInCurriculaResponseDto allLecturesInCurriculaResponseDto = lectureService.findByCurriculum(curriculumId);
+        Map<Integer, List<LectureResponseDto>> lecturesMap = allLecturesInCurriculaResponseDto.getLectures();
 
         List<Integer> lectures = new ArrayList<>();
         for (Integer key: lecturesMap.keySet()) {
