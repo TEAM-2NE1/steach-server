@@ -26,6 +26,10 @@ public class QuizChoice {
     @JoinColumn(name = "quiz_id", referencedColumnName = "id")
     private Quiz quiz;
 
+    public static QuizChoice createEmptyQuizChoice() {
+        return new QuizChoice();
+    }
+
     public static QuizChoice createQuizChoice(String choiceText, Quiz savedQuiz, boolean isAnswer) {
         QuizChoice quizChoice = new QuizChoice();
         quizChoice.setChoiceSentence(choiceText);
