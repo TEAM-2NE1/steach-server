@@ -86,6 +86,20 @@ public class CurriculumSearchRepository {
         return results;
     }
 
+    public List<Curriculum> findTop7ByOrderByCurricula(CurriculaOrderType orderType) {
+        return queryFactory
+                .select(curriculum)
+                .from(curriculum)
+                .join(curriculum.curriculumDetail, curriculumDetail)
+                .join(curriculum.teacher, teacher)
+                .where(
+                        onlyAvailableEq(true)
+                )
+                .orderBy(getOrder(orderType))
+                .limit(7)
+                .fetch();
+    }
+
 //    public Page<Curriculum> search(CurriculaSearchCondition condition, Pageable pageable) {
 //        //select s from curriculum s join curriculum_details d where d.title like :search
 //        System.out.println("search");
