@@ -52,6 +52,7 @@ public class SecurityConfiguration {
                         .requestMatchers(whiteList).permitAll()
                         .requestMatchers(swaggerWhiteList).permitAll()
                         .requestMatchers(HttpMethod.GET, API_PREFIX + "/curricula/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, API_PREFIX + "/main/**").permitAll()
                         .requestMatchers(HttpMethod.GET, API_PREFIX + "/lectures/*").permitAll()
                         .anyRequest().authenticated()
                 )
