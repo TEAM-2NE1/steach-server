@@ -23,12 +23,15 @@ import java.util.List;
 
 import com.twentyone.steachserver.global.error.ResourceNotFoundException;
 import com.twentyone.steachserver.util.converter.WeekdayBitmaskUtil;
+import com.twentyone.steachserver.domain.curriculum.service.redis.CurriculumRedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.twentyone.steachserver.domain.curriculum.dto.CurriculumListResponse.fromSimpleDomainList;
 
 @Service
 @Slf4j
@@ -43,6 +46,7 @@ public class CurriculumServiceImpl implements CurriculumService {
     private final StudentLectureRepository studentLectureRepository;
 
     private final CurriculumValidator curriculumValidator;
+    private final CurriculumRedisService curriculumRedisService;
 
     @Override
     @Transactional(readOnly = true)
@@ -93,6 +97,9 @@ public class CurriculumServiceImpl implements CurriculumService {
                     lectureDate, curriculum);
             lectureRepository.save(lecture);
         }
+
+        // Redis에 최신 커리큘럼 추가
+        curriculumRedisService.addLatestCurriculum(CurriculumDetailResponse.fromDomainBySimple(curriculum));
 
         return CurriculumDetailResponse.fromDomain(curriculum); //관련 강의도 줄까?? 고민
     }
@@ -182,7 +189,7 @@ public class CurriculumServiceImpl implements CurriculumService {
         //페이징 처리
         Page<Curriculum> curriculumList = curriculumSearchRepository.search(condition, pageable);
 
-        return CurriculumListResponse.fromSimpleDomainList(curriculumList);
+        return fromSimpleDomainList(curriculumList);
     }
 
     @Override
@@ -190,7 +197,7 @@ public class CurriculumServiceImpl implements CurriculumService {
         //페이징 없이 처리
         List<Curriculum> curriculumList = curriculumSearchRepository.search(condition);
 
-        return CurriculumListResponse.fromSimpleDomainList(curriculumList);
+        return fromSimpleDomainList(curriculumList);
     }
 
     @Override
@@ -251,6 +258,31 @@ public class CurriculumServiceImpl implements CurriculumService {
         }
 
         curriculumRepository.delete(curriculum);
+
+        //
+//        최신 7개 중 하나가 빠지면, 채워 넣어야함.
+        List<CurriculumDetailResponse> latestCurriculums = curriculumRedisService.getLatestCurricula();
+        for (CurriculumDetailResponse latestCurriculumsCurriculum : latestCurriculums) {
+            if (latestCurriculumsCurriculum.getCurriculumId().equals(curriculumId)) {
+                List<Curriculum> top7ByOrderByCurricula = curriculumSearchRepository.findTop7ByOrderByCurricula(CurriculaOrderType.LATEST);
+                curriculumRedisService.saveLatestCurricula(fromSimpleDomainList(top7ByOrderByCurricula).getCurricula());
+                break;
+            }
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<CurriculumDetailResponse> getPopularRatioCurriculums() {
+        List<Curriculum> curriculumList = curriculumSearchRepository.findTop7ByOrderByCurricula(CurriculaOrderType.POPULAR_PER_RATIO);
+
+        return fromSimpleDomainList(curriculumList).getCurricula();
+    }
+
+    @Override
+    public List<CurriculumDetailResponse> getLatestCurriculums() {
+        List<Curriculum> curriculumList = curriculumSearchRepository.findTop7ByOrderByCurricula(CurriculaOrderType.LATEST);
+
+        return fromSimpleDomainList(curriculumList).getCurricula();
     }
 
     private int getBitmaskForDayOfWeek(DayOfWeek dayOfWeek) {
