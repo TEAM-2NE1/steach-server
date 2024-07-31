@@ -3,10 +3,9 @@ package com.twentyone.steachserver.domain.curriculum.dto;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
-import java.time.LocalTime;
 
-import com.twentyone.steachserver.util.DateTimeUtil;
-import com.twentyone.steachserver.util.WeekdayBitmaskUtil;
+import com.twentyone.steachserver.util.converter.DateTimeUtil;
+import com.twentyone.steachserver.util.converter.WeekdayBitmaskUtil;
 import lombok.*;
 
 import java.time.LocalDateTime;

@@ -17,13 +17,12 @@ import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCur
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.twentyone.steachserver.global.error.ResourceNotFoundException;
-import com.twentyone.steachserver.util.WeekdayBitmaskUtil;
+import com.twentyone.steachserver.util.converter.WeekdayBitmaskUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

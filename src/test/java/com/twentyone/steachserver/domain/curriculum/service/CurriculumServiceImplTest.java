@@ -1,7 +1,6 @@
 package com.twentyone.steachserver.domain.curriculum.service;
 
 import com.twentyone.steachserver.SteachTest;
-import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
@@ -13,7 +12,7 @@ import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCurriculumRepository;
-import com.twentyone.steachserver.util.DateTimeUtil;
+import com.twentyone.steachserver.util.converter.DateTimeUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
