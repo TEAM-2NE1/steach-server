@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.util;
+package com.twentyone.steachserver.util.converter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

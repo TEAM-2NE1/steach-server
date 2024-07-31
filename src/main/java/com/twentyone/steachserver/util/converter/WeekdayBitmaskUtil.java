@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.util;
+package com.twentyone.steachserver.util.converter;
 
 public class WeekdayBitmaskUtil {
     public static byte convert(String bitmaskString) {
