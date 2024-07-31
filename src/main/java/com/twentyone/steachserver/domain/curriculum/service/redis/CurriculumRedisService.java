@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -64,7 +65,10 @@ public class CurriculumRedisService {
 
     public void addLatestCurriculum(CurriculumDetailResponse curriculum) {
         List<CurriculumDetailResponse> currentList = getLatestCurricula();
-        if (currentList != null && currentList.size() >= 7) { // 7개 유지
+        if (currentList == null) {
+            currentList = new ArrayList<>();
+        }
+        if (currentList.size() >= 7) { // 7개 유지
             currentList.remove(currentList.size() - 1); // 마지막 항목 제거
         }
         currentList.add(0, curriculum); // 첫 번째에 추가
