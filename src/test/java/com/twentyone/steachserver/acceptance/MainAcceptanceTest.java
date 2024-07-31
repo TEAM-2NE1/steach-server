@@ -7,7 +7,8 @@ import com.twentyone.steachserver.domain.classroom.dto.FocusTimeRequestDto;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
-import com.twentyone.steachserver.domain.lecture.dto.LectureListResponseDto;
+import com.twentyone.steachserver.domain.lecture.dto.LectureResponseDto;
+import com.twentyone.steachserver.domain.lecture.dto.WeekLectureListResponseDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizRequestDto;
 import io.restassured.response.Response;
@@ -444,14 +445,30 @@ public class MainAcceptanceTest extends AcceptanceTest {
                 .get("/api/v1/curricula/" + 커리큘럼_pk + "/lectures");
     }
 
+//    Integer 커리큘럼의_강의_확인(Response 커리큘럼의_강의_조회) throws JsonProcessingException {
+//        커리큘럼의_강의_조회
+//                .then()
+//                .body("lectures[0]", Matchers.notNullValue());
+//        // 응답을 LectureListResponseDto 객체로 변환
+//        LectureListResponseDto lectureListResponse = objectMapper.readValue(커리큘럼의_강의_조회.asString(), LectureListResponseDto.class);
+//        // 첫 번째 LectureResponseDto의 id 값 가져오기
+//        return lectureListResponse.getLectures().get(0).getLectureId();
+//    }
+
     Integer 커리큘럼의_강의_확인(Response 커리큘럼의_강의_조회) throws JsonProcessingException {
         커리큘럼의_강의_조회
                 .then()
-                .body("lectures[0]", Matchers.notNullValue());
-        // 응답을 LectureListResponseDto 객체로 변환
-        LectureListResponseDto lectureListResponse = objectMapper.readValue(커리큘럼의_강의_조회.asString(), LectureListResponseDto.class);
-        // 첫 번째 LectureResponseDto의 id 값 가져오기
-        return lectureListResponse.getLectures().get(0).getLectureId();
+                .body("lectures", Matchers.notNullValue());
+
+        // 응답을 WeekLectureListResponseDto 객체로 변환
+        WeekLectureListResponseDto weekLectureListResponse = objectMapper.readValue(커리큘럼의_강의_조회.asString(), WeekLectureListResponseDto.class);
+
+        // 첫 번째 주차의 첫 번째 LectureResponseDto의 id 값 가져오기
+        Map<Integer, List<LectureResponseDto>> lecturesMap = weekLectureListResponse.getLectures();
+        Integer firstWeek = lecturesMap.keySet().stream().findFirst().orElseThrow(() -> new RuntimeException("No lectures found"));
+        Integer firstLectureId = lecturesMap.get(firstWeek).get(0).getLectureId();
+
+        return firstLectureId;
     }
 
     Response 퀴즈_생성(Integer 첫번째_강의_pk, Map<String, Object> 퀴즈_정보) throws JsonProcessingException {
