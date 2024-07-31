@@ -144,6 +144,14 @@ public class CurriculumServiceImpl implements CurriculumService {
 
     @Override
     @Transactional(readOnly = true)
+    public CurriculumListResponse getTeachersCurricula(Teacher teacher) {
+        List<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher);
+
+        return CurriculumListResponse.fromDomainList(curriculumList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public CurriculumListResponse getStudentsCurricula(Student student, Pageable pageable) {
         Page<StudentCurriculum> studentsCurriculaPage = studentCurriculumRepository.findByStudent(student, pageable);
         List<StudentCurriculum> studentsCurricula = studentsCurriculaPage.getContent();
@@ -158,8 +166,30 @@ public class CurriculumServiceImpl implements CurriculumService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public CurriculumListResponse getStudentsCurricula(Student student) {
+        List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student);
+
+        List<Curriculum> curriculaList = new ArrayList<>();
+        for (StudentCurriculum studentCurriculum : studentsCurricula) {
+            curriculaList.add(studentCurriculum.getCurriculum());
+        }
+
+        return CurriculumListResponse.fromDomainList(curriculaList, null, null, null);
+    }
+
+    @Override
     public CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable) {
+        //페이징 처리
         Page<Curriculum> curriculumList = curriculumSearchRepository.search(condition, pageable);
+
+        return CurriculumListResponse.fromSimpleDomainList(curriculumList);
+    }
+
+    @Override
+    public CurriculumListResponse search(CurriculaSearchCondition condition) {
+        //페이징 없이 처리
+        List<Curriculum> curriculumList = curriculumSearchRepository.search(condition);
 
         return CurriculumListResponse.fromSimpleDomainList(curriculumList);
     }

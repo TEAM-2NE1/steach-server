@@ -2,6 +2,9 @@ package com.twentyone.steachserver.domain.lecture.dto;
 
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,5 +27,15 @@ public class LectureResponseDto {
                 .lectureOrder(lecture.getLectureOrder())
                 .lectureStartTime(lecture.getLectureStartDate())
                 .build();
+    }
+
+    public static List<LectureResponseDto> fromDomainList(List<Lecture> lectures) {
+        List<LectureResponseDto> list = new ArrayList<>();
+
+        for (Lecture lecture: lectures) {
+            list.add(LectureResponseDto.fromDomain(lecture));
+        }
+
+        return list;
     }
 }

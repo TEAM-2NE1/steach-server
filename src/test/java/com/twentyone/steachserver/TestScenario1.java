@@ -7,8 +7,8 @@ import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.service.CurriculumService;
-import com.twentyone.steachserver.domain.lecture.dto.LectureListResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.LectureResponseDto;
+import com.twentyone.steachserver.domain.lecture.dto.AllLecturesInCurriculaResponseDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
 import com.twentyone.steachserver.domain.member.model.Student;
@@ -32,11 +32,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Transactional
@@ -130,10 +130,14 @@ public class TestScenario1 {
         Integer curriculumId = curriculumDetailResponse.getCurriculumId();
 
         /* FIXME 6. 강의 리스트 받기 */
-        LectureListResponseDto byCurriculum = lectureService.findByCurriculum(curriculumId);
+        AllLecturesInCurriculaResponseDto allLecturesInCurriculaResponseDto = lectureService.findByCurriculum(curriculumId);
+        Map<Integer, List<LectureResponseDto>> lecturesMap = allLecturesInCurriculaResponseDto.getLectures();
+
         List<Integer> lectures = new ArrayList<>();
-        for (LectureResponseDto lectureResponseDto: byCurriculum.getLectures()) {
-            lectures.add(lectureResponseDto.getLectureId());
+        for (Integer key: lecturesMap.keySet()) {
+            for (LectureResponseDto lectureResponseDto : lecturesMap.get(key)) {
+                lectures.add(lectureResponseDto.getLectureId());
+            }
         }
 
         /* FIXME 7. 커리큘럼 수강신청 */
