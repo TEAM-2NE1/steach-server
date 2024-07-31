@@ -18,15 +18,17 @@ import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectur
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
 import com.twentyone.steachserver.global.error.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.temporal.WeekFields;
+import java.util.*;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -118,11 +120,35 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
-    public LectureListResponseDto findByCurriculum(Integer curriculumId) {
+    public WeekLectureListResponseDto findByCurriculum(Integer curriculumId) {
         List<Lecture> lectures = lectureRepository.findByCurriculumId(curriculumId)
                 .orElseGet(() -> new ArrayList<>());
 
-        return LectureListResponseDto.fromDomainList(lectures);
+//        List<LectureResponseDto> list = LectureResponseDto.fromDomainList(lectures);
+
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        Map<Integer, List<LectureResponseDto>> lecturesByWeek = new HashMap<>();
+
+        //주단위로 나누기
+        int currentWeekIdx = 0;
+        int prev = -1;
+        for (Lecture lecture : lectures) {
+            LocalDate startDate = lecture.getLectureStartDate().toLocalDate();
+            int weekNumber = startDate.get(weekFields.weekOfWeekBasedYear());
+            if (weekNumber != prev) {
+                prev = weekNumber;
+                List<LectureResponseDto> value = new ArrayList<>();
+                value.add(LectureResponseDto.fromDomain(lecture));
+                currentWeekIdx++;
+
+                lecturesByWeek.put(currentWeekIdx, value);
+            } else {
+                List<LectureResponseDto> lectureResponseDtoList = lecturesByWeek.get(currentWeekIdx);
+                lectureResponseDtoList.add(LectureResponseDto.fromDomain(lecture));
+            }
+        }
+
+        return WeekLectureListResponseDto.of(lecturesByWeek, lectures.size());
     }
 
     @Override
