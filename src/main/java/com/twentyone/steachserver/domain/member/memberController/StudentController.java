@@ -49,13 +49,19 @@ public class StudentController {
     @Operation(summary = "[학생] 학생이 수강하는 커리큘럼 조회", description = "currentPageNumber: 현재 몇 페이지, totalPage: 전체 페이지 개수, pageSize: 한 페이지당 원소 개수(n개씩보기)")
     @GetMapping("/curricula")
     public ResponseEntity<CurriculumListResponse> getMyCourses(@AuthenticationPrincipal Student student,
-                                                               @RequestParam(value = "pageSize", required = false, defaultValue = "100") Integer pageSize,
-                                                               @RequestParam(value = "currentPageNumber", required = false, defaultValue = "1") Integer currentPageNumber) {
-        int pageNumber = currentPageNumber - 1; //입력은 1부터 시작, 실제로는 0부터 시작
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+                                                               @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                                               @RequestParam(value = "currentPageNumber", required = false) Integer currentPageNumber) {
+        if (pageSize != null && currentPageNumber != null) {
+            //페이징 있는 버전
+            int pageNumber = currentPageNumber - 1; //입력은 1부터 시작, 실제로는 0부터 시작
+            Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        CurriculumListResponse curriculumListResponse = curriculumService.getStudentsCurricula(student, pageable);
+            CurriculumListResponse curriculumListResponse = curriculumService.getStudentsCurricula(student, pageable);
+            return ResponseEntity.ok(curriculumListResponse);
+        }
 
+        //페이징 없는 버전
+        CurriculumListResponse curriculumListResponse = curriculumService.getStudentsCurricula(student);
         return ResponseEntity.ok(curriculumListResponse);
     }
 }

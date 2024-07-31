@@ -22,6 +22,7 @@ public interface CurriculumService {
 
     @Transactional(readOnly = true)
     CurriculumListResponse getStudentsCurricula(Student student, Pageable pageable);
+    CurriculumListResponse getStudentsCurricula(Student student);
 
     CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable);
 

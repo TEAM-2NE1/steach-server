@@ -166,6 +166,19 @@ public class CurriculumServiceImpl implements CurriculumService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public CurriculumListResponse getStudentsCurricula(Student student) {
+        List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student);
+
+        List<Curriculum> curriculaList = new ArrayList<>();
+        for (StudentCurriculum studentCurriculum : studentsCurricula) {
+            curriculaList.add(studentCurriculum.getCurriculum());
+        }
+
+        return CurriculumListResponse.fromDomainList(curriculaList, null, null, null);
+    }
+
+    @Override
     public CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable) {
         //페이징 처리
         Page<Curriculum> curriculumList = curriculumSearchRepository.search(condition, pageable);
