@@ -29,6 +29,18 @@ public class CurriculumListResponse extends PageableDto {
 
         return response;
     }
+
+    public static CurriculumListResponse fromDomainList(List<Curriculum> curriculaList) {
+        CurriculumListResponse response = new CurriculumListResponse();
+        List<CurriculumDetailResponse> responseList = response.curricula;
+
+        for (Curriculum curriculum : curriculaList) {
+            responseList.add(CurriculumDetailResponse.fromDomain(curriculum));
+        }
+
+        return response;
+    }
+
     public static CurriculumListResponse fromSimpleDomainList(Page<Curriculum> curriculumList) {
         CurriculumListResponse response = new CurriculumListResponse();
         List<CurriculumDetailResponse> responseList = response.curricula;

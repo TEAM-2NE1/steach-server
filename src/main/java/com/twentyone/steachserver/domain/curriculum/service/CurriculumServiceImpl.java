@@ -144,6 +144,14 @@ public class CurriculumServiceImpl implements CurriculumService {
 
     @Override
     @Transactional(readOnly = true)
+    public CurriculumListResponse getTeachersCurricula(Teacher teacher) {
+        List<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher);
+
+        return CurriculumListResponse.fromDomainList(curriculumList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public CurriculumListResponse getStudentsCurricula(Student student, Pageable pageable) {
         Page<StudentCurriculum> studentsCurriculaPage = studentCurriculumRepository.findByStudent(student, pageable);
         List<StudentCurriculum> studentsCurricula = studentsCurriculaPage.getContent();

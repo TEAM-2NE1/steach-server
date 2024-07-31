@@ -18,6 +18,7 @@ public interface CurriculumService {
 
     @Transactional(readOnly = true)
     CurriculumListResponse getTeachersCurricula(Teacher teacher, Pageable pageable);
+    CurriculumListResponse getTeachersCurricula(Teacher teacher);
 
     @Transactional(readOnly = true)
     CurriculumListResponse getStudentsCurricula(Student student, Pageable pageable);
