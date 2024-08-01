@@ -46,6 +46,7 @@ public class CurriculumController {
         return ResponseEntity.ok(curriculumDetailResponse);
     }
 
+    @Secured("ROLE_STUDENT")
     @Operation(summary = "[학생] 커리큘럼 수강신청!")
     @PostMapping("/{curricula_id}/apply")
     public ResponseEntity<Void> registration(@AuthenticationPrincipal LoginCredential credential,
@@ -55,7 +56,8 @@ public class CurriculumController {
         return ResponseEntity.ok().build(); //TODO 반환값
     }
 
-    @Operation(summary = "[학생] 커리큘럼 수강신청!")
+    @Secured("ROLE_STUDENT")
+    @Operation(summary = "[학생] 커리큘럼 수강취소")
     @PostMapping("/{curricula_id}/cancel")
     public ResponseEntity<Void> cancel(@AuthenticationPrincipal Student student,
                                              @PathVariable("curricula_id") Integer curriculaId) {
@@ -113,6 +115,7 @@ public class CurriculumController {
 
     @Secured("ROLE_TEACHER")
     @DeleteMapping("/{curriculum_id}")
+    @Operation(summary = "[강사] 커리큘럼 삭제")
     public ResponseEntity<Void> deleteCurriculum(
             @PathVariable("curriculum_id") Integer curriculumId,
             @AuthenticationPrincipal Teacher teacher) {
