@@ -17,6 +17,7 @@ import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurricul
 import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCurriculumRepository;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
+
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -144,10 +145,13 @@ public class CurriculumServiceImpl implements CurriculumService {
 
     @Override
     public void cancel(Student student, Integer curriculaId) {
-        curriculumRepository.findByIdWithLock(curriculaId)
-                .orElseThrow(() -> new RuntimeException("찾을 수 없음"));
+        Curriculum curriculum = curriculumRepository.findByIdWithLock(curriculaId)
+                .orElseThrow(() -> new RuntimeException("커리큘럼 찾을 수 없음"));
 
-        studentCurriculumRepository.deleteByStudentAndCurriculum(student, curriculumRepository.getReferenceById(curriculaId));
+        studentCurriculumRepository.deleteByStudentAndCurriculumWithException(student, curriculum);
+
+        CurriculumDetail curriculumDetail = curriculum.getCurriculumDetail();
+        curriculumDetail.minusCurrentAttendees();
     }
 
 
@@ -301,7 +305,9 @@ public class CurriculumServiceImpl implements CurriculumService {
         return studentCurriculumRepository.existsById(StudentCurriculumId.createStudentCurriculumId(student.getId(), curriculumId));
     }
 
+
     @Override
+    @Transactional(readOnly = true)
     public CurriculumIncludesStudentListResponseDto getTeachersCurriculaIncludesStudents(Teacher teacher, Pageable pageable) {
         List<CurriculumIncludesStudentDto> curriculumDtoList = new ArrayList<>();
         Page<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher, pageable);
@@ -314,6 +320,7 @@ public class CurriculumServiceImpl implements CurriculumService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CurriculumIncludesStudentListResponseDto getTeachersCurriculaIncludesStudents(Teacher teacher) {
         List<CurriculumIncludesStudentDto> curriculumDtoList = new ArrayList<>();
         List<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher);

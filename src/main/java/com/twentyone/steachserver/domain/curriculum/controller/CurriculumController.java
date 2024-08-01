@@ -6,6 +6,7 @@ import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.service.CurriculumService;
 import com.twentyone.steachserver.domain.lecture.dto.AllLecturesInCurriculaResponseDto;
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
+import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -50,6 +51,15 @@ public class CurriculumController {
     public ResponseEntity<Void> registration(@AuthenticationPrincipal LoginCredential credential,
                                              @PathVariable("curricula_id") Integer curriculaId) {
         curriculumService.registration(credential, curriculaId);
+
+        return ResponseEntity.ok().build(); //TODO 반환값
+    }
+
+    @Operation(summary = "[학생] 커리큘럼 수강신청!")
+    @PostMapping("/{curricula_id}/cancel")
+    public ResponseEntity<Void> cancel(@AuthenticationPrincipal Student student,
+                                             @PathVariable("curricula_id") Integer curriculaId) {
+        curriculumService.cancel(student, curriculaId);
 
         return ResponseEntity.ok().build(); //TODO 반환값
     }

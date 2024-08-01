@@ -41,6 +41,7 @@ public interface CurriculumService {
 
     Boolean getIsApplyForCurriculum(Student student, Integer curriculumId);
 
+    @Transactional(readOnly = true)
     CurriculumIncludesStudentListResponseDto getTeachersCurriculaIncludesStudents(Teacher teacher, Pageable pageable);
     CurriculumIncludesStudentListResponseDto getTeachersCurriculaIncludesStudents(Teacher teacher);
 
