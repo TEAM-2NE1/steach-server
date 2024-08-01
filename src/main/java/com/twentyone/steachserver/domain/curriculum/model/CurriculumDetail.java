@@ -73,4 +73,8 @@ public class CurriculumDetail {
         this.lectureCloseTime = lectureEndTime;
         this.maxAttendees = maxAttendees;
     }
+
+    public void minusCurrentAttendees() {
+        this.currentAttendees -= 1;
+    }
 }

@@ -38,4 +38,12 @@ public interface CurriculumService {
     List<CurriculumDetailResponse> getPopularRatioCurriculums();
 
     List<CurriculumDetailResponse> getLatestCurriculums();
+
+    Boolean getIsApplyForCurriculum(Student student, Integer curriculumId);
+
+    @Transactional(readOnly = true)
+    CurriculumIncludesStudentListResponseDto getTeachersCurriculaIncludesStudents(Teacher teacher, Pageable pageable);
+    CurriculumIncludesStudentListResponseDto getTeachersCurriculaIncludesStudents(Teacher teacher);
+
+    void cancel(Student student, Integer curriculaId);
 }

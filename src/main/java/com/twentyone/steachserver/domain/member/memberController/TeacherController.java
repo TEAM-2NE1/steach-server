@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.member.memberController;
 
+import com.twentyone.steachserver.domain.curriculum.dto.CurriculumIncludesStudentListResponseDto;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumListResponse;
 import com.twentyone.steachserver.domain.curriculum.service.CurriculumService;
 import com.twentyone.steachserver.domain.member.dto.TeacherInfoRequest;
@@ -62,6 +63,26 @@ public class TeacherController {
         } else {
             //전체 다 주기 TODO 리팩토링
             CurriculumListResponse curriculumListResponse = curriculumService.getTeachersCurricula(teacher);
+
+            return ResponseEntity.ok(curriculumListResponse);
+        }
+    }
+
+    @Operation(summary = "[강사] 선생님이 강의하는 커리큘럼 수강신청 학생 포함 조회", description = "currentPageNumber: 현재 몇 페이지<br/>totalPage: 전체 페이지 개수<br/>pageSize: 한 페이지당 원소 개수(n개씩보기)")
+    @GetMapping("/curricula/includes/studentInfo")
+    public ResponseEntity<CurriculumIncludesStudentListResponseDto> getMyCurriculaIncludesStudents(@AuthenticationPrincipal Teacher teacher,
+                                                                                 @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                                                                 @RequestParam(value = "currentPageNumber", required = false) Integer currentPageNumber) {
+        if (currentPageNumber != null && pageSize != null) {
+            int pageNumber = currentPageNumber - 1; //입력은 1부터 시작, 실제로는 0부터 시작
+            Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+            CurriculumIncludesStudentListResponseDto curriculumListResponse = curriculumService.getTeachersCurriculaIncludesStudents(teacher, pageable);
+
+            return ResponseEntity.ok(curriculumListResponse);
+        } else {
+            //전체 다 주기 TODO 리팩토링
+            CurriculumIncludesStudentListResponseDto curriculumListResponse = curriculumService.getTeachersCurriculaIncludesStudents(teacher);
 
             return ResponseEntity.ok(curriculumListResponse);
         }
