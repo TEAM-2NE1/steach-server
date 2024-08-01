@@ -1,6 +1,5 @@
-package com.twentyone.steachserver.domain.quiz.service;
+package com.twentyone.steachserver.integration.quiz.service;
 
-import com.twentyone.steachserver.SteachTest;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
@@ -16,12 +15,13 @@ import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
 import java.time.LocalTime;
+
+import com.twentyone.steachserver.domain.quiz.service.QuizService;
+import com.twentyone.steachserver.integration.IntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -30,10 +30,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Transactional
-@SpringBootTest
+
 @DisplayName("퀴즈 통합 테스트")
-public class QuizIntegrationTest extends SteachTest {
+public class QuizIntegrationTest extends IntegrationTest {
     public static final String CHOICE1 = "asdf";
     public static final String CHOICE2 = "qwer";
     public static final int QUIZ_NUMBER = 1;
