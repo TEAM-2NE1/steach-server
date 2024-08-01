@@ -1,6 +1,5 @@
 package com.twentyone.steachserver.domain.classroom.controller;
 
-import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.classroom.dto.ClassroomResponseDto;
 import com.twentyone.steachserver.domain.classroom.dto.UpComingClassRoomsResponseDto;
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
@@ -56,12 +55,9 @@ public class ClassroomController {
     @Operation(summary = "[깅사] 선생님이 강의 시작을 누르면 교실로 들어가는 메서드", description = "무조건 200을 반환")
     @PatchMapping("/start/{lectureId}")
     public ResponseEntity<?> startClassroom(@PathVariable("lectureId") Integer lectureId) {
-        studentLectureService.createStudentLectureByLecture(lectureId);
         Classroom classroom = classroomService.createClassroom(lectureId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ClassroomResponseDto.createClassroomResponseDto(classroom));
     }
-
-
 }

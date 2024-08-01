@@ -150,7 +150,6 @@ public class TestScenario1 {
         /* FIXME 8. 강의시작 1 =========================================================================================== */
         /* FIXME 8-1 클래스룸 들어가기 */
         Integer lectureId1 = lectures.get(0);
-        studentLectureService.createStudentLectureByLecture(lectureId1);
         classroomService.createClassroom(lectureId1);
 
         /* FIXME 8-2. 강의 진짜 시작 */
@@ -213,7 +212,6 @@ public class TestScenario1 {
         /* FIXME 9. 강의시작 2 =========================================================================================== */
         /* FIXME 9-1 클래스룸 들어가기 */
         lectureId1 = lectures.get(1);
-        studentLectureService.createStudentLectureByLecture(lectureId1);
         classroomService.createClassroom(lectureId1);
 
         /* FIXME 9-2. 강의 진짜 시작 */
