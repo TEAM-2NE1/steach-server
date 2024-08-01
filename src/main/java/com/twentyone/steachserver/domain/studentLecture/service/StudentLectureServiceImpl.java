@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 
 
 @Service
@@ -83,13 +82,13 @@ public class StudentLectureServiceImpl implements StudentLectureService {
         studentLectureQueryRepository.updateStudentLectureByFinishLecture(lectureId);
     }
 
-    @Override
-    public void createStudentLectureByLecture(Integer lectureId) {
-        List<Student> students = lectureQueryRepository.getStudentIds(lectureId);
-
-        for (Student student : students) {
-            studentLectureRepository.save(StudentLecture.of(student, lectureRepository.getReferenceById(lectureId)));
-        }
-
-    }
+//    @Override
+//    @Transactional
+//    public void createStudentLectureByLecture(Integer lectureId) {
+//        List<Student> students = lectureQueryRepository.getStudentIds(lectureId);
+//
+//        for (Student student : students) {
+//            studentLectureRepository.save(StudentLecture.of(student, lectureRepository.getReferenceById(lectureId)));
+//        }
+//    }
 }
