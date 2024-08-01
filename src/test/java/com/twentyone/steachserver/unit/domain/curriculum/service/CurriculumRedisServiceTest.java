@@ -1,3 +1,4 @@
+
 package com.twentyone.steachserver.unit.domain.curriculum.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
@@ -27,6 +30,8 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+// springboot의 redis config가 필요함.
+@SpringBootTest
 @DisplayName("커리큘럼 레디스 서비스 단위 테스트")
 class CurriculumRedisServiceTest extends SteachTest {
 
@@ -88,7 +93,7 @@ class CurriculumRedisServiceTest extends SteachTest {
 
         // when
         when(valueOperations.get(POPULAR_RATIO_CURRICULUMS_KEY)).thenReturn(mockJson);
-        /**
+        /*
          * 이 코드는 objectMapper.readValue(mockJson, new TypeReference<List<CurriculumDetailResponse>>() {})가 호출되면 mockList를 반환하도록 모의(Mock)하는 설정입니다.
          * 이는 ObjectMapper가 특정 JSON 문자열(mockJson)을 읽고
          * 특정 타입(TypeReference<List<CurriculumDetailResponse>>)으로 변환할 때 해당 리스트(mockList)를 반환하도록 보장합니다.
@@ -97,7 +102,8 @@ class CurriculumRedisServiceTest extends SteachTest {
          * Mockito의 any 메서드는 메서드 호출 시 지정된 클래스의 인스턴스와 일치하는 모든 인수를 지정하는 데 사용됩니다.
          * 여기서는 TypeReference.class 타입의 두 번째 인수를 지정합니다.
          */
-        when(objectMapper.readValue(eq(mockJson), any(TypeReference.class))).thenReturn(mockList);
+        TypeReference<List<CurriculumDetailResponse>> typeRef = new TypeReference<>() {};
+        when(objectMapper.readValue(eq(mockJson), eq(typeRef))).thenReturn(mockList);
 
         List<CurriculumDetailResponse> result = curriculumRedisService.getPopularRatioCurriculum();
 
@@ -138,7 +144,8 @@ class CurriculumRedisServiceTest extends SteachTest {
 
         // when
         when(valueOperations.get(LATEST_CURRICULUMS_KEY)).thenReturn(mockJson);
-        when(objectMapper.readValue(eq(mockJson), any(TypeReference.class))).thenReturn(mockList);
+        TypeReference<List<CurriculumDetailResponse>> typeRef = new TypeReference<>() {};
+        when(objectMapper.readValue(eq(mockJson), eq(typeRef))).thenReturn(mockList);
 
         List<CurriculumDetailResponse> result = curriculumRedisService.getLatestCurricula();
 
@@ -161,8 +168,8 @@ class CurriculumRedisServiceTest extends SteachTest {
 
         // when
         when(valueOperations.get(LATEST_CURRICULUMS_KEY)).thenReturn(mockJson);
-        when(objectMapper.readValue(eq(mockJson), any(TypeReference.class))).thenReturn(mockList);
-        when(objectMapper.writeValueAsString(anyList())).thenReturn(mockJson);
+        TypeReference<List<CurriculumDetailResponse>> typeRef = new TypeReference<>() {};
+        when(objectMapper.readValue(eq(mockJson), eq(typeRef))).thenReturn(mockList);        when(objectMapper.writeValueAsString(anyList())).thenReturn(mockJson);
 
         curriculumRedisService.addLatestCurriculum(newCurriculum);
 
