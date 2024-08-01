@@ -1,7 +1,6 @@
 package com.twentyone.steachserver.domain.curriculum.model;
 
-import com.twentyone.steachserver.domain.curriculum.service.CurriculumServiceImpl;
-import com.twentyone.steachserver.util.WeekdayBitmaskUtil;
+import com.twentyone.steachserver.util.converter.WeekdayBitmaskUtil;
 import jakarta.persistence.*;
 import java.time.LocalTime;
 import lombok.AllArgsConstructor;

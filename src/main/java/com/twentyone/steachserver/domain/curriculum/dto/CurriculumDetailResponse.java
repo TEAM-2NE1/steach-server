@@ -3,10 +3,9 @@ package com.twentyone.steachserver.domain.curriculum.dto;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
-import java.time.LocalTime;
 
-import com.twentyone.steachserver.util.DateTimeUtil;
-import com.twentyone.steachserver.util.WeekdayBitmaskUtil;
+import com.twentyone.steachserver.util.converter.DateTimeUtil;
+import com.twentyone.steachserver.util.converter.WeekdayBitmaskUtil;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -33,7 +32,7 @@ public class CurriculumDetailResponse {
     private String lectureEndTime;
     private int currentAttendees;
     private int maxAttendees;
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     public static CurriculumDetailResponse fromDomain(Curriculum curriculum) {
         // 7을 이진수 문자열로 변환
@@ -56,7 +55,7 @@ public class CurriculumDetailResponse {
                 .lectureEndTime(DateTimeUtil.convert(curriculumDetail.getLectureCloseTime()))
                 .currentAttendees(curriculumDetail.getCurrentAttendees())
                 .maxAttendees(curriculumDetail.getMaxAttendees())
-                .createdAt(curriculum.getCreatedAt())
+                .createdAt(DateTimeUtil.convert(curriculum.getCreatedAt()))
                 .build();
     }
     public static CurriculumDetailResponse fromDomainBySimple(Curriculum curriculum) {
@@ -76,7 +75,7 @@ public class CurriculumDetailResponse {
                 .lectureEndTime(DateTimeUtil.convert(curriculumDetail.getLectureCloseTime()))
                 .currentAttendees(curriculumDetail.getCurrentAttendees())
                 .maxAttendees(curriculumDetail.getMaxAttendees())
-                .createdAt(curriculum.getCreatedAt())
+                .createdAt(DateTimeUtil.convert(curriculum.getCreatedAt()))
                 .build();
     }
 }

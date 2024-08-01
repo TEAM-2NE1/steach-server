@@ -1,15 +1,15 @@
-package com.twentyone.steachserver.domain.curriculum.service;
+package com.twentyone.steachserver.integration.curriculum.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.twentyone.steachserver.SteachTest;
 import com.twentyone.steachserver.domain.auth.service.AuthService;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumListResponse;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.error.DuplicatedCurriculumRegistrationException;
+import com.twentyone.steachserver.domain.curriculum.service.CurriculumService;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.member.repository.StudentRepository;
@@ -17,9 +17,13 @@ import com.twentyone.steachserver.domain.member.repository.TeacherRepository;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Stream;
+
+import com.twentyone.steachserver.integration.IntegrationTest;
+import com.twentyone.steachserver.util.converter.DateTimeUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -28,15 +32,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-@SpringBootTest
 @DisplayName("커리큘럼 서비스 통합 테스트")
-public class CurriculumServiceIntegrationTest extends SteachTest {
+public class CurriculumServiceIntegrationTest extends IntegrationTest {
     public static final String TITLE = "title";
     public static final String SUB_TITLE = "subTitle";
     public static final String INTRO = "intro";
@@ -74,6 +74,31 @@ public class CurriculumServiceIntegrationTest extends SteachTest {
         studentRepository.save(student);
 
         this.pageable = PageRequest.of(0, 1000);
+    }
+
+    @Test
+    @DisplayName("커리큘럼 추가")
+    void create() {
+        //given
+        CurriculumAddRequest request = new CurriculumAddRequest(TITLE, SUB_TITLE, INTRO, INFORMATION, CURRICULUM_CATEGORY, SUB_CATEGORY, BANNER_IMG_URL,
+                NOW.toLocalDate(), NOW.toLocalDate(), WEEKDAY_BITMASK, NOW.toLocalTime(), NOW.toLocalTime(), MAX_ATTENDEES);
+
+        //when
+        CurriculumDetailResponse curriculumDetailResponse = curriculumService.create(teacher, request);
+
+        assertEquals(curriculumDetailResponse.getTitle(), TITLE);
+        assertEquals(curriculumDetailResponse.getSubTitle(), SUB_TITLE);
+        assertEquals(curriculumDetailResponse.getIntro(), INTRO);
+        assertEquals(curriculumDetailResponse.getInformation(), INFORMATION);
+        assertEquals(curriculumDetailResponse.getCategory(), CURRICULUM_CATEGORY);
+        assertEquals(curriculumDetailResponse.getSubCategory(), SUB_CATEGORY);
+        assertEquals(curriculumDetailResponse.getBannerImgUrl(), BANNER_IMG_URL);
+        assertEquals(DateTimeUtil.convert(request.getStartDate()), DateTimeUtil.convert(LocalDate.from(NOW)));
+        assertEquals(DateTimeUtil.convert(request.getEndDate()), DateTimeUtil.convert(LocalDate.from(NOW)));
+        assertEquals(curriculumDetailResponse.getWeekdaysBitmask(), WEEKDAY_BITMASK);
+        assertEquals(DateTimeUtil.convert(request.getLectureStartTime()), DateTimeUtil.convert(LocalTime.from(NOW)));
+        assertEquals(DateTimeUtil.convert(request.getLectureEndTime()), DateTimeUtil.convert(LocalTime.from(NOW)));
+        assertEquals(curriculumDetailResponse.getMaxAttendees(), MAX_ATTENDEES);
     }
 
     @Disabled
@@ -153,6 +178,7 @@ public class CurriculumServiceIntegrationTest extends SteachTest {
 
     @ParameterizedTest
     @MethodSource("generateWeekDaysCompletedData")
+    @DisplayName("주간 수강신청")
     void getSelectedWeekdaysCompleted(LocalDateTime startDate, LocalDateTime endDate, String weekDayBitmask,
                                       List<LocalDateTime> lectureStartTime) {
         //given

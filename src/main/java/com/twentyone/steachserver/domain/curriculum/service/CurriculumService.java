@@ -34,4 +34,8 @@ public interface CurriculumService {
     CurriculumDetailResponse updateCurriculum(Integer curriculumId, Teacher teacher, CurriculumAddRequest request);
 
     void deleteCurriculum(Teacher teacher, Integer curriculumId);
+
+    List<CurriculumDetailResponse> getPopularRatioCurriculums();
+
+    List<CurriculumDetailResponse> getLatestCurriculums();
 }

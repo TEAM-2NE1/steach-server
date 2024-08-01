@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.config.domain;
+package com.twentyone.steachserver.domain.common;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

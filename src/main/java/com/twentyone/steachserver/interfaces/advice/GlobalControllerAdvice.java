@@ -1,4 +1,4 @@
-package com.twentyone.steachserver;
+package com.twentyone.steachserver.interfaces.advice;
 
 import com.twentyone.steachserver.domain.auth.error.AuthCodeAlreadyInUseException;
 import com.twentyone.steachserver.domain.auth.error.ForbiddenException;

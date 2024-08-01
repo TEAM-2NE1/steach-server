@@ -1,4 +1,4 @@
-package com.twentyone.steachserver.util;
+package com.twentyone.steachserver.util.converter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
