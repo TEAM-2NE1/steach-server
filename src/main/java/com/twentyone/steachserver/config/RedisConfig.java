@@ -1,4 +1,5 @@
 package com.twentyone.steachserver.config;
+import io.lettuce.core.RedisURI;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -6,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,18 +21,32 @@ import java.time.Duration;
 @EnableCaching
 public class RedisConfig {
 
-    @Value("${spring.redis.host}")
-    private String host;
+//    @Value("${spring.data.redis.host}")
+//    private String host;
+//
+//    @Value("${spring.data.redis.port}")
+//    private int port;
+//
+//    @Value("${spring.data.redis.database}")
+//    private int database;
 
-    @Value("${spring.redis.port}")
-    private int port;
+    @Value("${spring.data.redis.url}")
+    private String url;
 
-    // RedisConnectionFactory를 빈으로 정의하는 메서드입니다.
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        // LettuceConnectionFactory를 사용하여 Redis 연결 팩토리를 생성합니다.
-        return new LettuceConnectionFactory(host, port);
+        return new LettuceConnectionFactory((RedisConfiguration) RedisURI.create(url));
     }
+
+    // RedisConnectionFactory를 빈으로 정의하는 메서드입니다.
+//    @Bean
+//    public RedisConnectionFactory redisConnectionFactory() {
+//        // LettuceConnectionFactory를 사용하여 Redis 연결 팩토리를 생성합니다.
+//        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(host, port);
+//        lettuceConnectionFactory.setDatabase(database);
+//        System.out.println("redis database : " + database);
+//        return lettuceConnectionFactory;
+//    }
 
     @Bean
     public <T> RedisTemplate<String, T> redisTemplate(RedisConnectionFactory connectionFactory) {
