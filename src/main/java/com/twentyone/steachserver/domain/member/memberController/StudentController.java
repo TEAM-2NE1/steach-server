@@ -69,7 +69,7 @@ public class StudentController {
     @Operation(summary = "[학생] 학생이 커리큘럼을 수강 신청 여부", description = "이미 신청했으면 true")
     @GetMapping("/check/curriculum-apply/{curriculumId}")
     public ResponseEntity<IsApplyForCurriculumResponseDto> getIsApplyForCurriculum(@AuthenticationPrincipal Student student,
-                                                                                   @PathVariable Integer curriculumId) {
+                                                                                   @PathVariable("curriculumId") Integer curriculumId) {
         Boolean isApplyForCurriculum = curriculumService.getIsApplyForCurriculum(student, curriculumId);
         return ResponseEntity.ok(IsApplyForCurriculumResponseDto.of(isApplyForCurriculum));
     }
