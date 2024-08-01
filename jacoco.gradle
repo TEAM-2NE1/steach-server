@@ -1,4 +1,5 @@
 // jacoco 테스트 커버리지
+//def jacocoDir = layout.buildDirectory.dir('customJacocoReportDir')
 def jacocoDir = "$buildDir/customJacocoReportDir"
 
 jacoco {
@@ -7,26 +8,33 @@ jacoco {
 
 //  테스트결과 리포트를 저장할 경로 변경
 //  default는 "$/jacoco"
+//    reportsDirectory = jacocoDir
     reportsDirectory = layout.buildDirectory.dir(jacocoDir)
-}
-
-test {
-    dependsOn copyYML
-    useJUnitPlatform()
-    finalizedBy jacocoTestReport
 }
 
 jacocoTestReport {
     dependsOn test // jacocoTestReport 작업이 test 작업에 종속되도록 설정
     reports {
-        // 원하는 리포트를 켜고 끌 수 있습니다.
-        xml.required = true
-        csv.required = false
+        html.required.set(true)
+        xml.required.set(true)
+        csv.required.set(false)
         html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
-//  각 리포트 타입 마다 리포트 저장 경로를 설정할 수 있습니다.
-//  html.destination file("$buildDir/jacocoHtml")
-//  xml.destination file("$buildDir/jacoco.xml")
+//        xml.outputLocation = layout.buildDirectory.file('jacocoXml/jacoco.xml')
+//        html.outputLocation.set(jacocoHtmlDir)
+//        xml.outputLocation.set(jacocoXmlDir.map { it.file('jacocoTestReport.xml') })
     }
+//    reports {
+//        // 원하는 리포트를 켜고 끌 수 있습니다.
+//        xml.required = true
+//        xml.outputLocation.set(jacocoXmlDir.map {it.file('jacocoTestReport.xml')})
+////        xml.outputLocation = layout.buildDirectory.dir('jacocoTestReport.xml')
+////        xml.outputLocation = layout.buildDirectory.dir('customJacocoReportDir/jacocoTestReport.xml")
+//        csv.required = false
+//        html.outputLocation.set(jacocoHtmlDir)
+////  각 리포트 타입 마다 리포트 저장 경로를 설정할 수 있습니다.
+////  html.destination file("$buildDir/jacocoHtml")
+////  xml.destination= file("$buildDir/jacoco.xml")
+//    }
     finalizedBy 'jacocoTestCoverageVerification'
 
     // QueryDSL QDomain 제외시키기
