@@ -40,4 +40,9 @@ public interface CurriculumService {
     List<CurriculumDetailResponse> getLatestCurriculums();
 
     Boolean getIsApplyForCurriculum(Student student, Integer curriculumId);
+
+    CurriculumIncludesStudentListResponseDto getTeachersCurriculaIncludesStudents(Teacher teacher, Pageable pageable);
+    CurriculumIncludesStudentListResponseDto getTeachersCurriculaIncludesStudents(Teacher teacher);
+
+    void cancel(Student student, Integer curriculaId);
 }

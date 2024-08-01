@@ -21,6 +21,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.twentyone.steachserver.global.error.ResourceNotFoundException;
 import com.twentyone.steachserver.util.converter.WeekdayBitmaskUtil;
@@ -140,6 +141,15 @@ public class CurriculumServiceImpl implements CurriculumService {
 
         curriculum.register();
     }
+
+    @Override
+    public void cancel(Student student, Integer curriculaId) {
+        curriculumRepository.findByIdWithLock(curriculaId)
+                .orElseThrow(() -> new RuntimeException("찾을 수 없음"));
+
+        studentCurriculumRepository.deleteByStudentAndCurriculum(student, curriculumRepository.getReferenceById(curriculaId));
+    }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -290,6 +300,31 @@ public class CurriculumServiceImpl implements CurriculumService {
     public Boolean getIsApplyForCurriculum(Student student, Integer curriculumId) {
         return studentCurriculumRepository.existsById(StudentCurriculumId.createStudentCurriculumId(student.getId(), curriculumId));
     }
+
+    @Override
+    public CurriculumIncludesStudentListResponseDto getTeachersCurriculaIncludesStudents(Teacher teacher, Pageable pageable) {
+        List<CurriculumIncludesStudentDto> curriculumDtoList = new ArrayList<>();
+        Page<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher, pageable);
+        for (Curriculum curriculum : curriculumList) {
+            List<StudentCurriculum> studentCurriculumList = studentCurriculumRepository.findAllByCurriculumId(curriculum.getId());
+            CurriculumIncludesStudentDto curriculumIncludesStudentDto = CurriculumIncludesStudentDto.of(curriculum, studentCurriculumList);
+            curriculumDtoList.add(curriculumIncludesStudentDto);
+        }
+        return CurriculumIncludesStudentListResponseDto.of(curriculumDtoList);
+    }
+
+    @Override
+    public CurriculumIncludesStudentListResponseDto getTeachersCurriculaIncludesStudents(Teacher teacher) {
+        List<CurriculumIncludesStudentDto> curriculumDtoList = new ArrayList<>();
+        List<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher);
+        for (Curriculum curriculum : curriculumList) {
+            List<StudentCurriculum> studentCurriculumList = studentCurriculumRepository.findAllByCurriculumId(curriculum.getId());
+            CurriculumIncludesStudentDto curriculumIncludesStudentDto = CurriculumIncludesStudentDto.of(curriculum, studentCurriculumList);
+            curriculumDtoList.add(curriculumIncludesStudentDto);
+        }
+        return CurriculumIncludesStudentListResponseDto.of(curriculumDtoList);
+    }
+
 
     private int getBitmaskForDayOfWeek(DayOfWeek dayOfWeek) {
         return switch (dayOfWeek) {

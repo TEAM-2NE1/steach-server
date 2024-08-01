@@ -21,4 +21,8 @@ public interface StudentCurriculumRepository extends JpaRepository<StudentCurric
     List<StudentCurriculum> findByStudent(@Param("student") Student student);
 
     Optional<StudentCurriculum> findTop1ByStudentAndCurriculum(Student student, Curriculum curriculum);
+
+    List<StudentCurriculum> findAllByCurriculumId(Integer curriculumId);
+
+    void deleteByStudentAndCurriculum(Student student, Curriculum referenceById);
 }
