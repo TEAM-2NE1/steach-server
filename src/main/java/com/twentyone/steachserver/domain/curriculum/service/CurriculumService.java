@@ -38,4 +38,6 @@ public interface CurriculumService {
     List<CurriculumDetailResponse> getPopularRatioCurriculums();
 
     List<CurriculumDetailResponse> getLatestCurriculums();
+
+    Boolean getIsApplyForCurriculum(Student student, Integer curriculumId);
 }

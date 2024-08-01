@@ -13,6 +13,7 @@ import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
+import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculumId;
 import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCurriculumRepository;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
@@ -283,6 +284,11 @@ public class CurriculumServiceImpl implements CurriculumService {
         List<Curriculum> curriculumList = curriculumSearchRepository.findTop7ByOrderByCurricula(CurriculaOrderType.LATEST);
 
         return fromSimpleDomainList(curriculumList).getCurricula();
+    }
+
+    @Override
+    public Boolean getIsApplyForCurriculum(Student student, Integer curriculumId) {
+        return studentCurriculumRepository.existsById(StudentCurriculumId.createStudentCurriculumId(student.getId(), curriculumId));
     }
 
     private int getBitmaskForDayOfWeek(DayOfWeek dayOfWeek) {
