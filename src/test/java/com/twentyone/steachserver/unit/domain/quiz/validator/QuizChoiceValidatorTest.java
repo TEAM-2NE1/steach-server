@@ -3,6 +3,7 @@ package com.twentyone.steachserver.unit.domain.quiz.validator;
 import com.twentyone.steachserver.SteachTest;
 import com.twentyone.steachserver.domain.quiz.validator.QuizChoiceValidator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
+@DisplayName("퀴즈 보기 검증 단위 테스트")
 public class QuizChoiceValidatorTest extends SteachTest {
 
     @InjectMocks
