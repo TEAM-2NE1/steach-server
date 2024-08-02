@@ -30,10 +30,11 @@ public class QuizChoiceValidatorTest extends SteachTest {
     @Test
     public void testCreateQuizChoices_Failure_NullChoices() {
         List<String> choices = null;
-        List<String> answers = Arrays.asList("Answer1");
+        String answer = "Answer1";
+//        List<String> answers = Arrays.asList(asnwer);
 
         Exception exception = assertThrows(NullPointerException.class, () -> {
-            quizChoiceValidator.validateQuizChoices(choices, answers);
+            quizChoiceValidator.validateQuizChoices(choices, answer);
         });
 
         assertEquals("Choices cannot be null", exception.getMessage());
@@ -42,46 +43,50 @@ public class QuizChoiceValidatorTest extends SteachTest {
     @Test
     public void testCreateQuizChoices_Failure_NullAnswers() {
         List<String> choices = Arrays.asList("Choice1", "Choice2");
-        List<String> answers = null;
+//        List<String> answers = null;
+        String answer = null;
 
         Exception exception = assertThrows(NullPointerException.class, () -> {
-            quizChoiceValidator.validateQuizChoices(choices, answers);
+            quizChoiceValidator.validateQuizChoices(choices, answer);
+        });
+
+        assertEquals("Answers cannot be null", exception.getMessage());
+    }
+
+//    @Test
+//    public void testCreateQuizChoices_Failure_AnswersMoreThanChoices() {
+//        List<String> choices = Arrays.asList("Choice1", "Choice2");
+////        List<String> answers = Arrays.asList("Answer1", "Answer2", "Answer3");
+//        String answer = "Answer1";
+//
+//        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+//            quizChoiceValidator.validateQuizChoices(choices, answer);
+//        });
+//
+//        assertEquals("Answers cannot be more than choices", exception.getMessage());
+//    }
+
+    @Test
+    public void testCreateQuizChoices_Failure_EmptyAnswers() {
+        List<String> choices = Arrays.asList("Choice1", "Choice2");
+        List<String> answers = List.of();
+        String answer = null;
+
+        Exception exception = assertThrows(NullPointerException.class, () -> {
+            quizChoiceValidator.validateQuizChoices(choices, answer);
         });
 
         assertEquals("Answers cannot be null", exception.getMessage());
     }
 
     @Test
-    public void testCreateQuizChoices_Failure_AnswersMoreThanChoices() {
-        List<String> choices = Arrays.asList("Choice1", "Choice2");
-        List<String> answers = Arrays.asList("Answer1", "Answer2", "Answer3");
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            quizChoiceValidator.validateQuizChoices(choices, answers);
-        });
-
-        assertEquals("Answers cannot be more than choices", exception.getMessage());
-    }
-
-    @Test
-    public void testCreateQuizChoices_Failure_EmptyAnswers() {
-        List<String> choices = Arrays.asList("Choice1", "Choice2");
-        List<String> answers = List.of();
-
-        Exception exception = assertThrows(NullPointerException.class, () -> {
-            quizChoiceValidator.validateQuizChoices(choices, answers);
-        });
-
-        assertEquals("Answers cannot be empty", exception.getMessage());
-    }
-
-    @Test
     public void testCreateQuizChoices_Failure_EmptyChoices() {
         List<String> choices = List.of();
-        List<String> answers = Arrays.asList("Answer1", "Answer2");
+        String answer = "Answer1";
+//        List<String> answers = Arrays.asList(answer, "Answer2");
 
         Exception exception = assertThrows(NullPointerException.class, () -> {
-            quizChoiceValidator.validateQuizChoices(choices, answers);
+            quizChoiceValidator.validateQuizChoices(choices, answer);
         });
 
         assertEquals("Choices cannot be empty", exception.getMessage());

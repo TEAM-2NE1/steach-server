@@ -466,6 +466,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
         List<String> choices = castList(퀴즈_정보.get("choices"), String.class);
         Integer answers = (Integer) 퀴즈_정보.get("answers");
 
+        //TODO QuizListReqeustDto를 만들자!
         QuizRequestDto quizRequestDto = QuizRequestDto.builder()
                 .quizNumber((Integer) 퀴즈_정보.get("quizNumber"))
                 .question(퀴즈_정보.get("question").toString())
