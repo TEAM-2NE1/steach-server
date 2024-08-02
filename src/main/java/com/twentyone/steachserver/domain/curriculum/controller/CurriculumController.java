@@ -36,7 +36,7 @@ public class CurriculumController {
     }
 
     @Secured("ROLE_TEACHER")
-    @Operation(summary = "[강사] 커리큘럼 생성!")
+    @Operation(summary = "[강사] 커리큘럼 생성!", description = "category종류: KOREAN, MATH, FOREIGN_LANGUAGE, SCIENCE, ENGINEERING, ARTS_AND_PHYSICAL, SOCIAL, ETC")
     @PostMapping
     public ResponseEntity<CurriculumDetailResponse> createCurriculum(
             @AuthenticationPrincipal LoginCredential credential,
