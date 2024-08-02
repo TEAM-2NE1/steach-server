@@ -1,0 +1,20 @@
+version: '3.7' # Docker Compose 파일 버전
+
+services:
+  app: # steach-server 애플리케이션 서비스 정의
+    image: steach-server:latest # 사용할 Docker 이미지 지정
+    container_name: steach-server # 컨테이너 이름 지정
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod # Spring Boot 프로파일 설정
+    ports:
+      - "18080:18080" # 호스트의 18080 포트를 컨테이너의 18080 포트에 매핑
+
+  nginx: # Nginx 서비스 정의
+    image: nginx:latest # 사용할 Nginx 이미지 지정
+    container_name: nginx # 컨테이너 이름 지정
+    ports:
+      - "8008:8008" # 호스트의 8008 포트를 컨테이너의 8008 포트에 매핑
+    depends_on:
+      - app # Nginx가 steach-server 애플리케이션에 의존
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf # 호스트의 Nginx 설정 파일을 컨테이너로 마운트
