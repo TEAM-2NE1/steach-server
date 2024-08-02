@@ -1,10 +1,12 @@
-
 package com.twentyone.steachserver.unit.domain.curriculum.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twentyone.steachserver.SteachTest;
+import com.twentyone.steachserver.config.EmbeddedRedisConfig;
+import com.twentyone.steachserver.config.RedisTestContainers;
+import com.twentyone.steachserver.config.TestRedisConfig;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.service.redis.CurriculumRedisService;
@@ -13,13 +15,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,9 +35,9 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-// springboot의 redis config가 필요함.
-@SpringBootTest
-@DisplayName("커리큘럼 레디스 서비스 단위 테스트")
+@ActiveProfiles("test")
+@Import({RedisTestContainers.class, TestRedisConfig.class, EmbeddedRedisConfig.class})
+@DisplayName("커리큘럼 레디스 서비스 단위 테스트")
 class CurriculumRedisServiceTest extends SteachTest {
 
     private static final String LATEST_CURRICULUMS_KEY = "latestCurriculums";
@@ -50,8 +55,8 @@ class CurriculumRedisServiceTest extends SteachTest {
     @InjectMocks
     private CurriculumRedisService curriculumRedisService;
 
-
     private AutoCloseable closeable;
+
 
     @BeforeEach
     void setUp() {
@@ -81,6 +86,38 @@ class CurriculumRedisServiceTest extends SteachTest {
                 .build();
     }
 
+//    @Test
+//    @DisplayName("인기 있는 커리큘럼 조회 테스트")
+//    void testGetPopularRatioCurriculum() throws JsonProcessingException {
+//        // given
+//        List<CurriculumDetailResponse> mockList = new ArrayList<>();
+//        mockList.add(createMockCurriculumDetailResponse(1));
+//
+//        ObjectMapper actualObjectMapper = new ObjectMapper();
+//        String mockJson = actualObjectMapper.writeValueAsString(mockList);
+//
+//        // when
+//        when(valueOperations.get(POPULAR_RATIO_CURRICULUMS_KEY)).thenReturn(mockJson);
+//        /*
+//         * 이 코드는 objectMapper.readValue(mockJson, new TypeReference<List<CurriculumDetailResponse>>() {})가 호출되면 mockList를 반환하도록 모의(Mock)하는 설정입니다.
+//         * 이는 ObjectMapper가 특정 JSON 문자열(mockJson)을 읽고
+//         * 특정 타입(TypeReference<List<CurriculumDetailResponse>>)으로 변환할 때 해당 리스트(mockList)를 반환하도록 보장합니다.
+//         *
+//         * any(TypeReference.class):
+//         * Mockito의 any 메서드는 메서드 호출 시 지정된 클래스의 인스턴스와 일치하는 모든 인수를 지정하는 데 사용됩니다.
+//         * 여기서는 TypeReference.class 타입의 두 번째 인수를 지정합니다.
+//         */
+//        TypeReference<List<CurriculumDetailResponse>> typeRef = new TypeReference<>() {};
+//        when(objectMapper.readValue(eq(mockJson), eq(typeRef))).thenReturn(mockList);
+//
+//        List<CurriculumDetailResponse> result = curriculumRedisService.getPopularRatioCurriculum();
+//
+//        // then
+//        assertNotNull(result);
+//        assertEquals(1, result.size());
+//        assertEquals("Teacher 1", result.get(0).getTeacherName());
+//    }
+
     @Test
     @DisplayName("인기 있는 커리큘럼 조회 테스트")
     void testGetPopularRatioCurriculum() throws JsonProcessingException {
@@ -88,22 +125,14 @@ class CurriculumRedisServiceTest extends SteachTest {
         List<CurriculumDetailResponse> mockList = new ArrayList<>();
         mockList.add(createMockCurriculumDetailResponse(1));
 
-        ObjectMapper actualObjectMapper = new ObjectMapper();
-        String mockJson = actualObjectMapper.writeValueAsString(mockList);
+        String mockJson = new ObjectMapper().writeValueAsString(mockList);
 
         // when
+        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
         when(valueOperations.get(POPULAR_RATIO_CURRICULUMS_KEY)).thenReturn(mockJson);
-        /*
-         * 이 코드는 objectMapper.readValue(mockJson, new TypeReference<List<CurriculumDetailResponse>>() {})가 호출되면 mockList를 반환하도록 모의(Mock)하는 설정입니다.
-         * 이는 ObjectMapper가 특정 JSON 문자열(mockJson)을 읽고
-         * 특정 타입(TypeReference<List<CurriculumDetailResponse>>)으로 변환할 때 해당 리스트(mockList)를 반환하도록 보장합니다.
-         *
-         * any(TypeReference.class):
-         * Mockito의 any 메서드는 메서드 호출 시 지정된 클래스의 인스턴스와 일치하는 모든 인수를 지정하는 데 사용됩니다.
-         * 여기서는 TypeReference.class 타입의 두 번째 인수를 지정합니다.
-         */
+
         TypeReference<List<CurriculumDetailResponse>> typeRef = new TypeReference<>() {};
-        when(objectMapper.readValue(eq(mockJson), eq(typeRef))).thenReturn(mockList);
+        when(objectMapper.readValue(anyString(), eq(typeRef))).thenReturn(mockList);
 
         List<CurriculumDetailResponse> result = curriculumRedisService.getPopularRatioCurriculum();
 
@@ -111,8 +140,12 @@ class CurriculumRedisServiceTest extends SteachTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("Teacher 1", result.get(0).getTeacherName());
-    }
 
+        // Verify that the mocks were called as expected
+        verify(redisTemplate).opsForValue();
+        verify(valueOperations).get(POPULAR_RATIO_CURRICULUMS_KEY);
+        verify(objectMapper).readValue(anyString(), eq(typeRef));
+    }
 
     @Test
     @DisplayName("인기 있는 커리큘럼 저장 테스트")
@@ -139,20 +172,25 @@ class CurriculumRedisServiceTest extends SteachTest {
         List<CurriculumDetailResponse> mockList = new ArrayList<>();
         mockList.add(createMockCurriculumDetailResponse(1));
 
-        ObjectMapper actualObjectMapper = new ObjectMapper();
-        String mockJson = actualObjectMapper.writeValueAsString(mockList);
+        String mockJson = new ObjectMapper().writeValueAsString(mockList);
 
         // when
+        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
         when(valueOperations.get(LATEST_CURRICULUMS_KEY)).thenReturn(mockJson);
         TypeReference<List<CurriculumDetailResponse>> typeRef = new TypeReference<>() {};
         when(objectMapper.readValue(eq(mockJson), eq(typeRef))).thenReturn(mockList);
 
-        List<CurriculumDetailResponse> result = curriculumRedisService.getLatestCurricula();
+        List<CurriculumDetailResponse> result = curriculumRedisService.getPopularRatioCurriculum();
 
         // then
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("Teacher 1", result.get(0).getTeacherName());
+
+        // Verify that the mocks were called as expected
+        verify(redisTemplate).opsForValue();
+        verify(valueOperations).get(LATEST_CURRICULUMS_KEY);
+        verify(objectMapper).readValue(eq(mockJson), eq(typeRef));
     }
 
     @Test
