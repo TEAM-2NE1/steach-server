@@ -20,8 +20,8 @@ import java.net.URI;
 import java.time.Duration;
 
 @Slf4j
-//@Profile("test")
-//@TestConfiguration
+@Profile("test")
+@TestConfiguration
 public class TestRedisConfig {
     @Value("${spring.data.redis.url}")
     private String url;
