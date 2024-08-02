@@ -44,4 +44,4 @@ out/
 
 
 ### docker-compost ###
-!docker-compose.yml
+!docker-compose.**.yml
