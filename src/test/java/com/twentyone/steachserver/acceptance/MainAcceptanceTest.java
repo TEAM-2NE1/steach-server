@@ -169,7 +169,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
         커리큘럼_기본_정보.put("subTitle", "부제목");
         커리큘럼_기본_정보.put("intro", "소개");
         커리큘럼_기본_정보.put("information", "정보");
-        커리큘럼_기본_정보.put("category", CurriculumCategory.SOCIAL);
+        커리큘럼_기본_정보.put("category", CurriculumCategory.getCategoryByIndex(0));
         커리큘럼_기본_정보.put("subCategory", "하위 카테고리");
         커리큘럼_기본_정보.put("bannerImgUrl", "https://example.com/banner.jpg");
         커리큘럼_기본_정보.put("startDate", LocalDate.now());
