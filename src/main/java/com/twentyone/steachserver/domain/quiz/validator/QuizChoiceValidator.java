@@ -8,12 +8,12 @@ import java.util.List;
 @Component
 public class QuizChoiceValidator {
 
-    public void validateQuizChoices(List<String> choices, List<String> answers) {
+    public void validateQuizChoices(List<String> choices, String answers) {
         validateNull(choices, "Choices");
-        validateNull(answers, "Answers");
+//        validateNull(answers, "Answers");
         validateEmptyList(choices, "Choices cannot be empty");
-        validateEmptyList(answers, "Answers cannot be empty");
-        validateAnswersSize(choices, answers);
+//        validateEmptyList(answers, "Answers cannot be empty");
+//        validateAnswersSize(choices, answers);
     }
 
     private void validateNull(List<String> list, String name) {

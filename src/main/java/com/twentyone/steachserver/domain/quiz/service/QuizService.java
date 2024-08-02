@@ -1,6 +1,7 @@
 package com.twentyone.steachserver.domain.quiz.service;
 
 import com.twentyone.steachserver.domain.member.model.Teacher;
+import com.twentyone.steachserver.domain.quiz.dto.QuizListRequestDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizResponseDto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 public interface QuizService {
     // Quiz methods
-    Optional<Quiz> createQuiz(Integer lectureId, QuizRequestDto request) throws RuntimeException;
+    List<Quiz> createQuiz(Integer lectureId, QuizListRequestDto request) throws RuntimeException;
 
     Optional<Quiz> findById(Integer quizId);
 

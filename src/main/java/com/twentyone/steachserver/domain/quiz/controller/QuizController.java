@@ -1,14 +1,13 @@
 package com.twentyone.steachserver.domain.quiz.controller;
 
 import com.twentyone.steachserver.domain.member.model.Teacher;
-import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
-import com.twentyone.steachserver.domain.quiz.dto.QuizResponseDto;
-import com.twentyone.steachserver.domain.quiz.dto.QuizzesResponseDto;
+import com.twentyone.steachserver.domain.quiz.dto.*;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.service.QuizService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +27,14 @@ public class QuizController {
 
     @Operation(summary = "[강사] 퀴즈 생성!", description = "성공시 200 반환, 실패시 500 INTERNAL_SERVER_ERROR 반환")
     @PostMapping("/{lectureId}")
-    public ResponseEntity<QuizResponseDto> createQuiz(@PathVariable("lectureId")Integer lectureId, @RequestBody QuizRequestDto request) throws Exception {
-        return quizService.createQuiz(lectureId, request)
-                .map(quiz -> ResponseEntity.status(HttpStatus.CREATED).body(QuizResponseDto.createQuizResponseDto(lectureId, request, quiz.getId())))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    public ResponseEntity<QuizListResponseDto> createQuiz(@PathVariable("lectureId")Integer lectureId, @RequestBody @Valid QuizListRequestDto request) throws Exception {
+        //리팩토링 해주세요 stream 못씀 - 주효림
+        List<Quiz> quizList = quizService.createQuiz(lectureId, request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(QuizListResponseDto.fromDomainList(quizList));
+//        return quizService.createQuiz(lectureId, request)
+//                .map(quiz -> ResponseEntity.status(HttpStatus.CREATED).body(QuizResponseDto.createQuizResponseDto(lectureId, request, quiz.getId())))
+//                .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
     @Operation(summary = "[강사?] 퀴즈 조회!", description = "성공시 200 반환, 실패시 204 NOT_FOUND 반환")

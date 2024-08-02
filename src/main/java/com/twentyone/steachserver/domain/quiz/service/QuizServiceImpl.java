@@ -3,6 +3,7 @@ package com.twentyone.steachserver.domain.quiz.service;
 import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Teacher;
+import com.twentyone.steachserver.domain.quiz.dto.QuizListRequestDto;
 import com.twentyone.steachserver.domain.quiz.validator.QuizChoiceValidator;
 import com.twentyone.steachserver.domain.quiz.validator.QuizValidator;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,20 +36,32 @@ public class  QuizServiceImpl implements QuizService {
 
     @Override
     @Transactional
-    public Optional<Quiz> createQuiz(Integer lectureId, QuizRequestDto request) throws RuntimeException {
+    public List<Quiz> createQuiz(Integer lectureId, QuizListRequestDto request) throws RuntimeException {
         Lecture lecture = getLecture(lectureId);
 
-        Quiz quiz = Quiz.createQuiz(request, lecture);
-        Quiz savedQuiz = quizRepository.save(quiz);
+        List<Quiz> quizList = new ArrayList<>();
 
-        quizValidator.validateEmptyQuiz(savedQuiz);
+        for (QuizRequestDto dto: request.quizList()) {
+            Quiz quiz = Quiz.createQuiz(dto, lecture);
+            quiz = quizRepository.save(quiz);
+            quizValidator.validateEmptyQuiz(quiz);
 
-        // Create and save QuizChoice entities
-        List<String> choices = request.choices();
-        List<String> answers = request.answers();
-        quizChoiceService.createQuizChoices(choices, answers, savedQuiz);
+            // Create and save QuizChoice entities
+            List<String> choices = dto.choices();
+            Integer answerIdx = dto.answers() - 1;
 
-        return Optional.of(savedQuiz);
+            if (answerIdx >= choices.size() || answerIdx < 0) {
+                throw new IllegalArgumentException("정답관련 인덱스가 유효하지 않습니다.");
+            }
+            String answer = choices.get(answerIdx); //index
+//            List<String> answers = dto.answers();
+
+            quizChoiceService.createQuizChoices(choices, answer, quiz);
+
+            quizList.add(quiz);
+        }
+
+        return quizList;
     }
 
     private Lecture getLecture(Integer lectureId) {
@@ -65,14 +79,21 @@ public class  QuizServiceImpl implements QuizService {
         return quizRepository.findById(quizId);
     }
 
-
     @Override
     public QuizResponseDto mapToDto(Quiz quiz) {
         List<String> choices = quizChoiceService.getChoices(quiz);
-        List<String> answers = quizChoiceService.getAnswers(quiz);
-        quizChoiceValidator.validateQuizChoices(choices, answers);
+        String answers = quizChoiceService.getAnswers(quiz).get(0);
 
-        return QuizResponseDto.createQuizResponseDto(quiz, choices, answers);
+        int answerInt = 0;
+        for (int i =0; i<choices.size(); i++) {
+            if (choices.get(i).equals(answers)) {
+                answerInt = i+1;
+                break;
+            }
+        }
+//        quizChoiceValidator.validateQuizChoices(choices, answers);
+
+        return QuizResponseDto.createQuizResponseDto(quiz, choices, answerInt);
     }
 
     @Override

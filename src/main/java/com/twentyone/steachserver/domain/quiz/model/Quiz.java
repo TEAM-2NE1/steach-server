@@ -58,4 +58,30 @@ public class Quiz {
         this.getQuizChoices().add(quizChoice);
         quizChoice.updateQuiz(this);
     }
+
+    public List<String> getQuizChoiceString() {
+        List<String> choice = new ArrayList<>();
+
+        for (QuizChoice quizChoice: this.quizChoices) {
+            choice.add(quizChoice.getChoiceSentence());
+        }
+
+        return choice;
+    }
+
+    public Integer getAnswer() {
+        for (int i =0; i<this.quizChoices.size(); i++) {
+            if (quizChoices.get(i).getIsAnswer()) {
+                return i+1;
+            }
+        }
+//        for (QuizChoice quizChoice: this.quizChoices) {
+//            if (quizChoice.getIsAnswer()) {
+//                return
+////                answer.add(quizChoice.getChoiceSentence());
+//            }
+//        }
+        
+        throw new RuntimeException("에러에러에러");
+    }
 }

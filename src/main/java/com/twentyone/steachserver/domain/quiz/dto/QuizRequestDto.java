@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.quiz.dto;
 
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +21,6 @@ import java.util.List;
  * }
  */
 @Builder
-public record QuizRequestDto(Integer quizNumber, String question, List<String> choices, List<String> answers) {
+public record QuizRequestDto(Integer quizNumber, String question, List<String> choices, @Min(1) Integer answers) {
 
 }

@@ -10,11 +10,11 @@ public record QuizResponseDto(
         Integer quizNumber,
         String question,
         List<String> choices,
-        List<String> answers
+        Integer answers
 ) {
     public static QuizResponseDto createQuizResponseDto(Integer lectureId, QuizRequestDto request, Integer quizId) {
         allStrip(request.choices());
-        allStrip(request.answers());
+//        allStrip(request.answers());
         return new QuizResponseDto(
                 quizId,
                 lectureId,
@@ -25,9 +25,9 @@ public record QuizResponseDto(
         );
     }
 
-    public static QuizResponseDto createQuizResponseDto(Quiz quiz, List<String> choices, List<String> answers) {
+    public static QuizResponseDto createQuizResponseDto(Quiz quiz, List<String> choices, Integer answers) {
         allStrip(choices);
-        allStrip(answers);
+//        allStrip(answers);
         return new QuizResponseDto(
                 quiz.getId(),
                 quiz.getLecture().getId(),
@@ -40,5 +40,16 @@ public record QuizResponseDto(
 
     private static void allStrip(List<String> strings){
         strings.replaceAll(String::strip);
+    }
+
+    public static QuizResponseDto fromDomain(Quiz quiz) {
+        return new QuizResponseDto(
+                quiz.getId(),
+                quiz.getLecture().getId(),
+                quiz.getQuizNumber(),
+                quiz.getQuestion(),
+                quiz.getQuizChoiceString(),
+                quiz.getAnswer()
+        );
     }
 }
