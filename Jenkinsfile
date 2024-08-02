@@ -1,24 +1,37 @@
 pipeline {
-    agent any
-    //
+    agent any // 어떤 노드에서나 실행 가능
+
+    environment {
+        IMAGE_NAME = 'steach-server' // Docker 이미지 이름 설정
+    }
+
     stages {
-        stage('Build') {
+        stage('Checkout') { // 코드 체크아웃 단계
             steps {
-                echo 'Building...'
-                // 여기에 빌드 명령어 추가
+                git credentialsId: 'github-pat', url: 'https://github.com/TEAM-2NE1/steach-server.git' // Git 저장소에서 코드 가져오기
             }
         }
-        stage('Test') {
+
+        stage('Build') { // Docker 이미지 빌드 단계
             steps {
-                echo 'Testing...'
-                // 여기에 테스트 명령어 추가
+                script {
+                    docker.build("${IMAGE_NAME}:latest") // Docker 이미지를 빌드하고 latest 태그 추가
+                }
             }
         }
-        stage('Deploy') {
+
+        stage('Deploy') { // Docker Compose를 사용하여 배포하는 단계
             steps {
-                echo 'Deploying...'
-                // 여기에 배포 명령어 추가
+                script {
+                    sh 'docker-compose -f docker-compose.prod.yml up -d' // Docker Compose 파일을 사용하여 컨테이너 실행
+                }
             }
+        }
+    }
+
+    post {
+        always {
+            cleanWs() // 작업 공간 정리
         }
     }
 }
