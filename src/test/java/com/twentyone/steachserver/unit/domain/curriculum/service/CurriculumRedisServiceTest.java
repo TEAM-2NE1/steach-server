@@ -62,7 +62,7 @@ class CurriculumRedisServiceTest extends SteachTest {
                 .subTitle("Subtitle " + id)
                 .intro("Intro " + id)
                 .information("Information " + id)
-                .category(CurriculumCategory.EDUCATION)
+                .category(CurriculumCategory.SOCIAL)
                 .subCategory("SubCategory " + id)
                 .bannerImgUrl("BannerUrl " + id)
                 .startDate(DateTimeUtil.convert(LocalDateTime.now()))
