@@ -28,13 +28,9 @@ public class QuizController {
     @Operation(summary = "[강사] 퀴즈 생성!", description = "성공시 200 반환, 실패시 500 INTERNAL_SERVER_ERROR 반환")
     @PostMapping("/{lectureId}")
     public ResponseEntity<QuizListResponseDto> createQuiz(@PathVariable("lectureId")Integer lectureId, @RequestBody @Valid QuizListRequestDto request) throws Exception {
-        //리팩토링 해주세요 stream 못씀 - 주효림
         List<Quiz> quizList = quizService.createQuiz(lectureId, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(QuizListResponseDto.fromDomainList(quizList));
-//        return quizService.createQuiz(lectureId, request)
-//                .map(quiz -> ResponseEntity.status(HttpStatus.CREATED).body(QuizResponseDto.createQuizResponseDto(lectureId, request, quiz.getId())))
-//                .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
     @Operation(summary = "[강사?] 퀴즈 조회!", description = "성공시 200 반환, 실패시 204 NOT_FOUND 반환")

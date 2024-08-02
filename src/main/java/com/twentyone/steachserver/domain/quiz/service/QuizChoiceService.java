@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface QuizChoiceService {
     void createQuizChoices(List<String> choices, String answers, Quiz savedQuiz);
-    List<String> getAnswers(Quiz quiz);
+    String getAnswers(Quiz quiz);
     List<String> getChoices(Quiz quiz);
 }

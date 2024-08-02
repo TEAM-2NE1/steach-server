@@ -37,7 +37,7 @@ public class QuizChoiceServiceImpl implements QuizChoiceService{
     }
 
 
-    public List<String> getAnswers(Quiz quiz) {
+    public String getAnswers(Quiz quiz) {
         List<String> answers = quiz.getQuizChoices().stream()
                 .filter(QuizChoice::getIsAnswer)
                 .map(QuizChoice::getChoiceSentence)
@@ -45,7 +45,7 @@ public class QuizChoiceServiceImpl implements QuizChoiceService{
 
         quizChoiceValidator.validateEmptyList(answers, "Answers cannot be empty");
 
-        return answers;
+        return answers.get(0);
     }
 
     public List<String> getChoices(Quiz quiz) {

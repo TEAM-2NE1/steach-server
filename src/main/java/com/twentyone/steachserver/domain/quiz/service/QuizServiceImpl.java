@@ -33,31 +33,26 @@ public class  QuizServiceImpl implements QuizService {
     private final QuizValidator quizValidator;
     private final QuizChoiceValidator quizChoiceValidator;
 
-
     @Override
     @Transactional
     public List<Quiz> createQuiz(Integer lectureId, QuizListRequestDto request) throws RuntimeException {
         Lecture lecture = getLecture(lectureId);
-
         List<Quiz> quizList = new ArrayList<>();
 
-        for (QuizRequestDto dto: request.quizList()) {
-            Quiz quiz = Quiz.createQuiz(dto, lecture);
+        for (QuizRequestDto quizRequestDto: request.quizList()) {
+            Quiz quiz = Quiz.createQuiz(quizRequestDto, lecture);
             quiz = quizRepository.save(quiz);
             quizValidator.validateEmptyQuiz(quiz);
 
             // Create and save QuizChoice entities
-            List<String> choices = dto.choices();
-            Integer answerIdx = dto.answers() - 1;
+            List<String> choices = quizRequestDto.choices();
+            Integer answerIdx = quizRequestDto.answers() - 1; //user answer -> real index
 
             if (answerIdx >= choices.size() || answerIdx < 0) {
                 throw new IllegalArgumentException("정답관련 인덱스가 유효하지 않습니다.");
             }
-            String answer = choices.get(answerIdx); //index
-//            List<String> answers = dto.answers();
 
-            quizChoiceService.createQuizChoices(choices, answer, quiz);
-
+            quizChoiceService.createQuizChoices(choices, choices.get(answerIdx), quiz);
             quizList.add(quiz);
         }
 
@@ -82,7 +77,7 @@ public class  QuizServiceImpl implements QuizService {
     @Override
     public QuizResponseDto mapToDto(Quiz quiz) {
         List<String> choices = quizChoiceService.getChoices(quiz);
-        String answers = quizChoiceService.getAnswers(quiz).get(0);
+        String answers = quizChoiceService.getAnswers(quiz);
 
         int answerInt = 0;
         for (int i =0; i<choices.size(); i++) {
@@ -91,7 +86,7 @@ public class  QuizServiceImpl implements QuizService {
                 break;
             }
         }
-//        quizChoiceValidator.validateQuizChoices(choices, answers);
+        quizChoiceValidator.validateQuizChoices(choices, answers);
 
         return QuizResponseDto.createQuizResponseDto(quiz, choices, answerInt);
     }

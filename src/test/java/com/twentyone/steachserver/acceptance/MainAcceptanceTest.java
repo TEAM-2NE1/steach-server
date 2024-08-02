@@ -206,8 +206,9 @@ public class MainAcceptanceTest extends AcceptanceTest {
         퀴즈_보기_정보.add("다");
         퀴즈_보기_정보.add("라");
 
-        List<String> 퀴즈_정답_정보 = new ArrayList<>();
-        퀴즈_정답_정보.add("가");
+//        List<String> 퀴즈_정답_정보 = new ArrayList<>();
+//        퀴즈_정답_정보.add("가");
+        Integer 퀴즈_정답_정보 = 1; //"가"
 
         퀴즈_정보 = new HashMap<>();
         퀴즈_정보.put("quizNumber", 1);
@@ -463,7 +464,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
 
     Response 퀴즈_생성(Integer 첫번째_강의_pk, Map<String, Object> 퀴즈_정보) throws JsonProcessingException {
         List<String> choices = castList(퀴즈_정보.get("choices"), String.class);
-        List<String> answers = castList(퀴즈_정보.get("answers"), String.class);
+        Integer answers = (Integer) 퀴즈_정보.get("answers");
 
         QuizRequestDto quizRequestDto = QuizRequestDto.builder()
                 .quizNumber((Integer) 퀴즈_정보.get("quizNumber"))
