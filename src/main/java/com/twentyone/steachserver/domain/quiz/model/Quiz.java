@@ -70,10 +70,12 @@ public class Quiz {
     }
 
     public Integer getAnswer() {
-        for (int i =0; i<this.quizChoices.size(); i++) {
-            if (quizChoices.get(i).getIsAnswer()) {
+        int i = 0;
+        for (QuizChoice quizChoice: this.quizChoices) {
+            if (quizChoice.getIsAnswer()) {
                 return i+1;
             }
+            i++;
         }
         
         throw new RuntimeException("에러에러에러");

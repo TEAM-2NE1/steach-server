@@ -28,6 +28,6 @@ public interface QuizService {
 
     void delete(Integer quizId, Teacher teacher);
 
-    QuizResponseDto modifyQuiz(Integer quizId, QuizRequestDto dto);
+    QuizResponseDto modifyQuiz(Teacher teacher, Integer quizId, QuizRequestDto dto);
 }
 

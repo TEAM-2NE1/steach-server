@@ -19,18 +19,20 @@ public class QuizChoiceServiceImpl implements QuizChoiceService{
     private final QuizChoiceRepository quizChoiceRepository;
     private final QuizChoiceValidator quizChoiceValidator;
 
-
     @Override
     @Transactional
-    public List<QuizChoice> createQuizChoices(List<String> choices, String answers, Quiz savedQuiz){
+    public List<QuizChoice> createQuizChoices(List<String> choices, int answer, Quiz savedQuiz){
         List<QuizChoice> quizChoiceList = new ArrayList<>();
 
-        quizChoiceValidator.validateQuizChoices(choices, answers);
+        quizChoiceValidator.validateQuizChoices(choices, answer); //TODO 수정
 
         int answerCount = 0;
-        for (String choice : choices) {
-            boolean isAnswer = answers.contains(choice);
-            if (isAnswer) answerCount++;
+        for (int i =0; i< choices.size(); i++) {
+            String choice = choices.get(i);
+            boolean isAnswer = (answer == i);
+            if (isAnswer) {
+                answerCount++;
+            }
 
             QuizChoice quizChoice = QuizChoice.createQuizChoice(choice, savedQuiz, isAnswer);
             quizChoiceRepository.save(quizChoice);

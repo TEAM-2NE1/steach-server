@@ -42,10 +42,11 @@ public class QuizController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @Operation(summary = "[강사] 퀴즈 수정!", description = "성공시 200 반환")
+    @Secured("ROLE_TEACHER")
+    @Operation(summary = "[강사] 퀴즈 수정", description = "성공시 200 반환<br/>null로 들어올 경우 변경되지 않습니다. choices에 변경사항이 있는 경우 answers는 null이 되면 안됩니다.")
     @PatchMapping("/{quizId}")
-    public ResponseEntity<QuizResponseDto> modifyQuiz(@PathVariable("quizId") Integer quizId, @RequestBody QuizRequestDto dto) {
-        QuizResponseDto quizResponseDto = quizService.modifyQuiz(quizId, dto);
+    public ResponseEntity<QuizResponseDto> modifyQuiz(@AuthenticationPrincipal Teacher teacher, @PathVariable("quizId") Integer quizId, @RequestBody QuizRequestDto dto) {
+        QuizResponseDto quizResponseDto = quizService.modifyQuiz(teacher, quizId, dto);
 
         return ResponseEntity.ok(quizResponseDto);
     }
