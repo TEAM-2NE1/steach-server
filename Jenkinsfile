@@ -5,10 +5,26 @@ pipeline {
         IMAGE_NAME = 'steach-server' // Docker 이미지 이름 설정
     }
 
+    triggers {
+        pollSCM('H/5 * * * *')
+        githubPush()
+    }
     stages {
         stage('Checkout') { // 코드 체크아웃 단계
+//             steps {
+//                 git credentialsId: 'staech-server-jen', url: 'https://github.com/TEAM-2NE1/steach-server.git' // Git 저장소에서 코드 가져오기
+//             }
             steps {
-                git credentialsId: 'staech-server-jen', url: 'https://github.com/TEAM-2NE1/steach-server.git' // Git 저장소에서 코드 가져오기
+                script {
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: 'jen']],
+                        userRemoteConfigs: [[
+                            url: 'https://github.com/TEAM-2NE1/steach-server.git',
+                            credentialsId: 'staech-server-jen'
+                        ]]
+                    ])
+                }
             }
         }
 
