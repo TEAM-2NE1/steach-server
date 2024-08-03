@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') { // 코드 체크아웃 단계
             steps {
-                git credentialsId: 'github-pat', url: 'https://github.com/TEAM-2NE1/steach-server.git' // Git 저장소에서 코드 가져오기
+                git credentialsId: 'staech-server-jen', url: 'https://github.com/TEAM-2NE1/steach-server.git' // Git 저장소에서 코드 가져오기
             }
         }
 
