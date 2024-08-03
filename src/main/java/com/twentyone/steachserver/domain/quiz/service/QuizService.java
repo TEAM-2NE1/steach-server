@@ -21,5 +21,7 @@ public interface QuizService {
     List<Quiz> findAllByLectureId(Integer lectureId);
 
     void delete(Integer quizId, Teacher teacher);
+
+    QuizResponseDto modifyQuiz(Integer quizId, QuizRequestDto dto);
 }
 

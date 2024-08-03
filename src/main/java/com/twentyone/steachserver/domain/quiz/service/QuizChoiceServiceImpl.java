@@ -57,4 +57,10 @@ public class QuizChoiceServiceImpl implements QuizChoiceService{
 
         return choices;
     }
+
+    @Override
+    @Transactional
+    public void deleteChoice(QuizChoice quizChoice) {
+        quizChoiceRepository.delete(quizChoice);
+    }
 }

@@ -84,4 +84,23 @@ public class Quiz {
         
         throw new RuntimeException("에러에러에러");
     }
+
+    public void modify(Integer quizNumber, String question) {
+        if (quizNumber != null)
+            this.quizNumber = quizNumber;
+
+        if (question != null)
+            this.question = question;
+        //        Quiz quiz = new Quiz();
+        //        quiz.setLecture(lecture);
+        //        quiz.setQuestion(request.question());
+        //        quiz.setQuizNumber((request.quizNumber() == null || request.quizNumber()== 0)? lecture.getQuizzes().size() + 1 : request.quizNumber());
+        //
+        //        lecture.addQuiz(quiz);
+        //        return quiz;
+    }
+
+    public void deleteAllQuizChoice() {
+        this.quizChoices = new ArrayList<>();
+    }
 }

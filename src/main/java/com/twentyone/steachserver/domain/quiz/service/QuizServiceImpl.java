@@ -4,6 +4,7 @@ import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.quiz.dto.QuizListRequestDto;
+import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
 import com.twentyone.steachserver.domain.quiz.validator.QuizChoiceValidator;
 import com.twentyone.steachserver.domain.quiz.validator.QuizValidator;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
@@ -108,5 +109,30 @@ public class  QuizServiceImpl implements QuizService {
         }
 
         quizRepository.delete(quiz);
+    }
+
+    @Override
+    @Transactional
+    public QuizResponseDto modifyQuiz(Integer quizId, QuizRequestDto dto) {
+        Quiz quiz = quizRepository.findByIdWithQuizChoice(quizId)
+                .orElseThrow(() -> new ResourceNotFoundException("퀴즈를 찾을 수 없음"));
+
+        //검증
+        if (dto.choices() != null) {
+            List<QuizChoice> quizChoices = quiz.getQuizChoices();
+            List<String> inputChoices = dto.choices();
+
+            //급하니 그냥 싹 삭제.. TODO 리팩토링!!!!!!!!!
+            quiz.deleteAllQuizChoice();
+            for (QuizChoice qc: quizChoices) {
+                quizChoiceService.deleteChoice(qc);
+            }
+
+            quizChoiceService.createQuizChoices(inputChoices, inputChoices.get(dto.answers()-1), quiz);
+        }
+
+        quiz.modify(dto.quizNumber(), dto.question());
+
+        return mapToDto(quiz);
     }
 }

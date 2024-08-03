@@ -41,6 +41,14 @@ public class QuizController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
+    @Operation(summary = "[강사] 퀴즈 수정!", description = "성공시 200 반환")
+    @PatchMapping("/{quizId}")
+    public ResponseEntity<QuizResponseDto> modifyQuiz(@PathVariable("quizId") Integer quizId, @RequestBody QuizRequestDto dto) {
+        QuizResponseDto quizResponseDto = quizService.modifyQuiz(quizId, dto);
+
+        return ResponseEntity.ok(quizResponseDto);
+    }
+
     @Operation(summary = "[강사?] 강의에 대한 퀴즈 조회!", description = "무조건 200 반환")
     @GetMapping("/lecture/{lectureId}")
     public ResponseEntity<QuizzesResponseDto> getQuizzesResponseDto(@PathVariable("lectureId")Integer lectureId) {
