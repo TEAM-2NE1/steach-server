@@ -30,6 +30,7 @@ pipeline {
         stage('Build') { // Docker 이미지 빌드 단계
             steps {
                 script {
+                    sh 'which docker' // Docker가 설치되어 있는지 확인
                     docker.build("${IMAGE_NAME}:latest") // Docker 이미지를 빌드하고 latest 태그 추가
                 }
             }
