@@ -18,6 +18,7 @@ import com.twentyone.steachserver.domain.member.repository.TeacherRepository;
 import com.twentyone.steachserver.domain.member.service.StudentService;
 import com.twentyone.steachserver.domain.member.service.TeacherService;
 import com.twentyone.steachserver.domain.quiz.dto.QuizListRequestDto;
+import com.twentyone.steachserver.domain.quiz.dto.QuizListResponseDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.service.QuizService;
@@ -26,7 +27,6 @@ import com.twentyone.steachserver.domain.studentLecture.service.StudentLectureSe
 import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizRequestDto;
 import com.twentyone.steachserver.domain.studentQuiz.service.StudentQuizService;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,49 +160,52 @@ public class TestScenario1 {
         /* FIXME 8-3. 퀴즈만들기, 퀴즈풀기 */
         QuizRequestDto quizRequestDto1 = new QuizRequestDto(1, "자바는 객체지향 언어이다", List.of("O", "X"), 1);
         QuizListRequestDto quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto1));
-        Quiz quiz1 = quizService.createQuiz(lectureId1, quizListRequestDto).get(0);
+        QuizListResponseDto quiz1 = quizService.createQuizList(lectureId1, quizListRequestDto);
+        Integer quizId1 = quiz1.quizList().get(0).quizId();
 
         student1 = studentRepository.findById(student1.getId()).get();
         StudentQuizRequestDto studentQuizRequestDto1 = new StudentQuizRequestDto(90, "O");
-        studentQuizService.createStudentQuiz(student1, quiz1.getId(), studentQuizRequestDto1);
+        studentQuizService.createStudentQuiz(student1, quizId1, studentQuizRequestDto1);
 
         student2 = studentRepository.findById(student2.getId()).get();
         StudentQuizRequestDto studentQuizRequestDto2 = new StudentQuizRequestDto(80, "O");
-        studentQuizService.createStudentQuiz(student2, quiz1.getId(), studentQuizRequestDto2);
+        studentQuizService.createStudentQuiz(student2, quizId1, studentQuizRequestDto2);
 
         student3 = studentRepository.findById(student3.getId()).get();
         StudentQuizRequestDto studentQuizRequestDto3 = new StudentQuizRequestDto(0, "X");
-        studentQuizService.createStudentQuiz(student3, quiz1.getId(), studentQuizRequestDto3);
+        studentQuizService.createStudentQuiz(student3, quizId1, studentQuizRequestDto3);
 
         // FIXME ========================
         QuizRequestDto quizRequestDto2 = new QuizRequestDto(2, "자바 컬렉션이 아닌것은?", List.of("List", "Set", "Vector", "HashMap"), 3);
 //        Quiz quiz2 = quizService.createQuiz(lectureId1, quizRequestDto2).get();
         quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto2));
-        Quiz quiz2 = quizService.createQuiz(lectureId1, quizListRequestDto).get(0);
+        QuizListResponseDto quiz2 = quizService.createQuizList(lectureId1, quizListRequestDto);
+        Integer quizId2 = quiz2.quizList().get(0).quizId();
 
         StudentQuizRequestDto studentQuizRequestDto4 = new StudentQuizRequestDto(90, "Vector");
-        studentQuizService.createStudentQuiz(student1, quiz2.getId(), studentQuizRequestDto4);
+        studentQuizService.createStudentQuiz(student1, quizId2, studentQuizRequestDto4);
 
         StudentQuizRequestDto studentQuizRequestDto5 = new StudentQuizRequestDto(100, "Vector");
-        studentQuizService.createStudentQuiz(student2, quiz2.getId(), studentQuizRequestDto5);
+        studentQuizService.createStudentQuiz(student2, quizId2, studentQuizRequestDto5);
 
         StudentQuizRequestDto studentQuizRequestDto6 = new StudentQuizRequestDto(0, "HashMap");
-        studentQuizService.createStudentQuiz(student3, quiz2.getId(), studentQuizRequestDto6);
+        studentQuizService.createStudentQuiz(student3, quizId2, studentQuizRequestDto6);
 
         // FIXME ========================
         QuizRequestDto quizRequestDto3 = new QuizRequestDto(2, "자바는 플랫폼 종속적이다?", List.of("O", "X"), 1);
 //        Quiz quiz3 = quizService.createQuiz(lectureId1, quizRequestDto3).get();
         quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto3));
-        Quiz quiz3 = quizService.createQuiz(lectureId1, quizListRequestDto).get(0);
+        QuizListResponseDto quiz3 = quizService.createQuizList(lectureId1, quizListRequestDto);
+        Integer quizId3 = quiz3.quizList().get(0).quizId();
 
         StudentQuizRequestDto studentQuizRequestDto7 = new StudentQuizRequestDto(90, "O");
-        studentQuizService.createStudentQuiz(student1, quiz3.getId(), studentQuizRequestDto7);
+        studentQuizService.createStudentQuiz(student1, quizId3, studentQuizRequestDto7);
 
         StudentQuizRequestDto studentQuizRequestDto8 = new StudentQuizRequestDto(100, "O");
-        studentQuizService.createStudentQuiz(student2, quiz3.getId(), studentQuizRequestDto8);
+        studentQuizService.createStudentQuiz(student2, quizId3, studentQuizRequestDto8);
 
         StudentQuizRequestDto studentQuizRequestDto9 = new StudentQuizRequestDto(0, "X");
-        studentQuizService.createStudentQuiz(student3, quiz3.getId(), studentQuizRequestDto9);
+        studentQuizService.createStudentQuiz(student3, quizId3, studentQuizRequestDto9);
 
         FocusTimeRequestDto focusTimeRequestDto = new FocusTimeRequestDto(10);
         studentLectureService.saveTimeFocusTime(student1.getId(), lectureId1, 50);
@@ -228,46 +231,49 @@ public class TestScenario1 {
         quizRequestDto1 = new QuizRequestDto(1, "객체지향 5대원칙이 아닌것은?", List.of("OCP", "LSP", "RIP", "DIP"), 4);
 //        quiz1 = quizService.createQuiz(lectureId1, quizRequestDto1).get();
         quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto1));
-        quiz1 = quizService.createQuiz(lectureId1, quizListRequestDto).get(0);
+        quiz1 = quizService.createQuizList(lectureId1, quizListRequestDto);
+        quizId1 = quiz1.quizList().get(0).quizId();
 
         studentQuizRequestDto1 = new StudentQuizRequestDto(90, "RIP");
-        studentQuizService.createStudentQuiz(student1, quiz1.getId(), studentQuizRequestDto1);
+        studentQuizService.createStudentQuiz(student1, quizId1, studentQuizRequestDto1);
 
         studentQuizRequestDto2 = new StudentQuizRequestDto(80, "RIP");
-        studentQuizService.createStudentQuiz(student2, quiz1.getId(), studentQuizRequestDto2);
+        studentQuizService.createStudentQuiz(student2, quizId1, studentQuizRequestDto2);
 
         studentQuizRequestDto3 = new StudentQuizRequestDto(100, "RIP");
-        studentQuizService.createStudentQuiz(student3, quiz1.getId(), studentQuizRequestDto3);
+        studentQuizService.createStudentQuiz(student3, quizId1, studentQuizRequestDto3);
 
         // FIXME ========================
         quizRequestDto2 = new QuizRequestDto(2, "자바에서 MinHeap을 구현하는 방법은?", List.of("Heap", "PriorityQueue"), 2);
 //        quiz2 = quizService.createQuiz(lectureId1, quizRequestDto2).get();
         quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto2));
-        quiz2 = quizService.createQuiz(lectureId1, quizListRequestDto).get(0);
+        quiz2 = quizService.createQuizList(lectureId1, quizListRequestDto);
+        quizId2 = quiz2.quizList().get(0).quizId();
 
         studentQuizRequestDto4 = new StudentQuizRequestDto(90, "PriorityQueue");
-        studentQuizService.createStudentQuiz(student1, quiz2.getId(), studentQuizRequestDto4);
+        studentQuizService.createStudentQuiz(student1, quizId2, studentQuizRequestDto4);
 
         studentQuizRequestDto5 = new StudentQuizRequestDto(0, "Heap");
-        studentQuizService.createStudentQuiz(student2, quiz2.getId(), studentQuizRequestDto5);
+        studentQuizService.createStudentQuiz(student2, quizId2, studentQuizRequestDto5);
 
         studentQuizRequestDto6 = new StudentQuizRequestDto(0, "Heap");
-        studentQuizService.createStudentQuiz(student3, quiz2.getId(), studentQuizRequestDto6);
+        studentQuizService.createStudentQuiz(student3, quizId2, studentQuizRequestDto6);
 
         // FIXME ========================
         quizRequestDto3 = new QuizRequestDto(2, "클래스의 가장 최고조상은?", List.of("Object", "ANCESTOR"), 1);
 //        quiz3 = quizService.createQuiz(lectureId1, quizRequestDto3).get();
         quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto3));
-        quiz3 = quizService.createQuiz(lectureId1, quizListRequestDto).get(0);
+        quiz3 = quizService.createQuizList(lectureId1, quizListRequestDto);
+        quizId3 = quiz3.quizList().get(0).quizId();
 
         studentQuizRequestDto7 = new StudentQuizRequestDto(90, "Object");
-        studentQuizService.createStudentQuiz(student1, quiz3.getId(), studentQuizRequestDto7);
+        studentQuizService.createStudentQuiz(student1, quizId3, studentQuizRequestDto7);
 
         studentQuizRequestDto8 = new StudentQuizRequestDto(80, "Object");
-        studentQuizService.createStudentQuiz(student2, quiz3.getId(), studentQuizRequestDto8);
+        studentQuizService.createStudentQuiz(student2, quizId3, studentQuizRequestDto8);
 
         studentQuizRequestDto9 = new StudentQuizRequestDto(100, "Object");
-        studentQuizService.createStudentQuiz(student3, quiz3.getId(), studentQuizRequestDto9);
+        studentQuizService.createStudentQuiz(student3, quizId3, studentQuizRequestDto9);
 
         studentLectureService.saveTimeFocusTime(student1.getId(), lectureId1, 10);
         studentLectureService.saveTimeFocusTime(student2.getId(), lectureId1, 20);

@@ -12,7 +12,9 @@ import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.member.repository.StudentRepository;
 import com.twentyone.steachserver.domain.member.repository.TeacherRepository;
 import com.twentyone.steachserver.domain.quiz.dto.QuizListRequestDto;
+import com.twentyone.steachserver.domain.quiz.dto.QuizListResponseDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
+import com.twentyone.steachserver.domain.quiz.dto.QuizResponseDto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
 import java.time.LocalTime;
@@ -93,15 +95,15 @@ public class QuizIntegrationTest extends IntegrationTest {
 
         QuizRequestDto quizRequestDto = new QuizRequestDto(QUIZ_NUMBER, question, choices, answer);
         QuizListRequestDto quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto));
-        Quiz quiz = quizService.createQuiz(createdLecture.getId(), quizListRequestDto).get(0);
+        QuizResponseDto quiz = quizService.createQuizList(createdLecture.getId(), quizListRequestDto).quizList().get(0);
 
-        assertEquals(quiz.getQuestion(), question);
-        assertEquals(quiz.getQuizNumber(), QUIZ_NUMBER);
-        for (int i = 0; i < quiz.getQuizChoices().size(); i++) {
-            assertEquals(quiz.getQuizChoices().get(i).getChoiceSentence(), choices.get(i));
+        assertEquals(quiz.question(), question);
+        assertEquals(quiz.quizNumber(), QUIZ_NUMBER);
+        for (int i = 0; i < quiz.choices().size(); i++) {
+            assertEquals(quiz.choices().get(i), choices.get(i));
         }
 
-        assertEquals(quiz.getQuestion(), question);
+        assertEquals(quiz.question(), question);
     }
 
     @Test
@@ -116,9 +118,9 @@ public class QuizIntegrationTest extends IntegrationTest {
 
         List<QuizRequestDto> list = List.of(new QuizRequestDto(QUIZ_NUMBER, question, choices, answer));
 
-        List<Quiz> quizList = quizService.createQuiz(createdLecture.getId(), new QuizListRequestDto(list));
+        QuizListResponseDto quizListResponse = quizService.createQuizList(createdLecture.getId(), new QuizListRequestDto(list));
 
-        Quiz quiz = quizService.findById(quizList.get(0).getId())
+        Quiz quiz = quizService.findById(quizListResponse.quizList().get(0).quizId())
                 .orElseThrow(() -> new RuntimeException("asdf"));
 
         assertEquals(quiz.getQuizNumber(), QUIZ_NUMBER);
