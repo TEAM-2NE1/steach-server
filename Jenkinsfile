@@ -6,8 +6,7 @@ pipeline {
     }
 
     triggers {
-        pollSCM('H/5 * * * *')
-        githubPush()
+        githubPush() // GitHub 푸시 이벤트 트리거
     }
     stages {
         stage('Checkout') { // 코드 체크아웃 단계
