@@ -75,12 +75,6 @@ public class Quiz {
                 return i+1;
             }
         }
-//        for (QuizChoice quizChoice: this.quizChoices) {
-//            if (quizChoice.getIsAnswer()) {
-//                return
-////                answer.add(quizChoice.getChoiceSentence());
-//            }
-//        }
         
         throw new RuntimeException("에러에러에러");
     }
@@ -102,5 +96,9 @@ public class Quiz {
 
     public void deleteAllQuizChoice() {
         this.quizChoices = new ArrayList<>();
+    }
+
+    public void addChoiceList(List<QuizChoice> quizChoices) {
+        this.quizChoices = quizChoices;
     }
 }

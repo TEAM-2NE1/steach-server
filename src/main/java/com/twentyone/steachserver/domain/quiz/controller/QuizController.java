@@ -25,12 +25,13 @@ import java.util.stream.Collectors;
 public class QuizController {
     private final QuizService quizService;
 
-    @Operation(summary = "[강사] 퀴즈 생성!", description = "성공시 200 반환, 실패시 500 INTERNAL_SERVER_ERROR 반환")
+    @Operation(summary = "[강사] 퀴즈 여러 개 생성!", description = "성공시 200 반환, 실패시 500 INTERNAL_SERVER_ERROR 반환")
     @PostMapping("/{lectureId}")
-    public ResponseEntity<QuizListResponseDto> createQuiz(@PathVariable("lectureId")Integer lectureId, @RequestBody @Valid QuizListRequestDto request) throws Exception {
-        List<Quiz> quizList = quizService.createQuiz(lectureId, request);
+    public ResponseEntity<QuizListResponseDto> createQuiz(@PathVariable("lectureId")Integer lectureId, @RequestBody @Valid QuizListRequestDto request) {
+        //TODO 같은 string 값의 선지가 들어왔을 때 처리할 수 없음
+        QuizListResponseDto dto = quizService.createQuizList(lectureId, request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(QuizListResponseDto.fromDomainList(quizList));
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @Operation(summary = "[강사?] 퀴즈 조회!", description = "성공시 200 반환, 실패시 204 NOT_FOUND 반환")

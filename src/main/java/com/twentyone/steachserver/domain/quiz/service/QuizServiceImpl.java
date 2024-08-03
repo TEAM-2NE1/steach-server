@@ -4,6 +4,7 @@ import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.quiz.dto.QuizListRequestDto;
+import com.twentyone.steachserver.domain.quiz.dto.QuizListResponseDto;
 import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
 import com.twentyone.steachserver.domain.quiz.validator.QuizChoiceValidator;
 import com.twentyone.steachserver.domain.quiz.validator.QuizValidator;
@@ -21,43 +22,53 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class  QuizServiceImpl implements QuizService {
     private final QuizRepository quizRepository;
     private final LectureRepository lectureRepository;
-
     private final QuizChoiceService quizChoiceService;
-
     private final QuizValidator quizValidator;
     private final QuizChoiceValidator quizChoiceValidator;
 
     @Override
     @Transactional
-    public List<Quiz> createQuiz(Integer lectureId, QuizListRequestDto request) throws RuntimeException {
+    public QuizListResponseDto createQuizList(Integer lectureId, QuizListRequestDto request) throws RuntimeException {
         Lecture lecture = getLecture(lectureId);
+
         List<Quiz> quizList = new ArrayList<>();
-
         for (QuizRequestDto quizRequestDto: request.quizList()) {
-            Quiz quiz = Quiz.createQuiz(quizRequestDto, lecture);
-            quiz = quizRepository.save(quiz);
-            quizValidator.validateEmptyQuiz(quiz);
+            Quiz quiz = createQuiz(lecture, quizRequestDto);
 
-            // Create and save QuizChoice entities
-            List<String> choices = quizRequestDto.choices();
-            Integer answerIdx = quizRequestDto.answers() - 1; //user answer -> real index
-
-            if (answerIdx >= choices.size() || answerIdx < 0) {
-                throw new IllegalArgumentException("정답관련 인덱스가 유효하지 않습니다.");
-            }
-
-            quizChoiceService.createQuizChoices(choices, choices.get(answerIdx), quiz);
             quizList.add(quiz);
         }
 
-        return quizList;
+        return QuizListResponseDto.fromDomainList(quizList);
+    }
+
+    @Override
+    @Transactional
+    public Quiz createQuiz(Lecture lecture, QuizRequestDto quizRequestDto) {
+        //퀴즈 생성
+        Quiz quiz = Quiz.createQuiz(quizRequestDto, lecture);
+        quiz = quizRepository.save(quiz);
+
+        //실제 인덱스 = 클라이언트 인덱스 - 1
+        Integer answerIdx = quizRequestDto.answers() - 1;
+
+        List<String> choices = quizRequestDto.choices();
+
+        //클라이언트 인덱스 유효성 검사
+        if (answerIdx >= choices.size() || answerIdx < 0) {
+            throw new IllegalArgumentException("정답관련 인덱스가 유효하지 않습니다.");
+        }
+
+        // Create and save QuizChoice entities
+        List<QuizChoice> quizChoices = quizChoiceService.createQuizChoices(choices, choices.get(answerIdx), quiz);
+        quiz.addChoiceList(quizChoices);
+
+        return quiz;
     }
 
     private Lecture getLecture(Integer lectureId) {

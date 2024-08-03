@@ -14,9 +14,7 @@ public record QuizListResponseDto(List<QuizResponseDto> quizList) {
         for (Quiz quiz : quizList) {
             list.add(QuizResponseDto.fromDomain(quiz));
         }
-//        QuizListResponseDto dtos = new QuizListResponseDto();
-//        QuizResponseDto dto = QuizResponseDto.createQuizResponseDto(lectureId, )
-//        QuizResponseDto.createQuizResponseDto(lectureId, request, quiz.getId()))
+
         return new QuizListResponseDto(list);
     }
 }
