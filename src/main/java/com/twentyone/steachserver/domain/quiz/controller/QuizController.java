@@ -42,7 +42,7 @@ public class QuizController {
     }
 
     @Operation(summary = "[강사?] 강의에 대한 퀴즈 조회!", description = "무조건 200 반환")
-    @GetMapping("/lecture/{lectureId}/")
+    @GetMapping("/lecture/{lectureId}")
     public ResponseEntity<QuizzesResponseDto> getQuizzesResponseDto(@PathVariable("lectureId")Integer lectureId) {
         List<Quiz> quizzes = quizService.findAllByLectureId(lectureId);
 
