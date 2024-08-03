@@ -79,7 +79,7 @@ public class QuizIntegrationTest extends IntegrationTest {
                 .build();
         curriculumDetailRepository.save(curriculumDetail);
 
-        curriculum = Curriculum.of("title", CurriculumCategory.SOCIAL, teacher, curriculumDetail);
+        curriculum = Curriculum.of("title", CurriculumCategory.getCategoryByIndex(0), teacher, curriculumDetail);
         curriculumRepository.save(curriculum);
     }
 

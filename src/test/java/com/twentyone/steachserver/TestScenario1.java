@@ -119,7 +119,7 @@ public class TestScenario1 {
                 .subCategory("자바 정복하자!")
                 .intro("저 자바 잘합니다. 저한테 배워가세요")
                 .information("매주 월화 7시부터 9시까지 강의합니다.")
-                .category(CurriculumCategory.SOCIAL)
+                .category(CurriculumCategory.getCategoryByIndex(0))
                 .subCategory("프로그래밍")
                 .bannerImgUrl("http:~~")
                 .startDate(LocalDate.of(2024, 8, 30))
