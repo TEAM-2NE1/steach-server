@@ -30,8 +30,7 @@ public class QuizChoiceValidatorTest extends SteachTest {
     @Test
     public void testCreateQuizChoices_Failure_NullChoices() {
         List<String> choices = null;
-        String answer = "Answer1";
-//        List<String> answers = Arrays.asList(asnwer);
+        int answer = 1;
 
         Exception exception = assertThrows(NullPointerException.class, () -> {
             quizChoiceValidator.validateQuizChoices(choices, answer);
@@ -41,36 +40,9 @@ public class QuizChoiceValidatorTest extends SteachTest {
     }
 
     @Test
-    public void testCreateQuizChoices_Failure_NullAnswers() {
+    public void testCreateQuizChoices_Failure_AnswerZero() {
         List<String> choices = Arrays.asList("Choice1", "Choice2");
-//        List<String> answers = null;
-        String answer = null;
-
-        Exception exception = assertThrows(NullPointerException.class, () -> {
-            quizChoiceValidator.validateQuizChoices(choices, answer);
-        });
-
-        assertEquals("Answers cannot be null", exception.getMessage());
-    }
-
-//    @Test
-//    public void testCreateQuizChoices_Failure_AnswersMoreThanChoices() {
-//        List<String> choices = Arrays.asList("Choice1", "Choice2");
-////        List<String> answers = Arrays.asList("Answer1", "Answer2", "Answer3");
-//        String answer = "Answer1";
-//
-//        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-//            quizChoiceValidator.validateQuizChoices(choices, answer);
-//        });
-//
-//        assertEquals("Answers cannot be more than choices", exception.getMessage());
-//    }
-
-    @Test
-    public void testCreateQuizChoices_Failure_EmptyAnswers() {
-        List<String> choices = Arrays.asList("Choice1", "Choice2");
-        List<String> answers = List.of();
-        String answer = null;
+        int answer = 1;
 
         Exception exception = assertThrows(NullPointerException.class, () -> {
             quizChoiceValidator.validateQuizChoices(choices, answer);
@@ -82,8 +54,7 @@ public class QuizChoiceValidatorTest extends SteachTest {
     @Test
     public void testCreateQuizChoices_Failure_EmptyChoices() {
         List<String> choices = List.of();
-        String answer = "Answer1";
-//        List<String> answers = Arrays.asList(answer, "Answer2");
+        int answer = 1;
 
         Exception exception = assertThrows(NullPointerException.class, () -> {
             quizChoiceValidator.validateQuizChoices(choices, answer);

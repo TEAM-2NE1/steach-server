@@ -43,8 +43,7 @@ public class QuizChoiceServiceImplTest extends SteachTest {
     @Test
     public void testCreateQuizChoices_Success_SameSizeAnswersAndChoices() throws Exception {
         List<String> choices = Arrays.asList("Answer3", "Answer2", "Answer1");
-        String answer = "Answer1";
-//        List<String> answers = Arrays.asList(answer, "Answer2", "Answer3");
+        int answer = 3;
 
         doNothing().when(quizChoiceValidator).validateQuizChoices(choices, answer);
         doNothing().when(savedQuiz).addChoice(any(QuizChoice.class));
@@ -58,8 +57,7 @@ public class QuizChoiceServiceImplTest extends SteachTest {
     @Test
     public void testCreateQuizChoices_Success() throws Exception {
         List<String> choices = Arrays.asList("Choice1", "Choice2", "Answer1");
-//        List<String> answers = Arrays.asList("Answer1");
-        String answer = "Answer1";
+        int answer = 3;
 
         doNothing().when(quizChoiceValidator).validateQuizChoices(choices, answer);
         doNothing().when(savedQuiz).addChoice(any(QuizChoice.class));

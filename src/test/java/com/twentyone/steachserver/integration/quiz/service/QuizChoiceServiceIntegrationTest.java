@@ -56,7 +56,7 @@ public class QuizChoiceServiceIntegrationTest extends IntegrationTest {
     @Test
     public void testCreateQuizChoices_Failure_NullChoices() {
         List<String> choices = null;
-        String answer = "Answer1";
+        Integer answer = 1;
 
         Exception exception = assertThrows(NullPointerException.class, () -> {
             quizChoiceValidator.validateQuizChoices(choices, answer);
@@ -66,38 +66,13 @@ public class QuizChoiceServiceIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testCreateQuizChoices_Failure_NullAnswers() {
-        List<String> choices = Arrays.asList("Choice1", "Choice2");
-        String answer = null;
-
-        Exception exception = assertThrows(NullPointerException.class, () -> {
-            quizChoiceValidator.validateQuizChoices(choices, answer);
-        });
-
-        assertEquals("Answers cannot be null", exception.getMessage());
-    }
-
-    @Test
-    public void testCreateQuizChoices_Failure_EmptyAnswers() {
-        List<String> choices = Arrays.asList("Choice1", "Choice2");
-        List<String> answers = List.of();
-        Quiz savedQuiz = mock(Quiz.class);
-
-        Exception exception = assertThrows(NullPointerException.class, () -> {
-            quizChoiceService.createQuizChoices(choices, null, savedQuiz);
-        });
-
-        assertEquals("Answers cannot be null", exception.getMessage());
-    }
-
-    @Test
     public void testCreateQuizChoices_Failure_EmptyChoices() {
         List<String> choices = List.of();
-        List<String> answers = Arrays.asList("Answer1", "Answer2");
+        int answer = 1;
         Quiz savedQuiz = mock(Quiz.class);
 
         Exception exception = assertThrows(NullPointerException.class, () -> {
-            quizChoiceService.createQuizChoices(choices, "Answer1", savedQuiz);
+            quizChoiceService.createQuizChoices(choices, answer, savedQuiz);
         });
 
         assertEquals("Choices cannot be empty", exception.getMessage());
@@ -107,8 +82,7 @@ public class QuizChoiceServiceIntegrationTest extends IntegrationTest {
     @Test
     public void testCreateQuizChoices_Success() throws Exception {
         List<String> choices = Arrays.asList("Choice1", "Choice2", "Answer1");
-//        List<String> answers = Arrays.asList("Answer1");
-        String answer = "Answer1";
+        int answer = 3;
 
         // 단위 테스트에서 테스트
 //        doNothing().when(quizChoiceValidator).validateQuizChoices(choices, answers);
@@ -122,10 +96,9 @@ public class QuizChoiceServiceIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testCreateQuizChoices_Failure_AnswersMoreThanChoices() {
+    public void testCreateQuizChoices_Failure_AnswersZero() {
         List<String> choices = Arrays.asList("Choice1", "Choice2");
-//        List<String> answers = Arrays.asList("Answer1", "Answer2", "Answer3");
-        String answer = "Answer1";
+        int answer = 0;
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             quizChoiceService.createQuizChoices(choices, answer, savedQuiz);
@@ -139,7 +112,7 @@ public class QuizChoiceServiceIntegrationTest extends IntegrationTest {
         // Given
         List<String> choices = Arrays.asList("Answer3", "Answer2", "Answer1");
 //        List<String> answers = Arrays.asList("Answer1", "Answer2", "Answer3");
-        String answer = "Answer1";
+        int answer = 1;
         Quiz savedQuiz = mock(Quiz.class);  // Quiz 객체를 mock으로 생성
 
 //        doNothing().when(quizChoiceValidator).validateQuizChoices(choices, answers);
