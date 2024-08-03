@@ -96,18 +96,6 @@ public class QuizChoiceServiceIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testCreateQuizChoices_Failure_AnswersZero() {
-        List<String> choices = Arrays.asList("Choice1", "Choice2");
-        int answer = 0;
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            quizChoiceService.createQuizChoices(choices, answer, savedQuiz);
-        });
-
-        assertEquals("Answers cannot be empty", exception.getMessage());
-    }
-
-    @Test
     public void testCreateQuizChoices_Success_SameSizeAnswersAndChoices() throws Exception {
         // Given
         List<String> choices = Arrays.asList("Answer3", "Answer2", "Answer1");

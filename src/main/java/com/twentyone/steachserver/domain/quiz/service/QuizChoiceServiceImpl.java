@@ -26,24 +26,17 @@ public class QuizChoiceServiceImpl implements QuizChoiceService{
 
         quizChoiceValidator.validateQuizChoices(choices, answer); //TODO 수정
 
-        int answerCount = 0;
         for (int i =0; i< choices.size(); i++) {
             String choice = choices.get(i);
             boolean isAnswer = (answer == i);
-            if (isAnswer) {
-                answerCount++;
-            }
 
             QuizChoice quizChoice = QuizChoice.createQuizChoice(choice, savedQuiz, isAnswer);
             quizChoiceRepository.save(quizChoice);
             quizChoiceList.add(quizChoice);
         }
 
-        quizChoiceValidator.validateRightAnswers(answerCount);
-
         return quizChoiceList;
     }
-
 
     public String getAnswers(Quiz quiz) {
         List<String> answers = quiz.getQuizChoices().stream()

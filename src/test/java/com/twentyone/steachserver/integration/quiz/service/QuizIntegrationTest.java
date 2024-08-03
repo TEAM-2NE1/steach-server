@@ -33,7 +33,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 @DisplayName("퀴즈 통합 테스트")
 public class QuizIntegrationTest extends IntegrationTest {
     public static final String CHOICE1 = "asdf";
@@ -97,13 +96,13 @@ public class QuizIntegrationTest extends IntegrationTest {
         QuizListRequestDto quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto));
         QuizResponseDto quiz = quizService.createQuizList(createdLecture.getId(), quizListRequestDto).quizList().get(0);
 
-        assertEquals(quiz.question(), question);
-        assertEquals(quiz.quizNumber(), QUIZ_NUMBER);
-        for (int i = 0; i < quiz.choices().size(); i++) {
-            assertEquals(quiz.choices().get(i), choices.get(i));
+        assertEquals(quiz.getQuestion(), question);
+        assertEquals(quiz.getQuizNumber(), QUIZ_NUMBER);
+        for (int i = 0; i < quiz.getChoices().size(); i++) {
+            assertEquals(quiz.getChoices().get(i), choices.get(i));
         }
 
-        assertEquals(quiz.question(), question);
+        assertEquals(quiz.getQuestion(), question);
     }
 
     @Test
@@ -120,7 +119,7 @@ public class QuizIntegrationTest extends IntegrationTest {
 
         QuizListResponseDto quizListResponse = quizService.createQuizList(createdLecture.getId(), new QuizListRequestDto(list));
 
-        Quiz quiz = quizService.findById(quizListResponse.quizList().get(0).quizId())
+        Quiz quiz = quizService.findById(quizListResponse.quizList().get(0).getQuizId())
                 .orElseThrow(() -> new RuntimeException("asdf"));
 
         assertEquals(quiz.getQuizNumber(), QUIZ_NUMBER);

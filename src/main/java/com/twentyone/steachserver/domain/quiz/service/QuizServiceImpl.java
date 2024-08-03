@@ -54,18 +54,15 @@ public class  QuizServiceImpl implements QuizService {
         Quiz quiz = Quiz.createQuiz(quizRequestDto, lecture);
         quiz = quizRepository.save(quiz);
 
-        //실제 인덱스 = 클라이언트 인덱스 - 1
-        Integer answerIdx = quizRequestDto.answers() - 1;
-
-        List<String> choices = quizRequestDto.choices();
+        List<String> choices = quizRequestDto.getChoices();
 
         //클라이언트 인덱스 유효성 검사
-        if (answerIdx >= choices.size() || answerIdx < 0) {
+        if (quizRequestDto.getAnswers() >= choices.size() || quizRequestDto.getAnswers() < 0) {
             throw new IllegalArgumentException("정답관련 인덱스가 유효하지 않습니다.");
         }
 
         // Create and save QuizChoice entities
-        List<QuizChoice> quizChoices = quizChoiceService.createQuizChoices(choices, answerIdx, quiz);
+        List<QuizChoice> quizChoices = quizChoiceService.createQuizChoices(choices, quizRequestDto.getAnswers(), quiz);
         quiz.addChoiceList(quizChoices);
 
         return quiz;
@@ -125,7 +122,7 @@ public class  QuizServiceImpl implements QuizService {
     @Transactional
     public QuizResponseDto modifyQuiz(Teacher teacher, Integer quizId, QuizRequestDto dto) {
         //dto 검증로직
-        if (dto.answers() == null && dto.choices() != null) {
+        if (dto.getAnswers() == null && dto.getChoices() != null) {
             throw new IllegalArgumentException("quiz choices에 수정사항이 있다면 answer는 null이어서는 안됩니다.");
         }
 
@@ -139,9 +136,9 @@ public class  QuizServiceImpl implements QuizService {
         }
 
         //answer만 바뀌는 경우
-        if (dto.choices() == null && dto.answers() != null) {
+        if (dto.getChoices() == null && dto.getAnswers() != null) {
             List<QuizChoice> quizChoices = quiz.getQuizChoices();
-            int answerIndex = dto.answers() - 1; //TODO 이건 어떻게 처리하지? 실수 발생할 것 같다..
+            int answerIndex = dto.getAnswers() - 1; //TODO 이건 어떻게 처리하지? 실수 발생할 것 같다..
 
             if (answerIndex >= quiz.getQuizChoices().size() || answerIndex < 0) {
                 throw new IllegalArgumentException("정답관련 인덱스가 유효하지 않습니다.");
@@ -157,7 +154,7 @@ public class  QuizServiceImpl implements QuizService {
         }
 
         //choice + answer 둘 다 바뀌는 경우
-        if (dto.choices() != null && dto.answers() != null) {
+        if (dto.getChoices() != null && dto.getAnswers() != null) {
             List<QuizChoice> quizChoices = quiz.getQuizChoices();
 
             //TODO choice 도 몇 개 없는데, 그냥 삭제하는 게 나을까? 고민해보기..
@@ -166,16 +163,16 @@ public class  QuizServiceImpl implements QuizService {
                 quizChoiceService.deleteChoice(qc);
             }
 
-            int answerIndex = dto.answers() - 1; //TODO 이건 어떻게 처리하지? 실수 발생할 것 같다..
+            int answerIndex = dto.getAnswers() - 1; //TODO 이건 어떻게 처리하지? 실수 발생할 것 같다..
             //클라이언트 인덱스 유효성 검사
-            if (answerIndex >= dto.choices().size() || answerIndex < 0) {
+            if (answerIndex >= dto.getChoices().size() || answerIndex < 0) {
                 throw new IllegalArgumentException("정답관련 인덱스가 유효하지 않습니다.");
             }
 
-            List<String> inputChoices = dto.choices();
+            List<String> inputChoices = dto.getChoices();
             quizChoiceService.createQuizChoices(inputChoices, answerIndex, quiz);
 
-            quiz.modify(dto.quizNumber(), dto.question());
+            quiz.modify(dto.getQuizNumber(), dto.getQuestion());
         }
 
         return mapToDto(quiz);

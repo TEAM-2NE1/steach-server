@@ -161,7 +161,7 @@ public class TestScenario1 {
         QuizRequestDto quizRequestDto1 = new QuizRequestDto(1, "자바는 객체지향 언어이다", List.of("O", "X"), 1);
         QuizListRequestDto quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto1));
         QuizListResponseDto quiz1 = quizService.createQuizList(lectureId1, quizListRequestDto);
-        Integer quizId1 = quiz1.quizList().get(0).quizId();
+        Integer quizId1 = quiz1.quizList().get(0).getQuizId();
 
         student1 = studentRepository.findById(student1.getId()).get();
         StudentQuizRequestDto studentQuizRequestDto1 = new StudentQuizRequestDto(90, "O");
@@ -180,7 +180,7 @@ public class TestScenario1 {
 //        Quiz quiz2 = quizService.createQuiz(lectureId1, quizRequestDto2).get();
         quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto2));
         QuizListResponseDto quiz2 = quizService.createQuizList(lectureId1, quizListRequestDto);
-        Integer quizId2 = quiz2.quizList().get(0).quizId();
+        Integer quizId2 = quiz2.quizList().get(0).getQuizId();
 
         StudentQuizRequestDto studentQuizRequestDto4 = new StudentQuizRequestDto(90, "Vector");
         studentQuizService.createStudentQuiz(student1, quizId2, studentQuizRequestDto4);
@@ -196,7 +196,7 @@ public class TestScenario1 {
 //        Quiz quiz3 = quizService.createQuiz(lectureId1, quizRequestDto3).get();
         quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto3));
         QuizListResponseDto quiz3 = quizService.createQuizList(lectureId1, quizListRequestDto);
-        Integer quizId3 = quiz3.quizList().get(0).quizId();
+        Integer quizId3 = quiz3.quizList().get(0).getQuizId();
 
         StudentQuizRequestDto studentQuizRequestDto7 = new StudentQuizRequestDto(90, "O");
         studentQuizService.createStudentQuiz(student1, quizId3, studentQuizRequestDto7);
@@ -232,7 +232,7 @@ public class TestScenario1 {
 //        quiz1 = quizService.createQuiz(lectureId1, quizRequestDto1).get();
         quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto1));
         quiz1 = quizService.createQuizList(lectureId1, quizListRequestDto);
-        quizId1 = quiz1.quizList().get(0).quizId();
+        quizId1 = quiz1.quizList().get(0).getQuizId();
 
         studentQuizRequestDto1 = new StudentQuizRequestDto(90, "RIP");
         studentQuizService.createStudentQuiz(student1, quizId1, studentQuizRequestDto1);
@@ -248,7 +248,7 @@ public class TestScenario1 {
 //        quiz2 = quizService.createQuiz(lectureId1, quizRequestDto2).get();
         quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto2));
         quiz2 = quizService.createQuizList(lectureId1, quizListRequestDto);
-        quizId2 = quiz2.quizList().get(0).quizId();
+        quizId2 = quiz2.quizList().get(0).getQuizId();
 
         studentQuizRequestDto4 = new StudentQuizRequestDto(90, "PriorityQueue");
         studentQuizService.createStudentQuiz(student1, quizId2, studentQuizRequestDto4);
@@ -264,7 +264,7 @@ public class TestScenario1 {
 //        quiz3 = quizService.createQuiz(lectureId1, quizRequestDto3).get();
         quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto3));
         quiz3 = quizService.createQuizList(lectureId1, quizListRequestDto);
-        quizId3 = quiz3.quizList().get(0).quizId();
+        quizId3 = quiz3.quizList().get(0).getQuizId();
 
         studentQuizRequestDto7 = new StudentQuizRequestDto(90, "Object");
         studentQuizService.createStudentQuiz(student1, quizId3, studentQuizRequestDto7);

@@ -42,8 +42,8 @@ public class Quiz {
     public static Quiz createQuiz(QuizRequestDto request, Lecture lecture) {
         Quiz quiz = new Quiz();
         quiz.setLecture(lecture);
-        quiz.setQuestion(request.question());
-        quiz.setQuizNumber((request.quizNumber() == null || request.quizNumber()== 0)? lecture.getQuizzes().size() + 1 : request.quizNumber());
+        quiz.setQuestion(request.getQuestion());
+        quiz.setQuizNumber((request.getQuizNumber() == null || request.getQuizNumber()== 0)? lecture.getQuizzes().size() + 1 : request.getQuizNumber());
 
         lecture.addQuiz(quiz);
         return quiz;

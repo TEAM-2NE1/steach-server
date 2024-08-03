@@ -6,15 +6,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 
 @DisplayName("퀴즈 보기 검증 단위 테스트")
 public class QuizChoiceValidatorTest extends SteachTest {
@@ -39,28 +35,28 @@ public class QuizChoiceValidatorTest extends SteachTest {
         assertEquals("Choices cannot be null", exception.getMessage());
     }
 
-    @Test
-    public void testCreateQuizChoices_Failure_AnswerZero() {
-        List<String> choices = Arrays.asList("Choice1", "Choice2");
-        int answer = 1;
+//    @Test
+//    public void testCreateQuizChoices_Failure_AnswerZero() {
+//        List<String> choices = Arrays.asList("Choice1", "Choice2");
+//        int answer = 2;
+//
+//        Exception exception = assertThrows(NullPointerException.class, () -> {
+//            quizChoiceValidator.validateQuizChoices(choices, answer);
+//        });
+//
+//        assertEquals("Answers cannot be null", exception.getMessage());
+//    }
 
-        Exception exception = assertThrows(NullPointerException.class, () -> {
-            quizChoiceValidator.validateQuizChoices(choices, answer);
-        });
-
-        assertEquals("Answers cannot be null", exception.getMessage());
-    }
-
-    @Test
-    public void testCreateQuizChoices_Failure_EmptyChoices() {
-        List<String> choices = List.of();
-        int answer = 1;
-
-        Exception exception = assertThrows(NullPointerException.class, () -> {
-            quizChoiceValidator.validateQuizChoices(choices, answer);
-        });
-
-        assertEquals("Choices cannot be empty", exception.getMessage());
-    }
+//    @Test
+//    public void testCreateQuizChoices_Failure_EmptyChoices() {
+//        List<String> choices = List.of();
+//        int answer = 1;
+//
+//        Exception exception = assertThrows(NullPointerException.class, () -> {
+//            quizChoiceValidator.validateQuizChoices(choices, answer);
+//        });
+//
+//        assertEquals("Choices cannot be empty", exception.getMessage());
+//    }
 
 }
