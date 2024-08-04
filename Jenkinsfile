@@ -20,7 +20,7 @@ pipeline {
                         branches: [[name: 'jen']],
                         userRemoteConfigs: [[
                             url: 'https://github.com/TEAM-2NE1/steach-server.git',
-                            credentialsId: 'staech-server-jen-ssh' // SSH 크리덴셜 ID 사용
+                            credentialsId: 'staech-server-jen'
                         ]],
                         doGenerateSubmoduleConfigurations: false, // 기본 서브모듈 구성을 비활성화하고 커스텀 설정을 적용하기 위해서
                         submoduleCfg: [],
@@ -33,16 +33,19 @@ pipeline {
             }
         }
 
-//         stage('Update Submodules') { // 서브모듈 업데이트 단계 추가
-//             steps {
-//                 script {
-//                 // 그러나, 만약 서브모듈이 여러 단계에 걸쳐서 업데이트되어야 하는 경우가 있다면, 아래와 같이 명령어를 반복하여 호출할 수 있습니다.
-//                 // 두번 하는거 같은데 잘 모르겠음.
-//                     sh 'git submodule update --init --recursive' // 서브모듈 초기화 및 업데이트
-//                     sh 'git submodule update --remote' // 원격 저장소에서 최신 서브모듈 업데이트
-//                 }
-//             }
-//         }
+        stage('Update Submodules') { // 서브모듈 업데이트 단계 추가
+            steps {
+                script {
+                    // 서브모듈을 HTTPS URL로 변경
+                    // 모든 주소를 ssh -> https
+                    sh 'git config --global url."https://github.com/".insteadOf git@github.com:'
+                    // 서브모듈 초기화 및 업데이트
+                    sh 'git submodule update --init --recursive'
+                    // 서브모듈을 원격에서 최신 상태로 업데이트
+                    sh 'git submodule update --remote'
+                }
+            }
+        }
 
         stage('Verify Docker Installation') {
             steps {
