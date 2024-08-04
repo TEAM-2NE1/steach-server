@@ -40,7 +40,7 @@ pipeline {
         stage('Build') { // Docker 이미지 빌드 단계
             steps {
                 script {
-//                     sh 'which docker' // Docker가 설치되어 있는지 확인
+                    sh './gradlew clean build' // Gradle 빌드 수행
                     docker.build("${IMAGE_NAME}:latest") // Docker 이미지를 빌드하고 latest 태그 추가
                 }
             }
@@ -50,6 +50,7 @@ pipeline {
             steps {
                 script {
                     // 필요한 경우, Docker Compose 파일 경로를 명확히 지정
+                    sh 'docker-compose down' // 기존 컨테이너 종료
                     sh 'docker-compose -f docker-compose.prod.yml up -d' // Docker Compose 파일을 사용하여 컨테이너 실행
                 }
             }
@@ -58,6 +59,7 @@ pipeline {
 
     post {
         always {
+            sh 'docker-compose logs' // Docker Compose 로그 출력
             cleanWs() // 작업 공간 정리
         }
     }
