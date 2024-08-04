@@ -40,8 +40,8 @@ pipeline {
         stage('Build') { // Docker 이미지 빌드 단계
             steps {
                 script {
-                    sh 'chmod +x ./gradlew' // gradlew 파일에 실행 권한 추가
-                    sh './gradlew clean build' // Gradle 빌드 수행
+//                     sh 'chmod +x ./gradlew' // gradlew 파일에 실행 권한 추가
+//                     sh './gradlew build' // Gradle 빌드 수행
                     docker.build("${IMAGE_NAME}:latest") // Docker 이미지를 빌드하고 latest 태그 추가
                 }
             }
@@ -89,7 +89,7 @@ pipeline {
 
     post {
         always {
-            sh 'docker-compose.prod logs' // Docker Compose 로그 출력
+            sh 'docker-compose.prod.yml logs' // Docker Compose 로그 출력
             cleanWs() // 작업 공간 정리
         }
     }
