@@ -1,6 +1,6 @@
 # 1단계: 애플리케이션 빌드
 # Gradle과 OpenJDK 17을 사용하는 빌드 이미지
-FROM gradle:7.3.3-jdk17 AS build
+FROM gradle:8.8-jdk17 AS build
 # 작업 디렉토리 설정
 WORKDIR /app
 # 현재 디렉토리의 모든 파일을 컨테이너의 작업 디렉토리로 복사
