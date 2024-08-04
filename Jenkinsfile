@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    sshagent (credentials: ['staech-server-jen-ssh']) {
+                    sshagent (credentials: ['steach-server-jen-ssh']) {
                         def branch = env.GIT_BRANCH ? env.GIT_BRANCH.replaceAll(/^origin\//, '') : 'main'
                         echo "Checking out branch: ${branch}"
                         checkout([
