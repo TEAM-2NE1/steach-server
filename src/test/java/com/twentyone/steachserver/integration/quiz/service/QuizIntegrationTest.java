@@ -23,9 +23,13 @@ import com.twentyone.steachserver.domain.quiz.service.QuizService;
 import com.twentyone.steachserver.integration.IntegrationTest;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -35,6 +39,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Slf4j
 @DisplayName("퀴즈 통합 테스트")
 public class QuizIntegrationTest extends IntegrationTest {
     public static final String CHOICE1 = "asdf";
@@ -122,12 +127,32 @@ public class QuizIntegrationTest extends IntegrationTest {
         }
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0, 3, 4, 5})
+    void 퀴즈생성_answer_인덱스_에러(int answerIdx) throws Exception {
+        //given
+        List<QuizRequestDto> quizRequestDtoList = new ArrayList<>();
+        quizRequestDtoList.add(new QuizRequestDto(1, "마루는 안귀엽다", List.of("O", "X"), 2));
+        quizRequestDtoList.add(new QuizRequestDto(2, "마루는 귀엽다", List.of("O", "X"), answerIdx)); //에러발생!!!
+        quizRequestDtoList.add(new QuizRequestDto(3, "가장 귀여운 강아지 이름은?", List.of("핑핑이", "마루", "서브웨이"), 2));
+
+        QuizListRequestDto quizListRequestDto = new QuizListRequestDto(quizRequestDtoList);
+
+        //when //then
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> {
+            quizService.createQuizList(lecture.getId(), quizListRequestDto);
+        });
+
+        assertTrue(e.getMessage().contains("2번째"));
+        assertTrue(e.getMessage().contains("정답관련 인덱스가 유효하지 않습니다"));
+        log.info(e.getMessage());
+    }
+
     @Test
     void 퀴즈조회() {
         //given
         Lecture createdLecture = lectureRepository.save(Lecture.of("title", 1, LocalDateTime.now(), curriculum));
         String question = "asdf";
-
 
         List<String> choices = List.of(new String[]{CHOICE1, CHOICE2});
         Integer answer = 1; //CHOICE1
