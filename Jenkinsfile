@@ -27,11 +27,12 @@ pipeline {
             }
         }
 
-        // Docker가 설치되어 있고, 명령어가 올바르게 작동하는지 확인합니다.
+
         stage('Verify Docker Installation') {
             steps {
                 script {
-                    sh 'docker --version'
+                    sh 'docker --version' // Docker가 설치되어 있고, 명령어가 올바르게 작동하는지 확인합니다.
+                    sh 'docker ps' // Docker 데몬에 접근할 수 있는지 확인
                 }
             }
         }
@@ -39,7 +40,7 @@ pipeline {
         stage('Build') { // Docker 이미지 빌드 단계
             steps {
                 script {
-                    sh 'which docker' // Docker가 설치되어 있는지 확인
+//                     sh 'which docker' // Docker가 설치되어 있는지 확인
                     docker.build("${IMAGE_NAME}:latest") // Docker 이미지를 빌드하고 latest 태그 추가
                 }
             }
@@ -48,6 +49,7 @@ pipeline {
         stage('Deploy') { // Docker Compose를 사용하여 배포하는 단계
             steps {
                 script {
+                    // 필요한 경우, Docker Compose 파일 경로를 명확히 지정
                     sh 'docker-compose -f docker-compose.prod.yml up -d' // Docker Compose 파일을 사용하여 컨테이너 실행
                 }
             }
