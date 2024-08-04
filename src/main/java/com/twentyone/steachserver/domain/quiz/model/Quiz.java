@@ -42,8 +42,8 @@ public class Quiz {
     public static Quiz createQuiz(QuizRequestDto request, Lecture lecture) {
         Quiz quiz = new Quiz();
         quiz.setLecture(lecture);
-        quiz.setQuestion(request.question());
-        quiz.setQuizNumber((request.quizNumber() == null || request.quizNumber()== 0)? lecture.getQuizzes().size() + 1 : request.quizNumber());
+        quiz.setQuestion(request.getQuestion());
+        quiz.setQuizNumber((request.getQuizNumber() == null || request.getQuizNumber()== 0)? lecture.getQuizzes().size() + 1 : request.getQuizNumber());
 
         lecture.addQuiz(quiz);
         return quiz;
@@ -57,5 +57,50 @@ public class Quiz {
     public void addChoice(QuizChoice quizChoice) {
         this.getQuizChoices().add(quizChoice);
         quizChoice.updateQuiz(this);
+    }
+
+    public List<String> getQuizChoiceString() {
+        List<String> choice = new ArrayList<>();
+
+        for (QuizChoice quizChoice: this.quizChoices) {
+            choice.add(quizChoice.getChoiceSentence());
+        }
+
+        return choice;
+    }
+
+    public Integer getAnswer() {
+        int i = 0;
+        for (QuizChoice quizChoice: this.quizChoices) {
+            if (quizChoice.getIsAnswer()) {
+                return i+1;
+            }
+            i++;
+        }
+        
+        throw new RuntimeException("에러에러에러");
+    }
+
+    public void modify(Integer quizNumber, String question) {
+        if (quizNumber != null)
+            this.quizNumber = quizNumber;
+
+        if (question != null)
+            this.question = question;
+        //        Quiz quiz = new Quiz();
+        //        quiz.setLecture(lecture);
+        //        quiz.setQuestion(request.question());
+        //        quiz.setQuizNumber((request.quizNumber() == null || request.quizNumber()== 0)? lecture.getQuizzes().size() + 1 : request.quizNumber());
+        //
+        //        lecture.addQuiz(quiz);
+        //        return quiz;
+    }
+
+    public void deleteAllQuizChoice() {
+        this.quizChoices = new ArrayList<>();
+    }
+
+    public void addChoiceList(List<QuizChoice> quizChoices) {
+        this.quizChoices = quizChoices;
     }
 }

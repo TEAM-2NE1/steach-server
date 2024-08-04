@@ -11,7 +11,10 @@ import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.member.repository.StudentRepository;
 import com.twentyone.steachserver.domain.member.repository.TeacherRepository;
+import com.twentyone.steachserver.domain.quiz.dto.QuizListRequestDto;
+import com.twentyone.steachserver.domain.quiz.dto.QuizListResponseDto;
 import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
+import com.twentyone.steachserver.domain.quiz.dto.QuizResponseDto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
 import java.time.LocalTime;
@@ -29,7 +32,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 
 @DisplayName("퀴즈 통합 테스트")
 public class QuizIntegrationTest extends IntegrationTest {
@@ -87,15 +89,17 @@ public class QuizIntegrationTest extends IntegrationTest {
         Lecture createdLecture = lectureRepository.save(Lecture.of("title", 1, LocalDateTime.now(), curriculum));
         String question = "asdf";
         List<String> choices = List.of(new String[]{CHOICE1, CHOICE2});
-        List<String> answers = List.of(new String[]{CHOICE1});
+//        List<String> answers = List.of(new String[]{CHOICE1});
+        Integer answer = 1; //CHOICE
 
-        Quiz quiz = quizService.createQuiz(createdLecture.getId(), new QuizRequestDto(QUIZ_NUMBER, question, choices, answers))
-                .orElseThrow(() -> new RuntimeException("에러남"));
+        QuizRequestDto quizRequestDto = new QuizRequestDto(QUIZ_NUMBER, question, choices, answer);
+        QuizListRequestDto quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto));
+        QuizResponseDto quiz = quizService.createQuizList(createdLecture.getId(), quizListRequestDto).quizList().get(0);
 
         assertEquals(quiz.getQuestion(), question);
         assertEquals(quiz.getQuizNumber(), QUIZ_NUMBER);
-        for (int i = 0; i < quiz.getQuizChoices().size(); i++) {
-            assertEquals(quiz.getQuizChoices().get(i).getChoiceSentence(), choices.get(i));
+        for (int i = 0; i < quiz.getChoices().size(); i++) {
+            assertEquals(quiz.getChoices().get(i), choices.get(i));
         }
 
         assertEquals(quiz.getQuestion(), question);
@@ -106,13 +110,16 @@ public class QuizIntegrationTest extends IntegrationTest {
         //given
         Lecture createdLecture = lectureRepository.save(Lecture.of("title", 1, LocalDateTime.now(), curriculum));
         String question = "asdf";
+
+
         List<String> choices = List.of(new String[]{CHOICE1, CHOICE2});
-        List<String> answers = List.of(new String[]{CHOICE1});
+        Integer answer = 1; //CHOICE1
 
-        Quiz quiz1 = quizService.createQuiz(createdLecture.getId(), new QuizRequestDto(QUIZ_NUMBER, question, choices, answers))
-                .orElseThrow(() -> new RuntimeException("에러남"));
+        List<QuizRequestDto> list = List.of(new QuizRequestDto(QUIZ_NUMBER, question, choices, answer));
 
-        Quiz quiz = quizService.findById(quiz1.getId())
+        QuizListResponseDto quizListResponse = quizService.createQuizList(createdLecture.getId(), new QuizListRequestDto(list));
+
+        Quiz quiz = quizService.findById(quizListResponse.quizList().get(0).getQuizId())
                 .orElseThrow(() -> new RuntimeException("asdf"));
 
         assertEquals(quiz.getQuizNumber(), QUIZ_NUMBER);
@@ -126,7 +133,7 @@ public class QuizIntegrationTest extends IntegrationTest {
             assertEquals(choices.get(i), quizChoice.getChoiceSentence());
 
             //answer 여부가 잘 저장되는지 확인
-            if (answers.contains(choices.get(i))) {
+            if (i+1 == answer) {
                 assertTrue(quizChoice.getIsAnswer());
             } else {
                 assertFalse(quizChoice.getIsAnswer());
