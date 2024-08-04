@@ -21,6 +21,8 @@ import java.time.LocalTime;
 
 import com.twentyone.steachserver.domain.quiz.service.QuizService;
 import com.twentyone.steachserver.integration.IntegrationTest;
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,6 +56,7 @@ public class QuizIntegrationTest extends IntegrationTest {
 
     private Teacher teacher;
     private Student student;
+    private Lecture lecture;
     private Curriculum curriculum;
     private CurriculumDetail curriculumDetail;
 
@@ -82,31 +85,45 @@ public class QuizIntegrationTest extends IntegrationTest {
 
         curriculum = Curriculum.of("title", CurriculumCategory.getCategoryByIndex(0), teacher, curriculumDetail);
         curriculumRepository.save(curriculum);
+        lecture = lectureRepository.save(Lecture.of("title", 1, LocalDateTime.now(), curriculum));
     }
 
     @Test
     void 퀴즈생성() throws Exception {
-        Lecture createdLecture = lectureRepository.save(Lecture.of("title", 1, LocalDateTime.now(), curriculum));
-        String question = "asdf";
-        List<String> choices = List.of(new String[]{CHOICE1, CHOICE2});
-//        List<String> answers = List.of(new String[]{CHOICE1});
-        Integer answer = 1; //CHOICE
+        //given
+        List<QuizRequestDto> quizRequestDtoList = new ArrayList<>();
+        quizRequestDtoList.add(new QuizRequestDto(1, "마루는 귀엽다", List.of("O", "X"), 1));
+        quizRequestDtoList.add(new QuizRequestDto(2, "마루는 안귀엽다", List.of("O", "X"), 2));
+        quizRequestDtoList.add(new QuizRequestDto(3, "가장 귀여운 강아지 이름은?", List.of("핑핑이", "마루", "서브웨이"), 2));
 
-        QuizRequestDto quizRequestDto = new QuizRequestDto(QUIZ_NUMBER, question, choices, answer);
-        QuizListRequestDto quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto));
-        QuizResponseDto quiz = quizService.createQuizList(createdLecture.getId(), quizListRequestDto).quizList().get(0);
+        QuizListRequestDto quizListRequestDto = new QuizListRequestDto(quizRequestDtoList);
 
-        assertEquals(quiz.getQuestion(), question);
-        assertEquals(quiz.getQuizNumber(), QUIZ_NUMBER);
-        for (int i = 0; i < quiz.getChoices().size(); i++) {
-            assertEquals(quiz.getChoices().get(i), choices.get(i));
+        //when //then
+        AtomicReference<QuizListResponseDto> quizList = new AtomicReference<>();
+        assertDoesNotThrow(() -> {
+            quizList.set(quizService.createQuizList(lecture.getId(), quizListRequestDto));
+        });
+
+        List<QuizResponseDto> responseDtoList = quizList.get().quizList();
+        assertEquals(quizRequestDtoList.size(), responseDtoList.size());
+
+        for (int i=0; i<responseDtoList.size(); i++) {
+            QuizResponseDto quizResponseDto = responseDtoList.get(i);
+            QuizRequestDto quizRequestDto = quizRequestDtoList.get(i);
+
+            assertEquals(quizRequestDto.getQuizNumber(), quizRequestDto.getQuizNumber());
+            assertEquals(quizRequestDto.getQuestion(), quizRequestDto.getQuestion());
+            assertEquals(quizRequestDto.getChoices().size(), quizRequestDto.getChoices().size());
+            for (int j=0; j<quizRequestDto.getChoices().size(); j++) {
+                assertEquals(quizRequestDto.getChoices().get(j), quizResponseDto.getChoices().get(j));
+            }
+
+            assertEquals(quizRequestDto.getAnswers(), quizRequestDto.getAnswers());
         }
-
-        assertEquals(quiz.getQuestion(), question);
     }
 
     @Test
-    void 퀴즈조회() throws Exception {
+    void 퀴즈조회() {
         //given
         Lecture createdLecture = lectureRepository.save(Lecture.of("title", 1, LocalDateTime.now(), curriculum));
         String question = "asdf";
