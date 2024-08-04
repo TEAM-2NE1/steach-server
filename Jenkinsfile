@@ -34,7 +34,7 @@ pipeline {
                         userRemoteConfigs: [[
                         // https시 token으로 해야하는데 뭔가가 엉청 안됬음. ssh로 시도 중
                             url: 'git@github.com:TEAM-2NE1/steach-server.git', // SSH를 사용한 Git 저장소 URL
-                            credentialsId: 'staech-server-jen' // 사용 자격 증명 ID
+                            credentialsId: 'steach-server-jen-ssh' // 사용할 자격증명 ID
                         ]]
                     ])
                 }
