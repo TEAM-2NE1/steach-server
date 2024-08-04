@@ -21,31 +21,8 @@ pipeline {
                         userRemoteConfigs: [[
                             url: 'https://github.com/TEAM-2NE1/steach-server.git',
                             credentialsId: 'steach-server-jen'
-                        ]],
-                        doGenerateSubmoduleConfigurations: false, // 기본 서브모듈 구성을 비활성화하고 커스텀 설정을 적용하기 위해서
-                        submoduleCfg: [],
-                        // SubmoduleOption 클래스를 사용하여 서브모듈 옵션을 설정합니다.
-                        // 서브모듈을 재귀적으로 업데이트합니다. 즉, 서브모듈 내의 서브모듈도 함께 초기화 및 업데이트합니다.
-                        // 트래킹 서브모듈을 비활성화합니다. 이는 서브모듈이 특정 브랜치를 트래킹하지 않도록 설정합니다.
-                        extensions: [[$class: 'SubmoduleOption', trackingSubmodules: false]]
-//                         extensions: [[$class: 'SubmoduleOption', recursiveSubmodules: true, trackingSubmodules: false]]
+                        ]]
                     ])
-                }
-            }
-        }
-
-        stage('Update Submodules') { // 서브모듈 업데이트 단계 추가
-            steps {
-                script {
-                    // 서브모듈을 HTTPS URL로 변경
-                    // 모든 주소를 ssh -> https
-                    sh 'git config --global url."https://github.com/".insteadOf git@github.com:'
-                    // 서브모듈 초기화 및 업데이트
-                    sh 'git submodule update --init --recursive'
-                    // 서브모듈을 원격에서 최신 상태로 업데이트
-                    sh 'git submodule update --remote'
-                    // 서브모듈 정보 출력
-                    sh 'git submodule foreach --recursive "echo URL: $(git config --get remote.origin.url)"'
                 }
             }
         }
@@ -62,8 +39,8 @@ pipeline {
         stage('Build') { // Docker 이미지 빌드 단계
             steps {
                 script {
-//                     sh 'chmod +x ./gradlew' // gradlew 파일에 실행 권한 추가
-//                     sh './gradlew build' // Gradle 빌드 수행
+                    sh 'chmod +x ./gradlew' // gradlew 파일에 실행 권한 추가
+                    sh "./gradlew clean build" // Gradle 빌드 수행
                     docker.build("${IMAGE_NAME}:latest") // Docker 이미지를 빌드하고 latest 태그 추가
                 }
             }
@@ -103,7 +80,8 @@ pipeline {
                 script {
                     // 필요한 경우, Docker Compose 파일 경로를 명확히 지정
                     sh 'docker-compose down' // 기존 컨테이너 종료
-                    sh 'docker-compose -f docker-compose.prod.yml up -d' // Docker Compose 파일을 사용하여 컨테이너 실행
+                    sh 'docker-compose -f docker-compose.prod.yml up -d --build' // Docker Compose 파일을 사용하여 컨테이너 실행
+//                     sh 'docker-compose -f docker-compose.prod.yml up -d' // Docker Compose 파일을 사용하여 컨테이너 실행
                 }
             }
         }
