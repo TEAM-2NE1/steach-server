@@ -73,7 +73,7 @@ public class Quiz {
         int i = 0;
         for (QuizChoice quizChoice: this.quizChoices) {
             if (quizChoice.getIsAnswer()) {
-                return i+1;
+                return i;
             }
             i++;
         }
