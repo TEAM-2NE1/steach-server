@@ -1,6 +1,6 @@
 pipeline {
     agent any // 어떤 노드에서나 실행 가능
-
+// 작업 하기
     environment {
         IMAGE_NAME = 'steach-server' // Docker 이미지 이름 설정
     }
