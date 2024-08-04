@@ -44,6 +44,8 @@ pipeline {
                     sh 'git submodule update --init --recursive'
                     // 서브모듈을 원격에서 최신 상태로 업데이트
                     sh 'git submodule update --remote'
+                    // 서브모듈 정보 출력
+                    sh 'git submodule foreach --recursive "echo URL: $(git config --get remote.origin.url)"'
                 }
             }
         }
