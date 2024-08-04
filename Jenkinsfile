@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         IMAGE_NAME = 'steach-server'
+        GIT_SSH_COMMAND = 'ssh -i /var/jenkins_home/.ssh/id_rsa -o StrictHostKeyChecking=no'
     }
     triggers {
         githubPush()
@@ -11,8 +12,6 @@ pipeline {
             steps {
                 script {
                     sshagent (credentials: ['steach-server-jen-ssh']) {
-                        sh 'ls -la /var/jenkins_home/workspace/steach-server-webhook@tmp'
-                        sh 'env'
                         def branch = env.GIT_BRANCH ? env.GIT_BRANCH.replaceAll(/^origin\//, '') : 'main'
                         echo "Checking out branch: ${branch}"
                         checkout([
@@ -34,6 +33,15 @@ pipeline {
                 }
             }
         }
+        // 나머지 stages
+    }
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
+
         stage('Copy YML Files') {
             steps {
                 script {
