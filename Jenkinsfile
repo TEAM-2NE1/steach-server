@@ -21,7 +21,7 @@ pipeline {
                         userRemoteConfigs: [[
                             url: 'https://github.com/TEAM-2NE1/steach-server.git',
                             credentialsId: 'staech-server-jen'
-                        ]]
+                        ]],
                         doGenerateSubmoduleConfigurations: false, // 기본 서브모듈 구성을 비활성화하고 커스텀 설정을 적용하기 위해서
                         submoduleCfg: [],
                         // SubmoduleOption 클래스를 사용하여 서브모듈 옵션을 설정합니다.
