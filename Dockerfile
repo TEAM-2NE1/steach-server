@@ -17,7 +17,7 @@ WORKDIR /app
 # 빌드 단계에서 생성된 JAR 파일을 복사
 COPY --from=build /app/build/libs/*.jar app.jar
 # 애플리케이션 설정 파일 복사 위의 copyYml에서 하는거 같음.
-#COPY src/main/resources/application.yml application.yml
+# COPY src/main/resources/application.yml application.yml
 # 컨테이너 외부에 노출할 포트 설정
 EXPOSE 18080
 # 컨테이너 시작 시 실행할 명령어 설정
