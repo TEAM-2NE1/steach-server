@@ -11,6 +11,8 @@ pipeline {
             steps {
                 script {
                     sshagent (credentials: ['steach-server-jen-ssh']) {
+                        sh 'ls -la /var/jenkins_home/workspace/steach-server-webhook@tmp'
+                        sh 'env'
                         def branch = env.GIT_BRANCH ? env.GIT_BRANCH.replaceAll(/^origin\//, '') : 'main'
                         echo "Checking out branch: ${branch}"
                         checkout([
