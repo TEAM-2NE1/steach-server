@@ -87,6 +87,10 @@ task copyYML(type: Copy) {
     }
 }
 
+build {
+    dependsOn copyYML
+}
+
 test {
     dependsOn copyYML
     useJUnitPlatform()
