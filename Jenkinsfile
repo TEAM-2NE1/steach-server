@@ -18,6 +18,8 @@ pipeline {
                     checkout([
                         $class: 'GitSCM',
                         branches: [[name: 'jen']],
+                        doGenerateSubmoduleConfigurations: false, // 서브모듈 설정을 자동으로 생성하지 않음
+                        extensions: [[$class: 'SubmoduleOption', recursiveSubmodules: true]], // 서브모듈을 재귀적으로 초기화 및 업데이트
                         userRemoteConfigs: [[
                             url: 'https://github.com/TEAM-2NE1/steach-server.git',
                             credentialsId: 'staech-server-jen'
@@ -27,6 +29,22 @@ pipeline {
             }
         }
 
+//         서브모듈이 포함된 프로젝트의 모든 서브모듈을 초기화하고 최신 상태로 업데이트하는 것을 의미합니다.
+        stage('Update Submodules') { // 서브모듈 업데이트 단계
+            steps {
+                script {
+                    sh 'git submodule update --init --recursive' // 서브모듈 초기화 및 업데이트
+                }
+            }
+        }
+
+        stage('Copy YML Files') { // YML 파일 복사 단계
+            steps {
+                script {
+                    sh './gradlew copyYML' // Gradle 태스크 실행
+                }
+            }
+        }
 
         stage('Verify Docker Installation') {
             steps {
