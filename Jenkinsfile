@@ -25,7 +25,7 @@ pipeline {
                                           trackingSubmodules: false]],
                             userRemoteConfigs: [[
                                 url: 'git@github.com:TEAM-2NE1/steach-server.git',
-                                credentialsId: 'staech-server-jen-ssh'
+                                credentialsId: 'steach-server-jen-ssh'
                             ]]
                         ])
                     }
