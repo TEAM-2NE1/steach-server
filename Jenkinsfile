@@ -27,7 +27,8 @@ pipeline {
                         // SubmoduleOption 클래스를 사용하여 서브모듈 옵션을 설정합니다.
                         // 서브모듈을 재귀적으로 업데이트합니다. 즉, 서브모듈 내의 서브모듈도 함께 초기화 및 업데이트합니다.
                         // 트래킹 서브모듈을 비활성화합니다. 이는 서브모듈이 특정 브랜치를 트래킹하지 않도록 설정합니다.
-                        extensions: [[$class: 'SubmoduleOption', recursiveSubmodules: true, trackingSubmodules: false]]
+                        extensions: [[$class: 'SubmoduleOption', trackingSubmodules: false]]
+//                         extensions: [[$class: 'SubmoduleOption', recursiveSubmodules: true, trackingSubmodules: false]]
                     ])
                 }
             }
