@@ -27,6 +27,15 @@ pipeline {
             }
         }
 
+        // Docker가 설치되어 있고, 명령어가 올바르게 작동하는지 확인합니다.
+        stage('Verify Docker Installation') {
+            steps {
+                script {
+                    sh 'docker --version'
+                }
+            }
+        }
+
         stage('Build') { // Docker 이미지 빌드 단계
             steps {
                 script {
