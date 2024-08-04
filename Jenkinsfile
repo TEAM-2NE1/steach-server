@@ -1,6 +1,6 @@
 pipeline {
     agent any // 어떤 노드에서나 실행 가능
-// 작업 하기
+
     environment {
         IMAGE_NAME = 'steach-server' // Docker 이미지 이름 설정
     }
@@ -9,31 +9,29 @@ pipeline {
         githubPush() // GitHub 푸시 이벤트 트리거
     }
     stages {
+//      특정 커밋, 브랜치, 또는 태그의 소스 코드를 작업 디렉토리에 가져오는 과정을 의미합니다.
+//      Git을 예로 들어 설명하면, checkout 명령어는 저장소의 특정 상태를 작업 디렉토리에 복사하여 그 상태에서 작업을 할 수 있도록 합니다.
         stage('Checkout') { // 코드 체크아웃 단계
-//             steps {
-//                 git credentialsId: 'staech-server-jen', url: 'https://github.com/TEAM-2NE1/steach-server.git' // Git 저장소에서 코드 가져오기
-//             }
             steps {
                 script {
                     checkout([
-                        $class: 'GitSCM',
-                        branches: [[name: 'jen']],
-                        doGenerateSubmoduleConfigurations: false, // 서브모듈 설정을 자동으로 생성하지 않음
-                        extensions: [[$class: 'SubmoduleOption', recursiveSubmodules: true]], // 서브모듈을 재귀적으로 초기화 및 업데이트
+                        $class: 'GitSCM', // Git 소스 코드 관리 클래스 사용
+//                      [[name: 'jen']]: 이 부분은 branches 키워드의 값으로, 실제로 체크아웃할 브랜치를 나타냅니다. 리스트 내의 딕셔너리 형태로 작성됩니다.
+                        branches: [[name: 'jen']], // 'jen' 브랜치 지정
+                        doGenerateSubmoduleConfigurations: false, // 서브모듈 설정 자동 생성하지 않음
+                        extensions: [ // 확장 설정 시작
+                            [$class: 'SubmoduleOption', // 서브모듈 옵션 클래스 사용
+                             disableSubmodules: false, // 서브모듈 비활성화하지 않음
+                             parentCredentials: true, // 부모 자격 증명 사용
+                             recursiveSubmodules: true, // 서브모듈을 재귀적으로 초기화 및 업데이트
+                             reference: '', // 참조 리포지토리 없음
+                             trackingSubmodules: false] // 서브모듈 추적하지 않음
+                        ],
                         userRemoteConfigs: [[
-                            url: 'https://github.com/TEAM-2NE1/steach-server.git',
-                            credentialsId: 'staech-server-jen'
+                            url: 'https://github.com/TEAM-2NE1/steach-server.git', // Git 저장소 URL
+                            credentialsId: 'staech-server-jen' // 사용 자격 증명 ID
                         ]]
                     ])
-                }
-            }
-        }
-
-//         서브모듈이 포함된 프로젝트의 모든 서브모듈을 초기화하고 최신 상태로 업데이트하는 것을 의미합니다.
-        stage('Update Submodules') { // 서브모듈 업데이트 단계
-            steps {
-                script {
-                    sh 'git submodule update --init --recursive' // 서브모듈 초기화 및 업데이트
                 }
             }
         }
@@ -46,7 +44,7 @@ pipeline {
             }
         }
 
-        stage('Verify Docker Installation') {
+        stage('Verify Docker Installation') { // Docker 설치 확인 단계
             steps {
                 script {
                     sh 'docker --version' // Docker가 설치되어 있고, 명령어가 올바르게 작동하는지 확인합니다.
@@ -58,7 +56,6 @@ pipeline {
         stage('Build') { // Docker 이미지 빌드 단계
             steps {
                 script {
-//                     sh 'which docker' // Docker가 설치되어 있는지 확인
                     docker.build("${IMAGE_NAME}:latest") // Docker 이미지를 빌드하고 latest 태그 추가
                 }
             }
@@ -67,7 +64,6 @@ pipeline {
         stage('Deploy') { // Docker Compose를 사용하여 배포하는 단계
             steps {
                 script {
-                    // 필요한 경우, Docker Compose 파일 경로를 명확히 지정
                     sh 'docker-compose -f docker-compose.prod.yml up -d' // Docker Compose 파일을 사용하여 컨테이너 실행
                 }
             }
