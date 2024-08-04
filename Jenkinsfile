@@ -20,7 +20,7 @@ pipeline {
                         branches: [[name: 'jen']],
                         userRemoteConfigs: [[
                             url: 'https://github.com/TEAM-2NE1/steach-server.git',
-                            credentialsId: 'staech-server-jen'
+                            credentialsId: 'staech-server-jen-ssh' // SSH 크리덴셜 ID 사용
                         ]],
                         doGenerateSubmoduleConfigurations: false, // 기본 서브모듈 구성을 비활성화하고 커스텀 설정을 적용하기 위해서
                         submoduleCfg: [],
