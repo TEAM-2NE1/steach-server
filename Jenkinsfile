@@ -105,7 +105,7 @@ pipeline {
 
     post {
         always {
-            sh 'docker-compose -f docker-compose.prod.yml up -d' // Run container using Docker Compose file
+            sh 'docker-compose -f docker-compose.prod.yml logs' // Docker Compose 로그 출력
             cleanWs() // 작업 공간 정리
         }
     }
