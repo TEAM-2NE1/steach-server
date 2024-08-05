@@ -92,7 +92,7 @@ build {
 }
 
 test {
-    dependsOn copyYML
+//    dependsOn copyYML
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
