@@ -9,6 +9,7 @@ COPY . .
 # copyYML 작업을 실행하고 Gradle을 사용하여 애플리케이션을 빌드합니다(데몬 모드 비활성화).
 RUN gradle copyYML build --no-daemon
 
+
 # 2단계: Docker 이미지 생성
 # 경량의 OpenJDK 17 런타임 이미지
 FROM openjdk:17-jdk
@@ -18,7 +19,30 @@ WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 # 애플리케이션 설정 파일 복사 위의 copyYml에서 하는거 같음.
 # COPY src/main/resources/application.yml application.yml
+
+
+# Docker 및 Docker Compose 설치
+USER root
+RUN apt-get update && \
+    apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release && \
+    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+    apt-get update && \
+    apt-get install -y docker-ce docker-ce-cli containerd.io && \
+    curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+    chmod +x /usr/local/bin/docker-compose
+
+# Jenkins 사용자 생성 및 Docker 그룹에 추가
+RUN useradd -m jenkins && \
+    usermod -aG docker jenkins
+
+USER jenkins
+
+
 # 컨테이너 외부에 노출할 포트 설정
 EXPOSE 18080
 # 컨테이너 시작 시 실행할 명령어 설정
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
+
+#RUN apt-get install docker-ce docker-ce-cli containerd.io docker-compose docker-compose-plugin -y

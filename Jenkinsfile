@@ -107,6 +107,7 @@ pipeline {
                 script {
                     // 필요한 경우, Docker Compose 파일 경로를 명확히 지정
                     sh 'docker-compose down' // 기존 컨테이너 종료
+                    sh 'docker-compose -f docker-compose.prod.yml down || true' // 8월 5일 5시에 클루트 쓰며 추가
                     sh 'docker-compose -f docker-compose.prod.yml up -d --build' // Docker Compose 파일을 사용하여 컨테이너 실행
 //                     sh 'docker-compose -f docker-compose.prod.yml up -d' // Docker Compose 파일을 사용하여 컨테이너 실행
                 }
