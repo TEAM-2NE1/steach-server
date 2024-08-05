@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'steach-server' // Docker 이미지 이름 설정
+//         GRADLE_OPTS = "-Xms512m -Xmx1024m -XX:MaxMetaspaceSize=512m"
     }
 
     triggers {
@@ -135,12 +136,13 @@ pipeline {
         stage('Deploy') { // Docker Compose를 사용하여 배포하는 단계
             steps {
                 script {
+                    sh docker-compose --version
                     // 필요한 경우, Docker Compose 파일 경로를 명확히 지정
                     sh 'pwd'  // 현재 작업 디렉토리 출력 /var/jenkins_home/workspace/steach-server-webhook
                     sh 'ls -la'  // 현재 디렉토리의 파일 목록 출력
                     sh 'cat nginx.conf'  // nginx.conf 파일의 내용을 출력
                     sh 'ls -l nginx.conf'  // This will list the file if it exists
-                    sg 'ls -l /var/jenkins_home/workspace/steach-server-webhook/nginx.conf'
+                    sh 'ls -l /var/jenkins_home/workspace/steach-server-webhook/nginx.conf'
                                     // 마운트 될때 확인
                     // Error: No such container: steach-server-nginx
                     sh 'docker rm -f steach-server-nginx || true' // 엔진엑스 파일 삭제 8/05 5시 50분
