@@ -11,7 +11,7 @@ services:
     image: nginx:latest # 사용할 Nginx 이미지 지정
     container_name: steach-server-nginx # 컨테이너 이름 지정
     ports:
-      - "8008:8008" # 호스트의 8008 포트를 컨테이너의 8008 포트에 매핑
+      - "18008:80" # 호스트의 80 포트를 컨테이너의 18008 포트에 매핑
     depends_on:
       - app # Nginx가 steach-server 애플리케이션에 의존
     volumes:
