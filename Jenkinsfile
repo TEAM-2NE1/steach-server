@@ -52,19 +52,26 @@ pipeline {
             }
         }
 
-        stage('Install Docker Compose') {
+        stage('Deploy with Docker Compose') {
             steps {
-                script {
-                    // Install Docker Compose
-                    sh '''
-                    docker-compose --version
-                    curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-                    chmod +x /usr/local/bin/docker-compose
-                    docker-compose --version
-                    '''
-                }
+                // Docker Compose를 사용하여 컨테이너 실행
+                sh 'docker run -itd -v /var/run/docker.sock:/var/run/docker.sock -v /root/test/:/var/tmp/ docker/compose:1.24.1 -f /var/tmp/docker-compose.yaml up -d'
             }
         }
+
+//         stage('Install Docker Compose') {
+//             steps {
+//                 script {
+//                     // Install Docker Compose
+//                     sh '''
+//                     docker-compose --version
+//                     curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+//                     chmod +x /usr/local/bin/docker-compose
+//                     docker-compose --version
+//                     '''
+//                 }
+//             }
+//         }
 
         stage('Verify Docker Compose Installation') { // changed
             // 'Verify Docker Compose Installation' 단계 정의

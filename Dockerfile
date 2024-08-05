@@ -24,6 +24,8 @@ COPY --from=build /app/build/libs/*.jar app.jar
 ## 스택 오버플로우의 방법
 #RUN aptitude -y install docker-compose
 #RUN ln -s /usr/local/bin/docker-compose /compose/docker-compose
+#RUN curl -L "https://github.com/docker/compose/releases/download/latest/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+#RUN chmod +x /usr/local/bin/docker-compose
 #
 ## 두번째 방법
 #FROM ubuntu:21.04
