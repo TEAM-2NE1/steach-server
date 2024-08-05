@@ -22,11 +22,6 @@ COPY --from=build /app/build/libs/*.jar app.jar
 # 애플리케이션 설정 파일 복사 위의 copyYml에서 하는거 같음.
 # COPY src/main/resources/application.yml application.yml
 
-# Nginx 설정 파일이 올바르게 마운트되었는지 확인하기 위한 로그 출력
-RUN echo "Checking if /etc/nginx/nginx.conf exists..."
-RUN ls -l /etc/nginx/nginx.conf || echo "/etc/nginx/nginx.conf does not exist"
-
-
 ## 스택 오버플로우의 방법
 #RUN aptitude -y install docker-compose
 #RUN ln -s /usr/local/bin/docker-compose /compose/docker-compose
