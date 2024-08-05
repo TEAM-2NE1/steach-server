@@ -135,10 +135,12 @@ pipeline {
             steps {
                 script {
                     // 필요한 경우, Docker Compose 파일 경로를 명확히 지정
-                    sh 'pwd'  // 현재 작업 디렉토리 출력
+                    sh 'pwd'  // 현재 작업 디렉토리 출력 /var/jenkins_home/workspace/steach-server-webhook
                     sh 'ls -la'  // 현재 디렉토리의 파일 목록 출력
                     sh 'cat nginx.conf'  // nginx.conf 파일의 내용을 출력
                     sh 'ls -l nginx.conf'  // This will list the file if it exists
+                    sg 'ls -l /var/jenkins_home/workspace/steach-server-webhook/nginx.conf'
+                                    // 마운트 될때 확인
                     // Error: No such container: steach-server-nginx
                     sh 'docker rm -f steach-server-nginx || true' // 엔진엑스 파일 삭제 8/05 5시 50분
                     echo 'docker rm -f steach-server-nginx'
@@ -147,8 +149,13 @@ pipeline {
                     sh 'docker-compose -f docker-compose.prod.yml up -d --build' // Docker Compose 파일을 사용하여 컨테이너 실행
                     echo 'docker-compose -f docker-compose.prod.yml up -d --build'
 //                     sh 'docker-compose -f docker-compose.prod.yml up -d' // Docker Compose 파일을 사용하여 컨테이너 실행
+
                     sh 'docker logs steach-server-nginx'
                     echo 'docker logs steach-server-nginx'
+                    // docker exec -it steach-server-nginx cat /etc/nginx/nginx.conf
+                    // nginx 내부를 보는 코드
+
+
                 }
             }
         }
