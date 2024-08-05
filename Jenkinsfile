@@ -45,7 +45,8 @@ pipeline {
             steps {
                 script {
                     sh 'chmod +x ./gradlew' // gradlew 파일에 실행 권한 추가
-                    sh "./gradlew clean build" // Gradle 빌드 수행
+//                     sh "./gradlew clean build" // Gradle 빌드 수행
+                    sh './gradlew --no-daemon clean build'
                     echo 'build Image'
                     docker.build("${IMAGE_NAME}:latest") // Docker 이미지를 빌드하고 latest 태그 추가
                 }
