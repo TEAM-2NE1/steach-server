@@ -67,10 +67,6 @@ pipeline {
 // curl: (23) Failure writing output to destination
 
 
-
-
-
-
         stage('Deploy') { // Docker Compose를 사용하여 배포하는 단계
             steps {
                 script {
