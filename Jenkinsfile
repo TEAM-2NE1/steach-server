@@ -115,12 +115,27 @@ pipeline {
 //             }
 //         }
 
+        stage('Prepare Nginx Config') {
+            steps {
+                script {
+                    // Nginx 설정 파일이 있는지 확인하고, 없으면 생성
+                    sh '''
+                    if [ ! -f ./nginx.conf ]; then
+                        echo "Creating nginx.conf"
+                        echo 'server { listen 8008; location / { proxy_pass http://app:18080; } }' > ./nginx.conf
+                    fi
+                    '''
+                }
+            }
+        }
+
 
         stage('Deploy') { // Docker Compose를 사용하여 배포하는 단계
             steps {
                 script {
                     // 필요한 경우, Docker Compose 파일 경로를 명확히 지정
-//                     sh 'docker-compose down' // 기존 컨테이너 종료
+                    sh 'ls -l nginx.conf'  // This will list the file if it exists
+                    sh 'docker rm -f steach-server-nginx || true'                    sh 'docker rm -f steach-server-nginx || true' // 엔진엑스 파일 삭제 8/05 5시 50분
                     sh 'docker-compose -f docker-compose.prod.yml down || true' // 8월 5일 5시에 클루트 쓰며 추가
                     sh 'docker-compose -f docker-compose.prod.yml up -d --build' // Docker Compose 파일을 사용하여 컨테이너 실행
 //                     sh 'docker-compose -f docker-compose.prod.yml up -d' // Docker Compose 파일을 사용하여 컨테이너 실행
