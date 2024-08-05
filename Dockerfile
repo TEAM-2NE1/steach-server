@@ -7,6 +7,7 @@ WORKDIR /app
 COPY . .
 # Gradle을 사용하여 애플리케이션 빌드 (데몬 모드 비활성화)
 # copyYML 작업을 실행하고 Gradle을 사용하여 애플리케이션을 빌드합니다(데몬 모드 비활성화).
+# 추후에 삭제해야하나?
 RUN gradle copyYML build --no-daemon
 
 
