@@ -21,13 +21,15 @@ pipeline {
                         ]]
                     ])
                 }
+
+                // ====================Pipeline Syntax로 얻은 script코드 ==================
+                checkout scmGit(
+                    branches: [[name: '*/jen'], [name: '*/main'], [name: '*/develop']],
+                    extensions: [submodule(parentCredentials: true, recursiveSubmodules: true, reference: '', trackingSubmodules: true)],
+                    userRemoteConfigs: [[url: 'https://github.com/TEAM-2NE1/steach-server.git']]
+                    )
+                }
             }
-            // ====================Pipeline Syntax로 얻은 script코드 ==================
-            checkout scmGit(
-                branches: [[name: '*/jen'], [name: '*/main'], [name: '*/develop']],
-                extensions: [submodule(parentCredentials: true, recursiveSubmodules: true, reference: '', trackingSubmodules: true)],
-                userRemoteConfigs: [[url: 'https://github.com/TEAM-2NE1/steach-server.git']]
-            )
         }
 
         stage('Verify Docker Installation') {
