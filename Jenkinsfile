@@ -135,6 +135,8 @@ pipeline {
             steps {
                 script {
                     // 필요한 경우, Docker Compose 파일 경로를 명확히 지정
+                    sh 'pwd'  // 현재 작업 디렉토리 출력
+                    sh 'ls -la'  // 현재 디렉토리의 파일 목록 출력
                     sh 'cat nginx.conf'  // nginx.conf 파일의 내용을 출력
                     sh 'ls -l nginx.conf'  // This will list the file if it exists
                     // Error: No such container: steach-server-nginx
