@@ -81,8 +81,6 @@ pipeline {
                     sh 'docker rm -f steach-server-nginx || true' // 엔진엑스 파일 삭제 8/05 5시 50분
                     sh 'docker-compose -f docker-compose.prod.yml down || true' // 8월 5일 5시에 클루트 쓰며 추가
                     sh 'docker-compose -f docker-compose.prod.yml up -d --build' // Docker Compose 파일을 사용하여 컨테이너 실행
-//                     sh 'docker-compose -f docker-compose.prod.yml up -d' // Docker Compose 파일을 사용하여 컨테이너 실행
-
                     sh 'docker logs steach-server-nginx'
                     // docker exec -it steach-server-nginx cat /etc/nginx/nginx.conf
                     // nginx 내부를 보는 코드
