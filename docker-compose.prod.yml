@@ -1,5 +1,3 @@
-version: '3.7' # Docker Compose 파일 버전
-
 services:
   app: # steach-server 애플리케이션 서비스 정의
     image: steach-server:latest # 사용할 Docker 이미지 지정

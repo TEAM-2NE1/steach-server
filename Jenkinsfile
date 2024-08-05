@@ -41,16 +41,16 @@ pipeline {
             }
         }
 
-//         stage('Build') { // Docker 이미지 빌드 단계
-//             steps {
-//                 script {
-//                     sh 'chmod +x ./gradlew' // gradlew 파일에 실행 권한 추가
-//                     sh "./gradlew clean build" // Gradle 빌드 수행
-//                     echo 'build Image'
-//                     docker.build("${IMAGE_NAME}:latest") // Docker 이미지를 빌드하고 latest 태그 추가
-//                 }
-//             }
-//         }
+        stage('Build') { // Docker 이미지 빌드 단계
+            steps {
+                script {
+                    sh 'chmod +x ./gradlew' // gradlew 파일에 실행 권한 추가
+                    sh "./gradlew clean build" // Gradle 빌드 수행
+                    echo 'build Image'
+                    docker.build("${IMAGE_NAME}:latest") // Docker 이미지를 빌드하고 latest 태그 추가
+                }
+            }
+        }
 
 //         stage('Deploy with Docker Compose') {
 //             steps {
@@ -120,7 +120,7 @@ pipeline {
             steps {
                 script {
                     // 필요한 경우, Docker Compose 파일 경로를 명확히 지정
-                    sh 'docker-compose down' // 기존 컨테이너 종료
+//                     sh 'docker-compose down' // 기존 컨테이너 종료
                     sh 'docker-compose -f docker-compose.prod.yml down || true' // 8월 5일 5시에 클루트 쓰며 추가
                     sh 'docker-compose -f docker-compose.prod.yml up -d --build' // Docker Compose 파일을 사용하여 컨테이너 실행
 //                     sh 'docker-compose -f docker-compose.prod.yml up -d' // Docker Compose 파일을 사용하여 컨테이너 실행
