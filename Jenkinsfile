@@ -136,9 +136,13 @@ pipeline {
                 script {
                     // 필요한 경우, Docker Compose 파일 경로를 명확히 지정
                     sh 'ls -l nginx.conf'  // This will list the file if it exists
-                    sh 'docker rm -f steach-server-nginx || true'                    sh 'docker rm -f steach-server-nginx || true' // 엔진엑스 파일 삭제 8/05 5시 50분
+                    // Error: No such container: steach-server-nginx
+                    sh 'docker rm -f steach-server-nginx || true' // 엔진엑스 파일 삭제 8/05 5시 50분
+                    echo 'docker rm -f steach-server-nginx'
                     sh 'docker-compose -f docker-compose.prod.yml down || true' // 8월 5일 5시에 클루트 쓰며 추가
+                    echo 'docker-compose -f docker-compose.prod.yml down || true'
                     sh 'docker-compose -f docker-compose.prod.yml up -d --build' // Docker Compose 파일을 사용하여 컨테이너 실행
+                    echo 'docker-compose -f docker-compose.prod.yml up -d --build'
 //                     sh 'docker-compose -f docker-compose.prod.yml up -d' // Docker Compose 파일을 사용하여 컨테이너 실행
                 }
             }
