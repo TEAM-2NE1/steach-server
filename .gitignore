@@ -2,7 +2,6 @@ HELP.md
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
-!gradle/wrapper/gradle-wrapper.properties
 
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -40,6 +39,7 @@ out/
 
 *.yml
 *.properties
+!gradle/wrapper/gradle-wrapper.properties
 
 ### querydsl ###
 **/src/main/generated/
