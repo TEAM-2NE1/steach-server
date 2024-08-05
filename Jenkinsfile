@@ -76,10 +76,10 @@ pipeline {
                     sh 'ls -la'  // 현재 디렉토리의 파일 목록 출력
                     sh 'cat nginx.conf'  // nginx.conf 파일의 내용을 출력
                     sh 'ls -l nginx.conf'  // This will list the file if it exists
-                    sh 'cp nginx.conf /var/jenkins_home/workspace/steach-server-webhook/nginx.conf'
+                    sh 'docker ps'
+//                     sh 'cp nginx.conf /var/jenkins_home/workspace/steach-server-webhook/nginx.conf'
                     sh 'cat /var/jenkins_home/workspace/steach-server-webhook/nginx.conf'
                     sh 'ls -l /var/jenkins_home/workspace/steach-server-webhook/nginx.conf'
-                    sh 'docker ps'
                     sh 'docker rm -f steach-server-nginx || true' // 엔진엑스 파일 삭제 8/05 5시 50분
                     sh 'docker ps'
                     sh 'docker-compose -f docker-compose.prod.yml down || true' // 8월 5일 5시에 클루트 쓰며 추가
