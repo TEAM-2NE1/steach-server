@@ -46,7 +46,21 @@ pipeline {
                 script {
                     sh 'chmod +x ./gradlew' // gradlew 파일에 실행 권한 추가
                     sh "./gradlew clean build" // Gradle 빌드 수행
+                    echo 'build Image'
                     docker.build("${IMAGE_NAME}:latest") // Docker 이미지를 빌드하고 latest 태그 추가
+                }
+            }
+        }
+
+        stage('Install Docker Compose') {
+            steps {
+                script {
+                    // Install Docker Compose
+                    sh '''
+                    curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+                    chmod +x /usr/local/bin/docker-compose
+                    docker-compose --version
+                    '''
                 }
             }
         }
@@ -65,12 +79,18 @@ pipeline {
                     // curl 명령어를 사용하여 지정된 URL에서 docker-compose를 다운로드하여 '/usr/local/bin/docker-compose' 위치에 저장
                     // '-L' 옵션은 리다이렉트를 따라가도록 하고, '$(uname -s)'와 '$(uname -m)'은 현재 시스템의 운영 체제와 아키텍처 정보를 삽입
                     // 'docker-compose' 바이너리 파일에 실행 권한을 부여
+//                     sh """
+//                         if ! command -v docker > /dev/null; then
+//                         curl -fsSL https://get.docker.com -o get-docker.sh
+//                         sh get-docker.sh
+//                         fi
+//                     """
                     sh '''
                     if ! command -v docker-compose &> /dev/null
                     then
                         echo "docker-compose could not be found, installing..."
-                        sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-                        sudo chmod +x /usr/local/bin/docker-compose
+                        curl -L "https://github.com/docker/compose/releases/download/latest/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+                        chmod +x /usr/local/bin/docker-compose
                     fi
                     '''
                     // 조건 블록 종료
