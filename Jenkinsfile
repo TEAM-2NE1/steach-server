@@ -86,7 +86,8 @@ pipeline {
                     sh 'docker exec -it steach-server-nginx ls -l /etc/nginx/nginx.conf'
                     sh 'docker exec -it steach-server-nginx cat /etc/nginx/nginx.conf'
                     sh 'docker exec -it steach-server-nginx ls -l /etc/nginx'
-                    sh 'docker exec -it steach-server-nginx ls -l /etc'
+                    sh 'docker ps'
+                    sh 'docker exec -i steach-server-nginx ls -l /etc'
                     sh 'docker logs steach-server-nginx'
                     // docker exec -it steach-server-nginx cat /etc/nginx/nginx.conf
                     // nginx 내부를 보는 코드
