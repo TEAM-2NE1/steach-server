@@ -14,10 +14,6 @@ services:
       - "18008:80" # 호스트의 80 포트를 컨테이너의 18008 포트에 매핑
     depends_on:
       - app # Nginx가 steach-server 애플리케이션에 의존
-      # 볼륨 꼭 해야해??
-#    volumes:
-#      - ./nginx.conf:/etc/nginx/nginx.conf # 호스트의 Nginx 설정 파일을 컨테이너로 마운트
-#      - /var/jenkins_home/workspace/steach-server-webhook/nginx.conf:/etc/nginx/nginx.conf:ro // 최신에 한거
-#      - ./nginx.conf:/etc/nginx/nginx.conf:ro # 다음과 같이 보여야 합니다: 끝에 있는 것은 읽기 전용으로 만드는데, 이는 구성 파일에 대한 좋은 습관입니다.
-      # 호스트의 Nginx 설정 파일을 컨테이너로 마운트
-      # 파일이 존재하지만, 파일과 디렉토리를 혼동한 것 같습니다. nginx.conf 파일을 읽기 전용 모드로 마운트하는 것이 좋습니다.
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro # 호스트의 Nginx 설정 파일을 컨테이너로 마운트
+      - # 다음과 같이 보여야 합니다: 끝에 있는 것은 읽기 전용으로 만드는데, 이는 구성 파일에 대한 좋은 습관입니다.
