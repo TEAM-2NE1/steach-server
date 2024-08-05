@@ -5,7 +5,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod # Spring Boot 프로파일 설정
     ports:
-      - "18080:18080" # 호스트의 18080 포트를 컨테이너의 18080 포트에 매핑
+      - "18080:8080" # 호스트의 8080 포트를 컨테이너의 18080 포트에 매핑
 
   nginx: # Nginx 서비스 정의
     image: nginx:latest # 사용할 Nginx 이미지 지정
