@@ -135,6 +135,7 @@ pipeline {
             steps {
                 script {
                     // 필요한 경우, Docker Compose 파일 경로를 명확히 지정
+                    sh 'cat nginx.conf'  // nginx.conf 파일의 내용을 출력
                     sh 'ls -l nginx.conf'  // This will list the file if it exists
                     // Error: No such container: steach-server-nginx
                     sh 'docker rm -f steach-server-nginx || true' // 엔진엑스 파일 삭제 8/05 5시 50분
