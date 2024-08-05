@@ -115,19 +115,20 @@ pipeline {
 //             }
 //         }
 
-        stage('Prepare Nginx Config') {
-            steps {
-                script {
-                    // Nginx 설정 파일이 있는지 확인하고, 없으면 생성
-                    sh '''
-                    if [ ! -f ./nginx.conf ]; then
-                        echo "Creating nginx.conf"
-                        echo 'server { listen 8008; location / { proxy_pass http://app:18080; } }' > ./nginx.conf
-                    fi
-                    '''
-                }
-            }
-        }
+// 지피티가 알려준거임.
+//         stage('Prepare Nginx Config') {
+//             steps {
+//                 script {
+//                     // Nginx 설정 파일이 있는지 확인하고, 없으면 생성
+//                     sh '''
+//                     if [ ! -f ./nginx.conf ]; then
+//                         echo "Creating nginx.conf"
+//                         echo 'server { listen 8008; location / { proxy_pass http://app:18080; } }' > ./nginx.conf
+//                     fi
+//                     '''
+//                 }
+//             }
+//         }
 
 
         stage('Deploy') { // Docker Compose를 사용하여 배포하는 단계
