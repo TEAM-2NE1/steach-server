@@ -30,7 +30,7 @@ class CurriculumServiceImplTest extends SteachTest {
     public static final String SUB_TITLE = "subTitle";
     public static final String INTRO = "intro";
     public static final String INFORMATION = "information";
-    public static final CurriculumCategory CURRICULUM_CATEGORY = CurriculumCategory.EDUCATION;
+    public static final CurriculumCategory CURRICULUM_CATEGORY = CurriculumCategory.getCategoryByIndex(0);
     public static final String SUB_CATEGORY = "subCategory";
     public static final String BANNER_IMG_URL = "bannerImgUrl";
     public static final LocalDateTime NOW = LocalDateTime.now();

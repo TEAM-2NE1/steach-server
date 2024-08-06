@@ -43,13 +43,13 @@ public class QuizChoiceServiceImplTest extends SteachTest {
     @Test
     public void testCreateQuizChoices_Success_SameSizeAnswersAndChoices() throws Exception {
         List<String> choices = Arrays.asList("Answer3", "Answer2", "Answer1");
-        List<String> answers = Arrays.asList("Answer1", "Answer2", "Answer3");
+        int answer = 3;
 
-        doNothing().when(quizChoiceValidator).validateQuizChoices(choices, answers);
+        doNothing().when(quizChoiceValidator).validateQuizChoices(choices, answer);
         doNothing().when(savedQuiz).addChoice(any(QuizChoice.class));
         when(quizChoiceRepository.save(any(QuizChoice.class))).thenReturn(null);
 
-        quizChoiceService.createQuizChoices(choices, answers, savedQuiz);
+        quizChoiceService.createQuizChoices(choices, answer, savedQuiz);
 
         verify(savedQuiz, times(3)).addChoice(any(QuizChoice.class));
         verify(quizChoiceRepository, times(3)).save(any(QuizChoice.class));
@@ -57,13 +57,13 @@ public class QuizChoiceServiceImplTest extends SteachTest {
     @Test
     public void testCreateQuizChoices_Success() throws Exception {
         List<String> choices = Arrays.asList("Choice1", "Choice2", "Answer1");
-        List<String> answers = Arrays.asList("Answer1");
+        int answer = 3;
 
-        doNothing().when(quizChoiceValidator).validateQuizChoices(choices, answers);
+        doNothing().when(quizChoiceValidator).validateQuizChoices(choices, answer);
         doNothing().when(savedQuiz).addChoice(any(QuizChoice.class));
         when(quizChoiceRepository.save(any(QuizChoice.class))).thenReturn(null);
 
-        quizChoiceService.createQuizChoices(choices, answers, savedQuiz);
+        quizChoiceService.createQuizChoices(choices, answer, savedQuiz);
 
         verify(savedQuiz, times(3)).addChoice(any(QuizChoice.class));
     }

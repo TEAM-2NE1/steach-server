@@ -75,7 +75,7 @@ public class LectureServiceImpl implements LectureService {
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new IllegalArgumentException("lecture not found"));
 
-        lecture.update(lectureRequestDto);
+        lecture.update(lectureRequestDto.lectureTitle(), lectureRequestDto.lectureStartTime());
         return Optional.ofNullable(lectureQueryRepository.getLectureBeforeStartingResponse(lectureId));
     }
 

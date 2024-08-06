@@ -1,0 +1,28 @@
+services:
+  app: # steach-server 애플리케이션 서비스 정의 steach-server가 이미 빌드되고 있으므로 의의 app으로 설정!??
+    image: steach-server:latest # 사용할 Docker 이미지 지정
+    container_name: steach-server # 컨테이너 이름 지정
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod # Spring Boot 프로파일 설정
+    ports:
+      - "18080:8080" # 호스트의 8080 포트를 컨테이너의 18080 포트에 매핑
+    networks:
+      - steach-server-network
+
+  nginx: # Nginx 서비스 정의
+#    image: nginx:latest # 사용할 Nginx 이미지 지정
+    container_name: steach-server-nginx # 컨테이너 이름 지정
+    build:
+      context: .
+      dockerfile: Dockerfile_nginx
+    ports:
+      - "18008:80" # 호스트의 80 포트를 컨테이너의 18008 포트에 매핑
+    depends_on:
+      - app # Nginx가 steach-server 애플리케이션에 의존
+    networks:
+      - steach-server-network
+
+networks:
+  steach-server-network:
+    name: steach-server-network
+    driver: bridge

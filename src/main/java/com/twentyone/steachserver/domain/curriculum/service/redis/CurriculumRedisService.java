@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,15 @@ public class CurriculumRedisService {
 
 
     public List<CurriculumDetailResponse> getPopularRatioCurriculum() {
-        String json = redisTemplate.opsForValue().get(POPULAR_RATIO_CURRICULUMS_KEY);
+        return getCurriculumDetailResponses(POPULAR_RATIO_CURRICULUMS_KEY);
+    }
+
+    public List<CurriculumDetailResponse> getLatestCurricula() {
+        return getCurriculumDetailResponses(LATEST_CURRICULUMS_KEY);
+    }
+
+    private List<CurriculumDetailResponse> getCurriculumDetailResponses(String latestCurriculumsKey) {
+        String json = redisTemplate.opsForValue().get(latestCurriculumsKey);
         if (json != null) {
             try {
                 return objectMapper.readValue(json, new TypeReference<List<CurriculumDetailResponse>>() {});
@@ -35,7 +42,8 @@ public class CurriculumRedisService {
                 throw new RuntimeException("Failed to convert JSON to list", e);
             }
         }
-        return null;    }
+        return null;
+    }
 
     /**
      * 일반적인 경우: 데이터를 JSON으로 변환하여 저장하는 방법이 더 효율적일 가능성이 높습니다. 이는 한 번의 SET 연산으로 모든 데이터를 저장할 수 있기 때문입니다.
@@ -51,17 +59,15 @@ public class CurriculumRedisService {
         }
     }
 
-    public List<CurriculumDetailResponse> getLatestCurricula() {
-        String json = redisTemplate.opsForValue().get(LATEST_CURRICULUMS_KEY);
-        if (json != null) {
-            try {
-                return objectMapper.readValue(json, new TypeReference<List<CurriculumDetailResponse>>() {});
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("Failed to convert JSON to list", e);
-            }
+    public void saveLatestCurricula(List<CurriculumDetailResponse> list) {
+        try {
+            String json = objectMapper.writeValueAsString(list);
+            redisTemplate.opsForValue().set(LATEST_CURRICULUMS_KEY, json);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to convert list to JSON", e);
         }
-        return null;
     }
+
 
     public void addLatestCurriculum(CurriculumDetailResponse curriculum) {
         List<CurriculumDetailResponse> currentList = getLatestCurricula();
@@ -75,15 +81,6 @@ public class CurriculumRedisService {
 
         try {
             String json = objectMapper.writeValueAsString(currentList);
-            redisTemplate.opsForValue().set(LATEST_CURRICULUMS_KEY, json);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to convert list to JSON", e);
-        }
-    }
-
-    public void saveLatestCurricula(List<CurriculumDetailResponse> list) {
-        try {
-            String json = objectMapper.writeValueAsString(list);
             redisTemplate.opsForValue().set(LATEST_CURRICULUMS_KEY, json);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to convert list to JSON", e);

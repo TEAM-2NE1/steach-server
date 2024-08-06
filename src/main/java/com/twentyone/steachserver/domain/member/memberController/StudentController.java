@@ -6,6 +6,7 @@ import com.twentyone.steachserver.domain.member.dto.StudentInfoRequest;
 import com.twentyone.steachserver.domain.member.dto.StudentInfoResponse;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.service.StudentService;
+import com.twentyone.steachserver.domain.studentCurriculum.dto.IsApplyForCurriculumResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -63,5 +64,13 @@ public class StudentController {
         //페이징 없는 버전
         CurriculumListResponse curriculumListResponse = curriculumService.getStudentsCurricula(student);
         return ResponseEntity.ok(curriculumListResponse);
+    }
+
+    @Operation(summary = "[학생] 학생이 커리큘럼을 수강 신청 여부", description = "이미 신청했으면 true")
+    @GetMapping("/check/curriculum-apply/{curriculumId}")
+    public ResponseEntity<IsApplyForCurriculumResponseDto> getIsApplyForCurriculum(@AuthenticationPrincipal Student student,
+                                                                                   @PathVariable("curriculumId") Integer curriculumId) {
+        Boolean isApplyForCurriculum = curriculumService.getIsApplyForCurriculum(student, curriculumId);
+        return ResponseEntity.ok(IsApplyForCurriculumResponseDto.of(isApplyForCurriculum));
     }
 }
