@@ -16,7 +16,7 @@ WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 
 
-#### 스택 오버플로우의 방법
+##### 스택 오버플로우의 방법
 #RUN aptitude -y install docker-compose
 #RUN ln -s /usr/local/bin/docker-compose /compose/docker-compose
 #RUN curl -L "https://github.com/docker/compose/releases/download/latest/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
