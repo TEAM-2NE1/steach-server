@@ -71,10 +71,6 @@ pipeline {
 //                     sh 'ls -l ./nginx.conf''
                     sh 'docker rm -f steach-server-nginx || true' // 엔진엑스 파일 삭제 8/05 5시 50분
                     sh 'docker-compose -f docker-compose.prod.yml down || true' // 8월 5일 5시에 클루트 쓰며 추가
-                    sh 'docker network list'
-                    sh 'docker network rm steach-server-webhook_default'
-                    sh 'docker network rm jenkins-nginx_default'
-                    sh 'docker network rm none'
                     sh 'docker-compose -f docker-compose.prod.yml up -d --build' // Docker Compose 파일을 사용하여 컨테이너 실행
                     sh 'docker logs steach-server-nginx'
                     sh 'docker network list'
