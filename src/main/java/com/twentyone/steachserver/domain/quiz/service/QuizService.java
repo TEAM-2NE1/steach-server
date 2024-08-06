@@ -31,5 +31,7 @@ public interface QuizService {
     QuizResponseDto modifyQuiz(Teacher teacher, Integer quizId, QuizRequestDto dto);
 
     QuizListResponseDto modifyManyQuiz(Teacher teacher, Integer quizId, QuizListRequestDto dto);
+
+    List<Integer> getStatistics(Integer quizId);
 }
 
