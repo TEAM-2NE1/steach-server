@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.quiz.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,8 @@ public class QuizRequestDto {
     private List<String> choices;
     @Min(1)
     private Integer answers;
+    @Schema(example = "5")
+    private Integer time = 5; // default 5초
 
     public Integer getQuizNumber() {
         return quizNumber;
@@ -46,5 +49,9 @@ public class QuizRequestDto {
 
     public Integer getAnswers() {
         return answers - 1; //서버용
+    }
+
+    public Integer getTime() {
+        return time;
     }
 }
