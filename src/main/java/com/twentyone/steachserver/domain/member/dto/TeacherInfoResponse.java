@@ -15,7 +15,7 @@ public class TeacherInfoResponse extends MemberInfoResponse {
     public static TeacherInfoResponse fromDomain(Teacher teacher) {
         TeacherInfoResponse response = new TeacherInfoResponse();
         response.username = teacher.getUsername();
-        response.name = teacher.getName();
+        response.nickname = teacher.getName();
         response.email = teacher.getEmail();
         response.volunteerTime = teacher.getVolunteerTime();
         response.briefIntroduction = teacher.getBriefIntroduction();

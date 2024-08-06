@@ -1,8 +1,6 @@
 package com.twentyone.steachserver.domain.auth.service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +23,8 @@ public class JwtService {
     @Value("${jwt.secretKey}")
     private String SECRET_KEY;
 
-    public static long accessTokenValidTime = Duration.ofMinutes(200).toMillis(); // 만료시간 30분
+    public static long accessTokenValidTime = Duration.ofMinutes(200).toMillis(); // 만료시간 200분
+    public static long passwordAuthTokenValidTime = Duration.ofMinutes(60).toMillis(); // 만료시간 60분
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
@@ -40,15 +39,13 @@ public class JwtService {
     public String generateToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails,
-            String tokenType //access, refresh
+            String tokenType, //access, refresh
+            long durationTime
     ) {
-        long durationTime = accessTokenValidTime;
-
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + durationTime))
                 .claim("token_type", tokenType)
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
@@ -56,14 +53,30 @@ public class JwtService {
     }
 
     public String generateAccessToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails, "access");
+        return generateToken(new HashMap<>(), userDetails, "access", accessTokenValidTime);
     }
 
+    public String generatePasswordAuthToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails, "temp", passwordAuthTokenValidTime);
+    }
+
+    //TODO isAccessTokenValid로 변경
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         boolean b = (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
 
         return b;
+    }
+
+    public boolean isPasswordAuthTokenValid(String token, UserDetails userDetails) {
+        try {
+            final String username = extractUsername(token);
+            boolean b = (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+
+            return b;
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
     public boolean isTokenExpired(String token) {
@@ -85,7 +98,6 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
     }
 
     private SecretKey getSignInKey() {

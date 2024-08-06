@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 설명
@@ -23,6 +24,7 @@ import lombok.*;
  * 상위 클래스에 @Inheritance 주석만 있으면 상속이 가능합니다.
  * 하위 클래스의 @PrimaryKeyJoinColumn 주석은 선택사항이며 외래 키 매핑을 사용자 정의해야 하는 경우에만 사용됩니다. 상위 클래스에 '@Id' 필드가 있고 상속 전략이 정의된 경우 위 설정이 올바르게 작동해야 합니다.
  */
+@Slf4j
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PROTECTED)
 @Entity
@@ -47,12 +49,12 @@ public class Student extends LoginCredential {
     @OneToMany(mappedBy = "student")
     private List<StudentLecture> studentLectures = new ArrayList<>();
 
-    public static Student of(String username, String password, String name, String email) {
+    public static Student of(String username, String password, String nickname, String email) {
         Student student = new Student();
         student.setUsername(username);
         student.setPassword(password);
         student.setEmail(email);
-        student.name = name;
+        student.name = nickname;
 
         return student;
     }
@@ -61,13 +63,21 @@ public class Student extends LoginCredential {
         this.studentCurricula.add(studentCurriculum);
     }
 
-    public void updateInfo(String name, String email) {
-        if (name != null) {
-            this.name = name;
+    public void updateInfo(String nickname, String email, String password) {
+        if (nickname != null && !nickname.equals("")) {
+            this.name = nickname;
         }
 
-        if (email != null) {
+        if (email != null && !email.equals("")) {
             this.email = email;
         }
+
+        if (password != null & !password.equals("")) {
+            this.setPassword(password);
+        }
+    }
+
+    public void addStudentLecture(StudentLecture studentLecture) {
+        this.studentLectures.add(studentLecture);
     }
 }

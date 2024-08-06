@@ -29,6 +29,9 @@ import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizDto;
 import com.twentyone.steachserver.domain.studentQuiz.model.QStudentQuiz;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Objects;
@@ -44,13 +47,14 @@ import static com.twentyone.steachserver.domain.studentCurriculum.model.QStudent
 import static com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture.studentLecture;
 
 
+@Repository
 public class LectureQueryRepository {
+
     private final JPAQueryFactory query;
 
     public LectureQueryRepository(EntityManager em) {
         this.query = new JPAQueryFactory(em);
     }
-
 
     @Transactional
     public LectureBeforeStartingResponseDto getLectureBeforeStartingResponse(Integer lectureId) {

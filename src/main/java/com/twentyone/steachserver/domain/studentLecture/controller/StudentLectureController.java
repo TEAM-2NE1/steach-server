@@ -18,12 +18,12 @@ public class StudentLectureController {
 
     private final StudentLectureService studentLectureService;
 
-    @Operation(summary = "학생의 집중도를 받아서 저장!", description = "무조건 200을 반환")
+    @Operation(summary = "[학생] 학생의 집중도를 받아서 저장!", description = "무조건 200을 반환")
     @PostMapping("/focus-time/{lectureId}")
     public ResponseEntity<?> submitTimeFocusTime(@AuthenticationPrincipal Student student,
                                                  @PathVariable("lectureId") Integer lectureId,
                                                  @RequestBody FocusTimeRequestDto focusTimeDto) {
-        studentLectureService.saveTimeFocusTime(student.getId(), lectureId, focusTimeDto.focusTime());
+        studentLectureService.saveTimeFocusTime(student.getId(), lectureId, focusTimeDto.sleepTime());
         return ResponseEntity.ok().build();
     }
 }

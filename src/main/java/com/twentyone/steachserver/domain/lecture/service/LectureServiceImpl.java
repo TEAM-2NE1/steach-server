@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.lecture.service;
 
+import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.lecture.dto.*;
@@ -10,26 +11,28 @@ import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 
 import com.twentyone.steachserver.domain.lecture.validator.LectureValidator;
 import com.twentyone.steachserver.domain.member.model.Student;
+import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.member.repository.StudentRepository;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureQueryRepository;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
+import com.twentyone.steachserver.global.error.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.temporal.WeekFields;
+import java.util.*;
 
-
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class LectureServiceImpl implements LectureService {
-
     private final LectureRepository lectureRepository;
     private final LectureQueryRepository lectureQueryRepository;
     private final StudentRepository studentRepository;
@@ -66,12 +69,13 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public Optional<LectureBeforeStartingResponseDto> updateLectureInformation(Integer lectureId,
                                                                                UpdateLectureRequestDto lectureRequestDto) {
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new IllegalArgumentException("lecture not found"));
 
-        lecture.update(lectureRequestDto);
+        lecture.update(lectureRequestDto.lectureTitle(), lectureRequestDto.lectureStartTime());
         return Optional.ofNullable(lectureQueryRepository.getLectureBeforeStartingResponse(lectureId));
     }
 
@@ -116,11 +120,35 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
-    public LectureListResponseDto findByCurriculum(Integer curriculumId) {
+    public AllLecturesInCurriculaResponseDto findByCurriculum(Integer curriculumId) {
         List<Lecture> lectures = lectureRepository.findByCurriculumId(curriculumId)
                 .orElseGet(() -> new ArrayList<>());
 
-        return LectureListResponseDto.fromDomainList(lectures);
+//        List<LectureResponseDto> list = LectureResponseDto.fromDomainList(lectures);
+
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        Map<Integer, List<LectureResponseDto>> lecturesByWeek = new HashMap<>();
+
+        //주단위로 나누기
+        int currentWeekIdx = 0;
+        int prev = -1;
+        for (Lecture lecture : lectures) {
+            LocalDate startDate = lecture.getLectureStartDate().toLocalDate();
+            int weekNumber = startDate.get(weekFields.weekOfWeekBasedYear());
+            if (weekNumber != prev) {
+                prev = weekNumber;
+                List<LectureResponseDto> value = new ArrayList<>();
+                value.add(LectureResponseDto.fromDomain(lecture));
+                currentWeekIdx++;
+
+                lecturesByWeek.put(currentWeekIdx, value);
+            } else {
+                List<LectureResponseDto> lectureResponseDtoList = lecturesByWeek.get(currentWeekIdx);
+                lectureResponseDtoList.add(LectureResponseDto.fromDomain(lecture));
+            }
+        }
+
+        return AllLecturesInCurriculaResponseDto.of(lecturesByWeek, lectures.size());
     }
 
     @Override
@@ -143,8 +171,20 @@ public class LectureServiceImpl implements LectureService {
                 }
             }
             curriculum.getTeacher().updateVolunteerMinute(volunteerMinute);
-
         }
+    }
+
+    @Override
+    @Transactional
+    public void delete(Integer lectureId, Teacher teacher) {
+        Lecture lecture = lectureRepository.findById(lectureId)
+                .orElseThrow(() -> new ResourceNotFoundException("lecture not found"));
+
+        if (!lecture.getCurriculum().getTeacher().equals(teacher)) {
+            throw new ForbiddenException("커리큘럼을 만든 사람만 수정이 가능. 권한이 없음");
+        }
+
+        lectureRepository.delete(lecture);
     }
 
     @Override
@@ -181,6 +221,5 @@ public class LectureServiceImpl implements LectureService {
                 .orElseThrow(() -> new IllegalArgumentException("lecture not found"));
         return CompletedLecturesResponseDto.of(lectureBeforeStartingResponseDto, studentInfoByLecture, lecture);
     }
-
 }
 

@@ -21,7 +21,7 @@ public class QuizChoiceServiceImpl implements QuizChoiceService{
 
     @Override
     @Transactional
-    public void createQuizChoices(List<String> choices, List<String> answers, Quiz savedQuiz) throws Exception{
+    public void createQuizChoices(List<String> choices, List<String> answers, Quiz savedQuiz){
         quizChoiceValidator.validateQuizChoices(choices, answers);
 
         int answerCount = 0;

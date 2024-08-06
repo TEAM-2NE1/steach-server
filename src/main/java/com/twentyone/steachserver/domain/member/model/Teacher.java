@@ -37,38 +37,41 @@ public class Teacher extends LoginCredential{
     @OneToMany(mappedBy = "teacher")
     List<Curriculum> curriculumList;
 
-    public static Teacher of(String username, String password, String name, String email, String pathQualification) {
+    @Override
+    public boolean equals(Object obj) {
+        Teacher teacher = (Teacher) obj;
+
+        return teacher.getId().equals(this.getId());
+    }
+
+    public static Teacher of(String username, String password, String nickname, String email, String pathQualification) {
         Teacher teacher = new Teacher();
 
         teacher.setUsername(username);
         teacher.setPassword(password);
-        teacher.name = name;
+        teacher.name = nickname;
         teacher.email = email;
         teacher.pathQualification = pathQualification;
 
         return teacher;
     }
 
-    public void updateInfo(String name, String email, String briefIntroduction, String academicBackground, String specialization) {
-        if (name != null) {
-            this.name = name;
+    public void updateInfo(String nickname, String email, String briefIntroduction, String academicBackground, String specialization, String password) {
+        if (nickname != null && !nickname.equals("")) {
+            this.name = nickname;
         }
 
-        if (email != null) {
+        if (email != null && !email.equals("")) {
             this.email = email;
         }
 
-        if (briefIntroduction != null) {
-            this.briefIntroduction = briefIntroduction;
+        if (password != null & !password.equals("")) {
+            this.setPassword(password);
         }
 
-        if (academicBackground != null) {
-            this.academicBackground = academicBackground;
-        }
-
-        if (specialization != null) {
-            this.specialization = specialization;
-        }
+        this.briefIntroduction = briefIntroduction;
+        this.academicBackground = academicBackground;
+        this.specialization = specialization;
     }
 
     public void updateVolunteerMinute(Integer volunteerTime) {

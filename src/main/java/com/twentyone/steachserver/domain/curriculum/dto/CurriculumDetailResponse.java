@@ -3,10 +3,11 @@ package com.twentyone.steachserver.domain.curriculum.dto;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
-import java.time.LocalTime;
+
+import com.twentyone.steachserver.util.converter.DateTimeUtil;
+import com.twentyone.steachserver.util.converter.WeekdayBitmaskUtil;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 public class CurriculumDetailResponse {
     private Integer curriculumId;
+    private String teacherName;
     private String title;
     private String subTitle;
     private String intro;
@@ -23,25 +25,22 @@ public class CurriculumDetailResponse {
     private CurriculumCategory category;
     private String subCategory;
     private String bannerImgUrl;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String startDate;
+    private String endDate;
     private String weekdaysBitmask;
-    private LocalTime lectureStartTime;
-    private LocalTime lectureEndTime;
+    private String lectureStartTime;
+    private String lectureEndTime;
     private int currentAttendees;
     private int maxAttendees;
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     public static CurriculumDetailResponse fromDomain(Curriculum curriculum) {
         // 7을 이진수 문자열로 변환
         CurriculumDetail curriculumDetail = curriculum.getCurriculumDetail();
-        String weekDaysBitmaskString = Integer.toBinaryString(curriculumDetail.getWeekdaysBitmask());
-
-        // 길이가 7이 되도록 0으로 패딩
-        String paddedWeekDaysBitmask = String.format("%0" + 7 + "d", Integer.parseInt(weekDaysBitmaskString));
 
         return CurriculumDetailResponse.builder()
                 .curriculumId(curriculum.getId())
+                .teacherName(curriculum.getTeacher().getName())
                 .title(curriculum.getTitle())
                 .subTitle(curriculumDetail.getSubTitle())
                 .intro(curriculumDetail.getIntro())
@@ -49,14 +48,34 @@ public class CurriculumDetailResponse {
                 .category(curriculum.getCategory())
                 .subCategory(curriculumDetail.getSubCategory())
                 .bannerImgUrl(curriculumDetail.getBannerImgUrl())
-                .startDate(curriculumDetail.getStartDate())
-                .endDate(curriculumDetail.getEndDate() != null ? curriculumDetail.getEndDate() : null)
-                .weekdaysBitmask(paddedWeekDaysBitmask)
-                .lectureStartTime(curriculumDetail.getLectureStartTime())
-                .lectureEndTime(curriculumDetail.getLectureCloseTime())
+                .startDate(DateTimeUtil.convert(curriculumDetail.getStartDate()))
+                .endDate(curriculumDetail.getEndDate() != null ? DateTimeUtil.convert(curriculumDetail.getEndDate()) : null)
+                .weekdaysBitmask(WeekdayBitmaskUtil.convert(curriculumDetail.getWeekdaysBitmask()))
+                .lectureStartTime(DateTimeUtil.convert(curriculumDetail.getLectureStartTime()))
+                .lectureEndTime(DateTimeUtil.convert(curriculumDetail.getLectureCloseTime()))
                 .currentAttendees(curriculumDetail.getCurrentAttendees())
                 .maxAttendees(curriculumDetail.getMaxAttendees())
-                .createdAt(curriculum.getCreatedAt())
+                .createdAt(DateTimeUtil.convert(curriculum.getCreatedAt()))
+                .build();
+    }
+    public static CurriculumDetailResponse fromDomainBySimple(Curriculum curriculum) {
+        // 7을 이진수 문자열로 변환
+        CurriculumDetail curriculumDetail = curriculum.getCurriculumDetail();
+
+        return CurriculumDetailResponse.builder()
+                .curriculumId(curriculum.getId())
+                .teacherName(curriculum.getTeacher().getName())
+                .title(curriculum.getTitle())
+                .intro(curriculumDetail.getIntro())
+                .bannerImgUrl(curriculumDetail.getBannerImgUrl())
+                .startDate(DateTimeUtil.convert(curriculumDetail.getStartDate()))
+                .endDate(curriculumDetail.getEndDate() != null ? DateTimeUtil.convert(curriculumDetail.getEndDate()) : null)
+                .weekdaysBitmask(WeekdayBitmaskUtil.convert(curriculumDetail.getWeekdaysBitmask()))
+                .lectureStartTime(DateTimeUtil.convert(curriculumDetail.getLectureStartTime()))
+                .lectureEndTime(DateTimeUtil.convert(curriculumDetail.getLectureCloseTime()))
+                .currentAttendees(curriculumDetail.getCurrentAttendees())
+                .maxAttendees(curriculumDetail.getMaxAttendees())
+                .createdAt(DateTimeUtil.convert(curriculum.getCreatedAt()))
                 .build();
     }
 }

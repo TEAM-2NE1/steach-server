@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.curriculum.model;
 
+import com.twentyone.steachserver.util.converter.WeekdayBitmaskUtil;
 import jakarta.persistence.*;
 import java.time.LocalTime;
 import lombok.AllArgsConstructor;
@@ -8,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Builder
 @Entity
@@ -55,5 +55,26 @@ public class CurriculumDetail {
 
     public void register() {
         this.currentAttendees++;
+    }
+
+    public void update(
+            String subTitle, String intro, String information, String subCategory, String bannerImgUrl,
+            LocalDate startDate, LocalDate endDate, String weekdaysBitmask, LocalTime lectureStartTime,
+            LocalTime lectureEndTime, int maxAttendees) {
+        this.subTitle = subTitle;
+        this.intro = intro;
+        this.information = information;
+        this.subCategory = subCategory;
+        this.bannerImgUrl = bannerImgUrl;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.weekdaysBitmask = WeekdayBitmaskUtil.convert(weekdaysBitmask);
+        this.lectureStartTime = lectureStartTime;
+        this.lectureCloseTime = lectureEndTime;
+        this.maxAttendees = maxAttendees;
+    }
+
+    public void minusCurrentAttendees() {
+        this.currentAttendees -= 1;
     }
 }

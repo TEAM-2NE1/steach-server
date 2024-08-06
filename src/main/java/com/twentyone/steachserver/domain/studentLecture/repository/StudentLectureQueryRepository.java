@@ -4,15 +4,15 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.twentyone.steachserver.domain.lecture.dto.StudentInfoByLectureDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.model.QLecture;
-import com.twentyone.steachserver.domain.quiz.model.QQuiz;
 import com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizByLectureDto;
-import com.twentyone.steachserver.domain.studentQuiz.dto.StudentQuizDto;
 import com.twentyone.steachserver.domain.studentQuiz.model.QStudentQuiz;
 import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -21,22 +21,23 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.twentyone.steachserver.domain.curriculum.model.QCurriculum.curriculum;
-import static com.twentyone.steachserver.domain.curriculum.model.QCurriculumDetail.curriculumDetail;
 import static com.twentyone.steachserver.domain.lecture.model.QLecture.lecture;
 import static com.twentyone.steachserver.domain.member.model.QStudent.student;
-import static com.twentyone.steachserver.domain.studentCurriculum.model.QStudentCurriculum.studentCurriculum;
 import static com.twentyone.steachserver.domain.studentLecture.model.QStudentLecture.studentLecture;
 import static com.twentyone.steachserver.domain.studentQuiz.model.QStudentQuiz.studentQuiz;
 
+@Slf4j
+@Repository
 public class StudentLectureQueryRepository {
-    private final JPAQueryFactory query;
+
     private final EntityManager em;
+    private final JPAQueryFactory query;
 
     public StudentLectureQueryRepository(EntityManager em) {
-        this.query = new JPAQueryFactory(em);
         this.em = em;
+        this.query = new JPAQueryFactory(em);
     }
+
 
     public List<StudentLecture> findAllStudentInfoByLectureId(Integer lectureId) {
         return query
@@ -163,6 +164,7 @@ public class StudentLectureQueryRepository {
 
         for (StudentLecture sl : studentLectures) {
             Integer focusTime = sl.getFocusTime();
+            //lectureDurationMinutes = 60; //TODO test용, 삭제 꼭 하기
 
             // focusRatio 계산 (졸음 비율)
             if (focusTime != null && lectureDurationMinutes > 0) {
