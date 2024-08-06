@@ -6,6 +6,8 @@ services:
       - SPRING_PROFILES_ACTIVE=prod # Spring Boot 프로파일 설정
     ports:
       - "18080:8080" # 호스트의 8080 포트를 컨테이너의 18080 포트에 매핑
+    networks:
+      - steach-server-network
 
   nginx: # Nginx 서비스 정의
 #    image: nginx:latest # 사용할 Nginx 이미지 지정
@@ -17,3 +19,9 @@ services:
       - "18008:80" # 호스트의 80 포트를 컨테이너의 18008 포트에 매핑
     depends_on:
       - app # Nginx가 steach-server 애플리케이션에 의존
+    networks:
+      - steach-server-network
+
+networks:
+  steach-server-network:
+    driver: bridge
