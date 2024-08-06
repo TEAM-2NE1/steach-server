@@ -28,10 +28,10 @@ pipeline {
                 }
                 // ====================Pipeline Syntax로 얻은 script코드 ==================
                 script {
+                    def branch = env.GIT_BRANCH ? env.GIT_BRANCH.replaceAll(/^origin\//, '') : 'main'
                     checkout scmGit(
                         // BRANCH_NAME 변수는 Jenkins가 자동으로 설정해주는 환경 변수로, 빌드 트리거된 브랜치의 이름을 가집니다.
                         // 그러나, 이 변수가 자동으로 설정되지 않는 경우도 있으므로, 이를 명시적으로 설정해야 할 수 있습니다.
-                        def branch = env.GIT_BRANCH ? env.GIT_BRANCH.replaceAll(/^origin\//, '') : 'main'
                         branches: [[name: "${branch}"]], // 변경된 브랜치를 지정
                         extensions: [submodule(parentCredentials: true, recursiveSubmodules: true, reference: '', trackingSubmodules: true)],
                         userRemoteConfigs: [[url: 'https://github.com/TEAM-2NE1/steach-server.git']]
