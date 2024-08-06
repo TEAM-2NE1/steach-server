@@ -6,7 +6,6 @@ WORKDIR /app
 # 현재 디렉토리의 모든 파일을 컨테이너의 작업 디렉토리로 복사
 COPY . .
 
-
 # 2단계: Docker 이미지 생성
 # 경량의 OpenJDK 17 런타임 이미지
 FROM openjdk:17-jdk
