@@ -10,7 +10,6 @@ import lombok.Setter;
 @Table(name = "quiz_choices")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter(value = AccessLevel.PUBLIC)
-@Setter(value = AccessLevel.PRIVATE)
 public class QuizChoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,14 +31,22 @@ public class QuizChoice {
 
     public static QuizChoice createQuizChoice(String choiceText, Quiz savedQuiz, boolean isAnswer) {
         QuizChoice quizChoice = new QuizChoice();
-        quizChoice.setChoiceSentence(choiceText);
-        quizChoice.setQuiz(savedQuiz);
-        quizChoice.setIsAnswer(isAnswer);
+        quizChoice.choiceSentence = choiceText;
+        quizChoice.quiz = savedQuiz;
+        quizChoice.isAnswer = isAnswer;
         savedQuiz.addChoice(quizChoice);
         return quizChoice;
     }
 
     public void updateQuiz(Quiz quiz) {
-        this.setQuiz(quiz);
+        this.quiz = quiz;
+    }
+
+    public void setIsNotAnswer() {
+        this.isAnswer = false;
+    }
+
+    public void setIsAnswer() {
+        this.isAnswer = true;
     }
 }
