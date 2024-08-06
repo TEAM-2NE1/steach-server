@@ -54,7 +54,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, API_PREFIX + "/curricula/**").permitAll()
                         .requestMatchers(HttpMethod.GET, API_PREFIX + "/main/**").permitAll()
                         .requestMatchers(HttpMethod.GET, API_PREFIX + "/lectures/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, API_PREFIX + "/check/server/operating*").permitAll()
+                        .requestMatchers(HttpMethod.GET, API_PREFIX + "/check/server/operating").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider)
