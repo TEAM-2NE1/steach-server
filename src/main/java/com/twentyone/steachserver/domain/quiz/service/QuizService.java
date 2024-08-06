@@ -29,5 +29,7 @@ public interface QuizService {
     void delete(Integer quizId, Teacher teacher);
 
     QuizResponseDto modifyQuiz(Teacher teacher, Integer quizId, QuizRequestDto dto);
+
+    QuizListResponseDto modifyManyQuiz(Teacher teacher, Integer quizId, QuizListRequestDto dto);
 }
 

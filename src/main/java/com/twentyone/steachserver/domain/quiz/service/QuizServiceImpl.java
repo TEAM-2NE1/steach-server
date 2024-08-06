@@ -15,6 +15,7 @@ import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.repository.QuizRepository;
 import com.twentyone.steachserver.global.error.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -38,10 +40,17 @@ public class  QuizServiceImpl implements QuizService {
         Lecture lecture = getLecture(lectureId);
 
         List<Quiz> quizList = new ArrayList<>();
-        for (QuizRequestDto quizRequestDto: request.quizList()) {
-            Quiz quiz = createQuiz(lecture, quizRequestDto);
 
-            quizList.add(quiz);
+        int errorIdx = 1;
+        for (QuizRequestDto quizRequestDto: request.quizList()) {
+            try {
+                Quiz quiz = createQuiz(lecture, quizRequestDto);
+                quizList.add(quiz);
+            } catch (RuntimeException e) {
+                throw new IllegalArgumentException(errorIdx+"번째 퀴즈에 오류발생: " + e.getMessage());
+            }
+
+            errorIdx++;
         }
 
         return QuizListResponseDto.fromDomainList(quizList);
@@ -85,18 +94,9 @@ public class  QuizServiceImpl implements QuizService {
 
     @Override
     public QuizResponseDto mapToDto(Quiz quiz) {
-        List<QuizChoice> quizChoices = quiz.getQuizChoices();
         List<String> choices = quizChoiceService.getChoices(quiz);
 
-        int answerInt = 1;
-        for (QuizChoice quizChoice: quizChoices) {
-            if (quizChoice.getIsAnswer()) {
-                break;
-            }
-            answerInt++;
-        }
-
-        return QuizResponseDto.createQuizResponseDto(quiz, choices, answerInt);
+        return QuizResponseDto.createQuizResponseDto(quiz, choices, quiz.getAnswer());
     }
 
     @Override
@@ -176,5 +176,22 @@ public class  QuizServiceImpl implements QuizService {
         }
 
         return mapToDto(quiz);
+    }
+
+    @Override
+    @Transactional
+    public QuizListResponseDto modifyManyQuiz(Teacher teacher, Integer lectureId, QuizListRequestDto request) {
+        Lecture lecture = lectureRepository.findByIdWithQuiz(lectureId)
+                .orElseThrow(() -> new ResourceNotFoundException("찾을 수 없는 강의 id"));
+
+        //관련 퀴즈 싹 삭제
+        List<Quiz> quizzes = lecture.getQuizzes();
+        for (Quiz quiz: quizzes) {
+            quizRepository.delete(quiz);
+        }
+
+        QuizListResponseDto responseDto = createQuizList(lectureId, request);
+
+        return responseDto;
     }
 }

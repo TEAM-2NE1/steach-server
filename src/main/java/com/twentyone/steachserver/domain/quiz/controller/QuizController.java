@@ -25,11 +25,12 @@ import java.util.stream.Collectors;
 public class QuizController {
     private final QuizService quizService;
 
+    @Secured("ROLE_TEACHER")
     @Operation(summary = "[강사] 퀴즈 여러 개 생성!", description = "성공시 200 반환, 실패시 500 INTERNAL_SERVER_ERROR 반환")
     @PostMapping("/{lectureId}")
-    public ResponseEntity<QuizListResponseDto> createQuiz(@PathVariable("lectureId")Integer lectureId, @RequestBody @Valid QuizListRequestDto request) {
-        //TODO 같은 string 값의 선지가 들어왔을 때 처리할 수 없음
-        QuizListResponseDto dto = quizService.createQuizList(lectureId, request);
+    public ResponseEntity<QuizListResponseDto> createQuiz(@AuthenticationPrincipal Teacher teacher, @PathVariable("lectureId")Integer lectureId, @RequestBody @Valid QuizListRequestDto request) {
+        //TODO 수정이랑 너무 똑같다
+        QuizListResponseDto dto = quizService.modifyManyQuiz(teacher, lectureId, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
@@ -43,8 +44,17 @@ public class QuizController {
     }
 
     @Secured("ROLE_TEACHER")
+    @Operation(summary = "[강사] 퀴즈 여러 개 수정", description = "성공시 200 반환<br/>null로 들어올 경우 변경되지 않습니다. choices에 변경사항이 있는 경우 answers는 null이 되면 안됩니다.")
+    @PutMapping("/{lectureId}")
+    public ResponseEntity<QuizListResponseDto> modifyManyQuiz(@AuthenticationPrincipal Teacher teacher, @PathVariable("lectureId") Integer lectureId, @RequestBody @Valid QuizListRequestDto dto) {
+        QuizListResponseDto quizListResponseDto = quizService.modifyManyQuiz(teacher, lectureId, dto);
+
+        return ResponseEntity.ok(quizListResponseDto);
+    }
+
+    @Secured("ROLE_TEACHER")
     @Operation(summary = "[강사] 퀴즈 수정", description = "성공시 200 반환<br/>null로 들어올 경우 변경되지 않습니다. choices에 변경사항이 있는 경우 answers는 null이 되면 안됩니다.")
-    @PatchMapping("/{quizId}")
+    @PatchMapping("/{quizId}/one")
     public ResponseEntity<QuizResponseDto> modifyQuiz(@AuthenticationPrincipal Teacher teacher, @PathVariable("quizId") Integer quizId, @RequestBody QuizRequestDto dto) {
         QuizResponseDto quizResponseDto = quizService.modifyQuiz(teacher, quizId, dto);
 
