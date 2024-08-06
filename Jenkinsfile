@@ -75,6 +75,7 @@ pipeline {
                     sh 'docker network rm steach-server-webhook2_steach-server-network'
                     sh 'docker-compose -f docker-compose.prod.yml up -d --build' // Docker Compose 파일을 사용하여 컨테이너 실행
                     sh 'docker logs steach-server-nginx'
+                    sh 'docker network list'
                 }
             }
         }
