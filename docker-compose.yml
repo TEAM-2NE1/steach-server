@@ -1,8 +1,0 @@
-services:
-    app:
-      image: steach-server-app
-      container_name: steach-server-app
-      build:
-        context: .
-      ports:
-          - 8080:8080

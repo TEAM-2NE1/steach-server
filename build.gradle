@@ -87,8 +87,12 @@ task copyYML(type: Copy) {
     }
 }
 
-test {
+build {
     dependsOn copyYML
+}
+
+test {
+//    dependsOn copyYML
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
