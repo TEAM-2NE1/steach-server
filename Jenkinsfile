@@ -70,6 +70,7 @@ pipeline {
                     sh 'docker-compose -f docker-compose.prod.yml down || true' // 8월 5일 5시에 클루트 쓰며 추가
                     sh 'docker-compose -f docker-compose.prod.yml up -d --build' // Docker Compose 파일을 사용하여 컨테이너 실행
                     sh 'docker logs steach-server-nginx'
+                }
             }
         }
     }
