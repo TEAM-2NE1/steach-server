@@ -60,12 +60,24 @@ pipeline {
             }
         }
 
+        stage('Prepare Environment') {
+            steps {
+                script {
+                    sh 'docker network list'
+                    def networkExists = sh(script: "docker network ls | grep steach-server-network || true", returnStatus: true) == 0
+                    if (!networkExists) {
+                        sh 'docker network create --driver bridge steach-server-network'
+                    }
+                }
+            }
+        }
+
         stage('Deploy') { // Docker Compose를 사용하여 배포하는 단계
             steps {
                 script {
+                    sh 'docker network list'
                     sh 'docker-compose --version'
                     // || true는 쉘 스크립트에서 사용되는 논리 연산자입니다. 이 구문은 앞의 명령어가 실패하더라도 전체 명령어가 성공한 것으로 간주되도록 합니다.
-                    sh 'docker rm steach-server-network || true'
                     sh 'docker rm -f steach-server-nginx || true' // 엔진엑스 파일 삭제 8/05 5시 50분
                     sh 'docker-compose -f docker-compose.prod.yml down || true' // 8월 5일 5시에 클루트 쓰며 추가
                     sh 'docker-compose -f docker-compose.prod.yml up -d --build' // Docker Compose 파일을 사용하여 컨테이너 실행
