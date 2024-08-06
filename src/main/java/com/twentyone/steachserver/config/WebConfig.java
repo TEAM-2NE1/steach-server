@@ -44,6 +44,8 @@ public class WebConfig {
 
         configuration.addAllowedOrigin("http://localhost:80");
         configuration.addAllowedOrigin("http://localhost:8080");
+        configuration.addAllowedOrigin("http://localhost:18080");
+        configuration.addAllowedOrigin("http://localhost:18008");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
