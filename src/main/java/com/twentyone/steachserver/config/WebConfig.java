@@ -46,6 +46,10 @@ public class WebConfig {
         configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://localhost:18080");
         configuration.addAllowedOrigin("http://localhost:18008");
+        configuration.addAllowedOrigin("http://steach.ssafy.io:18080");
+        configuration.addAllowedOrigin("http://steach.ssafy.io:18080");
+        configuration.addAllowedOrigin("https://steach.ssafy.io:18008");
+        configuration.addAllowedOrigin("https://steach.ssafy.io:18008");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
