@@ -24,4 +24,5 @@ services:
 
 networks:
   steach-server-network:
-    driver: bridge
+    external: # 외부 환경에 굴하지 않고 이 이름으로 생성
+      name: steach-server-network
