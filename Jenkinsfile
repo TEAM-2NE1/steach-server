@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker --version' // Docker가 설치되어 있고, 명령어가 올바르게 작동하는지 확인합니다.
-                    sh 'docker ps' // Docker 데몬에 접근할 수 있는지 확인
+//                     sh 'docker ps' // Docker 데몬에 접근할 수 있는지 확인
                 }
             }
         }
@@ -65,10 +65,10 @@ pipeline {
                 script {
                     sh 'docker-compose --version'
                     // 필요한 경우, Docker Compose 파일 경로를 명확히 지정
-                    sh 'pwd'  // 현재 작업 디렉토리 출력 /var/jenkins_home/workspace/steach-server-webhook
-                    sh 'ls -la'  // 현재 디렉토리의 파일 목록 출력
-                    sh 'cat ./nginx.conf'
-                    sh 'ls -l ./nginx.conf'
+//                     sh 'pwd'  // 현재 작업 디렉토리 출력 /var/jenkins_home/workspace/steach-server-webhook
+//                     sh 'ls -la'  // 현재 디렉토리의 파일 목록 출력
+//                     sh 'cat ./nginx.conf'
+//                     sh 'ls -l ./nginx.conf'
                     sh 'docker rm -f steach-server-nginx || true' // 엔진엑스 파일 삭제 8/05 5시 50분
                     sh 'docker-compose -f docker-compose.prod.yml down || true' // 8월 5일 5시에 클루트 쓰며 추가
                     sh 'docker-compose -f docker-compose.prod.yml up -d --build' // Docker Compose 파일을 사용하여 컨테이너 실행
