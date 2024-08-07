@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   grafana:
     image: grafana/grafana:latest # Grafana 이미지 사용
@@ -7,7 +5,7 @@ services:
     ports:
       - "30001:3000" # Grafana의 웹 인터페이스에 접근할 수 있는 포트 매핑
     networks:
-      - steach-server-network
+      - all-network
     depends_on:
       - loki
 
@@ -17,7 +15,7 @@ services:
     ports:
       - "3100:3100" # Loki의 API 포트 매핑
     networks:
-      - steach-server-network
+      - all-network
     command: -config.file=/etc/loki-config.yaml # Loki 설정 파일 경로 지정
     volumes:
       - ./loki-config.yaml:/etc/loki-config.yaml # Loki 설정 파일 마운트
@@ -33,11 +31,12 @@ services:
       - ./promtail-config.yaml:/etc/promtail/promtail-config.yaml # Promtail 설정 파일 마운트
     command: -config.file=/etc/promtail/promtail-config.yaml # Promtail 설정 파일 경로 지정
     networks:
-      - steach-server-network
+      - all-network
     depends_on:
       - loki
 
-# 이미 만들어져 있는 네트워크 사용
+# nginx 생성시 만들어둔 네트워크 사용
 networks:
-  steach-server-network:
-    external: true
+  all-network:
+    external:
+      name: all-network

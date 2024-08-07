@@ -6,3 +6,10 @@ services:
     container_name: holy-nginx
     ports:
       - "18088:80"
+    networks:
+      - all_network
+
+networks:
+  all-network:
+    name: all-network
+    driver: bridge
