@@ -26,7 +26,7 @@ services:
     ports:
       - "18008:80" # 호스트의 80 포트를
     volumes:
-      - /home/ubuntu/ssl-tls-crypt:/etc/letsencrypt:ro # Mount the SSL certificates
+      - /home/ubuntu/ssl-tls-crypt:/etc/encrypt:ro # Mount the SSL certificates
     depends_on:
       - app # Nginx가 steach-server 애플리케이션에 의존
     networks:

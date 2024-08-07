@@ -75,6 +75,9 @@ pipeline {
         stage('Deploy') { // Docker Compose를 사용하여 배포하는 단계
             steps {
                 script {
+                    sh 'ls /home/ubuntu/ssl-tls-crypt/live/steach.ssafy.io/'
+                    sh 'ls /home/ubuntu/ssl-tls-crypt/'
+                    sh 'pwd'
                     sh 'docker network list'
                     sh 'docker-compose --version'
                     // || true는 쉘 스크립트에서 사용되는 논리 연산자입니다. 이 구문은 앞의 명령어가 실패하더라도 전체 명령어가 성공한 것으로 간주되도록 합니다.
