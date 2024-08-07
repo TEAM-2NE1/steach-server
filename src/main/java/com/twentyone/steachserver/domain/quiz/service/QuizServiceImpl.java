@@ -15,7 +15,7 @@ import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.repository.QuizRepository;
 import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
 import com.twentyone.steachserver.domain.studentQuiz.repository.StudentQuizRepository;
-import com.twentyone.steachserver.domain.studentQuiz.service.StudentQuizServiceImpl;
+import com.twentyone.steachserver.domain.studentQuiz.service.StudentQuizService;
 import com.twentyone.steachserver.global.error.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,6 @@ public class  QuizServiceImpl implements QuizService {
     private final QuizChoiceService quizChoiceService;
     private final QuizValidator quizValidator;
     private final QuizChoiceValidator quizChoiceValidator;
-    private final StudentQuizServiceImpl studentQuizServiceImpl;
     private final StudentQuizRepository studentQuizRepository;
 
     @Override

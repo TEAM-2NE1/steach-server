@@ -3,6 +3,7 @@ package com.twentyone.steachserver.domain.auth.controller;
 import com.twentyone.steachserver.domain.auth.dto.*;
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.auth.service.AuthService;
+import com.twentyone.steachserver.domain.member.service.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import java.io.IOException;
 @RestController
 public class AuthController {
     private final AuthService authService;
+    private final StudentService studentService;
 
     @Operation(summary = "[All] 학생 회원가입!", description = "username은 빈칸 불가능, 숫자로 시작 불가능, 영어와 숫자 조합만 가능")
     @PostMapping("/student/join")
@@ -31,6 +33,12 @@ public class AuthController {
         LoginResponseDto loginResponseDto = authService.signUpStudent(studentSignUpDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(loginResponseDto);
+    }
+
+    @Operation(summary = "[student] 학생 닉네임 중복확인")
+    @GetMapping("/student/check-nickname/{nickname}")
+    public ResponseEntity<CheckUsernameAvailableResponse> checkNicknameAvailability(@PathVariable("nickname") String nickname) {
+        return ResponseEntity.ok(studentService.checkNicknameAvailability(nickname));
     }
 
     @Operation(summary = "[All] 강사 회원가입!", description = "username은 빈칸 불가능, 숫자로 시작 불가능, 영어와 숫자 조합만 가능/ file은 첨부하지 않아도 됨(추후 변경예정) <br/> auth_code 사용안한 것만 가능")
