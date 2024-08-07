@@ -6,6 +6,8 @@ import com.twentyone.steachserver.domain.member.model.Teacher;
 
 public interface TeacherService {
     TeacherInfoResponse getInfo(Teacher teacher);
+    TeacherInfoResponse getCommonInfo(Integer teacher);
 
     TeacherInfoResponse updateInfo(TeacherInfoRequest request, Teacher teacher);
+
 }
