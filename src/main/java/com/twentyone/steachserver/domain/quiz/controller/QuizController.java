@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.quiz.controller;
 
+import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.quiz.dto.*;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
@@ -15,7 +16,9 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Tag(name = "퀴즈")
@@ -80,5 +83,15 @@ public class QuizController {
         quizService.delete(quizId, teacher);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{quiz_id}/statistic")
+    public ResponseEntity<Map<String, List<Integer>>> getStatistics(@PathVariable("quiz_id")Integer quizId, @AuthenticationPrincipal LoginCredential loginCredential) {
+        List<Integer> counts = quizService.getStatistics(quizId);
+
+        Map<String, List<Integer>> result = new HashMap<>();
+        result.put("statistics", counts);
+
+        return ResponseEntity.ok(result);
     }
 }
