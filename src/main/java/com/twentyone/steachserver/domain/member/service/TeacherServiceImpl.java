@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.member.service;
 
+import com.twentyone.steachserver.domain.auth.dto.CheckUsernameAvailableResponse;
 import com.twentyone.steachserver.domain.auth.service.PasswordAuthTokenService;
 import com.twentyone.steachserver.domain.member.dto.TeacherInfoRequest;
 import com.twentyone.steachserver.domain.member.dto.TeacherInfoResponse;
@@ -41,5 +42,12 @@ public class TeacherServiceImpl implements TeacherService {
         teacher.updateInfo(request.getNickname(), request.getEmail(), request.getBriefIntroduction(), request.getAcademicBackground(), request.getSpecialization(), encodedPassword);
 
         return TeacherInfoResponse.fromDomain(teacher);
+    }
+
+    @Override
+    public CheckUsernameAvailableResponse checkEmailAvailability(String email) {
+        boolean canUse = !teacherRepository.existsByEmail(email);
+
+        return new CheckUsernameAvailableResponse(canUse);
     }
 }

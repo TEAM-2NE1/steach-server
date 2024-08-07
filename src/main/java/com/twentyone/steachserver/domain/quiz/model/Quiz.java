@@ -46,6 +46,7 @@ public class Quiz {
         quiz.setLecture(lecture);
         quiz.setQuestion(request.getQuestion());
         quiz.setQuizNumber((request.getQuizNumber() == null || request.getQuizNumber()== 0)? lecture.getQuizzes().size() + 1 : request.getQuizNumber());
+        quiz.setTime(request.getTime());
 
         lecture.addQuiz(quiz);
         return quiz;

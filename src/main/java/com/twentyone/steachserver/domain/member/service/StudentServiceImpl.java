@@ -44,4 +44,11 @@ public class StudentServiceImpl implements StudentService {
 
         return new CheckUsernameAvailableResponse(canUse);
     }
+
+    @Override
+    public CheckUsernameAvailableResponse checkEmailAvailability(String email) {
+        boolean canUse = !studentRepository.existsByEmail(email);
+
+        return new CheckUsernameAvailableResponse(canUse);
+    }
 }

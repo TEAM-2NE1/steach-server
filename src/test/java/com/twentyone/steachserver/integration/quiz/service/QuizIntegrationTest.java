@@ -97,9 +97,9 @@ public class QuizIntegrationTest extends IntegrationTest {
     void 퀴즈생성() throws Exception {
         //given
         List<QuizRequestDto> quizRequestDtoList = new ArrayList<>();
-        quizRequestDtoList.add(new QuizRequestDto(1, "마루는 귀엽다", List.of("O", "X"), 1));
-        quizRequestDtoList.add(new QuizRequestDto(2, "마루는 안귀엽다", List.of("O", "X"), 2));
-        quizRequestDtoList.add(new QuizRequestDto(3, "가장 귀여운 강아지 이름은?", List.of("핑핑이", "마루", "서브웨이"), 2));
+        quizRequestDtoList.add(new QuizRequestDto(1, "마루는 귀엽다", List.of("O", "X"), 1, 1));
+        quizRequestDtoList.add(new QuizRequestDto(2, "마루는 안귀엽다", List.of("O", "X"), 2, 1));
+        quizRequestDtoList.add(new QuizRequestDto(3, "가장 귀여운 강아지 이름은?", List.of("핑핑이", "마루", "서브웨이"), 2, 1));
 
         QuizListRequestDto quizListRequestDto = new QuizListRequestDto(quizRequestDtoList);
 
@@ -132,9 +132,9 @@ public class QuizIntegrationTest extends IntegrationTest {
     void 퀴즈생성_answer_인덱스_에러(int answerIdx) throws Exception {
         //given
         List<QuizRequestDto> quizRequestDtoList = new ArrayList<>();
-        quizRequestDtoList.add(new QuizRequestDto(1, "마루는 안귀엽다", List.of("O", "X"), 2));
-        quizRequestDtoList.add(new QuizRequestDto(2, "마루는 귀엽다", List.of("O", "X"), answerIdx)); //에러발생!!!
-        quizRequestDtoList.add(new QuizRequestDto(3, "가장 귀여운 강아지 이름은?", List.of("핑핑이", "마루", "서브웨이"), 2));
+        quizRequestDtoList.add(new QuizRequestDto(1, "마루는 안귀엽다", List.of("O", "X"), 2, 1));
+        quizRequestDtoList.add(new QuizRequestDto(2, "마루는 귀엽다", List.of("O", "X"), answerIdx, 1)); //에러발생!!!
+        quizRequestDtoList.add(new QuizRequestDto(3, "가장 귀여운 강아지 이름은?", List.of("핑핑이", "마루", "서브웨이"), 2, 1));
 
         QuizListRequestDto quizListRequestDto = new QuizListRequestDto(quizRequestDtoList);
 
@@ -157,7 +157,7 @@ public class QuizIntegrationTest extends IntegrationTest {
         List<String> choices = List.of(new String[]{CHOICE1, CHOICE2});
         Integer answer = 1; //CHOICE1
 
-        List<QuizRequestDto> list = List.of(new QuizRequestDto(QUIZ_NUMBER, question, choices, answer));
+        List<QuizRequestDto> list = List.of(new QuizRequestDto(QUIZ_NUMBER, question, choices, answer, 1));
 
         QuizListResponseDto quizListResponse = quizService.createQuizList(createdLecture.getId(), new QuizListRequestDto(list));
 

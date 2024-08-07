@@ -11,4 +11,6 @@ public interface StudentService {
     StudentInfoResponse updateInfo(StudentInfoRequest request, Student student);
 
     CheckUsernameAvailableResponse checkNicknameAvailability(String nickname);
+
+    CheckUsernameAvailableResponse checkEmailAvailability(String email);
 }
