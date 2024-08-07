@@ -25,7 +25,6 @@ import java.util.List;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class QuizRequestDto {
     private Integer quizNumber;
     private String question;
