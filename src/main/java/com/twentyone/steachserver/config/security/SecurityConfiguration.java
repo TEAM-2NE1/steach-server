@@ -37,6 +37,7 @@ public class SecurityConfiguration {
             API_PREFIX + "/login/**",
             API_PREFIX + "/*/join",
             API_PREFIX + "/check-username/*",
+            API_PREFIX + "/student/check-nickname/*"
     };
 
     //TODO WebSecurityCustomizer로 whiteList 적용 알아보기
