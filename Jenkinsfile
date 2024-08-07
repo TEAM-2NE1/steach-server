@@ -43,6 +43,11 @@ pipeline {
         stage('Verify Docker Installation') {
             steps {
                 script {
+                    sh 'pwd'
+                    sh 'ls -l /'
+                    sh 'ls -l /home'
+                    sh 'ls -l /home/ubuntu'
+                    sh 'ls -l /home/ubuntu/ssl-tls-crypt'
                     sh 'docker --version' // Docker가 설치되어 있고, 명령어가 올바르게 작동하는지 확인합니다.
 //                     sh 'docker ps' // Docker 데몬에 접근할 수 있는지 확인
                 }
@@ -75,7 +80,6 @@ pipeline {
         stage('Deploy') { // Docker Compose를 사용하여 배포하는 단계
             steps {
                 script {
-                    sh 'docker network list'
                     sh 'docker-compose --version'
                     // || true는 쉘 스크립트에서 사용되는 논리 연산자입니다. 이 구문은 앞의 명령어가 실패하더라도 전체 명령어가 성공한 것으로 간주되도록 합니다.
                     sh 'docker rm -f steach-server-nginx || true' // 엔진엑스 파일 삭제 8/05 5시 50분
