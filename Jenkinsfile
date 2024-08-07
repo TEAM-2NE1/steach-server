@@ -22,7 +22,7 @@ pipeline {
                         branches: [[name: "${branch}"]], // 변경된 브랜치를 지정
                         userRemoteConfigs: [[
                             url: 'https://github.com/TEAM-2NE1/steach-server.git',
-                            credentialsId: 'steach-server-jen'
+                            credentialsId: 'github-auth'
                         ]]
                     ])
                 }
