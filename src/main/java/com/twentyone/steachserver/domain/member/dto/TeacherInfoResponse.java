@@ -24,4 +24,14 @@ public class TeacherInfoResponse extends MemberInfoResponse {
 
         return response;
     }
+
+    public static TeacherInfoResponse fromDomainForAll(Teacher teacher) {
+        TeacherInfoResponse response = new TeacherInfoResponse();
+        response.nickname = teacher.getName();
+        response.briefIntroduction = teacher.getBriefIntroduction();
+        response.academicBackground = teacher.getAcademicBackground();
+        response.specialization = teacher.getSpecialization();
+
+        return response;
+    }
 }
