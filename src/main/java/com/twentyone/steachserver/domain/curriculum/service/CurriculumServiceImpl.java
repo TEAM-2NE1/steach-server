@@ -12,6 +12,7 @@ import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
+import com.twentyone.steachserver.domain.member.repository.TeacherRepository;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculumId;
 import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCurriculumRepository;
@@ -50,13 +51,13 @@ public class CurriculumServiceImpl implements CurriculumService {
 
     private final CurriculumValidator curriculumValidator;
     private final CurriculumRedisService curriculumRedisService;
+    private final TeacherRepository teacherRepository;
 
     @Override
     @Transactional(readOnly = true)
     public CurriculumDetailResponse getDetail(Integer id) {
         Curriculum curriculum = curriculumRepository.findByIdWithDetail(id)
                 .orElseThrow(() -> new RuntimeException("Curriculum not found"));
-
         return CurriculumDetailResponse.fromDomain(curriculum);
     }
 
@@ -169,6 +170,22 @@ public class CurriculumServiceImpl implements CurriculumService {
         List<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher);
 
         return CurriculumListResponse.fromDomainList(curriculumList);
+    }
+
+    @Override
+    public CurriculumListResponse getTeachersCurricula(Integer teacherId, Pageable pageable) {
+        Teacher teacher = teacherRepository.getReferenceById(teacherId);
+        Page<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher, pageable);
+
+        return CurriculumListResponse.fromSimpleDomainList(curriculumList);
+    }
+
+    @Override
+    public CurriculumListResponse getTeachersCurricula(Integer teacherId) {
+        Teacher teacher = teacherRepository.getReferenceById(teacherId);
+        List<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher);
+
+        return CurriculumListResponse.fromSimpleDomainList(curriculumList);
     }
 
     @Override
