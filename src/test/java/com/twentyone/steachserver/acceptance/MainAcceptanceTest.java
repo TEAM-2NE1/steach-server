@@ -474,12 +474,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
         Integer answers = (Integer) 퀴즈_정보.get("answers");
 
         //TODO QuizListReqeustDto를 만들자!
-        QuizRequestDto quizRequestDto = QuizRequestDto.builder()
-                .quizNumber((Integer) 퀴즈_정보.get("quizNumber"))
-                .question(퀴즈_정보.get("question").toString())
-                .choices(choices)
-                .answers(answers)
-                .build();
+        QuizRequestDto quizRequestDto = new QuizRequestDto((Integer) 퀴즈_정보.get("quizNumber"),퀴즈_정보.get("question").toString(),choices,answers, 1);
 
         return given().log().all()
                 .header("Authorization", "Bearer " + 강사_토큰_정보) // 토큰 정보 설정
