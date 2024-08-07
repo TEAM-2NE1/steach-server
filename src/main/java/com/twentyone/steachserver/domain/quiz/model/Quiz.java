@@ -28,6 +28,8 @@ public class Quiz {
 
     @Column(name = "question", nullable = false)
     private String question;
+    
+    private Integer time; //퀴즈 제한시간
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", referencedColumnName = "id")

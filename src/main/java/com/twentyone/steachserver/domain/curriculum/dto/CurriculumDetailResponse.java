@@ -64,6 +64,10 @@ public class CurriculumDetailResponse {
 
         return CurriculumDetailResponse.builder()
                 .curriculumId(curriculum.getId())
+                .category(curriculum.getCategory())
+                .subTitle(curriculumDetail.getSubTitle())
+                .subCategory(curriculumDetail.getSubCategory())
+                .information(curriculumDetail.getInformation())
                 .teacherName(curriculum.getTeacher().getName())
                 .title(curriculum.getTitle())
                 .intro(curriculumDetail.getIntro())
