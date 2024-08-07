@@ -75,8 +75,8 @@ pipeline {
         stage('Deploy') { // Docker Compose를 사용하여 배포하는 단계
             steps {
                 script {
-                    sh 'ls /home/ubuntu/ssl-tls-crypt/live/steach.ssafy.io/'
-                    sh 'ls /home/ubuntu/ssl-tls-crypt/'
+                    sh 'ls home/ubuntu/ssl-tls-crypt/live/steach.ssafy.io/'
+                    sh 'ls home/ubuntu/ssl-tls-crypt/'
                     sh 'pwd'
                     sh 'docker network list'
                     sh 'docker-compose --version'
