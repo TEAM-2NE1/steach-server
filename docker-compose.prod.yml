@@ -24,7 +24,9 @@ services:
       context: .
       dockerfile: Dockerfile_nginx
     ports:
-      - "18008:80" # 호스트의 80 포트를 컨테이너의 18008 포트에 매핑
+      - "18008:80" # 호스트의 80 포트를
+    volumes:
+      - /home/ubuntu/ssl-tls-crypt:/etc/letsencrypt:ro # Mount the SSL certificates
     depends_on:
       - app # Nginx가 steach-server 애플리케이션에 의존
     networks:
