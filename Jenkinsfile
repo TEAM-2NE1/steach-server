@@ -57,6 +57,7 @@ pipeline {
         stage('Build') { // Docker 이미지 빌드 단계
             steps {
                 script {
+                    cleanWs()
                     sh 'chmod +x ./gradlew' // gradlew 파일에 실행 권한 추가
                     sh './gradlew --no-daemon clean build'
                     echo 'build Image'
