@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 public class CurriculumDetailResponse {
     private Integer curriculumId;
+    private Integer teacherId;
     private String teacherName;
     private String title;
     private String subTitle;
@@ -40,6 +41,7 @@ public class CurriculumDetailResponse {
 
         return CurriculumDetailResponse.builder()
                 .curriculumId(curriculum.getId())
+                .teacherId(curriculum.getTeacher().getId())
                 .teacherName(curriculum.getTeacher().getName())
                 .title(curriculum.getTitle())
                 .subTitle(curriculumDetail.getSubTitle())
@@ -64,10 +66,7 @@ public class CurriculumDetailResponse {
 
         return CurriculumDetailResponse.builder()
                 .curriculumId(curriculum.getId())
-                .category(curriculum.getCategory())
-                .subTitle(curriculumDetail.getSubTitle())
-                .subCategory(curriculumDetail.getSubCategory())
-                .information(curriculumDetail.getInformation())
+                .teacherId(curriculum.getTeacher().getId())
                 .teacherName(curriculum.getTeacher().getName())
                 .title(curriculum.getTitle())
                 .intro(curriculumDetail.getIntro())
