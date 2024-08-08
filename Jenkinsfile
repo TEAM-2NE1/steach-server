@@ -60,16 +60,16 @@ pipeline {
             }
         }
 
-        stage('Prepare Environment') {
-            steps {
-                script {
-                    def networkExists = sh(script: "docker network ls | grep all_network || true", returnStatus: true) == 0
-                    if (!networkExists) {
-                        sh 'docker network create --driver bridge all_network'
-                    }
-                }
-            }
-        }
+//         stage('Prepare Environment') {
+//             steps {
+//                 script {
+//                     def networkExists = sh(script: "docker network ls | grep all_network || true", returnStatus: true) == 0
+//                     if (!networkExists) {
+//                         sh 'docker network create --driver bridge all_network'
+//                     }
+//                 }
+//             }
+//         }
 
         stage('Deploy') { // Docker Compose를 사용하여 배포하는 단계
             steps {
@@ -87,10 +87,8 @@ pipeline {
 
     post {
         always {
-            sh 'docker-compose -f docker-compose.prod.yml logs' // Docker Compose 로그 출력
+            sh 'docker-compose -f docker-compose.prod.yml logs || true' // Docker Compose 로그 출력
             sh 'docker logs steach-server || true' // steach-server 컨테이너 로그 출력, 없으면 오류 무시
-            sh 'docker logs steach-server'
-            sh 'docker network list'
             cleanWs() // 작업 공간 정리
         }
     }
