@@ -86,7 +86,6 @@ pipeline {
     post {
         always {
             sh 'docker-compose -f docker-compose.prod.yml logs' // Docker Compose 로그 출력
-            sh 'docker logs steach-server-nginx'
             sh 'docker logs steach-server'
             sh 'docker network list'
             cleanWs() // 작업 공간 정리
