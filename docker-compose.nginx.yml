@@ -1,5 +1,6 @@
 services:
   holy-nginx:
+    image: holy-nginx
     build:
       context: .
       dockerfile: Dockerfile_nginx
