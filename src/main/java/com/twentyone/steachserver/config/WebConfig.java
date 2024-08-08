@@ -53,9 +53,10 @@ public class WebConfig {
         configuration.addAllowedOrigin("https://localhost:8088");
         // 몰라?
         configuration.addAllowedOrigin("https://43.202.1.52:8088");
-        configuration.addAllowedOrigin("https://43.202.1.52:18080");
         // 스웨거?
+        configuration.addAllowedOrigin("https://43.202.1.52:18080");
         configuration.addAllowedOrigin("https://steach.ssafy.io:18081");
+        configuration.addAllowedOrigin("https://14.46.142.208:18080");
 
 
         configuration.addAllowedHeader("*");
