@@ -1,16 +1,18 @@
-services:
-  holy-nginx:
-    image: holy-nginx
-    build:
-      context: .
-      dockerfile: Dockerfile_nginx
-    container_name: holy-nginx
-    ports:
-      - "8088:80"
-    networks:
-      - all_network
-
-networks:
-  all_network:
-    name: all_network
-    driver: bridge
+#services:
+#  holy-nginx:
+#    image: holy-nginx
+#    build:
+#      context: .
+#      dockerfile: Dockerfile_nginx
+#    container_name: holy-nginx
+#    ports:
+#      - "8088:80"
+#    networks:
+#      - all_network
+#    - volumes:
+#        - /home/ubuntu/ssl-tls-crypt:/etc/nginx/ssl
+#
+#networks:
+#  all_network:
+#    name: all_network
+#    driver: bridge
