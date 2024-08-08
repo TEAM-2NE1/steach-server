@@ -28,6 +28,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain
     ) throws ServletException, IOException {
+        String ipAddress = request.getRemoteAddr();
+        System.out.println("Client IP Address: " + ipAddress);
+
         final String authHeader;
         authHeader = request.getHeader("Authorization");
 
