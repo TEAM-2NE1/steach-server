@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile_nginx
     container_name: holy-nginx
     ports:
-      - "18088:80"
+      - "8088:80"
     networks:
       - all_network
 
