@@ -48,7 +48,8 @@ public class WebConfig {
 
         // nginx꺼
 //        Todo: 왜 check/server 는 그냥 돼?
-        configuration.addAllowedOrigin("https://localhost:18088");
+        configuration.addAllowedOrigin("https://localhost:8088");
+        configuration.addAllowedOrigin("https://43.202.1.52:8088");
 
 
         configuration.addAllowedHeader("*");
