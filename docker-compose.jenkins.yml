@@ -15,8 +15,8 @@ services:
 # nginx 생성시 만들어둔 네트워크 사용
 networks:
   all_network:
-    external:
-      name: all_network
+    external: true
+    name: all_network
 
 volumes:
   jenkins_home:
