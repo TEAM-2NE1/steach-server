@@ -50,6 +50,8 @@ public class WebConfig {
 //        Todo: 왜 check/server 는 그냥 돼?
         configuration.addAllowedOrigin("https://localhost:8088");
         configuration.addAllowedOrigin("https://43.202.1.52:8088");
+        // 스웨거?
+        configuration.addAllowedOrigin("https://steach.ssafy.io:18081 ");
 
 
         configuration.addAllowedHeader("*");
