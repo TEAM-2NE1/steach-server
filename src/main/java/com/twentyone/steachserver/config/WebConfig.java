@@ -46,6 +46,7 @@ public class WebConfig {
         configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://localhost:18008");
         configuration.addAllowedOrigin("http://localhost:18080");
+        configuration.addAllowedOrigin("http://localhost:18081");
 
         // nginx꺼
 //        Todo: 왜 check/server 는 그냥 돼?
