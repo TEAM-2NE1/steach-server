@@ -7,7 +7,7 @@ services:
     ports:
       - "18080:8080" # 호스트의 8080 포트를 컨테이너의 18080 포트에 매핑
     networks:
-      - all-network
+      - all_network
 
   # Docker는 각 컨테이너의 로그를 /var/lib/docker/containers/<container-id>/ 디렉토리에 저장합니다.
   # 각 컨테이너의 로그 파일은 container-id-json.log라는 이름으로 저장됩니다.
@@ -19,6 +19,6 @@ services:
 
 # nginx 생성시 만들어둔 네트워크 사용
 networks:
-  all-network:
+  all_network:
     external:
-      name: all-network
+      name: all_network

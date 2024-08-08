@@ -10,13 +10,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock # Docker 소켓 마운트
       - /var/home/jenkins_ssh:/var/jenkins_home/.ssh  # SSH 디렉토리 마운트
     networks:
-      - all-network
+      - all_network
 
 # nginx 생성시 만들어둔 네트워크 사용
 networks:
-  all-network:
+  all_network:
     external:
-      name: all-network
+      name: all_network
 
 volumes:
   jenkins_home:

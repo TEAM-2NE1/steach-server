@@ -10,6 +10,6 @@ services:
       - all_network
 
 networks:
-  all-network:
-    name: all-network
+  all_network:
+    name: all_network
     driver: bridge
