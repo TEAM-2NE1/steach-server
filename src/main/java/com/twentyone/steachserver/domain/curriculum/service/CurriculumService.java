@@ -19,6 +19,8 @@ public interface CurriculumService {
     @Transactional(readOnly = true)
     CurriculumListResponse getTeachersCurricula(Teacher teacher, Pageable pageable);
     CurriculumListResponse getTeachersCurricula(Teacher teacher);
+    CurriculumListResponse getTeachersCurricula(Integer teacherId, Pageable pageable);
+    CurriculumListResponse getTeachersCurricula(Integer teacherId);
 
     @Transactional(readOnly = true)
     CurriculumListResponse getStudentsCurricula(Student student, Pageable pageable);
@@ -46,4 +48,5 @@ public interface CurriculumService {
     CurriculumIncludesStudentListResponseDto getTeachersCurriculaIncludesStudents(Teacher teacher);
 
     void cancel(Student student, Integer curriculaId);
+
 }

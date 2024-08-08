@@ -28,6 +28,8 @@ public class Quiz {
 
     @Column(name = "question", nullable = false)
     private String question;
+    
+    private Integer time; //퀴즈 제한시간
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", referencedColumnName = "id")
@@ -44,6 +46,7 @@ public class Quiz {
         quiz.setLecture(lecture);
         quiz.setQuestion(request.getQuestion());
         quiz.setQuizNumber((request.getQuizNumber() == null || request.getQuizNumber()== 0)? lecture.getQuizzes().size() + 1 : request.getQuizNumber());
+        quiz.setTime(request.getTime());
 
         lecture.addQuiz(quiz);
         return quiz;

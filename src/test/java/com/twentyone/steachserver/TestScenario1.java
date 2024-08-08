@@ -158,7 +158,7 @@ public class TestScenario1 {
         lectureService.updateRealStartTime(lectureId1);
 
         /* FIXME 8-3. 퀴즈만들기, 퀴즈풀기 */
-        QuizRequestDto quizRequestDto1 = new QuizRequestDto(1, "자바는 객체지향 언어이다", List.of("O", "X"), 1);
+        QuizRequestDto quizRequestDto1 = new QuizRequestDto(1, "자바는 객체지향 언어이다", List.of("O", "X"), 1, 1);
         QuizListRequestDto quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto1));
         QuizListResponseDto quiz1 = quizService.createQuizList(lectureId1, quizListRequestDto);
         Integer quizId1 = quiz1.quizList().get(0).getQuizId();
@@ -176,7 +176,7 @@ public class TestScenario1 {
         studentQuizService.createStudentQuiz(student3, quizId1, studentQuizRequestDto3);
 
         // FIXME ========================
-        QuizRequestDto quizRequestDto2 = new QuizRequestDto(2, "자바 컬렉션이 아닌것은?", List.of("List", "Set", "Vector", "HashMap"), 3);
+        QuizRequestDto quizRequestDto2 = new QuizRequestDto(2, "자바 컬렉션이 아닌것은?", List.of("List", "Set", "Vector", "HashMap"), 3, 1);
 //        Quiz quiz2 = quizService.createQuiz(lectureId1, quizRequestDto2).get();
         quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto2));
         QuizListResponseDto quiz2 = quizService.createQuizList(lectureId1, quizListRequestDto);
@@ -192,7 +192,7 @@ public class TestScenario1 {
         studentQuizService.createStudentQuiz(student3, quizId2, studentQuizRequestDto6);
 
         // FIXME ========================
-        QuizRequestDto quizRequestDto3 = new QuizRequestDto(2, "자바는 플랫폼 종속적이다?", List.of("O", "X"), 1);
+        QuizRequestDto quizRequestDto3 = new QuizRequestDto(2, "자바는 플랫폼 종속적이다?", List.of("O", "X"), 1, 1);
 //        Quiz quiz3 = quizService.createQuiz(lectureId1, quizRequestDto3).get();
         quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto3));
         QuizListResponseDto quiz3 = quizService.createQuizList(lectureId1, quizListRequestDto);
@@ -228,7 +228,7 @@ public class TestScenario1 {
         lectureService.updateRealStartTime(lectureId1);
 
         /* FIXME 9-3. 퀴즈만들기, 퀴즈풀기 */
-        quizRequestDto1 = new QuizRequestDto(1, "객체지향 5대원칙이 아닌것은?", List.of("OCP", "LSP", "RIP", "DIP"), 4);
+        quizRequestDto1 = new QuizRequestDto(1, "객체지향 5대원칙이 아닌것은?", List.of("OCP", "LSP", "RIP", "DIP"), 4, 1);
 //        quiz1 = quizService.createQuiz(lectureId1, quizRequestDto1).get();
         quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto1));
         quiz1 = quizService.createQuizList(lectureId1, quizListRequestDto);
@@ -244,7 +244,7 @@ public class TestScenario1 {
         studentQuizService.createStudentQuiz(student3, quizId1, studentQuizRequestDto3);
 
         // FIXME ========================
-        quizRequestDto2 = new QuizRequestDto(2, "자바에서 MinHeap을 구현하는 방법은?", List.of("Heap", "PriorityQueue"), 2);
+        quizRequestDto2 = new QuizRequestDto(2, "자바에서 MinHeap을 구현하는 방법은?", List.of("Heap", "PriorityQueue"), 2, 1);
 //        quiz2 = quizService.createQuiz(lectureId1, quizRequestDto2).get();
         quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto2));
         quiz2 = quizService.createQuizList(lectureId1, quizListRequestDto);
@@ -260,7 +260,7 @@ public class TestScenario1 {
         studentQuizService.createStudentQuiz(student3, quizId2, studentQuizRequestDto6);
 
         // FIXME ========================
-        quizRequestDto3 = new QuizRequestDto(2, "클래스의 가장 최고조상은?", List.of("Object", "ANCESTOR"), 1);
+        quizRequestDto3 = new QuizRequestDto(2, "클래스의 가장 최고조상은?", List.of("Object", "ANCESTOR"), 1, 1);
 //        quiz3 = quizService.createQuiz(lectureId1, quizRequestDto3).get();
         quizListRequestDto = new QuizListRequestDto(List.of(quizRequestDto3));
         quiz3 = quizService.createQuizList(lectureId1, quizListRequestDto);

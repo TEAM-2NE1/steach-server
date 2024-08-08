@@ -18,6 +18,7 @@ public class QuizResponseDto {
     private Integer quizId;
     private Integer lectureId;
     private Integer quizNumber;
+    private Integer time;
     private String question;
     private List<String> choices;
     private Integer answers;
@@ -29,6 +30,7 @@ public class QuizResponseDto {
                 quiz.getId(),
                 quiz.getLecture().getId(),
                 quiz.getQuizNumber(),
+                quiz.getTime(),
                 quiz.getQuestion(),
                 choices,
                 answers+1 //클라이언트에는 +1해서 주기
@@ -44,6 +46,7 @@ public class QuizResponseDto {
                 quiz.getId(),
                 quiz.getLecture().getId(),
                 quiz.getQuizNumber(),
+                quiz.getTime(),
                 quiz.getQuestion(),
                 quiz.getQuizChoiceString(),
                 quiz.getAnswer()+1  //클라이언트에는 +1해서 주기

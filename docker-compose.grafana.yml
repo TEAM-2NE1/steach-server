@@ -1,0 +1,42 @@
+services:
+  grafana:
+    image: grafana/grafana:latest # Grafana 이미지 사용
+    container_name: grafana # 컨테이너 이름 지정
+    ports:
+      - "30001:3000" # Grafana의 웹 인터페이스에 접근할 수 있는 포트 매핑
+    networks:
+      - all_network
+    depends_on:
+      - loki
+
+  loki:
+    image: grafana/loki:2.2.1 # Loki 이미지 및 버전 지정
+    container_name: loki # 컨테이너 이름 지정
+    ports:
+      - "3100:3100" # Loki의 API 포트 매핑
+    networks:
+      - all_network
+    command: -config.file=/etc/loki-config.yaml # Loki 설정 파일 경로 지정
+    volumes:
+      - ./loki-config.yaml:/etc/loki-config.yaml # Loki 설정 파일 마운트
+
+# Promtail은 기본적으로 로그를 수집하고 Loki에 전송하는 역할을 합니다.
+#  Promtail 자체는 외부로부터의 요청을 처리하지 않기 때문에 일반적으로 포트를 노출할 필요가 없습니다.
+  promtail:
+    image: grafana/promtail:2.2.1 # Promtail 이미지 및 버전 지정
+    container_name: promtail # 컨테이너 이름 지정
+    volumes:
+      - /var/log:/var/log # 호스트의 /var/log 디렉토리를 컨테이너의 /var/log 디렉토리로 마운트
+      - /var/run/docker.sock:/var/run/docker.sock # 호스트의 Docker 소켓을 컨테이너에 마운트
+      - ./promtail-config.yaml:/etc/promtail/promtail-config.yaml # Promtail 설정 파일 마운트
+    command: -config.file=/etc/promtail/promtail-config.yaml # Promtail 설정 파일 경로 지정
+    networks:
+      - all_network
+    depends_on:
+      - loki
+
+# nginx 생성시 만들어둔 네트워크 사용
+networks:
+  all_network:
+    external:
+      name: all_network
