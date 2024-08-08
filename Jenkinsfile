@@ -63,9 +63,9 @@ pipeline {
         stage('Prepare Environment') {
             steps {
                 script {
-                    def networkExists = sh(script: "docker network ls | grep all-network || true", returnStatus: true) == 0
+                    def networkExists = sh(script: "docker network ls | grep all_network || true", returnStatus: true) == 0
                     if (!networkExists) {
-                        sh 'docker network create --driver bridge all-network'
+                        sh 'docker network create --driver bridge all_network'
                     }
                 }
             }
