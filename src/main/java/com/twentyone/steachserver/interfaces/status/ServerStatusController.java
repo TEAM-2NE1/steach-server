@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1")
 public class ServerStatusController {
-    @GetMapping("/check/server/test")
+    @GetMapping("/check/server")
     public ResponseEntity<String> checkServerOperating() {
         return ResponseEntity.ok("OK");
     }
