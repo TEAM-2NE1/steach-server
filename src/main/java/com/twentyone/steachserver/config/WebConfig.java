@@ -41,6 +41,9 @@ public class WebConfig {
 
         configuration.addAllowedOrigin("http://steach.ssafy.io:5173");
         configuration.addAllowedOrigin("https://steach.ssafy.io:5173");
+        // 추가
+        configuration.addAllowedOrigin("http://steach.ssafy.io");
+        configuration.addAllowedOrigin("https://steach.ssafy.io");
 
         configuration.addAllowedOrigin("http://localhost:80");
         configuration.addAllowedOrigin("http://localhost:8080");
