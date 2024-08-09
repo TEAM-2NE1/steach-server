@@ -43,6 +43,7 @@ public class WebConfig {
         configuration.addAllowedOrigin("https://steach.ssafy.io:5173");
         // 2024-08-09 16시 80포트 추가
         configuration.addAllowedOrigin("https://43.202.1.52");
+        configuration.addAllowedOrigin("https://steach.ssafy.io");
 
         configuration.addAllowedOrigin("http://localhost:8080");
 
