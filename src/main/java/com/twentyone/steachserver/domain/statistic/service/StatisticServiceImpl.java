@@ -51,6 +51,7 @@ public class StatisticServiceImpl implements StatisticService {
      */
 
 
+    // 하나의 숫자가 최대 100이 되고 나머지는 그 아래 숫자가 나오면 됨.
     @Override
     public RadarChartStatisticDto getRadarChartStatistic(Integer studentId) {
         RadarChartStatistic radarChartStatistic = radarChartStatisticRepository.findById(studentId)
@@ -74,7 +75,6 @@ public class StatisticServiceImpl implements StatisticService {
                 maxLectureMinutes = items.get(i).totalLectureMinute();
             }
         }
-
         // 이건 기존 값에 곱해줄 값
         List<Integer> list = createRadarChartScores(maxFocusRatio, maxLectureMinutes, items);
 
@@ -84,15 +84,20 @@ public class StatisticServiceImpl implements StatisticService {
     private List<Integer> createRadarChartScores(BigDecimal maxFocusRatio, int maxLectureMinutes, List<StatisticsByCurriculumCategory> items) {
         BigDecimal factorWeightingFocusRatio = BigDecimal.valueOf(WEIGHT_FOCUS_RATIO).divide(maxFocusRatio, 2, RoundingMode.DOWN);
         double factorWeightingLectureMinutes = (double) WEIGHT_LECTURE_MINUTES / maxLectureMinutes;
-
         List<Integer> list = new ArrayList<>();
 
+        int max = 0;
+        int maxValue = 0;
         for (int i = 0; i < NUMBER_OF_CATEGORIES; i++) {
             double weightedFocusRatio = items.get(i).averageFocusRatio().multiply(factorWeightingFocusRatio).intValue();
             double weightedLectureMinutes = items.get(i).totalLectureMinute() * factorWeightingLectureMinutes;
             int sum = (int) (weightedFocusRatio + weightedLectureMinutes);
+            if (sum >= maxValue) {
+                max =  i;
+            }
             list.add(sum);
         }
+        list.set(max, 100);
         return list;
     }
 
@@ -138,6 +143,7 @@ public class StatisticServiceImpl implements StatisticService {
 //    Todo: 이 부분에 대해서 트래픽 처리 해줘야함
     @Transactional
     public void createRadarChartStatistics(Curriculum curriculum, List<StudentLecture> allStudentInfoByLectureId) {
+        // 모든 학생들에 대해서 추가
         for (StudentLecture studentLecture : allStudentInfoByLectureId) {
             Integer studentId = studentLecture.getStudent().getId();
             radarChartStatisticRepository.findById(studentId)

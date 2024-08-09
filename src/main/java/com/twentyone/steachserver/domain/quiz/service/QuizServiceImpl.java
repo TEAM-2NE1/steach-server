@@ -3,19 +3,17 @@ package com.twentyone.steachserver.domain.quiz.service;
 import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Teacher;
-import com.twentyone.steachserver.domain.quiz.dto.QuizListRequestDto;
-import com.twentyone.steachserver.domain.quiz.dto.QuizListResponseDto;
+import com.twentyone.steachserver.domain.quiz.dto.*;
 import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
+import com.twentyone.steachserver.domain.quiz.model.QuizStatistics;
+import com.twentyone.steachserver.domain.quiz.repository.QuizStatisticsRepository;
 import com.twentyone.steachserver.domain.quiz.validator.QuizChoiceValidator;
 import com.twentyone.steachserver.domain.quiz.validator.QuizValidator;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
-import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
-import com.twentyone.steachserver.domain.quiz.dto.QuizResponseDto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.repository.QuizRepository;
 import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
 import com.twentyone.steachserver.domain.studentQuiz.repository.StudentQuizRepository;
-import com.twentyone.steachserver.domain.studentQuiz.service.StudentQuizService;
 import com.twentyone.steachserver.global.error.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +37,7 @@ public class  QuizServiceImpl implements QuizService {
     private final QuizValidator quizValidator;
     private final QuizChoiceValidator quizChoiceValidator;
     private final StudentQuizRepository studentQuizRepository;
+    private final QuizStatisticsRepository quizStatisticsRepository;
 
     @Override
     @Transactional
@@ -202,7 +201,8 @@ public class  QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<Integer> getStatistics(Integer quizId) {
+    @Transactional
+    public QuizStatisticDto getStatistics(Integer quizId) {
         Quiz quiz = quizRepository.findById(quizId)
                         .orElseThrow(() -> new ResourceNotFoundException("찾을 수 없는 퀴즈"));
         List<StudentQuiz> studentQuizByQuiz = studentQuizRepository.findStudentQuizByQuiz(quiz);
@@ -210,9 +210,21 @@ public class  QuizServiceImpl implements QuizService {
         List<QuizChoice> quizChoices = quiz.getQuizChoices();
         int[] count = new int[quizChoices.size()];
 
+        //통계데이터 TODO redis로 변경
+        List<QuizStudentScoreDto> prev = new ArrayList<>();
+        List<QuizStudentScoreDto> current = new ArrayList<>();
+
+        int rank = 1;
         for (StudentQuiz studentQuiz: studentQuizByQuiz) {
+            QuizStatistics quizStatistics = quizStatisticsRepository.findByStudentIdAndLectureIdOrderByCurrentScoreDesc(studentQuiz.getStudent().getId(), studentQuiz.getQuiz().getLecture().getId())
+                    .orElseThrow(() -> new RuntimeException("quizStatistics 찾을 수 없음"));
+            prev.add(new QuizStudentScoreDto(quizStatistics.getPrevRank(), quizStatistics.getPrevScore(), studentQuiz.getStudent().getName()));
+            quizStatistics.setCurrentRank(rank++);
+            current.add(new QuizStudentScoreDto(quizStatistics.getCurrentRank(), quizStatistics.getCurrentScore(), studentQuiz.getStudent().getName()));
+
             for (int i =0; i<quizChoices.size(); i++) {
                 QuizChoice quizChoice = quizChoices.get(i);
+
                 if (quizChoice.getChoiceSentence().equals(studentQuiz.getStudentChoice())) {
                     count[i] ++;
                     break;
@@ -220,6 +232,9 @@ public class  QuizServiceImpl implements QuizService {
             }
         }
 
-        return Arrays.stream(count).boxed().collect(Collectors.toList());
+        List<Integer> statistics = Arrays.stream(count).boxed().collect(Collectors.toList());
+        QuizStatisticDto quizStatisticDto = new QuizStatisticDto(statistics, prev, current);
+
+        return quizStatisticDto;
     }
 }

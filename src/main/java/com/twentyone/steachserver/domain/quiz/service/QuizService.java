@@ -2,10 +2,7 @@ package com.twentyone.steachserver.domain.quiz.service;
 
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Teacher;
-import com.twentyone.steachserver.domain.quiz.dto.QuizListRequestDto;
-import com.twentyone.steachserver.domain.quiz.dto.QuizListResponseDto;
-import com.twentyone.steachserver.domain.quiz.dto.QuizRequestDto;
-import com.twentyone.steachserver.domain.quiz.dto.QuizResponseDto;
+import com.twentyone.steachserver.domain.quiz.dto.*;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 
 import java.util.List;
@@ -32,6 +29,6 @@ public interface QuizService {
 
     QuizListResponseDto modifyManyQuiz(Teacher teacher, Integer quizId, QuizListRequestDto dto);
 
-    List<Integer> getStatistics(Integer quizId);
+    QuizStatisticDto getStatistics(Integer quizId);
 }
 
