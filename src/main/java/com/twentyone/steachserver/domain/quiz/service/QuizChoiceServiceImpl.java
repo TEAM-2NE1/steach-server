@@ -4,6 +4,7 @@ import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.quiz.model.QuizChoice;
 import com.twentyone.steachserver.domain.quiz.repository.QuizChoiceRepository;
 import com.twentyone.steachserver.domain.quiz.validator.QuizChoiceValidator;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,26 +19,26 @@ public class QuizChoiceServiceImpl implements QuizChoiceService{
     private final QuizChoiceRepository quizChoiceRepository;
     private final QuizChoiceValidator quizChoiceValidator;
 
-
     @Override
     @Transactional
-    public void createQuizChoices(List<String> choices, List<String> answers, Quiz savedQuiz) throws RuntimeException {
-        quizChoiceValidator.validateQuizChoices(choices, answers);
+    public List<QuizChoice> createQuizChoices(List<String> choices, int answer, Quiz savedQuiz){
+        List<QuizChoice> quizChoiceList = new ArrayList<>();
 
-        int answerCount = 0;
-        for (String choice : choices) {
-            boolean isAnswer = answers.contains(choice);
-            if (isAnswer) answerCount++;
+        quizChoiceValidator.validateQuizChoices(choices, answer); //TODO 수정
+
+        for (int i =0; i< choices.size(); i++) {
+            String choice = choices.get(i);
+            boolean isAnswer = (answer == i);
 
             QuizChoice quizChoice = QuizChoice.createQuizChoice(choice, savedQuiz, isAnswer);
             quizChoiceRepository.save(quizChoice);
+            quizChoiceList.add(quizChoice);
         }
 
-        quizChoiceValidator.validateRightAnswers(answerCount);
+        return quizChoiceList;
     }
 
-
-    public List<String> getAnswers(Quiz quiz) {
+    public String getAnswers(Quiz quiz) {
         List<String> answers = quiz.getQuizChoices().stream()
                 .filter(QuizChoice::getIsAnswer)
                 .map(QuizChoice::getChoiceSentence)
@@ -45,7 +46,7 @@ public class QuizChoiceServiceImpl implements QuizChoiceService{
 
         quizChoiceValidator.validateEmptyList(answers, "Answers cannot be empty");
 
-        return answers;
+        return answers.get(0);
     }
 
     public List<String> getChoices(Quiz quiz) {
@@ -56,5 +57,11 @@ public class QuizChoiceServiceImpl implements QuizChoiceService{
         quizChoiceValidator.validateEmptyList(choices, "Choices cannot be empty");
 
         return choices;
+    }
+
+    @Override
+    @Transactional
+    public void deleteChoice(QuizChoice quizChoice) {
+        quizChoiceRepository.delete(quizChoice);
     }
 }

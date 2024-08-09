@@ -20,7 +20,6 @@ import static org.assertj.core.api.Fail.fail;
  * 설명: test 프로파일을 활성화하여 테스트 실행 시 특정 설정 파일이나 빈 설정을 사용하도록 합니다. 이를 통해 개발, 테스트, 프로덕션 등 환경별로 다른 설정을 쉽게 적용할 수 있습니다.
  */
 @Nested
-@SpringBootTest
 @ActiveProfiles("test")
 public class SteachTest {
     @BeforeAll

@@ -18,11 +18,17 @@ public interface CurriculumService {
 
     @Transactional(readOnly = true)
     CurriculumListResponse getTeachersCurricula(Teacher teacher, Pageable pageable);
+    CurriculumListResponse getTeachersCurricula(Teacher teacher);
+    CurriculumListResponse getTeachersCurricula(Integer teacherId, Pageable pageable);
+    CurriculumListResponse getTeachersCurricula(Integer teacherId);
 
     @Transactional(readOnly = true)
     CurriculumListResponse getStudentsCurricula(Student student, Pageable pageable);
+    CurriculumListResponse getStudentsCurricula(Student student);
 
     CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable);
+
+    CurriculumListResponse search(CurriculaSearchCondition condition);
 
     List<LocalDateTime> getSelectedWeekdays(LocalDateTime startDate, LocalDateTime endDate,
                                             int weekdaysBitmask);
@@ -30,4 +36,17 @@ public interface CurriculumService {
     CurriculumDetailResponse updateCurriculum(Integer curriculumId, Teacher teacher, CurriculumAddRequest request);
 
     void deleteCurriculum(Teacher teacher, Integer curriculumId);
+
+    List<CurriculumDetailResponse> getPopularRatioCurriculums();
+
+    List<CurriculumDetailResponse> getLatestCurriculums();
+
+    Boolean getIsApplyForCurriculum(Student student, Integer curriculumId);
+
+    @Transactional(readOnly = true)
+    CurriculumIncludesStudentListResponseDto getTeachersCurriculaIncludesStudents(Teacher teacher, Pageable pageable);
+    CurriculumIncludesStudentListResponseDto getTeachersCurriculaIncludesStudents(Teacher teacher);
+
+    void cancel(Student student, Integer curriculaId);
+
 }

@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @DisplayName("컨텍스트 테스트")
-class SteachServerApplicationTests {
+class SteachServerApplicationTests extends SteachTest{
 
     @Test
     void contextLoads() {

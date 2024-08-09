@@ -9,7 +9,7 @@ import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.member.repository.StudentRepository;
 import com.twentyone.steachserver.domain.member.repository.TeacherRepository;
-import com.twentyone.steachserver.util.FileUtil;
+import com.twentyone.steachserver.util.converter.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,7 +73,6 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String accessToken = jwtService.generateAccessToken(loginCredential);
-
         return LoginResponseDto.of(accessToken, role, loginCredential.getUsername(), name, email);
     }
 

@@ -1,0 +1,31 @@
+server:
+  http_listen_port: 9080 # Promtail이 HTTP 요청을 수신하는 포트를 설정합니다.
+  grpc_listen_port: 0 # gRPC 포트를 비활성화합니다.
+
+positions:
+  filename: /tmp/positions.yaml # 로그 수집 위치를 저장하는 파일 경로를 설정합니다.
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push # 수집된 로그를 전송할 Loki 서버의 URL을 설정합니다.
+
+scrape_configs:
+  - job_name: system # 작업 이름을 설정합니다.
+    static_configs:
+      - targets:
+          - localhost # 로그 수집 대상을 설정합니다.
+        labels:
+          job: varlogs # 로그 레이블을 설정합니다.
+          __path__: /var/log/*log # 로그 파일 경로를 설정합니다.
+
+  - job_name: docker # 작업 이름을 설정합니다.
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock # Docker 소켓을 통해 컨테이너 로그를 수집합니다.
+        refresh_interval: 5s # 새로고침 간격을 설정합니다.
+    relabel_configs:
+      - source_labels: [__meta_docker_container_name] # 소스 레이블을 설정합니다.
+        target_label: container # 타겟 레이블을 설정합니다.
+
+#  Promtail은 로그를 수집하여 Loki에 전송하는 역할을 하는 도구입니다. 이 파일에서는 Promtail의 서버 설정, 로그 수집 위치, 그리고 Loki 서버로 로그를 전송하는 클라이언트 설정을 정의합니다.
+#  server 섹션에서는 Promtail이 HTTP 요청을 수신할 포트를 지정하고, positions 섹션에서는 로그 수집 위치를 저장하는 파일 경로를 설정합니다.
+#  clients 섹션에서는 수집된 로그를 전송할 Loki 서버의 URL을 설정하고, scrape_configs 섹션에서는 로그 수집 대상을 정의합니다.
+#  scrape_configs 섹션에서는 시스템 로그와 Docker 컨테이너 로그를 수집하는 작업을 설정하고, 각 작업에 대해 로그 파일 경로와 레이블을 정의합니다.

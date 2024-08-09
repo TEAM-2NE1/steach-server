@@ -1,13 +1,13 @@
 package com.twentyone.steachserver.domain.lecture.model;
 
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
-import com.twentyone.steachserver.domain.lecture.dto.update.UpdateLectureRequestDto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,8 +63,6 @@ public class Lecture {
         return lecture;
     }
 
-
-
     public void addQuiz(Quiz quiz) {
         this.quizzes.add(quiz);
         this.numberOfQuizzes++;
@@ -78,12 +76,15 @@ public class Lecture {
         this.realStartTime = LocalDateTime.now();
     }
 
-    public void update(UpdateLectureRequestDto lectureRequestDto) {
-//        this.lectureOrder = Integer.valueOf(lectureRequestDto@.lectureOrder());
-        this.title = lectureRequestDto.lectureTitle();
-//        this.lectureStartDate = lectureRequestDto.lectureStartTime();
-    }
+    public void update(String lectureTitle, LocalTime lectureStartTime) {
+        if (lectureTitle != null) {
+            this.title = lectureTitle;
+        }
 
+        if (lectureStartTime != null) {
+            this.lectureStartDate = this.lectureStartDate.withHour(lectureStartTime.getHour()).withMinute(lectureStartTime.getMinute());
+        }
+    }
 
     public void addStudentLecture(StudentLecture studentLecture) {
         this.studentLectures.add(studentLecture);

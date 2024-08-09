@@ -1,6 +1,5 @@
 package com.twentyone.steachserver.domain.quiz.validator;
 
-import com.twentyone.steachserver.domain.quiz.model.Quiz;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -8,27 +7,34 @@ import java.util.List;
 @Component
 public class QuizChoiceValidator {
 
-    public void validateQuizChoices(List<String> choices, List<String> answers) {
-        validateNull(choices, answers);
+    public void validateQuizChoices(List<String> choices, int answers) {
+        validateNull(choices, "Choices");
         validateEmptyList(choices, "Choices cannot be empty");
-        validateEmptyList(answers, "Answers cannot be empty");
-        if (answers.size() > choices.size()) {
-            throw new IllegalArgumentException("Answers cannot be more than choices");
+//        validateEmptyList(answers, "Answers cannot be empty");
+//        validateAnswersSize(choices, answers);
+    }
+
+    private void validateNull(List<String> list, String name) {
+        if (list == null) {
+            throw new NullPointerException(name + " cannot be null");
         }
     }
 
-    public static void validateNull(List<String> choices, List<String> answers) {
-        if (choices == null) {
-            throw new NullPointerException("Choices cannot be empty");
-        }
-        if (answers == null) {
-            throw new NullPointerException("Answers cannot be empty");
+    private void validateNull(String word, String name) {
+        if (word == null) {
+            throw new NullPointerException(name + " cannot be null");
         }
     }
 
     public void validateEmptyList(List<String> list, String Answers_cannot_be_empty) {
         if (list.isEmpty()) {
             throw new NullPointerException(Answers_cannot_be_empty);
+        }
+    }
+
+    public void validateAnswersSize(List<String> choices, List<String> answers) {
+        if (answers.size() > choices.size()) {
+            throw new IllegalArgumentException("Answers cannot be more than choices");
         }
     }
 

@@ -107,7 +107,7 @@ CREATE TABLE `curricula`
     `curriculum_detail_id` INTEGER(11) unique,
     created_at datetime(6),
     updated_at datetime(6),
-    `category`  enum ('ARTS_AND_PHYSICAL','EDUCATION','ENGINEERING','ETC','FOREIGN_LANGUAGE','KOREAN','MATH','SCIENCE') NOT NULL, -- 강의 카테고리
+    `category`  enum ('ARTS_AND_PHYSICAL','SOCIAL','ENGINEERING','ETC','FOREIGN_LANGUAGE','KOREAN','MATH','SCIENCE') NOT NULL, -- 강의 카테고리
     CONSTRAINT `PK_curricula` PRIMARY KEY (`id`),
     CONSTRAINT `FK_curricula_teachers` FOREIGN KEY (`teacher_id`) REFERENCES `teachers` (`id`) ON DELETE SET NULL,
     CONSTRAINT `FK_curricula_curriculum_detail` FOREIGN KEY (`curriculum_detail_id`) REFERENCES `curriculum_details` (`id`) ON DELETE cascade

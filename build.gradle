@@ -3,7 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.2.7'
     id 'io.spring.dependency-management' version '1.1.5'
     id 'jacoco'
-    id "org.sonarqube" version "3.3"
+    id "org.sonarqube" version "5.0.0.4638"
 }
 
 group = 'com.twentyone'
@@ -61,12 +61,17 @@ dependencies {
 
     // 처리율 제한 기능
 
-    // test
+    // controller test
     testImplementation 'io.rest-assured:rest-assured:5.5.0'
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
 }
 
 task copyYML(type: Copy) {
@@ -80,6 +85,16 @@ task copyYML(type: Copy) {
         include "*.yml"
         into 'src/test/resources'
     }
+}
+
+build {
+    dependsOn copyYML
+}
+
+test {
+//    dependsOn copyYML
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
 // 분리된 설정 파일 포함

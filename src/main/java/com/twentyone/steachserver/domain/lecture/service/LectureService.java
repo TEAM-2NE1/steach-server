@@ -1,10 +1,7 @@
 package com.twentyone.steachserver.domain.lecture.service;
 
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
-import com.twentyone.steachserver.domain.lecture.dto.CompletedLecturesResponseDto;
-import com.twentyone.steachserver.domain.lecture.dto.FinalLectureInfoByTeacherDto;
-import com.twentyone.steachserver.domain.lecture.dto.LectureBeforeStartingResponseDto;
-import com.twentyone.steachserver.domain.lecture.dto.LectureListResponseDto;
+import com.twentyone.steachserver.domain.lecture.dto.*;
 import com.twentyone.steachserver.domain.lecture.dto.update.UpdateLectureRequestDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Teacher;
@@ -33,7 +30,7 @@ public interface LectureService {
 
     void updateRealStartTime(Integer lectureId);
 
-    LectureListResponseDto findByCurriculum(Integer curriculumId);
+    AllLecturesInCurriculaResponseDto findByCurriculum(Integer curriculumId);
 
     void addVolunteerMinute(Lecture updateLecture);
 

@@ -44,7 +44,11 @@ public class LectureController {
         return ResponseEntity.ok().body(lectureBeforeStartingResponseDto);
     }
 
-    @Operation(summary = "[선생님] 강의 수정!", description = "성공시 200 반환, 실패시 204 NO_CONTENT 반환.")
+    @Operation(
+            summary = "[선생님] 강의 수정!",
+            description = "성공시 200 반환, 실패시 204 NO_CONTENT 반환.<br/>" +
+                    "title이나 lecture_start_time이 null이면 변경안됨"
+    )
     @PatchMapping("/{lectureId}")
     public ResponseEntity<?> updateLectureInformation(@PathVariable("lectureId") Integer lectureId, @RequestBody UpdateLectureRequestDto updatelectureRequestDto) {
         return lectureService.updateLectureInformation(lectureId, updatelectureRequestDto)

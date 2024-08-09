@@ -1,6 +1,6 @@
 package com.twentyone.steachserver.domain.auth.model;
 
-import com.twentyone.steachserver.config.domain.BaseTimeEntity;
+import com.twentyone.steachserver.domain.common.BaseTimeEntity;
 import com.twentyone.steachserver.domain.member.model.Admin;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;

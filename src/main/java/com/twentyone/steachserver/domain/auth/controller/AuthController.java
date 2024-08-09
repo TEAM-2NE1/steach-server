@@ -3,6 +3,8 @@ package com.twentyone.steachserver.domain.auth.controller;
 import com.twentyone.steachserver.domain.auth.dto.*;
 import com.twentyone.steachserver.domain.auth.model.LoginCredential;
 import com.twentyone.steachserver.domain.auth.service.AuthService;
+import com.twentyone.steachserver.domain.member.service.StudentService;
+import com.twentyone.steachserver.domain.member.service.TeacherService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,8 @@ import java.io.IOException;
 @RestController
 public class AuthController {
     private final AuthService authService;
+    private final StudentService studentService;
+    private final TeacherService teacherService;
 
     @Operation(summary = "[All] 학생 회원가입!", description = "username은 빈칸 불가능, 숫자로 시작 불가능, 영어와 숫자 조합만 가능")
     @PostMapping("/student/join")
@@ -31,6 +35,12 @@ public class AuthController {
         LoginResponseDto loginResponseDto = authService.signUpStudent(studentSignUpDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(loginResponseDto);
+    }
+
+    @Operation(summary = "[student] 학생 닉네임 중복확인")
+    @GetMapping("/student/check-nickname/{nickname}")
+    public ResponseEntity<CheckUsernameAvailableResponse> checkNicknameAvailability(@PathVariable("nickname") String nickname) {
+        return ResponseEntity.ok(studentService.checkNicknameAvailability(nickname));
     }
 
     @Operation(summary = "[All] 강사 회원가입!", description = "username은 빈칸 불가능, 숫자로 시작 불가능, 영어와 숫자 조합만 가능/ file은 첨부하지 않아도 됨(추후 변경예정) <br/> auth_code 사용안한 것만 가능")
@@ -51,6 +61,18 @@ public class AuthController {
     @GetMapping("/check-username/{username}")
     public ResponseEntity<CheckUsernameAvailableResponse> checkUsernameAvailability(@PathVariable("username") String username) {
         return ResponseEntity.ok(authService.checkUsernameAvailability(username));
+    }
+
+    @Operation(summary = "[All] 선생님 이메일 중복확인")
+    @GetMapping("/teacher/check-email/{email}")
+    public ResponseEntity<CheckUsernameAvailableResponse> checkTeacherEmailAvailability(@PathVariable("email") String email) {
+        return ResponseEntity.ok(teacherService.checkEmailAvailability(email));
+    }
+
+    @Operation(summary = "[All] 학생 이메일 중복확인")
+    @GetMapping("/student/check-email/{email}")
+    public ResponseEntity<CheckUsernameAvailableResponse> checkStudentEmailAvailability(@PathVariable("email") String email) {
+        return ResponseEntity.ok(studentService.checkEmailAvailability(email));
     }
 
     @Operation(summary = "[인증된 사용자] 비밀번호 체크", description = "60분짜리 임시토큰이 발급됩니다. 회원정보 수정 시 사용합니다.")

@@ -6,5 +6,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class CheckUsernameAvailableResponse {
+    //TODO 재활용이 많으니 이름을 변경하자!
     private boolean canUse;
 }

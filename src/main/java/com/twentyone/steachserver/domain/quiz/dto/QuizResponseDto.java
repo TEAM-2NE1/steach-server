@@ -3,42 +3,53 @@ package com.twentyone.steachserver.domain.quiz.dto;
 import com.twentyone.steachserver.domain.quiz.model.Quiz;
 
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-public record QuizResponseDto(
-        Integer quizId,
-        Integer lectureId,
-        Integer quizNumber,
-        String question,
-        List<String> choices,
-        List<String> answers
-) {
-    public static QuizResponseDto createQuizResponseDto(Integer lectureId, QuizRequestDto request, Integer quizId) {
-        allStrip(request.choices());
-        allStrip(request.answers());
-        return new QuizResponseDto(
-                quizId,
-                lectureId,
-                request.quizNumber(),
-                request.question(),
-                request.choices(),
-                request.answers()
-        );
-    }
+@Slf4j
+@Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class QuizResponseDto {
+    private Integer quizId;
+    private Integer lectureId;
+    private Integer quizNumber;
+    private Integer time;
+    private String question;
+    private List<String> choices;
+    private Integer answers;
 
-    public static QuizResponseDto createQuizResponseDto(Quiz quiz, List<String> choices, List<String> answers) {
+    public static QuizResponseDto createQuizResponseDto(Quiz quiz, List<String> choices, Integer answers) {
         allStrip(choices);
-        allStrip(answers);
+
         return new QuizResponseDto(
                 quiz.getId(),
                 quiz.getLecture().getId(),
                 quiz.getQuizNumber(),
+                quiz.getTime(),
                 quiz.getQuestion(),
                 choices,
-                answers
+                answers+1 //클라이언트에는 +1해서 주기
         );
     }
 
     private static void allStrip(List<String> strings){
         strings.replaceAll(String::strip);
+    }
+
+    public static QuizResponseDto fromDomain(Quiz quiz) {
+        return new QuizResponseDto(
+                quiz.getId(),
+                quiz.getLecture().getId(),
+                quiz.getQuizNumber(),
+                quiz.getTime(),
+                quiz.getQuestion(),
+                quiz.getQuizChoiceString(),
+                quiz.getAnswer()+1  //클라이언트에는 +1해서 주기
+        );
     }
 }

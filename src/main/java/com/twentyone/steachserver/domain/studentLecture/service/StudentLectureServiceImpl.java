@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 
 
 @Service
@@ -52,6 +51,11 @@ public class StudentLectureServiceImpl implements StudentLectureService {
                             int middleMinutes = (int) Duration.between(updatedAt, LocalDateTime.now()).toMinutes();
                             int plusFocusTime = middleMinutes - sleepTime;
 
+                            //FIXME plusFocusTime이 마이너스가 되는 문제 발생!! 0으로 맞추도록 임시 설정
+                            if (plusFocusTime < 0) {
+                                plusFocusTime = 0;
+                            }
+
                             Integer lastFocusTime = studentLecture.getFocusTime();
 
                             int newFocusTime = lastFocusTime + plusFocusTime;
@@ -78,13 +82,13 @@ public class StudentLectureServiceImpl implements StudentLectureService {
         studentLectureQueryRepository.updateStudentLectureByFinishLecture(lectureId);
     }
 
-    @Override
-    public void createStudentLectureByLecture(Integer lectureId) {
-        List<Student> students = lectureQueryRepository.getStudentIds(lectureId);
-
-        for (Student student : students) {
-            studentLectureRepository.save(StudentLecture.of(student, lectureRepository.getReferenceById(lectureId)));
-        }
-
-    }
+//    @Override
+//    @Transactional
+//    public void createStudentLectureByLecture(Integer lectureId) {
+//        List<Student> students = lectureQueryRepository.getStudentIds(lectureId);
+//
+//        for (Student student : students) {
+//            studentLectureRepository.save(StudentLecture.of(student, lectureRepository.getReferenceById(lectureId)));
+//        }
+//    }
 }

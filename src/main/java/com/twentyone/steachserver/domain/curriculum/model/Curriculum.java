@@ -1,6 +1,6 @@
 package com.twentyone.steachserver.domain.curriculum.model;
 
-import com.twentyone.steachserver.config.domain.BaseTimeEntity;
+import com.twentyone.steachserver.domain.common.BaseTimeEntity;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
