@@ -216,6 +216,8 @@ public class  QuizServiceImpl implements QuizService {
 
         int rank = 1;
         for (StudentQuiz studentQuiz: studentQuizByQuiz) {
+            log.info("studentId" + String.valueOf(studentQuiz.getStudent().getId()));
+            log.info("lectureId" + String.valueOf(studentQuiz.getQuiz().getLecture().getId()));
             QuizStatistics quizStatistics = quizStatisticsRepository.findByStudentIdAndLectureIdOrderByCurrentScoreDesc(studentQuiz.getStudent().getId(), studentQuiz.getQuiz().getLecture().getId())
                     .orElseThrow(() -> new RuntimeException("quizStatistics 찾을 수 없음"));
             prev.add(new QuizStudentScoreDto(quizStatistics.getPrevRank(), quizStatistics.getPrevScore(), studentQuiz.getStudent().getName()));
