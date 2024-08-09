@@ -41,25 +41,13 @@ public class WebConfig {
 
         configuration.addAllowedOrigin("http://steach.ssafy.io:5173");
         configuration.addAllowedOrigin("https://steach.ssafy.io:5173");
-        // 추가
+        // 2024-08-09 80포트 추가
         configuration.addAllowedOrigin("http://steach.ssafy.io");
         configuration.addAllowedOrigin("https://steach.ssafy.io");
 
         configuration.addAllowedOrigin("http://localhost:80");
         configuration.addAllowedOrigin("http://localhost:8080");
-        configuration.addAllowedOrigin("http://localhost:18008");
-        configuration.addAllowedOrigin("http://localhost:18080");
-        configuration.addAllowedOrigin("http://localhost:18081");
 
-        // nginx꺼
-//        Todo: 왜 check/server 는 그냥 돼?
-        configuration.addAllowedOrigin("https://localhost:8088");
-        // 몰라?
-        configuration.addAllowedOrigin("https://43.202.1.52:8088");
-        // 스웨거?
-        configuration.addAllowedOrigin("https://43.202.1.52:18080");
-        configuration.addAllowedOrigin("https://steach.ssafy.io:18081");
-        configuration.addAllowedOrigin("https://14.46.142.208:18080");
 
 
         configuration.addAllowedHeader("*");
