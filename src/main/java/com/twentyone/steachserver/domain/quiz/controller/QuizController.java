@@ -86,12 +86,9 @@ public class QuizController {
     }
 
     @GetMapping("/{quiz_id}/statistic")
-    public ResponseEntity<Map<String, List<Integer>>> getStatistics(@PathVariable("quiz_id")Integer quizId, @AuthenticationPrincipal LoginCredential loginCredential) {
-        List<Integer> counts = quizService.getStatistics(quizId);
+    public ResponseEntity<QuizStatisticDto> getStatistics(@PathVariable("quiz_id")Integer quizId, @AuthenticationPrincipal LoginCredential loginCredential) {
+        QuizStatisticDto dto = quizService.getStatistics(quizId);
 
-        Map<String, List<Integer>> result = new HashMap<>();
-        result.put("statistics", counts);
-
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(dto);
     }
 }
