@@ -41,15 +41,10 @@ public class WebConfig {
 
         configuration.addAllowedOrigin("http://steach.ssafy.io:5173");
         configuration.addAllowedOrigin("https://steach.ssafy.io:5173");
+        // 2024-08-09 16시 80포트 추가
+        configuration.addAllowedOrigin("https://43.202.1.52");
 
-        configuration.addAllowedOrigin("http://localhost:80");
         configuration.addAllowedOrigin("http://localhost:8080");
-        configuration.addAllowedOrigin("http://localhost:18008");
-
-        // nginx꺼
-//        Todo: 왜 check/server 는 그냥 돼?
-        configuration.addAllowedOrigin("https://localhost:18088");
-
 
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");

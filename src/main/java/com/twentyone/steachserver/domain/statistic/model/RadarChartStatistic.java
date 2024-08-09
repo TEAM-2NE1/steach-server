@@ -117,7 +117,8 @@ public class RadarChartStatistic {
 
     private void add(List<StatisticsByCurriculumCategory> items, BigDecimal averageFocusRatio, Integer sumLectureMinutes) {
         if (sumLectureMinutes > 0) {
-            items.add(new StatisticsByCurriculumCategory(averageFocusRatio.divide(BigDecimal.valueOf(sumLectureMinutes), 2, RoundingMode.HALF_UP), sumLectureMinutes));
+            items.add(new StatisticsByCurriculumCategory(averageFocusRatio, sumLectureMinutes));
+//            items.add(new StatisticsByCurriculumCategory(averageFocusRatio.divide(BigDecimal.valueOf(sumLectureMinutes), 2, RoundingMode.HALF_UP), sumLectureMinutes));
         } else {
             items.add(new StatisticsByCurriculumCategory(BigDecimal.ZERO, 0));
         }
@@ -126,6 +127,8 @@ public class RadarChartStatistic {
     public void addStatistic(Curriculum curriculum, StudentLecture studentLecture) {
         String inputCategoryName = curriculum.getCategory().name();
         List<CurriculumCategory> categories = CurriculumCategory.getCategories();
+
+        // 맞는 카테고리 찾으면 더해줌.
         for (int i = 0; i < categories.size(); i++) {
             String categoryName = CurriculumCategory.getCategoryByIndex(i).name();
             if (inputCategoryName.equals(categoryName)) {
@@ -138,37 +141,37 @@ public class RadarChartStatistic {
     private void sumStatistic(Integer categoryNum, StudentLecture studentLecture) {
         switch (categoryNum) {
             case 1 -> {
-                this.averageFocusRatio1 = this.averageFocusRatio1.add(studentLecture.getFocusRatio());
+                this.averageFocusRatio1 = this.averageFocusRatio1.add(studentLecture.getFocusRatio()).divide(BigDecimal.valueOf(2), 2, RoundingMode.HALF_UP);
                 this.lectureCount1++;
                 this.sumLectureMinutes1 += studentLecture.getFocusTime();
             }
             case 2 -> {
-                this.averageFocusRatio2 = this.averageFocusRatio2.add(studentLecture.getFocusRatio());
+                this.averageFocusRatio2 = this.averageFocusRatio2.add(studentLecture.getFocusRatio()).divide(BigDecimal.valueOf(2), 2, RoundingMode.HALF_UP);
                 this.lectureCount2++;
                 this.sumLectureMinutes2 += studentLecture.getFocusTime();
             }
             case 3 -> {
-                this.averageFocusRatio3 = this.averageFocusRatio3.add(studentLecture.getFocusRatio());
+                this.averageFocusRatio3 = this.averageFocusRatio3.add(studentLecture.getFocusRatio()).divide(BigDecimal.valueOf(2), 2, RoundingMode.HALF_UP);
                 this.lectureCount3++;
                 this.sumLectureMinutes3 += studentLecture.getFocusTime();
             }
             case 4 -> {
-                this.averageFocusRatio4 = this.averageFocusRatio4.add(studentLecture.getFocusRatio());
+                this.averageFocusRatio4 = this.averageFocusRatio4.add(studentLecture.getFocusRatio()).divide(BigDecimal.valueOf(2), 2, RoundingMode.HALF_UP);
                 this.lectureCount4++;
                 this.sumLectureMinutes4 += studentLecture.getFocusTime();
             }
             case 5 -> {
-                this.averageFocusRatio5 = this.averageFocusRatio5.add(studentLecture.getFocusRatio());
+                this.averageFocusRatio5 = this.averageFocusRatio5.add(studentLecture.getFocusRatio()).divide(BigDecimal.valueOf(2), 2, RoundingMode.HALF_UP);
                 this.lectureCount5++;
                 this.sumLectureMinutes5 += studentLecture.getFocusTime();
             }
             case 6 -> {
-                this.averageFocusRatio6 = this.averageFocusRatio6.add(studentLecture.getFocusRatio());
+                this.averageFocusRatio6 = this.averageFocusRatio6.add(studentLecture.getFocusRatio()).divide(BigDecimal.valueOf(2), 2, RoundingMode.HALF_UP);
                 this.lectureCount6++;
                 this.sumLectureMinutes6 += studentLecture.getFocusTime();
             }
             case 7 -> {
-                this.averageFocusRatio7 = this.averageFocusRatio7.add(studentLecture.getFocusRatio());
+                this.averageFocusRatio7 = this.averageFocusRatio7.add(studentLecture.getFocusRatio()).divide(BigDecimal.valueOf(2), 2, RoundingMode.HALF_UP);
                 this.lectureCount7++;
                 this.sumLectureMinutes7 += studentLecture.getFocusTime();
             }

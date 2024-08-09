@@ -60,23 +60,25 @@ pipeline {
             }
         }
 
-        stage('Prepare Environment') {
-            steps {
-                script {
-                    def networkExists = sh(script: "docker network ls | grep all_network || true", returnStatus: true) == 0
-                    if (!networkExists) {
-                        sh 'docker network create --driver bridge all_network'
-                    }
-                }
-            }
-        }
+//         stage('Prepare Environment') {
+//             steps {
+//                 script {
+//                     def networkExists = sh(script: "docker network ls | grep all_network || true", returnStatus: true) == 0
+//                     if (!networkExists) {
+//                         sh 'docker network create --driver bridge all_network'
+//                     }
+//                 }
+//             }
+//         }
 
         stage('Deploy') { // Docker Compose를 사용하여 배포하는 단계
             steps {
                 script {
                     sh 'docker-compose --version'
                     // || true는 쉘 스크립트에서 사용되는 논리 연산자입니다. 이 구문은 앞의 명령어가 실패하더라도 전체 명령어가 성공한 것으로 간주되도록 합니다.
-                    sh 'docker-compose -f docker-compose.prod.yml down || true' // 8월 5일 5시에 클루트 쓰며 추가
+                    // docker-compose.prod.yml 파일에 정의된 모든 서비스를 중지하고 관련된 컨테이너, 네트워크 및 볼륨을 제거합니다.
+                    // 따라서, 기존에 실행 중인 컨테이너를 정리하여 새로운 컨테이너를 실행할 수 있도록 합니다.
+                    sh 'docker-compose -f docker-compose.prod.yml down || true'
                     sh 'docker-compose -f docker-compose.prod.yml up -d --build' // Docker Compose 파일을 사용하여 컨테이너 실행
                 }
             }
@@ -85,9 +87,8 @@ pipeline {
 
     post {
         always {
-            sh 'docker-compose -f docker-compose.prod.yml logs' // Docker Compose 로그 출력
-            sh 'docker logs steach-server'
-            sh 'docker network list'
+            sh 'docker-compose -f docker-compose.prod.yml logs || true' // Docker Compose 로그 출력
+            sh 'docker logs steach-server || true' // steach-server 컨테이너 로그 출력, 없으면 오류 무시
             cleanWs() // 작업 공간 정리
         }
     }
