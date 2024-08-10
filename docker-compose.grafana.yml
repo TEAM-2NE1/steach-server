@@ -81,7 +81,8 @@ services:  # Docker Compose로 관리할 서비스 목록입니다.
       - 12345:12345  # 호스트의 포트 12345를 컨테이너의 포트 12345에 매핑합니다.
     volumes:
       - /home/ubuntu/grafana/alloy/alloy-config.alloy:/etc/alloy/config.alloy  # 로컬의 alloy-config.alloy 파일을 컨테이너의 /etc/alloy/config.alloy 경로에 마운트합니다.
-      - ./logs:/tmp/app-logs  # 로컬의 logs 디렉토리를 컨테이너의 /tmp/app-logs 디렉토리에 마운트합니다.
+      # 로그의 위치 추가. 그런데 컨테이너 id가 폴더 명에 들어가는데 항상 바뀜.
+      - /var/lib/docker/containers/b8b85667fb417429736251efa473af77a18d8c10db6ca69d51e3c0ec941ab586:/tmp/app-logs  # 로컬의 logs 디렉토리를 컨테이너의 /tmp/app-logs 디렉토리에 마운트합니다.
     command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy  # Alloy 서버를 시작하고, HTTP 서버 주소를 0.0.0.0:12345로 설정하며, 저장소 경로를 /var/lib/alloy/data로 지정합니다. 또한 /etc/alloy/config.alloy 설정 파일을 사용합니다.
     depends_on:
       - loki  # 'loki' 서비스가 먼저 시작된 후 이 서비스가 시작되도록 설정합니다.
