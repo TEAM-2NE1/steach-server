@@ -74,7 +74,7 @@ pipeline {
         }
 
         stage('Deploy Server') {
-            steps {
+          steps {
                 script {
                     sh 'docker-compose --version'
                     sh 'docker-compose -f docker-compose.prod.yml down || true'
