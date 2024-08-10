@@ -15,6 +15,9 @@ jacoco {
 }
 
 jacocoTestReport {
+    // jacocoTestReport task에서 사용할 exec 타입의 테스트를 모두 포함할 수 있도록 executionData를 include해 주면 된다.
+    // 여기서 포인트는 include로, 파일이 존재하는 경우만 추가하는 것이다.
+    executionData(project.fileTree(project.layout.buildDirectory.dir("jacoco")).include("*.exec"))
     dependsOn test // jacocoTestReport 작업이 test 작업에 종속되도록 설정
     reports {
         html.required.set(true)
@@ -86,7 +89,7 @@ jacocoTestCoverageVerification {
         // 여러 룰을 생성할 수 있습니다.
         rule {
             // 룰을 간단히 켜고 끌 수 있습니다.
-            enabled = false
+            enabled = true
 
             // 룰을 체크할 단위는 클래스 단위
             element = 'CLASS'
@@ -99,9 +102,9 @@ jacocoTestCoverageVerification {
              예를 들어, if (condition)이 있을 때, condition이 true일 때와 false일 때 두 가지 경우 모두 테스트가 되는지를 확인합니다.
              목표: 코드의 모든 분기점이 테스트되는 것을 보장하여, 논리적 경로의 결함을 줄입니다.
              */
-            // 브랜치 커버리지를 최소한 90% 만족시켜야 합니다.
+
             limit {
-                counter = 'BRANCH'
+                counter = 'BUNDLE'
                 value = 'COVEREDRATIO'
                 minimum = 0.10
             }
@@ -117,7 +120,12 @@ jacocoTestCoverageVerification {
              */
             // 라인 커버리지를 최소한 80% 만족시켜야 합니다.
             limit {
-                counter = 'LINE'
+                counter = 'CLASS'
+                value = 'COVEREDRATIO'
+                minimum = 0.10
+            }
+            limit {
+                counter = 'METHOD'
                 value = 'COVEREDRATIO'
                 minimum = 0.10
             }
@@ -127,6 +135,11 @@ jacocoTestCoverageVerification {
                 counter = 'LINE'
                 value = 'TOTALCOUNT'
                 maximum = 200
+            }
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                maximum = 0.10
             }
             // 커버리지 체크를 제외할 클래스들
             excludes = [
