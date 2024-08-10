@@ -8,8 +8,6 @@ services:
       - "18080:8080" # 호스트의 8080 포트를 컨테이너의 18080 포트에 매핑
     networks:
       - steach-server-network
-    volumes:
-      - app-logs:/var/lib/docker/containers/<container-id>/  # 로그 파일을 저장할 볼륨을 마운트
 
     # Docker는 각 컨테이너의 로그를 /var/lib/docker/containers/<container-id>/ 디렉토리에 저장합니다.
   # 각 컨테이너의 로그 파일은 container-id-json.log라는 이름으로 저장됩니다.
