@@ -64,6 +64,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
+                // 수정
                     def branchName = env.BRANCH_NAME
                     sh "./gradlew --info --warning-mode all sonar -Dsonar.projectKey=steach-server-${branchName} -Dsonar.projectName=steach-server-${branchName}"
                 }

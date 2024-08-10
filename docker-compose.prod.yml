@@ -7,7 +7,7 @@ services:
     ports:
       - "18080:8080" # 호스트의 8080 포트를 컨테이너의 18080 포트에 매핑
     networks:
-      - all_network
+      - steach-server-network
     volumes:
       - app-logs:/var/lib/docker/containers/<container-id>/  # 로그 파일을 저장할 볼륨을 마운트
 
