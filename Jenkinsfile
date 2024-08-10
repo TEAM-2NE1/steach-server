@@ -61,24 +61,11 @@ pipeline {
             }
         }
 
-        stage('SonarQube analysis') {
+        stage('SonarQube Analysis') {
             steps {
-                // withSonarQubeEnv() 함수의 인자로 들어가는 'SonarQube' 는 앞에서 설정한 Jenkins의 SonarQube Scanner 이름입니다.
-                // 해당 이름과 같은 SonarQube Scanner를 사용하여 아래의 스크립트를 실행합니다.
-                withSonarQubeEnv('SonarQube') {
-                  sh '''
-                        #!/bin/bash
-                        ./gradlew --info \
-                        -Dsonar.projectKey=steach-server-${env.BRANCH_NAME} \
-                        -Dsonar.projectName=steach-server-${env.BRANCH_NAME}
-                  '''
-
-//                 $ 표시는 일반적으로 Groovy 스크립트의 변수 참조에서 사용되지 않아서 바로 사용 불가
-//                 def projectKey = "steach-server-${env.BRANCH_NAME}"
-//                 def projectName = "steach-server-${env.BRANCH_NAME}"
-
-                // 이때 -D 옵션을 사용하여 스크립트 실행 시점에서 프로퍼티를 추가할 수 있습니다.
-//                 sh "./gradlew --info --warning-mode all sonar -Dsonar.projectKey=${projectKey} -Dsonar.projectName=${projectName}"
+                script {
+                    def branchName = env.BRANCH_NAME
+                    sh "./gradlew --info --warning-mode all sonar -Dsonar.projectKey=steach-server-${branchName} -Dsonar.projectName=steach-server-${branchName}"
                 }
             }
         }
