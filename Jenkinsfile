@@ -66,8 +66,8 @@ pipeline {
                 withSonarQubeEnv('SonarQube') {
                 // 이때 -D 옵션을 사용하여 스크립트 실행 시점에서 프로퍼티를 추가할 수 있습니다.
                     sh './gradlew --info --warning-mode all sonar' +
-                ' -Dsonar.projectKey=steach-server' + env.BRANCH_NAME +
-                ' -Dsonar.projectName=steach-server' + env.BRANCH_NAME
+                ' -Dsonar.projectKey=steach-server-' + branch +
+                ' -Dsonar.projectName=steach-server-' + branch
                 }
             }
         }
