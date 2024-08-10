@@ -1,20 +1,30 @@
 //sonarqube
+// build.gradle 에서 ext로 정의
+//def jacocoDir = "${buildDir}/customJacocoReportDir"
+def void property(java.lang.String string1, java.lang.String string2) {}
+
 sonarqube {
     properties {
-        property "sonar.projectName", "local steach-server"
-        property "sonar.projectKey", "local steach-server"
+        property "sonar.projectName", "steach-server"
+        property "sonar.projectKey", "steach-server"
         property "sonar.host.url", "http://steach.ssafy.io:9000"
-        property "sonar.token", "sqp_a9e67d030ca9317eb4086833d3ff9417292eedaa"
+        property "sonar.token", "squ_06276c2bf9d82b58a779e405958e68ae0bf2bea2"
         property "sonar.language", "java"
         property 'sonar.projectVersion', '1.1.0-SNAPSHOT'
         property "sonar.sourceEncoding", "UTF-8"
-        property 'sonar.coverage.jacoco.xmlReportPaths', jacocoXmlDir.map { it.file('jacocoTestReport.xml') }.get().asFile.path
-//        property 'sonar.java.binaries', '${buildDir}/classes'
+
         property 'sonar.test.inclusions', '**/*Test.java'
         property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/**'
         property "sonar.sources", "src/main/java"
 
         property "sonar.java.binaries", "${projectDir}/build/classes/java/main"
-        property 'sonar.coverage.jacoco.xmlReportPaths', jacocoXmlDir.map { it.file('jacocoTestReport.xml') }.get().asFile.path
+        property 'sonar.coverage.jacoco.xmlReportPaths', "${jacocoDir}/jacocoTestReport.xml"
+
+//        property 'sonar.coverage.jacoco.xmlReportPaths', jacocoDir.map { it.file('jacocoTestReport.xml') }.get().asFile.path
+//        Execution failed for task ':sonar'.
+//        > No signature of method: java.lang.String.map() is applicable for argument types: (sonarqube_d3d6am1yjzld9akvhilqh5kp0$_run_closure1$_closure2$_closure3) values: [sonarqube_d3d6am1yjzld9akvhilqh5kp0$_run_closure1$_closure2$_closure3@2b93b8]
+//        Possible solutions: tap(groovy.lang.Closure), md5(), wait(), dump(), any(), grep()
+
     }
 }
+
