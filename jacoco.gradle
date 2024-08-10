@@ -23,7 +23,8 @@ jacocoTestReport {
         html.required.set(true)
         xml.required.set(true)
         csv.required.set(false)
-        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+        html.outputLocation.set(layout.buildDirectory.dir(jacocoDir.toString()).map { it.dir("jacocoHtml") })
+        xml.outputLocation = layout.buildDirectory.dir(jacocoDir.toString()).map { it.file('jacocoTestReport.xml') }
 //        xml.outputLocation = layout.buildDirectory.file('jacocoXml/jacoco.xml')
 //        html.outputLocation.set(jacocoHtmlDir)
 //        xml.outputLocation.set(jacocoXmlDir.map { it.file('jacocoTestReport.xml') })
