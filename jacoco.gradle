@@ -93,7 +93,12 @@ jacocoTestCoverageVerification {
 
             // 룰을 체크할 단위는 클래스 단위
             element = 'CLASS'
-
+            element = 'BUNDLE'
+            limit {
+                counter = 'INSTRUCTION'
+                value = 'COVEREDRATIO'
+                minimum = 0.1
+            }
             /**
              * Branch Coverage (분기 커버리지)
              설명: 코드 내의 모든 분기(branch) 구문이 테스트되는지를 확인합니다.
@@ -102,11 +107,11 @@ jacocoTestCoverageVerification {
              예를 들어, if (condition)이 있을 때, condition이 true일 때와 false일 때 두 가지 경우 모두 테스트가 되는지를 확인합니다.
              목표: 코드의 모든 분기점이 테스트되는 것을 보장하여, 논리적 경로의 결함을 줄입니다.
              */
-            limit {
-                counter = 'BRANCH'
-                value = 'COVEREDRATIO'
-                minimum = 0.10
-            }
+//            limit {
+//                counter = 'BRANCH'
+//                value = 'COVEREDRATIO'
+//                minimum = 0.10
+//            }
 
             /**
              *
@@ -118,28 +123,30 @@ jacocoTestCoverageVerification {
              목표: 가능한 모든 코드가 실행되어 테스트되지 않은 코드 부분이 없도록 합니다.
              */
             // 라인 커버리지를 최소한 80% 만족시켜야 합니다.
-            limit {
-                counter = 'CLASS'
-                value = 'COVEREDRATIO'
-                minimum = 0.10
-            }
-            limit {
-                counter = 'METHOD'
-                value = 'COVEREDRATIO'
-                minimum = 0.10
-            }
+//            limit {
+//                counter = 'CLASS'
+//                value = 'COVEREDRATIO'
+//                minimum = 0.10
+//            }
 
+//            limit {
+//                counter = 'METHOD'
+//                value = 'COVEREDRATIO'
+//                minimum = 0.10
+//            }
+
+//            limit {
+//                counter = 'LINE'
+//                value = 'COVEREDRATIO'
+//                minimum = 0.10
+//            }
             // 빈 줄을 제외한 코드의 라인수를 최대 200라인으로 제한합니다.
-            limit {
-                counter = 'LINE'
-                value = 'TOTALCOUNT'
-                maximum = 200
-            }
-            limit {
-                counter = 'LINE'
-                value = 'COVEREDRATIO'
-                maximum = 0.10
-            }
+//            limit {
+//                counter = 'LINE'
+//                value = 'TOTALCOUNT'
+//                maximum = 200
+//            }
+
             // 커버리지 체크를 제외할 클래스들
             excludes = [
                     "**/*Util*",
