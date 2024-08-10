@@ -65,9 +65,9 @@ pipeline {
                 // 해당 이름과 같은 SonarQube Scanner를 사용하여 아래의 스크립트를 실행합니다.
                 withSonarQubeEnv('SonarQube') {
                 // 이때 -D 옵션을 사용하여 스크립트 실행 시점에서 프로퍼티를 추가할 수 있습니다.
-                sh './gradlew --info sonar' +
-                ' -Dsonar.projectKey=steach-server' + env.GIT_BRANCH +
-                ' -Dsonar.projectName=steach-server' + env.GIT_BRANCH
+                    sh './gradlew --info --warning-mode all sonar' +
+                ' -Dsonar.projectKey=steach-server' + env.BRANCH_NAME +
+                ' -Dsonar.projectName=steach-server' + env.BRANCH_NAME
                 }
             }
         }
