@@ -15,6 +15,7 @@ pipeline {
                     // BRANCH_NAME 변수는 Jenkins가 자동으로 설정해주는 환경 변수로, 빌드 트리거된 브랜치의 이름을 가집니다.
                     // 그러나, 이 변수가 자동으로 설정되지 않는 경우도 있으므로, 이를 명시적으로 설정해야 할 수 있습니다.
                     def branch = env.GIT_BRANCH ? env.GIT_BRANCH.replaceAll(/^origin\//, '') : 'main'
+                    env.BRANCH_NAME = branch
                     echo "Checking out branch: ${branch}" // 변경된 브랜치 표시
                     checkout([
                         $class: 'GitSCM',
@@ -66,21 +67,59 @@ pipeline {
                 withSonarQubeEnv('SonarQube') {
                 // 이때 -D 옵션을 사용하여 스크립트 실행 시점에서 프로퍼티를 추가할 수 있습니다.
                     sh './gradlew --info --warning-mode all sonar' +
-                ' -Dsonar.projectKey=steach-server-' + branch +
-                ' -Dsonar.projectName=steach-server-' + branch
+                ' -Dsonar.projectKey=steach-server-' + ${env.BRANCH_NAME} +
+                ' -Dsonar.projectName=steach-server-' + ${env.BRANCH_NAME}
                 }
             }
         }
 
-        stage('Deploy') { // Docker Compose를 사용하여 배포하는 단계
+        stage('Deploy Server') {
             steps {
                 script {
                     sh 'docker-compose --version'
-                    // || true는 쉘 스크립트에서 사용되는 논리 연산자입니다. 이 구문은 앞의 명령어가 실패하더라도 전체 명령어가 성공한 것으로 간주되도록 합니다.
-                    // docker-compose.prod.yml 파일에 정의된 모든 서비스를 중지하고 관련된 컨테이너, 네트워크 및 볼륨을 제거합니다.
-                    // 따라서, 기존에 실행 중인 컨테이너를 정리하여 새로운 컨테이너를 실행할 수 있도록 합니다.
                     sh 'docker-compose -f docker-compose.prod.yml down || true'
-                    sh 'docker-compose -f docker-compose.prod.yml up -d --build' // Docker Compose 파일을 사용하여 컨테이너 실행
+                    sh 'docker-compose -f docker-compose.prod.yml up -d --build'
+
+                    // steach-server 컨테이너 ID 가져오기
+                    def containerId = sh(script: "docker ps -qf 'name=steach-server'", returnStdout: true).trim()
+
+                    // 컨테이너 로그 경로 설정
+                    env.SERVER_LOG_PATH = "/var/lib/docker/containers/${containerId}"
+                }
+            }
+        }
+
+        stage('Deploy Alloy') {
+            steps {
+                script {
+                    // Alloy 컨테이너가 이미 존재하면 삭제 (없으면 무시)
+                    sh """
+                        if [ \$(docker ps -aq -f name=alloy) ]; then
+                            docker rm -f alloy
+                        fi
+                    """
+
+                    // 동적으로 Docker Compose 파일 생성
+                    writeFile file: 'docker-compose.alloy.yml', text: """
+                    services:
+                      alloy:
+                        image: grafana/alloy:latest
+                        container_name: alloy
+                        ports:
+                          - 12345:12345
+                        volumes:
+                          - /home/ubuntu/grafana/alloy/alloy-config.alloy:/etc/alloy/config.alloy
+                          - ${env.SERVER_LOG_PATH}:/tmp/app-logs
+                        command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+                        networks:
+                          - steach-server-network
+                    networks:
+                      steach-server-network:
+                        external: true
+                        name: steach-server-network
+                    """
+
+                    sh 'docker-compose -f docker-compose.alloy.yml up -d --build'
                 }
             }
         }
