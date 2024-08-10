@@ -59,18 +59,18 @@ pipeline {
                 }
             }
         }
-
         stage('SonarQube analysis') {
-        // withSonarQubeEnv() 함수의 인자로 들어가는 'SonarQube' 는 앞에서 설정한 Jenkins의 SonarQube Scanner 이름입니다.
-        // 해당 이름과 같은 SonarQube Scanner를 사용하여 아래의 스크립트를 실행합니다.
-          withSonarQubeEnv('SonarQube') {
-          // 이때 -D 옵션을 사용하여 스크립트 실행 시점에서 프로퍼티를 추가할 수 있습니다.
-            sh './gradlew --info sonar' +
-            ' -Dsonar.projectKey=steach-server' + env.GIT_BRANCH +
-            ' -Dsonar.projectName=steach-server' + env.GIT_BRANCH
-          }
+            steps {
+                // withSonarQubeEnv() 함수의 인자로 들어가는 'SonarQube' 는 앞에서 설정한 Jenkins의 SonarQube Scanner 이름입니다.
+                // 해당 이름과 같은 SonarQube Scanner를 사용하여 아래의 스크립트를 실행합니다.
+                withSonarQubeEnv('SonarQube') {
+                // 이때 -D 옵션을 사용하여 스크립트 실행 시점에서 프로퍼티를 추가할 수 있습니다.
+                sh './gradlew --info sonar' +
+                ' -Dsonar.projectKey=steach-server' + env.GIT_BRANCH +
+                ' -Dsonar.projectName=steach-server' + env.GIT_BRANCH
+                }
+            }
         }
-
 
         stage('Deploy') { // Docker Compose를 사용하여 배포하는 단계
             steps {
