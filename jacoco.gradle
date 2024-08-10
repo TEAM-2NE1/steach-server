@@ -17,7 +17,7 @@ jacoco {
 jacocoTestReport {
     // jacocoTestReport task에서 사용할 exec 타입의 테스트를 모두 포함할 수 있도록 executionData를 include해 주면 된다.
     // 여기서 포인트는 include로, 파일이 존재하는 경우만 추가하는 것이다.
-//    executionData(project.fileTree(project.layout.buildDirectory.dir("jacoco")).include("*.exec"))
+    executionData(project.fileTree(project.layout.buildDirectory.dir("jacoco")).include("*.exec"))
     dependsOn test // jacocoTestReport 작업이 test 작업에 종속되도록 설정
     reports {
         html.required.set(true)
@@ -102,9 +102,8 @@ jacocoTestCoverageVerification {
              예를 들어, if (condition)이 있을 때, condition이 true일 때와 false일 때 두 가지 경우 모두 테스트가 되는지를 확인합니다.
              목표: 코드의 모든 분기점이 테스트되는 것을 보장하여, 논리적 경로의 결함을 줄입니다.
              */
-
             limit {
-                counter = 'BUNDLE'
+                counter = 'BRANCH'
                 value = 'COVEREDRATIO'
                 minimum = 0.10
             }
