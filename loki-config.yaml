@@ -1,52 +1,61 @@
-auth_enabled: false # 인증을 비활성화합니다.
+auth_enabled: false  # 인증 기능을 비활성화합니다.
 
-server:
-  http_listen_port: 3100 # Loki 서버가 HTTP 요청을 수신하는 포트를 설정합니다.
+server:  # 서버 설정에 대한 섹션입니다.
+  http_listen_port: 3100  # HTTP 요청을 수신할 포트 번호를 3100으로 설정합니다.
+  grpc_listen_port: 9096  # gRPC 요청을 수신할 포트 번호를 9096으로 설정합니다.
 
+common:  # 공통 설정에 대한 섹션입니다.
+  instance_addr: 127.0.0.1  # 인스턴스의 주소를 로컬호스트(127.0.0.1)로 설정합니다.
+  path_prefix: /tmp/loki  # Loki의 데이터가 저장될 기본 경로를 /tmp/loki로 설정합니다.
+  storage:  # 스토리지 설정입니다.
+    filesystem:  # 파일 시스템을 이용한 스토리지 설정입니다.
+      chunks_directory: /tmp/loki/chunks  # 로그 청크가 저장될 디렉토리를 /tmp/loki/chunks로 설정합니다.
+      rules_directory: /tmp/loki/rules  # 룰 파일이 저장될 디렉토리를 /tmp/loki/rules로 설정합니다.
+  replication_factor: 1  # 데이터의 복제본 수를 1로 설정합니다. 즉, 복제본이 없습니다.
+  ring:  # 분산 처리와 관련된 설정입니다.
+    kvstore:  # 키-값 저장소 설정입니다.
+      store: inmemory  # 인메모리 키-값 저장소를 사용하도록 설정합니다.
+
+query_range:  # 쿼리 범위 설정입니다.
+  results_cache:  # 쿼리 결과 캐시 설정입니다.
+    cache:  # 캐시 설정입니다.
+      embedded_cache:  # 내장된 캐시를 사용하도록 설정합니다.
+        enabled: true  # 내장 캐시를 활성화합니다.
+        max_size_mb: 100  # 캐시의 최대 크기를 100MB로 설정합니다.
+
+schema_config:  # 스키마 설정입니다.
+  configs:  # 여러 개의 스키마 구성 목록입니다.
+    - from: 2020-10-24  # 이 스키마 설정이 적용되는 시작 날짜입니다.
+      store: tsdb  # Time Series Database(TSDB)를 스토리지로 사용합니다.
+      object_store: filesystem  # 파일 시스템을 객체 저장소로 사용합니다.
+      schema: v13  # 스키마 버전을 v13으로 설정합니다.
+      index:  # 인덱스 설정입니다.
+        prefix: index_  # 인덱스 파일의 접두사를 index_로 설정합니다.
+        period: 24h  # 인덱스의 생성 주기를 24시간으로 설정합니다.
+
+ruler:  # 룰 설정에 대한 섹션입니다.
+  alertmanager_url: http://localhost:9093  # Alertmanager의 URL을 http://localhost:9093으로 설정합니다.
+
+# 아래는 그라파나의 깃허브에서 직접 가져온거임
 ingester:
-  lifecycler:
-    address: 127.0.0.1 # Loki의 Lifecycler 주소를 설정합니다.
-    ring:
-      kvstore:
-        store: inmemory # 인메모리 키-값 저장소를 사용합니다.
-    final_sleep: 0s # 최종 슬립 시간 설정
-  chunk_idle_period: 5m # 청크가 유휴 상태일 때 유지되는 시간
-  chunk_retain_period: 30s # 청크가 유지되는 시간
-  max_transfer_retries: 0 # 전송 재시도 최대 횟수
-
-schema_config:
-  configs:
-    - from: 2020-10-24 # 이 날짜부터 적용되는 설정
-      store: boltdb-shipper # 볼트DB 저장소 사용
-      object_store: filesystem # 파일 시스템을 객체 저장소로 사용
-      schema: v11 # 스키마 버전
-      index:
-        prefix: index_ # 인덱스 접두사
-        period: 168h # 인덱스 기간
-
-storage_config:
-  boltdb_shipper:
-    active_index_directory: /loki/index # 활성 인덱스 디렉토리
-    cache_location: /loki/boltdb-cache # 캐시 위치
-    shared_store: filesystem # 공유 저장소로 파일 시스템 사용
-  filesystem:
-    directory: /loki/chunks # 청크 저장소 디렉토리
+  chunk_target_size: 1000
+  max_chunk_age: 10s
+  chunk_idle_period: 10s
+  flush_check_period: 10s
 
 limits_config:
-  enforce_metric_name: false # 메트릭 이름 강제 적용 여부
-  reject_old_samples: true # 오래된 샘플을 거부할지 여부
-  reject_old_samples_max_age: 168h # 오래된 샘플의 최대 허용 연령
+  allow_structured_metadata: true
 
-chunk_store_config:
-  max_look_back_period: 0s # 청크의 최대 조회 기간
-
-table_manager:
-  retention_deletes_enabled: false # 보존 삭제 활성화 여부
-  retention_period: 0s # 보존 기간
-
-
-
-#  Loki는 로그 수집 및 저장을 담당하는 도구입니다. 이 파일에서는 Loki 서버의 포트 설정, 로그 청크의 유지 기간, 인덱스 설정, 저장소 설정 등을 정의합니다.
-#  auth_enabled를 false로 설정하여 인증을 비활성화하고, server 섹션에서 Loki가 HTTP 요청을 수신할 포트를 지정합니다.
-#  ingester 섹션에서는 로그 청크의 유휴 기간과 유지 기간을 설정하며, schema_config와 storage_config 섹션에서는 인덱스와 저장소에 대한 구성을 정의합니다.
-#  limits_config 섹션에서는 로그 샘플의 최대 허용 연령을 설정하고, chunk_store_config과 table_manager 섹션에서는 청크 저장소와 테이블 관리 설정을 정의합니다.
+# 유튜브 영상에서 추천함
+pattern_config:
+  enabled: true
+# 기본적으로, Loki는 익명으로, 그러나 고유 식별이 가능한 사용 및 구성 분석 데이터를 Grafana Labs로 전송합니다.
+# 이러한 통계는 Loki의 사용 방법을 더 잘 이해하는 데 도움이 되며, 대부분의 사용자에 대한 성능 수준을 보여줍니다.
+# 이는 기능 및 문서의 우선순위를 정하는 데 도움이 됩니다.
+# 전송되는 데이터에 대한 자세한 내용은 아래를 참조하십시오.
+# https://github.com/grafana/loki/blob/main/pkg/analytics/stats.go
+# 보고서에 포함되는 내용을 보려면 buildReport 메서드를 참조하십시오.
+#
+# 보고를 비활성화하려면, 아래 줄의 주석을 해제하십시오:
+#analytics:
+#  reporting_enabled: false  # 보고 기능을 비활성화합니다.
