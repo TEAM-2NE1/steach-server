@@ -28,13 +28,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain
     ) throws ServletException, IOException {
-        String ipAddress = request.getRemoteAddr();
-        String URI = request.getRequestURI();
-        String Addr = request.getRemoteAddr();
-        System.out.println("Client IP Address: " + ipAddress);
-        System.out.println("URI: " + URI);
-        System.out.println("Addr: " + Addr);
-
         final String authHeader;
         authHeader = request.getHeader("Authorization");
 
