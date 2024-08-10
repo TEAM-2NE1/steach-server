@@ -8,6 +8,7 @@ plugins {
 
 group = 'com.twentyone'
 version = '0.0.1-SNAPSHOT'
+ext.jacocoDir = "$buildDir/customJacocoReportDir"
 
 java {
     toolchain {
@@ -96,6 +97,13 @@ test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
+
+// sonar라는 작업에 의존성을 넣어줌.
+tasks.named('sonar') {
+    dependsOn tasks.named('test')
+    dependsOn tasks.named('jacocoTestReport')
+}
+
 
 // 분리된 설정 파일 포함
 apply from: 'querydsl.gradle'

@@ -1,6 +1,8 @@
 // jacoco 테스트 커버리지
 //def jacocoDir = layout.buildDirectory.dir('customJacocoReportDir')
-def jacocoDir = "$buildDir/customJacocoReportDir"
+
+// build.gradle 에서 ext로 정의
+//def jacocoDir = "$buildDir/customJacocoReportDir"
 
 jacoco {
     // JaCoCo 버전
