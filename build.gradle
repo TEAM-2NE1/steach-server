@@ -99,10 +99,11 @@ test {
 }
 
 // sonar라는 작업에 의존성을 넣어줌.
-tasks.named('sonar') {
-    dependsOn tasks.named('test')
-    dependsOn tasks.named('jacocoTestReport')
-}
+// ci/cd 시에 이미 앞에서 빌드하면서 자동으로 테스트가 됨.
+//tasks.named('sonar') {
+//    dependsOn tasks.named('test')
+//    dependsOn tasks.named('jacocoTestReport')
+//}
 
 
 // 분리된 설정 파일 포함
