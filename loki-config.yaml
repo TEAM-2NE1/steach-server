@@ -36,19 +36,22 @@ schema_config:  # 스키마 설정입니다.
 ruler:  # 룰 설정에 대한 섹션입니다.
   alertmanager_url: http://localhost:9093  # Alertmanager의 URL을 http://localhost:9093으로 설정합니다.
 
-# 아래는 그라파나의 깃허브에서 직접 가져온거임
-ingester:
-  chunk_target_size: 1000
-  max_chunk_age: 10s
-  chunk_idle_period: 10s
-  flush_check_period: 10s
+# 실제 환경에서 위까지 적용.
 
-limits_config:
-  allow_structured_metadata: true
+# 아래는 그라파나의 깃허브에서 직접 가져온거임
+ingester:  # 로그 데이터를 청크로 저장하는 구성 요소 설정입니다.
+  chunk_target_size: 1000  # 청크의 목표 크기를 1000으로 설정합니다.
+  max_chunk_age: 10s  # 청크가 최대 10초 동안 유지되도록 설정합니다.
+  chunk_idle_period: 10s  # 청크가 비활성 상태일 경우 10초 후에 종료되도록 설정합니다.
+  flush_check_period: 10s  # 청크가 플러시(쓰기)될지 여부를 확인하는 주기를 10초로 설정합니다.
+
+limits_config:  # 제한 구성 설정입니다.
+  allow_structured_metadata: true  # 구조화된 메타데이터를 허용하도록 설정합니다.
 
 # 유튜브 영상에서 추천함
-pattern_config:
-  enabled: true
+pattern_config:  # 패턴 설정에 대한 섹션입니다.
+  enabled: true  # 패턴 매칭을 활성화합니다.
+
 # 기본적으로, Loki는 익명으로, 그러나 고유 식별이 가능한 사용 및 구성 분석 데이터를 Grafana Labs로 전송합니다.
 # 이러한 통계는 Loki의 사용 방법을 더 잘 이해하는 데 도움이 되며, 대부분의 사용자에 대한 성능 수준을 보여줍니다.
 # 이는 기능 및 문서의 우선순위를 정하는 데 도움이 됩니다.
