@@ -111,8 +111,6 @@ pipeline {
                         command: -config.file=/etc/promtail/promtail-config.yaml  # Promtail 설정 파일 경로를 지정합니다.
                         networks:
                           - steach-server-network  # 'steach-server-network' 네트워크에 연결합니다.
-                        depends_on:  # 'loki' 서비스가 먼저 시작된 후 이 서비스가 시작되도록 설정합니다.
-                          - loki
 
                     networks:
                       steach-server-network:
