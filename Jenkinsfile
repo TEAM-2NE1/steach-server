@@ -78,8 +78,8 @@ pipeline {
                     sh 'docker-compose -f docker-compose.prod.yml down || true'
                     sh 'docker-compose -f docker-compose.prod.yml up -d --build'
 
-                    // steach-server 컨테이너 ID 가져오기
-                    def containerId = sh(script: "docker ps -qf 'name=steach-server'", returnStdout: true).trim()
+                    // steach-server 컨테이너 실제 ID(긴 ID) 가져오기
+                    def containerId = sh(script: "docker inspect --format='{{.Id}}' \$(docker ps -qf 'name=steach-server')", returnStdout: true).trim()
 
                     // 컨테이너 로그 경로 설정
                     env.SERVER_LOG_PATH = "/var/lib/docker/containers/${containerId}"
