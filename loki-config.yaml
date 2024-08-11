@@ -5,7 +5,8 @@ server:  # 서버 설정에 대한 섹션입니다.
   grpc_listen_port: 9096  # gRPC 요청을 수신할 포트 번호를 9096으로 설정합니다.
 
 common:  # 공통 설정에 대한 섹션입니다.
-  instance_addr: 127.0.0.1  # 인스턴스의 주소를 로컬호스트(127.0.0.1)로 설정합니다.
+  instance_addr: 43.202.1.52
+#  instance_addr: 127.0.0.1  # 인스턴스의 주소를 로컬호스트(127.0.0.1)로 설정합니다.
   path_prefix: /tmp/loki  # Loki의 데이터가 저장될 기본 경로를 /tmp/loki로 설정합니다.
   storage:  # 스토리지 설정입니다.
     filesystem:  # 파일 시스템을 이용한 스토리지 설정입니다.
@@ -40,10 +41,10 @@ ruler:  # 룰 설정에 대한 섹션입니다.
 
 # 아래는 그라파나의 깃허브에서 직접 가져온거임
 ingester:  # 로그 데이터를 청크로 저장하는 구성 요소 설정입니다.
-  chunk_target_size: 1000  # 청크의 목표 크기를 1000으로 설정합니다.
-  max_chunk_age: 10s  # 청크가 최대 10초 동안 유지되도록 설정합니다.
-  chunk_idle_period: 10s  # 청크가 비활성 상태일 경우 10초 후에 종료되도록 설정합니다.
-  flush_check_period: 10s  # 청크가 플러시(쓰기)될지 여부를 확인하는 주기를 10초로 설정합니다.
+  chunk_target_size: 2000  # 청크의 목표 크기를 1000으로 설정합니다.
+  max_chunk_age: 5s  # 청크가 최대 10초 동안 유지되도록 설정합니다.
+  chunk_idle_period: 5s  # 청크가 비활성 상태일 경우 10초 후에 플러시되도록 설정합니다.
+  flush_check_period: 5s  # 청크가 플러시(쓰기)될지 여부를 확인하는 주기를 10초로 설정합니다.
 
 limits_config:  # 제한 구성 설정입니다.
   allow_structured_metadata: true  # 구조화된 메타데이터를 허용하도록 설정합니다.
