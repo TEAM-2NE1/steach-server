@@ -1,15 +1,15 @@
 package com.twentyone.steachserver.domain.curriculum.dto;
 
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
-import lombok.Getter;
+import com.twentyone.steachserver.domain.lecture.model.Lecture;
 
 import java.time.LocalDateTime;
 
 public record CurriculumDetailByLectureDto(LocalDateTime estimatedEndTime, String information, String bannerImgUrl) {
-    public static CurriculumDetailByLectureDto createCurriculumDetailByLectureDto(CurriculumDetail curriculumDetail) {
+    public static CurriculumDetailByLectureDto createCurriculumDetailByLectureDto(Lecture lecture, CurriculumDetail curriculumDetail) {
         return new CurriculumDetailByLectureDto(
-                curriculumDetail.getEndDate().atStartOfDay(),
-                curriculumDetail.getInformation(),
+        lecture.getLectureStartDate().with(curriculumDetail.getLectureCloseTime()),
+        curriculumDetail.getInformation(),
                 curriculumDetail.getBannerImgUrl());
     }
 }

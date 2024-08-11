@@ -7,7 +7,7 @@ sonarqube {
     properties {
         property "sonar.projectName", "steach-server"
         property "sonar.projectKey", "steach-server"
-        property "sonar.host.url", "http://steach.ssafy.io:9000"
+        property "sonar.host.url", "http://43.202.1.52:9000"
         property "sonar.token", "squ_9aa7980bb6f27b7f25091824cd3af5cddabf96db"
         property "sonar.language", "java"
         property 'sonar.projectVersion', '1.1.0-SNAPSHOT'

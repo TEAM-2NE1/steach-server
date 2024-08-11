@@ -86,7 +86,7 @@ public class LectureQueryRepository {
         CurriculumDetail curriculumDetail = result.get(qCurriculumDetail);
 
         SimpleCurriculumByLectureDto simpleCurriculumByLectureDto = SimpleCurriculumByLectureDto.createSimpleCurriculumByLectureDto(Objects.requireNonNull(curriculum));
-        CurriculumDetailByLectureDto curriculumDetailByLectureDto = CurriculumDetailByLectureDto.createCurriculumDetailByLectureDto(Objects.requireNonNull(curriculumDetail));
+        CurriculumDetailByLectureDto curriculumDetailByLectureDto = CurriculumDetailByLectureDto.createCurriculumDetailByLectureDto(lecture, Objects.requireNonNull(curriculumDetail));
 
         List<StudentByLectureDto> studentByLectureDtos = query
                 .select(Projections.constructor(
