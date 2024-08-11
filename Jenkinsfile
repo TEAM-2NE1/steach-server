@@ -108,7 +108,7 @@ pipeline {
                           - 12345:12345
                         volumes:
                           - /home/ubuntu/grafana/alloy/alloy-config.alloy:/etc/alloy/config.alloy
-                          - ${env.SERVER_LOG_PATH}:/tmp/app-logs
+                          - ${env.SERVER_LOG_PATH}:/tmp/log
                         command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
                         networks:
                           - steach-server-network
