@@ -88,6 +88,44 @@ pipeline {
             }
         }
 
+        stage('Deploy Promtail') {
+            steps {
+                script {
+                    // Alloy 컨테이너가 이미 존재하면 삭제 (없으면 무시)
+                    sh """
+                        if [ \$(docker ps -aq -f name=promtail) ]; then
+                            docker rm -f promtail
+                        fi
+                    """
+
+                    // 동적으로 Docker Compose 파일 생성
+                    writeFile file: 'docker-compose.promtail.yml', text: """
+                    services:
+                      promtail:  # Promtail 서비스 설정입니다.
+                        image: grafana/promtail:main
+                        container_name: promtail # 컨테이너 이름을 'promtail'로 지정합니다.
+                        volumes:  # 여러 파일과 디렉토리를 마운트합니다.
+                          - ${env.SERVER_LOG_PATH}:/var/log/steach-server # 호스트의 /var/log 디렉토리를 컨테이너의 /var/log 디렉토리로 마운트합니다.
+                          - /var/run/docker.sock:/var/run/docker.sock # 호스트의 Docker 소켓을 컨테이너 내부로 마운트합니다.
+                          - /home/ubuntu/grafana/promtail/promtail-config.yaml:/etc/promtail/promtail-config.yaml  # 호스트의 Promtail 설정 파일을 컨테이너 내부로 마운트합니다.
+                        command: -config.file=/etc/promtail/promtail-config.yaml  # Promtail 설정 파일 경로를 지정합니다.
+                        networks:
+                          - steach-server-network  # 'steach-server-network' 네트워크에 연결합니다.
+                        depends_on:  # 'loki' 서비스가 먼저 시작된 후 이 서비스가 시작되도록 설정합니다.
+                          - loki
+
+                    networks:
+                      steach-server-network:
+                        external: true  # 외부에서 생성된 네트워크를 사용하도록 설정합니다.
+                        name: steach-server-network  # 사용하려는 네트워크 이름을 'steach-server-network'로 지정합니다.
+
+                    """
+
+                    sh 'docker-compose -f docker-compose.promtail.yml up -d --build'
+                }
+            }
+        }
+
         stage('Deploy Alloy') {
             steps {
                 script {
