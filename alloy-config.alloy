@@ -75,10 +75,6 @@ loki.write "grafana_loki" {
     endpoint {
         url = "http://loki:3100/loki/api/v1/push"
     }
-    // basic_auth {
-    //  username = "admin"
-    //  password = "admin"
-    // }
 }
 
 // 전체 정리:
