@@ -4,11 +4,12 @@ import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
-public record CurriculumDetailByLectureDto(LocalDateTime estimatedEndTime, String information, String bannerImgUrl) {
-    public static CurriculumDetailByLectureDto createCurriculumDetailByLectureDto(Lecture lecture, CurriculumDetail curriculumDetail) {
+public record CurriculumDetailByLectureDto(LocalTime lectureCloseTime, String information, String bannerImgUrl) {
+    public static CurriculumDetailByLectureDto createCurriculumDetailByLectureDto(CurriculumDetail curriculumDetail) {
         return new CurriculumDetailByLectureDto(
-        lecture.getLectureStartDate().with(curriculumDetail.getLectureCloseTime()),
+        curriculumDetail.getLectureCloseTime(),
         curriculumDetail.getInformation(),
                 curriculumDetail.getBannerImgUrl());
     }

@@ -34,6 +34,7 @@ public class LectureBeforeStartingResponseDto extends LectureResponseDto{
     private CurriculumDetailByLectureDto curriculumDetailInfo;
 
     private LocalDateTime lectureStartTime;
+    private LocalDateTime lectureEndTime;
 
     private List<StudentByLectureDto> students = new ArrayList<>();
 
@@ -45,6 +46,7 @@ public class LectureBeforeStartingResponseDto extends LectureResponseDto{
         this.lectureTitle = lectureBeforeStartingResponseDto.lectureTitle;
         this.lectureOrder = lectureBeforeStartingResponseDto.lectureOrder;
         this.lectureStartTime = lectureBeforeStartingResponseDto.lectureStartTime;
+        this.lectureEndTime = lectureBeforeStartingResponseDto.lectureEndTime;
         this.curriculumInfo = lectureBeforeStartingResponseDto.curriculumInfo;
         this.curriculumDetailInfo = lectureBeforeStartingResponseDto.curriculumDetailInfo;
         this.students = lectureBeforeStartingResponseDto.students;
@@ -60,6 +62,7 @@ public class LectureBeforeStartingResponseDto extends LectureResponseDto{
         this.lectureTitle = lecture.getTitle();
         this.lectureOrder = lecture.getLectureOrder();
         this.lectureStartTime = lecture.getLectureStartDate();
+        this.lectureEndTime = lecture.getLectureStartDate().with(curriculumDetailInfo.lectureCloseTime());
 
         this.numberOfQuizzes = lecture.getNumberOfQuizzes();
 
