@@ -14,8 +14,8 @@ loki.source.file "log_scrape" {
 
 //   targets = [
 //   {__path__ = "/tmp/foo.txt", "color" = "pink"},
-//    {__path__ = "/tmp/bar.txt", "color" = "blue"},
-//    {__path__ = "/tmp/baz.txt", "color" = "grey"},
+//   {__path__ = "/tmp/bar.txt", "color" = "blue"},
+//   {__path__ = "/tmp/baz.txt", "color" = "grey"},
 //   ]
 
    // 스크래핑한 로그를 다른 구성요소의 수신자에게 전달합니다 filter_logs.
@@ -61,12 +61,12 @@ loki.process "add_new_label" {
 }
 
 logging {
-//  level    = "warn"
-  level    = "DEBUG"
+  level    = "debug"
   format   = "json"
-// loki.write.default.receiver는 별도의 수신자로, 설정 파일에 명시적으로 정의되어 있지 않습니다.
-//  write_to = [loki.write.default.receiver]
   write_to = [loki.write.grafana_loki.receiver]
+  // loki.write.default.receiver는 별도의 수신자로, 설정 파일에 명시적으로 정의되어 있지 않습니다.
+  //  write_to = [loki.write.default.receiver]
+
 }
 
 // 이 컴포넌트로 들어오는 모든 데이터를 Loki 원격 API로 전송
