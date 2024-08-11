@@ -83,7 +83,7 @@ pipeline {
 
                     // 컨테이너 로그 경로 설정
                     env.SERVER_LOG_PATH = "/var/lib/docker/containers/${containerId}"
-                    echo 'log path : ${env.SERVER_LOG_PATH}'
+                    echo "log path : ${env.SERVER_LOG_PATH}"
                 }
             }
         }
