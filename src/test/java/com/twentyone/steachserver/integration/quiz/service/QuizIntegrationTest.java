@@ -90,7 +90,7 @@ public class QuizIntegrationTest extends IntegrationTest {
 
         curriculum = Curriculum.of("title", CurriculumCategory.getCategoryByIndex(0), teacher, curriculumDetail);
         curriculumRepository.save(curriculum);
-        lecture = lectureRepository.save(Lecture.of("title", 1, LocalDateTime.now(), curriculum));
+        lecture = lectureRepository.save(Lecture.of("title", 1, LocalDateTime.now(), LocalDateTime.now().plusHours(2), curriculum));
     }
 
     @Test
@@ -151,7 +151,7 @@ public class QuizIntegrationTest extends IntegrationTest {
     @Test
     void 퀴즈조회() {
         //given
-        Lecture createdLecture = lectureRepository.save(Lecture.of("title", 1, LocalDateTime.now(), curriculum));
+        Lecture createdLecture = lectureRepository.save(Lecture.of("title", 1, LocalDateTime.now(),LocalDateTime.now().plusHours(2), curriculum));
         String question = "asdf";
 
         List<String> choices = List.of(new String[]{CHOICE1, CHOICE2});
