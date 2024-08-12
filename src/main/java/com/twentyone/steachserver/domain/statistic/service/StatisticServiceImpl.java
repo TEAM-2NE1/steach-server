@@ -61,6 +61,8 @@ public class StatisticServiceImpl implements StatisticService {
 
         List<StatisticsByCurriculumCategory> items = radarChartStatistic.getItems();
         List<String> categories = CurriculumCategory.getCategoriesDescription();
+        System.out.println(categories);
+        System.out.println(items);
 
         if(items.stream()
                 .allMatch(statisticsByCurriculumCategory -> statisticsByCurriculumCategory.totalLectureMinute() == 0)) {
@@ -82,6 +84,7 @@ public class StatisticServiceImpl implements StatisticService {
         }
         // 이건 기존 값에 곱해줄 값
         List<Integer> list = createRadarChartScores(maxFocusRatio, maxLectureMinutes, items);
+        System.out.println(list);
 
         if (list.size() == categories.size()) {
             Map<String, Integer> scores = IntStream.range(0, list.size())
@@ -106,11 +109,13 @@ public class StatisticServiceImpl implements StatisticService {
             double weightedFocusRatio = items.get(i).averageFocusRatio().multiply(factorWeightingFocusRatio).intValue();
             double weightedLectureMinutes = items.get(i).totalLectureMinute() * factorWeightingLectureMinutes;
             int sum = (int) (weightedFocusRatio + weightedLectureMinutes);
-            if (sum >= maxValue) {
+            if (sum > maxValue) {
                 max =  i;
+                maxValue = sum;
             }
             list.add(sum);
         }
+
         list.set(max, 100);
         return list;
     }
