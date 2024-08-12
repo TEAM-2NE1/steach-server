@@ -38,8 +38,10 @@ public enum CurriculumCategory {
 
     public static List<String> getCategoriesDescription() {
         return Arrays.stream(CurriculumCategory.values())
+                .limit(CurriculumCategory.values().length - 1)
                 .map(CurriculumCategory::getDescription)
                 .toList();
+
     }
 
 
