@@ -35,9 +35,11 @@ public class GPTController {
             String gptStatistic = gptService.getChatGPTResponse(gptString);
             responseMap.put("gptStatistic", gptStatistic);
             return ResponseEntity.ok(responseMap);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.OK).body(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage() + " 데이터: " + responseMap);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error: " + e.getMessage());
         }
     }
 
