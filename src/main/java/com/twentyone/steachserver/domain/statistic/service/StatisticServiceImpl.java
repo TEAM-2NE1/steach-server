@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @Transactional(readOnly = true)
@@ -58,10 +60,13 @@ public class StatisticServiceImpl implements StatisticService {
                 .orElseThrow(() -> new IllegalArgumentException("studentId : " + studentId + " 통계가 존재하지 않습니다."));
 
         List<StatisticsByCurriculumCategory> items = radarChartStatistic.getItems();
+        List<String> categories = CurriculumCategory.getCategoriesDescription();
 
         if(items.stream()
                 .allMatch(statisticsByCurriculumCategory -> statisticsByCurriculumCategory.totalLectureMinute() == 0)) {
-            return RadarChartStatisticDto.of(new ArrayList<>(NUMBER_OF_CATEGORIES));
+            Map<String, Integer> scores = categories.stream()
+                    .collect(Collectors.toMap(category -> category, category -> 0));
+            return RadarChartStatisticDto.of(scores);
         }
 
         BigDecimal maxFocusRatio = BigDecimal.valueOf(-1);
@@ -78,7 +83,16 @@ public class StatisticServiceImpl implements StatisticService {
         // 이건 기존 값에 곱해줄 값
         List<Integer> list = createRadarChartScores(maxFocusRatio, maxLectureMinutes, items);
 
-        return RadarChartStatisticDto.of(list);
+        if (list.size() == categories.size()) {
+            Map<String, Integer> scores = IntStream.range(0, list.size())
+                    .boxed()
+                    .collect(Collectors.toMap(categories::get, list::get));
+            return RadarChartStatisticDto.of(scores);
+
+        } else {
+            throw new IllegalArgumentException("The sizes of the categories and scores lists do not match.");
+        }
+
     }
 
     private List<Integer> createRadarChartScores(BigDecimal maxFocusRatio, int maxLectureMinutes, List<StatisticsByCurriculumCategory> items) {
