@@ -22,6 +22,7 @@ services:
     ports:
       - 29092:9092
     environment:
+      KAFKA_HEAP_OPTS: "-Xmx1G -Xms1G" # 카프카 브로커 힙 메모리 설정
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
@@ -44,6 +45,7 @@ services:
     ports:
       - 39092:9092
     environment:
+      KAFKA_HEAP_OPTS: "-Xmx1G -Xms1G" # 카프카 브로커 힙 메모리 설정
       KAFKA_NODE_ID: 2
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
@@ -66,6 +68,7 @@ services:
     ports:
       - 49092:9092
     environment:
+      KAFKA_HEAP_OPTS: "-Xmx1G -Xms1G" # 카프카 브로커 힙 메모리 설정
       KAFKA_NODE_ID: 3
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
