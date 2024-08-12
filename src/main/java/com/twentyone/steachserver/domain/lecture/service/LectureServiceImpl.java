@@ -203,11 +203,10 @@ public class LectureServiceImpl implements LectureService {
         return lectureQueryRepository.findClassroomByLectureAndStudent(lectureId, studentId);
     }
 
-
     @Override
     public FinalLectureInfoByTeacherDto getFinalLectureInformation(Integer lectureId) {
         List<StudentInfoByLectureDto> studentInfoByLecture = studentLectureQueryRepository.getStudentInfoByLecture(lectureId);
-        System.out.println(studentInfoByLecture);
+
         return FinalLectureInfoByTeacherDto.createFinalLectureInfoByTeacherDto(studentInfoByLecture);
     }
 
@@ -216,7 +215,7 @@ public class LectureServiceImpl implements LectureService {
             LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto, Integer lectureId) {
 
         List<StudentInfoByLectureDto> studentInfoByLecture = studentLectureQueryRepository.getStudentInfoByLecture(lectureId);
-        System.out.println(studentInfoByLecture);
+
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new IllegalArgumentException("lecture not found"));
         return CompletedLecturesResponseDto.of(lectureBeforeStartingResponseDto, studentInfoByLecture, lecture);

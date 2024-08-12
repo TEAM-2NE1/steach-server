@@ -99,4 +99,11 @@ public class LectureController {
 
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "[선생님] (강의 끝난 후) 강의 레포트 반환", description = "무조건 200을 반환, 강의 끝냈을 때 데이터 똑같이 보내줌")
+    @GetMapping("/report/{lectureId}")
+    public ResponseEntity<FinalLectureInfoByTeacherDto> getLectureReport(@PathVariable("lectureId") Integer lectureId) {
+        FinalLectureInfoByTeacherDto finalLectureInfoByTeacherDto = lectureService.getFinalLectureInformation(lectureId);
+        return ResponseEntity.ok().body(finalLectureInfoByTeacherDto);
+    }
 }
