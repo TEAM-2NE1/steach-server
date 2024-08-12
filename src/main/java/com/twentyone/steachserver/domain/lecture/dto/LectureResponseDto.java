@@ -19,6 +19,7 @@ public class LectureResponseDto {
     private String lectureTitle;
     private Integer lectureOrder;
     private LocalDateTime lectureStartTime;
+    private LocalDateTime lectureEndTime;
 
     public static LectureResponseDto fromDomain(Lecture lecture) {
         return LectureResponseDto.builder()
@@ -26,6 +27,7 @@ public class LectureResponseDto {
                 .lectureTitle(lecture.getTitle())
                 .lectureOrder(lecture.getLectureOrder())
                 .lectureStartTime(lecture.getLectureStartDate())
+                .lectureStartTime(lecture.getLectureEndDate())
                 .build();
     }
 
