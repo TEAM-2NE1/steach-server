@@ -27,7 +27,7 @@ public class LectureResponseDto {
                 .lectureTitle(lecture.getTitle())
                 .lectureOrder(lecture.getLectureOrder())
                 .lectureStartTime(lecture.getLectureStartDate())
-                .lectureStartTime(lecture.getLectureEndDate())
+                .lectureEndTime(lecture.getLectureEndDate())
                 .build();
     }
 
