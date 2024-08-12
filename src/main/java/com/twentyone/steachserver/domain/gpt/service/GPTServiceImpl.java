@@ -11,17 +11,25 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twentyone.steachserver.domain.member.model.Student;
+import com.twentyone.steachserver.domain.statistic.service.StatisticService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class GPTServiceImpl implements GPTService {
+
+    private final StatisticService statisticService;
 
     @Value("${api.gpt.key}")
     private String apiKey;
 
     @Override
-    public String getChatGPTResponse(String gptMessage) throws Exception {
+    public String getChatGPTResponse(Student student) throws Exception {
+        String gptMessage = statisticService.createGPTString(student);
+
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -31,7 +39,7 @@ public class GPTServiceImpl implements GPTService {
             Map<String, Object> payload = Map.of(
                     "model", "gpt-3.5-turbo",
                     "messages", List.of(message),
-                    "max_tokens", 100
+                    "max_tokens", 500
             );
             String requestBody = objectMapper.writeValueAsString(payload);
 

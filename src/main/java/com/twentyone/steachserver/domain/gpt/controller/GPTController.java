@@ -30,9 +30,7 @@ public class GPTController {
         String gptString = null;
         Map<String, String> responseMap = new HashMap<>();
         try {
-            gptString = statisticService.createGPTString(student);
-            responseMap.put("gptString", gptString);
-            String gptStatistic = gptService.getChatGPTResponse(gptString);
+            String gptStatistic = gptService.getChatGPTResponse(student);
             responseMap.put("gptStatistic", gptStatistic);
             return ResponseEntity.ok(responseMap);
         } catch (IllegalArgumentException e) {
