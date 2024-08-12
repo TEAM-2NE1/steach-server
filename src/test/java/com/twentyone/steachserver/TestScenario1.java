@@ -294,6 +294,6 @@ public class TestScenario1 {
         log.info(statisticService.createGPTString(student2));
         log.info(statisticService.createGPTString(student3));
 
-        log.info(gptService.getChatGPTResponse(statisticService.createGPTString(student1)));
+        log.info(gptService.getChatGPTResponse(student1));
     }
 }
