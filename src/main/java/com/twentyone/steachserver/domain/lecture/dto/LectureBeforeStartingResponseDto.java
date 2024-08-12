@@ -25,6 +25,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class LectureBeforeStartingResponseDto extends LectureResponseDto{
     private Boolean isCompleted = false;
+    private String teacherName;
 
     private Integer lectureId;
     private String lectureTitle;
@@ -53,6 +54,7 @@ public class LectureBeforeStartingResponseDto extends LectureResponseDto{
         this.quizzes = lectureBeforeStartingResponseDto.quizzes;
         this.numberOfQuizzes = lectureBeforeStartingResponseDto.numberOfQuizzes;
         this.isCompleted = lectureBeforeStartingResponseDto.isCompleted;
+        this.teacherName = lectureBeforeStartingResponseDto.teacherName;
     }
     private LectureBeforeStartingResponseDto(Lecture lecture,
                                              SimpleCurriculumByLectureDto curriculumInfo,
@@ -76,6 +78,7 @@ public class LectureBeforeStartingResponseDto extends LectureResponseDto{
         }
 
         this.students = studentDtos;
+        this.teacherName =lecture.getCurriculum().getTeacher().getName();
     }
 
     public static LectureBeforeStartingResponseDto of(Lecture lecture, SimpleCurriculumByLectureDto curriculumInfo,
