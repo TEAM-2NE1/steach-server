@@ -142,12 +142,12 @@ public class StatisticServiceImpl implements StatisticService {
             sb.append(" Lecture Focus: ").append(gptDataByLecture.getFocusRatio()).append("%");
             sb.append("\n");
         }
-        sb.append("<Recommend two of your strongest points>");
-        sb.append("Give me recommendations for jobs that specialize in these categories.");
-        sb.append("And a little bit of future direction.");
-        sb.append("Based on the above answers, I want the career recommendation answer to be no more than 8 lines with the key points.");
+        sb.append("<Please nominate job for your two greatest strengths>");
+        sb.append("Give me recommendations for exact jobs, not fields that specialize in these categories.");
+        sb.append("Based on the above answers, I want the career recommendation answer to be no more than 6 lines with the key points.");
+        sb.append("<Keep characters to 250 or less including spaces>");
         sb.append("시작 하는 말을 '").append(student.getName()).append("님에 대한 진로추천 압니다.' 라고 시작해줘 ");
-        sb.append("그리고 <반드시 제발 대답을 한국어로 해주고> 존댓말로 말 끝을 끝내줘");
+        sb.append("And <please answer in Korean>");
         return sb.toString();
     }
 
