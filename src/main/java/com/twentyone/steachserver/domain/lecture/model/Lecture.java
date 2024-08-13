@@ -40,7 +40,7 @@ public class Lecture {
     private LocalDateTime realStartTime;
 
     @Column(name = "real_end_time")
-    private LocalDateTime realEndTime;
+    private LocalDateTime realEndTime; //강의가 끝났는지 여부 판단 이걸로함
 
     @Column(name = "number_of_quizzes", columnDefinition = "TINYINT(4)")
     private Integer numberOfQuizzes = 0;

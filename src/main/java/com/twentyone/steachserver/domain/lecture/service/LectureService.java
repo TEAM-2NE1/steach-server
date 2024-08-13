@@ -39,4 +39,5 @@ public interface LectureService {
 
     void delete(Integer lectureId, Teacher teacher);
 
+    MyLectureHistoryResponse getMyLectureHistory(Student student);
 }

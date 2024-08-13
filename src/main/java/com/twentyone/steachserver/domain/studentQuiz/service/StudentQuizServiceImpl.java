@@ -46,7 +46,7 @@ public class StudentQuizServiceImpl implements StudentQuizService {
         studentQuizzesRepository.save(newStudentQuiz);
 
         //통계생성 - 나중에 Redis로 바꾸지
-        QuizStatistics quizStatistics = quizStatisticsRepository.findByStudentIdAndLectureIdOrderByCurrentScoreDesc(student.getId(), quiz.getLecture().getId())
+        QuizStatistics quizStatistics = quizStatisticsRepository.findByStudentIdAndLectureId(student.getId(), quiz.getLecture().getId())
                 .orElseGet(() -> new QuizStatistics(newStudentQuiz.getQuiz().getLecture().getId(), newStudentQuiz.getStudent().getId()));
         quizStatistics.update(requestDto.score());
 
