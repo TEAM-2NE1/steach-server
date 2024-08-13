@@ -61,16 +61,6 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                // 수정
-                    def branchName = env.BRANCH_NAME
-                    sh "./gradlew --info --warning-mode all sonar -Dsonar.projectKey=steach-server-${branchName} -Dsonar.projectName=steach-server-${branchName}"
-                }
-            }
-        }
-
         stage('Deploy Server') {
           steps {
                 script {
@@ -84,6 +74,16 @@ pipeline {
                     // 컨테이너 로그 경로 설정
                     env.SERVER_LOG_PATH = "/var/lib/docker/containers/${containerId}"
                     echo "log path : ${env.SERVER_LOG_PATH}"
+                }
+            }
+        }
+
+         stage('SonarQube Analysis') {
+            steps {
+                script {
+                // 수정
+                    def branchName = env.BRANCH_NAME
+                    sh "./gradlew --info --warning-mode all sonar -Dsonar.projectKey=steach-server-${branchName} -Dsonar.projectName=steach-server-${branchName}"
                 }
             }
         }

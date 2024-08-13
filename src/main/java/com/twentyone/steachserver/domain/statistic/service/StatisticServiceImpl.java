@@ -5,6 +5,7 @@ import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumRepository;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Student;
+import com.twentyone.steachserver.domain.member.repository.StudentRepository;
 import com.twentyone.steachserver.domain.statistic.dto.RadarChartStatisticDto;
 import com.twentyone.steachserver.domain.statistic.dto.StatisticsByCurriculumCategory;
 import com.twentyone.steachserver.domain.statistic.model.RadarChartStatistic;
@@ -35,6 +36,7 @@ public class StatisticServiceImpl implements StatisticService {
     private final RadarChartStatisticRepository radarChartStatisticRepository;
     private final LectureStatisticMongoRepository lectureStatisticMongoRepository;
     private final GPTDataByLectureMongoRepository gptDataByLectureMongoRepository;
+    private final StudentRepository studentRepository;
 
     final int NUMBER_OF_CATEGORIES = CurriculumCategory.sizeExcludingETC();
 
@@ -122,16 +124,16 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public String createGPTString(Student student) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("You're a student career consultant and student career counselor." +
-                "Next, you'll see information about the courses a student has taken, along with various statistics, such as quiz scores and attention span in those courses." +
-                "Based on these statistics, I can make career recommendations based on the student's interests and aptitudes." +
-                "Food biotech, math teacher, software developer, etc.").append("\n");
-
         List<GPTDataByLecture> gptDataByLectures = gptDataByLectureMongoRepository.findAllByStudentId(student.getId());
 
         if (gptDataByLectures.isEmpty())
             throw new IllegalArgumentException("학생 " + student.getName() + "의 GPT 데이터가 존재하지 않습니다.");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("You're a student career consultant and student career counselor." +
+                "Next, you'll see information about the courses a student has taken, along with various statistics, such as quiz scores and attention span in those courses." +
+                "Based on these statistics, I can make career recommendations based on the student's interests and aptitudes.").append("\n");
+
 
         for (GPTDataByLecture gptDataByLecture : gptDataByLectures) {
             sb.append("Lecture title: ").append(gptDataByLecture.getLectureTitle());
@@ -140,7 +142,12 @@ public class StatisticServiceImpl implements StatisticService {
             sb.append(" Lecture Focus: ").append(gptDataByLecture.getFocusRatio()).append("%");
             sb.append("\n");
         }
-        sb.append("in korean");
+        sb.append("<Please nominate job for your two greatest strengths>");
+        sb.append("Give me recommendations for exact jobs, not fields that specialize in these categories.");
+        sb.append("Based on the above answers, I want the career recommendation answer to be no more than 6 lines with the key points.");
+        sb.append("<Keep characters to 250 or less including spaces>");
+        sb.append("시작 하는 말을 '").append(student.getName()).append("님에 대한 진로추천 압니다.' 라고 시작해줘 ");
+        sb.append("And <please answer in Korean>");
         return sb.toString();
     }
 

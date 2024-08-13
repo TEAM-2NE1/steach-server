@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 public class StudentInfoByLectureDto {
-    private final String studentName;
+    private String studentName;
 
     List<StudentQuizByLectureDto> studentQuizByLectureDtos;
 
@@ -30,7 +30,18 @@ public class StudentInfoByLectureDto {
         this.studentName = studentName;
     }
 
+    private StudentInfoByLectureDto(StudentLecture studentLecture) {
+        this.totalQuizScore = studentLecture.getQuizTotalScore();
+        this.correctNumber = studentLecture.getQuizAnswerCount();
+        this.focusRatio = studentLecture.getFocusRatio();
+        this.focusMinute = studentLecture.getFocusTime();
+    }
+
     public static StudentInfoByLectureDto of(List<StudentQuizByLectureDto> studentQuizByLectureDto, StudentLecture studentLecture) {
         return new StudentInfoByLectureDto(studentQuizByLectureDto, studentLecture.getFocusRatio(), studentLecture.getFocusTime(), studentLecture.getStudent().getName());
+    }
+
+    public static StudentInfoByLectureDto of(StudentLecture studentLecture) {
+        return new StudentInfoByLectureDto(studentLecture);
     }
 }

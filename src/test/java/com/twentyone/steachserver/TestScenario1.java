@@ -7,6 +7,7 @@ import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.service.CurriculumService;
+import com.twentyone.steachserver.domain.gpt.service.GPTService;
 import com.twentyone.steachserver.domain.lecture.dto.LectureResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.AllLecturesInCurriculaResponseDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
@@ -69,6 +70,9 @@ public class TestScenario1 {
 
     @Autowired
     StatisticService statisticService;
+
+    @Autowired
+    GPTService gptService;
 
     @Autowired
     StudentQuizService studentQuizService;
@@ -289,5 +293,7 @@ public class TestScenario1 {
         log.info(statisticService.createGPTString(student1));
         log.info(statisticService.createGPTString(student2));
         log.info(statisticService.createGPTString(student3));
+
+        log.info(gptService.getChatGPTResponse(student1));
     }
 }
