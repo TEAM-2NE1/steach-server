@@ -275,6 +275,8 @@ public class LectureServiceImpl implements LectureService {
                         new LectureHistoryResponse(
                                 curriculum.getTitle(), // 커리큘럼 이름
                                 lecture.getTitle(),    // 강의 이름
+                                lecture.getLectureStartDate(),  // 예정된 시작 시간
+                                lecture.getRealEndTime(),       // 실제 끝나는 시간
                                 averageFocusRatio,     // 집중도 평균
                                 averageFocusMinute,    // 집중한 시간
                                 quizScore,             // 퀴즈점수
