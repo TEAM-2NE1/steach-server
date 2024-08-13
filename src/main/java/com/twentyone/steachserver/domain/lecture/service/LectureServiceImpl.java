@@ -216,10 +216,24 @@ public class LectureServiceImpl implements LectureService {
             LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto, Integer lectureId) {
 
         List<StudentInfoByLectureDto> studentInfoByLecture = studentLectureQueryRepository.getStudentInfoByLecture(lectureId);
-        System.out.println(studentInfoByLecture);
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new IllegalArgumentException("lecture not found"));
+
         return CompletedLecturesResponseDto.of(lectureBeforeStartingResponseDto, studentInfoByLecture, lecture);
+    }
+
+    @Override
+    public List<CompletedLecturesByStudentResponseDto> getFinalLectureInformationByStudent(Student student) {
+        List<CompletedLecturesByStudentResponseDto> completedLecturesByStudentResponseDtos = new ArrayList<>();
+        List<StudentLecture> studentLectures = studentLectureRepository.findByStudentId(student.getId());
+
+        for (StudentLecture studentLecture : studentLectures) {
+            Lecture lecture = studentLecture.getLecture();
+            Integer quizCount = lecture.getQuizzes().size();
+            CompletedLecturesByStudentResponseDto completedLecturesByStudentResponseDto = CompletedLecturesByStudentResponseDto.of(lecture, studentLecture, quizCount);
+            completedLecturesByStudentResponseDtos.add(completedLecturesByStudentResponseDto);
+        }
+        return completedLecturesByStudentResponseDtos;
     }
 }
 
