@@ -1,7 +1,5 @@
 package com.twentyone.steachserver.config;
 
-import com.twentyone.steachserver.interfaces.kafka.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
