@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface StudentQuizRepository extends JpaRepository<StudentQuiz, StudentQuizId> {
-    List<StudentQuiz> findStudentQuizByQuiz(Quiz quiz);
+    List<StudentQuiz> findTop4StudentQuizByQuizOrderByScoreDesc(Quiz quiz);
 }
