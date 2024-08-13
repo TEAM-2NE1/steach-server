@@ -18,6 +18,8 @@ public interface LectureService {
     CompletedLecturesResponseDto getFinalLectureInformation(
             LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto, Integer lectureId);
 
+    List<CompletedLecturesByStudentResponseDto> getFinalLectureInformationByStudent(Student student);
+
     Optional<Classroom> getClassroomByLectureAndStudent(Integer studentId, Integer lectureId);
 
     Boolean checkStudentByLecture(Integer studentId, Integer lectureId);

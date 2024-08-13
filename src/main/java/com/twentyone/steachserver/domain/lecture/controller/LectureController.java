@@ -3,6 +3,7 @@ package com.twentyone.steachserver.domain.lecture.controller;
 import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.classroom.dto.ClassroomResponseDto;
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
+import com.twentyone.steachserver.domain.lecture.dto.CompletedLecturesByStudentResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.CompletedLecturesResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.FinalLectureInfoByTeacherDto;
 import com.twentyone.steachserver.domain.lecture.dto.LectureBeforeStartingResponseDto;
@@ -20,9 +21,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Tag(name = "강의")
@@ -43,6 +46,14 @@ public class LectureController {
             return ResponseEntity.ok().body(completedLecturesResponseDto);
         }
         return ResponseEntity.ok().body(lectureBeforeStartingResponseDto);
+    }
+
+    @Secured("ROLE_STUDENT")
+    @Operation(summary = "[공통] 수강한 강의에 대한 다양한 정보 반환", description = "무조건 200을 반환, 강의에 대해서 시작 전 강의면 시작 전 형태로, 끝난 강의는 끝난형태로 반환.")
+    @GetMapping("/complete/student")
+    public ResponseEntity<?> getLectureEndInformation(@AuthenticationPrincipal Student student){
+        List<CompletedLecturesByStudentResponseDto> completedLecturesResponseDto = lectureService.getFinalLectureInformationByStudent(student);
+        return ResponseEntity.ok().body(completedLecturesResponseDto);
     }
 
     @Operation(
