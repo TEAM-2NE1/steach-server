@@ -203,11 +203,10 @@ public class LectureServiceImpl implements LectureService {
         return lectureQueryRepository.findClassroomByLectureAndStudent(lectureId, studentId);
     }
 
-
     @Override
     public FinalLectureInfoByTeacherDto getFinalLectureInformation(Integer lectureId) {
         List<StudentInfoByLectureDto> studentInfoByLecture = studentLectureQueryRepository.getStudentInfoByLecture(lectureId);
-        System.out.println(studentInfoByLecture);
+
         return FinalLectureInfoByTeacherDto.createFinalLectureInfoByTeacherDto(studentInfoByLecture);
     }
 
