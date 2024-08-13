@@ -13,10 +13,16 @@ import com.twentyone.steachserver.domain.lecture.validator.LectureValidator;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 import com.twentyone.steachserver.domain.member.repository.StudentRepository;
+import com.twentyone.steachserver.domain.quiz.model.Quiz;
+import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
+import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCurriculumRepository;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureQueryRepository;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
+import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
+import com.twentyone.steachserver.domain.studentQuiz.repository.StudentQuizRepository;
 import com.twentyone.steachserver.global.error.ResourceNotFoundException;
+import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,6 +44,8 @@ public class LectureServiceImpl implements LectureService {
     private final StudentRepository studentRepository;
     private final StudentLectureQueryRepository studentLectureQueryRepository;
     private final StudentLectureRepository studentLectureRepository;
+    private final StudentCurriculumRepository studentCurriculumRepository;
+    private final StudentQuizRepository studentQuizRepository;
 
     private final LectureValidator lectureValidator;
 
@@ -219,6 +227,66 @@ public class LectureServiceImpl implements LectureService {
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new IllegalArgumentException("lecture not found"));
         return CompletedLecturesResponseDto.of(lectureBeforeStartingResponseDto, studentInfoByLecture, lecture);
+    }
+
+    //TODO 성능을 충분히 개선할 수 있을 것 같음
+    @Override
+    public MyLectureHistoryResponse getMyLectureHistory(Student student) {
+        //내가수강하는 커리큘럼의 강의들 중, final time이 있는 애들을 모두 가져옴
+        //내가 수강하는 커리큘럼 강의 가져오기
+        List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student);
+
+        List<Curriculum> curricula = new ArrayList<>();
+        for (StudentCurriculum studentCurriculum : studentsCurricula) {
+            curricula.add(studentCurriculum.getCurriculum());
+        }
+
+        List<LectureHistoryResponse> lectureHistoryResponseList = new ArrayList<>();
+
+        for (Curriculum curriculum: curricula) {
+            //커리큘럼에 맞는 lecture 찾아오기
+            List<Lecture> lectures = lectureRepository.findByCurriculumId(curriculum.getId())
+                    .orElseGet(() -> new ArrayList<>());
+
+            for (Lecture lecture: lectures) {
+                if (lecture.getRealEndTime() == null) {
+                    break; //끝나지 않은 강의면 그냥 break;
+                }
+
+                StudentLecture studentLecture = studentLectureRepository.findByStudentIdAndLectureId(student.getId(), lecture.getId())
+                                .orElseThrow(() -> new RuntimeException("에러"));
+
+                BigDecimal averageFocusRatio = studentLecture.getFocusRatio(); //studentLecture의 focusRatio
+                Integer averageFocusMinute = studentLecture.getFocusTime(); //studentLecture의 focusTime
+                Integer quizScore = 0;
+                Integer quizCorrectNumber = 0;
+
+                List<Quiz> quizzes = lecture.getQuizzes();
+                for (Quiz quiz: quizzes) {
+                    StudentQuiz byStudentAndQuiz = studentQuizRepository.findByStudentAndQuiz(student, quiz);
+
+                    quizScore += byStudentAndQuiz.getScore();
+                    if (byStudentAndQuiz.getStudentChoice().equals(quiz.getQuizChoiceString().get(quiz.getAnswer()))) {
+                        quizCorrectNumber ++;
+                    }
+                }
+
+                lectureHistoryResponseList.add(
+                        new LectureHistoryResponse(
+                                curriculum.getTitle(), // 커리큘럼 이름
+                                lecture.getTitle(),    // 강의 이름
+                                averageFocusRatio,     // 집중도 평균
+                                averageFocusMinute,    // 집중한 시간
+                                quizScore,             // 퀴즈점수
+                                100 * quizzes.size(),  // 100 * 퀴즈 개수
+                                quizCorrectNumber,     // 퀴즈 맞춘 개수
+                                quizzes.size()         // 퀴즈 개수
+                        )
+                );
+            }
+        }
+
+        return new MyLectureHistoryResponse(lectureHistoryResponseList);
     }
 }
 

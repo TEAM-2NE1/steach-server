@@ -6,6 +6,7 @@ import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.lecture.dto.CompletedLecturesResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.FinalLectureInfoByTeacherDto;
 import com.twentyone.steachserver.domain.lecture.dto.LectureBeforeStartingResponseDto;
+import com.twentyone.steachserver.domain.lecture.dto.MyLectureHistoryResponse;
 import com.twentyone.steachserver.domain.lecture.dto.update.UpdateLectureRequestDto;
 import com.twentyone.steachserver.domain.lecture.error.LectureTimeNotYetException;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
@@ -105,5 +106,11 @@ public class LectureController {
     public ResponseEntity<FinalLectureInfoByTeacherDto> getLectureReport(@PathVariable("lectureId") Integer lectureId) {
         FinalLectureInfoByTeacherDto finalLectureInfoByTeacherDto = lectureService.getFinalLectureInformation(lectureId);
         return ResponseEntity.ok().body(finalLectureInfoByTeacherDto);
+    }
+
+    @Operation(summary = "[학생] 나의 강의 히스토리 반환", description = "강의 히스토리 반환")
+    @GetMapping("/history")
+    public ResponseEntity<MyLectureHistoryResponse> getMyLectureHistory(@AuthenticationPrincipal Student student) {
+        return ResponseEntity.ok(lectureService.getMyLectureHistory(student));
     }
 }
