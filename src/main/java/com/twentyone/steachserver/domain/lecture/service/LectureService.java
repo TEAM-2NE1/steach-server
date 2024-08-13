@@ -4,6 +4,7 @@ import com.twentyone.steachserver.domain.classroom.model.Classroom;
 import com.twentyone.steachserver.domain.lecture.dto.*;
 import com.twentyone.steachserver.domain.lecture.dto.update.UpdateLectureRequestDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
+import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public interface LectureService {
 
     CompletedLecturesResponseDto getFinalLectureInformation(
             LectureBeforeStartingResponseDto lectureBeforeStartingResponseDto, Integer lectureId);
+
+    List<CompletedLecturesByStudentResponseDto> getFinalLectureInformationByStudent(Student student);
 
     Optional<Classroom> getClassroomByLectureAndStudent(Integer studentId, Integer lectureId);
 
@@ -35,4 +38,5 @@ public interface LectureService {
     void addVolunteerMinute(Lecture updateLecture);
 
     void delete(Integer lectureId, Teacher teacher);
+
 }
