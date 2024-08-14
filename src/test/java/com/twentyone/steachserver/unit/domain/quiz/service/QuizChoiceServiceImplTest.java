@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Transactional
-@DisplayName("퀴즈 보기 관련 서비스 테스트")
+@DisplayName("퀴즈 보기 관련 서비스 단위 테스트")
 public class QuizChoiceServiceImplTest extends SteachTest {
 
     @InjectMocks
