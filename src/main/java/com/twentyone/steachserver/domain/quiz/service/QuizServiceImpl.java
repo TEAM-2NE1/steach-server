@@ -20,10 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -213,6 +210,9 @@ public class  QuizServiceImpl implements QuizService {
         //통계데이터 TODO redis로 변경
         List<QuizStudentScoreDto> prev = new ArrayList<>();
         List<QuizStudentScoreDto> current = new ArrayList<>();
+
+        // 추가
+        studentQuizByQuiz.sort(Comparator.comparingInt(StudentQuiz::getScore).reversed());
 
         int rank = 1;
         for (StudentQuiz studentQuiz: studentQuizByQuiz) {
