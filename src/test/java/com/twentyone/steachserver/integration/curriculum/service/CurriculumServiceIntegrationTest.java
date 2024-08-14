@@ -101,26 +101,6 @@ public class CurriculumServiceIntegrationTest extends IntegrationTest {
         assertEquals(curriculumDetailResponse.getMaxAttendees(), MAX_ATTENDEES);
     }
 
-    @Disabled
-    @Test
-    void 수강신청() {
-        //given
-        CurriculumAddRequest request = new CurriculumAddRequest(TITLE, SUB_TITLE, INTRO, INFORMATION,
-                CURRICULUM_CATEGORY, SUB_CATEGORY, BANNER_IMG_URL,
-                NOW.toLocalDate(), NOW.toLocalDate(), WEEKDAY_BITMASK, NOW.toLocalTime(), NOW.toLocalTime(), MAX_ATTENDEES);
-        CurriculumDetailResponse curriculumDetailResponse = curriculumService.create(teacher, request);
-        Integer curriculumId = curriculumDetailResponse.getCurriculumId();
-
-        //when
-        curriculumService.registration(student, curriculumId);
-
-        CurriculumListResponse studentsCurricula = curriculumService.getStudentsCurricula(student, pageable);
-        CurriculumDetailResponse response = studentsCurricula.getCurricula().get(0);
-
-        //then
-        assertEquals(response.getCurriculumId(), curriculumId);
-    }
-
     static Stream<Arguments> generateWeekDaysCompletedData() {
         return Stream.of(
                 //[2024-07-01 ~ 2024-07-01] 1000000 => 2024-07-01
