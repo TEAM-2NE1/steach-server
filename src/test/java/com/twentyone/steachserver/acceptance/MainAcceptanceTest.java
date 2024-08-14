@@ -200,35 +200,6 @@ public class MainAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @Order(5)
-    @Disabled //TODO 추후 수정
-    @DisplayName("강사가 첫번째 강의의 퀴즈 생성")
-    void testCreateQuiz() throws JsonProcessingException {
-        // given
-        List<String> 퀴즈_보기_정보 = new ArrayList<>();
-        퀴즈_보기_정보.add("가");
-        퀴즈_보기_정보.add("나");
-        퀴즈_보기_정보.add("다");
-        퀴즈_보기_정보.add("라");
-
-//        List<String> 퀴즈_정답_정보 = new ArrayList<>();
-//        퀴즈_정답_정보.add("가");
-        Integer 퀴즈_정답_정보 = 1; //"가"
-
-        퀴즈_정보 = new HashMap<>();
-        퀴즈_정보.put("quizNumber", 1);
-        퀴즈_정보.put("question", "가,나,다,라 중 가장 먼저 나오는 것은?");
-        퀴즈_정보.put("choices", 퀴즈_보기_정보);
-        퀴즈_정보.put("answers", 퀴즈_정답_정보);
-
-        // when
-        Response 퀴즈_생성 = 퀴즈_생성(첫번째_강의_PK, 퀴즈_정보);
-
-        // then
-        첫번째_퀴즈_PK = 퀴즈_정보_확인(퀴즈_생성, 퀴즈_정보);
-    }
-
-    @Test
     @Order(1)
     @DisplayName("인증 코드 생성")
     void testCreateCode() throws JsonProcessingException {
@@ -288,26 +259,6 @@ public class MainAcceptanceTest extends AcceptanceTest {
         Response 커리큘럼_수강_신청 = 커리큘럼_수강_신청(커리큘럼_PK, 학생_토큰);
         // then
         커리큘럼_수강_신청_확인(커리큘럼_수강_신청);
-    }
-
-    @Order(7)
-    @Disabled //TODO 추후수정
-    @DisplayName("학생의 퀴즈 정답 전달")
-    @ParameterizedTest
-    @MethodSource("학생_토큰들")
-    void testStudentQuiz(String 학생_토큰) throws JsonProcessingException {
-        // given
-        int 점수 = (int) (Math.random() * 2) * 50;
-        String 고른_정답;
-        if (점수 != 0) 고른_정답 = "가";
-        else {
-            고른_정답 = castList(퀴즈_정보.get("choices"), String.class).get((int) (Math.random() * 2) + 1);
-        }
-        // when
-        Response 학생_퀴즈_전달 = 학생_퀴즈_전달(첫번째_퀴즈_PK, 점수, 고른_정답, 학생_토큰);
-
-        // then
-        학생_퀴즈_전달_확인(학생_퀴즈_전달, 점수, 고른_정답);
     }
 
     @Order(7)
