@@ -253,7 +253,7 @@ public class LectureServiceImpl implements LectureService {
                 }
 
                 StudentLecture studentLecture = studentLectureRepository.findByStudentIdAndLectureId(student.getId(), lecture.getId())
-                                .orElseThrow(() -> new RuntimeException("에러"));
+                                .orElseThrow(() -> new RuntimeException("끝난 강의는 반드시 이 값이 존재해야합니다. 에러"));
 
                 BigDecimal averageFocusRatio = studentLecture.getFocusRatio(); //studentLecture의 focusRatio
                 Integer averageFocusMinute = studentLecture.getFocusTime(); //studentLecture의 focusTime
@@ -263,7 +263,7 @@ public class LectureServiceImpl implements LectureService {
                 List<Quiz> quizzes = lecture.getQuizzes();
                 for (Quiz quiz: quizzes) {
                     StudentQuiz byStudentAndQuiz = studentQuizRepository.findByStudentAndQuiz(student, quiz)
-                            .orElseThrow(() -> new RuntimeException("에러 발생"));
+                            .orElseThrow(() -> new IllegalArgumentException("끝난 강의는 반드시 이 값이 존재해야합니다."));
 
                     quizScore += byStudentAndQuiz.getScore();
                     if (byStudentAndQuiz.getStudentChoice().equals(quiz.getQuizChoiceString().get(quiz.getAnswer()))) {
