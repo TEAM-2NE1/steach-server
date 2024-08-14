@@ -214,7 +214,7 @@ public class  QuizServiceImpl implements QuizService {
         // 추가
         studentQuizByQuiz.sort(Comparator.comparingInt(StudentQuiz::getScore).reversed());
 
-        int rank = 1;
+//        int rank = 1; 사용하지 않아서 주석처리
 
         for (StudentQuiz studentQuiz: studentQuizByQuiz) {
             QuizStatistics quizStatistics = quizStatisticsRepository.findByStudentIdAndLectureId(studentQuiz.getStudent().getId(), studentQuiz.getQuiz().getLecture().getId())
