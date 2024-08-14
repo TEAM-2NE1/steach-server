@@ -93,7 +93,6 @@ public class LectureServiceImpl implements LectureService {
         return lectureRepository.findById(lectureId)
                 .map(lecture -> {
                     LocalDateTime realStartTime = lecture.getRealStartTime();
-                    System.out.println(realStartTime);
                     if (realStartTime == null) {
                         throw new IllegalArgumentException("lecture not started, can't update real end time");
                     }

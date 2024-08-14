@@ -33,7 +33,7 @@ public class Lecture {
     @Column(name = "lecture_start_date", nullable = false)
     private LocalDateTime lectureStartDate; //시작 날짜로 해석하겠음 - 주효림
 
-    @Column(name = "lecture_end_date", nullable = false)
+    @Column(name = "lecture_end_date")
     private LocalDateTime lectureEndDate;
 
     @Column(name = "real_start_time")
@@ -76,7 +76,7 @@ public class Lecture {
         this.realEndTime = LocalDateTime.now();
     }
     public void updateRealStartTimeWithNow() {
-        System.out.println("update");
+//        System.out.println("update");
         this.realStartTime = LocalDateTime.now();
     }
 

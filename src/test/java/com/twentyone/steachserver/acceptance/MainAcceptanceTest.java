@@ -426,7 +426,7 @@ public class MainAcceptanceTest extends AcceptanceTest {
     }
 
     Integer 커리큘럼_생성_확인(Response 커리큘럼_생성, Map<String, Object> 커리큘럼_기본_정보) throws JsonProcessingException {
-        String s = 커리큘럼_생성.body().prettyPrint();
+//        String s = 커리큘럼_생성.body().prettyPrint();
         커리큘럼_생성
                 .then()
                 .statusCode(HttpStatus.OK.value())

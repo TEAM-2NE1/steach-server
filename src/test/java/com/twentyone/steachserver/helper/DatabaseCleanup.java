@@ -78,7 +78,7 @@ public class DatabaseCleanup implements InitializingBean {
     }
 
     private static String toSnakeCase(String str) {
-        System.out.println(str);
+//        System.out.println(str);
         String regex = "([a-z])([A-Z])";
         String replacement = "$1_$2";
         return str.replaceAll(regex, replacement).toLowerCase();

@@ -51,7 +51,7 @@ public class GPTServiceImpl implements GPTService {
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
+//            System.out.println(response.body());
 
             // Parse the response to extract the "content" field
             JsonNode jsonNode = objectMapper.readTree(response.body());

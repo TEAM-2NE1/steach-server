@@ -225,7 +225,7 @@ public class TeacherAuthControllerIntegrationTest extends ControllerIntegrationT
     }
 
     void 강사_회원정보_수정_확인(Response 강사_회원정보_수정, String 강사_로그인_아이디, Map<String, String> 강사_수정_기본_정보) {
-        System.out.println(강사_회원정보_수정.getBody().asString());
+//        System.out.println(강사_회원정보_수정.getBody().asString());
         강사_회원정보_수정
                 .then()
                 .statusCode(HttpStatus.OK.value())
