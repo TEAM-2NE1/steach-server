@@ -263,7 +263,8 @@ public class LectureServiceImpl implements LectureService {
 
                 List<Quiz> quizzes = lecture.getQuizzes();
                 for (Quiz quiz: quizzes) {
-                    StudentQuiz byStudentAndQuiz = studentQuizRepository.findByStudentAndQuiz(student, quiz);
+                    StudentQuiz byStudentAndQuiz = studentQuizRepository.findByStudentAndQuiz(student, quiz)
+                            .orElseThrow(() -> new RuntimeException("에러 발생"));
 
                     quizScore += byStudentAndQuiz.getScore();
                     if (byStudentAndQuiz.getStudentChoice().equals(quiz.getQuizChoiceString().get(quiz.getAnswer()))) {
