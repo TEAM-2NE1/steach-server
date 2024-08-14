@@ -504,7 +504,6 @@ public class MainAcceptanceTest extends AcceptanceTest {
 
         // quizId 추출
         Integer quizId = rootNode.path("quiz_list").get(0).path("quiz_id").asInt();
-        log.info("@@@@@@@@1111: " + quizId);
 
         return quizId;
     }
