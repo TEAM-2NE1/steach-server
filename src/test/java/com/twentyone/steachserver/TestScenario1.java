@@ -290,10 +290,10 @@ public class TestScenario1 {
         statisticService.createStatisticsByFinalLecture(updateLecture);
         lectureService.getFinalLectureInformation(lectureId1);
 
-        log.info(statisticService.createGPTString(student1));
-        log.info(statisticService.createGPTString(student2));
-        log.info(statisticService.createGPTString(student3));
+        log.info(statisticService.createGPTString(student1).substring(0, 50));
+//        log.info(statisticService.createGPTString(student2));
+//        log.info(statisticService.createGPTString(student3));
 
-        log.info(gptService.getChatGPTResponse(student1));
+//        log.info(gptService.getChatGPTResponse(student1.getId()));
     }
 }
