@@ -1,7 +1,7 @@
 package com.twentyone.steachserver.domain.studentLecture.service;
 
 public interface StudentLectureService {
-    void saveTimeFocusTime(Integer studentId, Integer lectureId, Integer focusTime);
+    void saveSleepTime(Integer studentId, Integer lectureId, Integer sleepTime);
 
     void updateStudentLectureByFinishLecture(Integer lectureId);
 
