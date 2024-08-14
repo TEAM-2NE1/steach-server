@@ -6,6 +6,7 @@ import com.twentyone.steachserver.domain.member.dto.StudentInfoRequest;
 import com.twentyone.steachserver.domain.member.dto.StudentInfoResponse;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.service.StudentService;
+import com.twentyone.steachserver.domain.studentCurriculum.dto.IsApplyForCurriculumResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -49,13 +50,27 @@ public class StudentController {
     @Operation(summary = "[학생] 학생이 수강하는 커리큘럼 조회", description = "currentPageNumber: 현재 몇 페이지, totalPage: 전체 페이지 개수, pageSize: 한 페이지당 원소 개수(n개씩보기)")
     @GetMapping("/curricula")
     public ResponseEntity<CurriculumListResponse> getMyCourses(@AuthenticationPrincipal Student student,
-                                                               @RequestParam(value = "pageSize", required = false, defaultValue = "100") Integer pageSize,
-                                                               @RequestParam(value = "currentPageNumber", required = false, defaultValue = "1") Integer currentPageNumber) {
-        int pageNumber = currentPageNumber - 1; //입력은 1부터 시작, 실제로는 0부터 시작
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+                                                               @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                                               @RequestParam(value = "currentPageNumber", required = false) Integer currentPageNumber) {
+        if (pageSize != null && currentPageNumber != null) {
+            //페이징 있는 버전
+            int pageNumber = currentPageNumber - 1; //입력은 1부터 시작, 실제로는 0부터 시작
+            Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        CurriculumListResponse curriculumListResponse = curriculumService.getStudentsCurricula(student, pageable);
+            CurriculumListResponse curriculumListResponse = curriculumService.getStudentsCurricula(student, pageable);
+            return ResponseEntity.ok(curriculumListResponse);
+        }
 
+        //페이징 없는 버전
+        CurriculumListResponse curriculumListResponse = curriculumService.getStudentsCurricula(student);
         return ResponseEntity.ok(curriculumListResponse);
+    }
+
+    @Operation(summary = "[학생] 학생이 커리큘럼을 수강 신청 여부", description = "이미 신청했으면 true")
+    @GetMapping("/check/curriculum-apply/{curriculumId}")
+    public ResponseEntity<IsApplyForCurriculumResponseDto> getIsApplyForCurriculum(@AuthenticationPrincipal Student student,
+                                                                                   @PathVariable("curriculumId") Integer curriculumId) {
+        Boolean isApplyForCurriculum = curriculumService.getIsApplyForCurriculum(student, curriculumId);
+        return ResponseEntity.ok(IsApplyForCurriculumResponseDto.of(isApplyForCurriculum));
     }
 }

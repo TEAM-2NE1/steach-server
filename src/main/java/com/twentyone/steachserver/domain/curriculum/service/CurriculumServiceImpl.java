@@ -12,24 +12,30 @@ import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.lecture.repository.LectureRepository;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
+import com.twentyone.steachserver.domain.member.repository.TeacherRepository;
 import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculum;
+import com.twentyone.steachserver.domain.studentCurriculum.model.StudentCurriculumId;
 import com.twentyone.steachserver.domain.studentCurriculum.repository.StudentCurriculumRepository;
 import com.twentyone.steachserver.domain.studentLecture.model.StudentLecture;
 import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectureRepository;
+
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.twentyone.steachserver.global.error.ResourceNotFoundException;
-import com.twentyone.steachserver.util.WeekdayBitmaskUtil;
+import com.twentyone.steachserver.util.converter.WeekdayBitmaskUtil;
+import com.twentyone.steachserver.domain.curriculum.service.redis.CurriculumRedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.twentyone.steachserver.domain.curriculum.dto.CurriculumListResponse.fromSimpleDomainList;
 
 @Service
 @Slf4j
@@ -44,13 +50,14 @@ public class CurriculumServiceImpl implements CurriculumService {
     private final StudentLectureRepository studentLectureRepository;
 
     private final CurriculumValidator curriculumValidator;
+    private final CurriculumRedisService curriculumRedisService;
+    private final TeacherRepository teacherRepository;
 
     @Override
     @Transactional(readOnly = true)
     public CurriculumDetailResponse getDetail(Integer id) {
         Curriculum curriculum = curriculumRepository.findByIdWithDetail(id)
                 .orElseThrow(() -> new RuntimeException("Curriculum not found"));
-
         return CurriculumDetailResponse.fromDomain(curriculum);
     }
 
@@ -89,11 +96,15 @@ public class CurriculumServiceImpl implements CurriculumService {
 
         for (int i = 0; i < selectedDates.size(); i++) {
             LocalDateTime lectureDate = selectedDates.get(i).with(curriculumDetail.getLectureStartTime()); // 날짜에 시간 설정
+            LocalDateTime lectureEndDate = selectedDates.get(i).with(curriculumDetail.getLectureCloseTime()); // 날짜에 시간 설정
             int order = i + 1;
             Lecture lecture = Lecture.of(request.getTitle() + " " + order + "강", order,
-                    lectureDate, curriculum);
+                    lectureDate, lectureEndDate, curriculum);
             lectureRepository.save(lecture);
         }
+
+        // Redis에 최신 커리큘럼 추가
+        curriculumRedisService.addLatestCurriculum(CurriculumDetailResponse.fromDomainBySimple(curriculum));
 
         return CurriculumDetailResponse.fromDomain(curriculum); //관련 강의도 줄까?? 고민
     }
@@ -135,11 +146,47 @@ public class CurriculumServiceImpl implements CurriculumService {
     }
 
     @Override
+    public void cancel(Student student, Integer curriculaId) {
+        Curriculum curriculum = curriculumRepository.findByIdWithLock(curriculaId)
+                .orElseThrow(() -> new RuntimeException("커리큘럼 찾을 수 없음"));
+
+        studentCurriculumRepository.deleteByStudentAndCurriculumWithException(student, curriculum);
+
+        CurriculumDetail curriculumDetail = curriculum.getCurriculumDetail();
+        curriculumDetail.minusCurrentAttendees();
+    }
+
+
+    @Override
     @Transactional(readOnly = true)
     public CurriculumListResponse getTeachersCurricula(Teacher teacher, Pageable pageable) {
         Page<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher, pageable);
 
         return CurriculumListResponse.fromDomainList(curriculumList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CurriculumListResponse getTeachersCurricula(Teacher teacher) {
+        List<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher);
+
+        return CurriculumListResponse.fromDomainList(curriculumList);
+    }
+
+    @Override
+    public CurriculumListResponse getTeachersCurricula(Integer teacherId, Pageable pageable) {
+        Teacher teacher = teacherRepository.getReferenceById(teacherId);
+        Page<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher, pageable);
+
+        return CurriculumListResponse.fromSimpleDomainList(curriculumList);
+    }
+
+    @Override
+    public CurriculumListResponse getTeachersCurricula(Integer teacherId) {
+        Teacher teacher = teacherRepository.getReferenceById(teacherId);
+        List<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher);
+
+        return CurriculumListResponse.fromSimpleDomainList(curriculumList);
     }
 
     @Override
@@ -158,10 +205,32 @@ public class CurriculumServiceImpl implements CurriculumService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public CurriculumListResponse getStudentsCurricula(Student student) {
+        List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student);
+
+        List<Curriculum> curriculaList = new ArrayList<>();
+        for (StudentCurriculum studentCurriculum : studentsCurricula) {
+            curriculaList.add(studentCurriculum.getCurriculum());
+        }
+
+        return CurriculumListResponse.fromDomainList(curriculaList, null, null, null);
+    }
+
+    @Override
     public CurriculumListResponse search(CurriculaSearchCondition condition, Pageable pageable) {
+        //페이징 처리
         Page<Curriculum> curriculumList = curriculumSearchRepository.search(condition, pageable);
 
-        return CurriculumListResponse.fromSimpleDomainList(curriculumList);
+        return fromSimpleDomainList(curriculumList);
+    }
+
+    @Override
+    public CurriculumListResponse search(CurriculaSearchCondition condition) {
+        //페이징 없이 처리
+        List<Curriculum> curriculumList = curriculumSearchRepository.search(condition);
+
+        return fromSimpleDomainList(curriculumList);
     }
 
     @Override
@@ -222,7 +291,65 @@ public class CurriculumServiceImpl implements CurriculumService {
         }
 
         curriculumRepository.delete(curriculum);
+
+        //
+//        최신 7개 중 하나가 빠지면, 채워 넣어야함.
+        List<CurriculumDetailResponse> latestCurriculums = curriculumRedisService.getLatestCurricula();
+        for (CurriculumDetailResponse latestCurriculumsCurriculum : latestCurriculums) {
+            if (latestCurriculumsCurriculum.getCurriculumId().equals(curriculumId)) {
+                List<Curriculum> top7ByOrderByCurricula = curriculumSearchRepository.findTop7ByOrderByCurricula(CurriculaOrderType.LATEST);
+                curriculumRedisService.saveLatestCurricula(fromSimpleDomainList(top7ByOrderByCurricula).getCurricula());
+                break;
+            }
+        }
     }
+
+    @Transactional(readOnly = true)
+    public List<CurriculumDetailResponse> getPopularRatioCurriculums() {
+        List<Curriculum> curriculumList = curriculumSearchRepository.findTop7ByOrderByCurricula(CurriculaOrderType.POPULAR_PER_RATIO);
+
+        return fromSimpleDomainList(curriculumList).getCurricula();
+    }
+
+    @Override
+    public List<CurriculumDetailResponse> getLatestCurriculums() {
+        List<Curriculum> curriculumList = curriculumSearchRepository.findTop7ByOrderByCurricula(CurriculaOrderType.LATEST);
+
+        return fromSimpleDomainList(curriculumList).getCurricula();
+    }
+
+    @Override
+    public Boolean getIsApplyForCurriculum(Student student, Integer curriculumId) {
+        return studentCurriculumRepository.existsById(StudentCurriculumId.createStudentCurriculumId(student.getId(), curriculumId));
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public CurriculumIncludesStudentListResponseDto getTeachersCurriculaIncludesStudents(Teacher teacher, Pageable pageable) {
+        List<CurriculumIncludesStudentDto> curriculumDtoList = new ArrayList<>();
+        Page<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher, pageable);
+        for (Curriculum curriculum : curriculumList) {
+            List<StudentCurriculum> studentCurriculumList = studentCurriculumRepository.findAllByCurriculumId(curriculum.getId());
+            CurriculumIncludesStudentDto curriculumIncludesStudentDto = CurriculumIncludesStudentDto.of(curriculum, studentCurriculumList);
+            curriculumDtoList.add(curriculumIncludesStudentDto);
+        }
+        return CurriculumIncludesStudentListResponseDto.of(curriculumDtoList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CurriculumIncludesStudentListResponseDto getTeachersCurriculaIncludesStudents(Teacher teacher) {
+        List<CurriculumIncludesStudentDto> curriculumDtoList = new ArrayList<>();
+        List<Curriculum> curriculumList = curriculumRepository.findAllByTeacher(teacher);
+        for (Curriculum curriculum : curriculumList) {
+            List<StudentCurriculum> studentCurriculumList = studentCurriculumRepository.findAllByCurriculumId(curriculum.getId());
+            CurriculumIncludesStudentDto curriculumIncludesStudentDto = CurriculumIncludesStudentDto.of(curriculum, studentCurriculumList);
+            curriculumDtoList.add(curriculumIncludesStudentDto);
+        }
+        return CurriculumIncludesStudentListResponseDto.of(curriculumDtoList);
+    }
+
 
     private int getBitmaskForDayOfWeek(DayOfWeek dayOfWeek) {
         return switch (dayOfWeek) {

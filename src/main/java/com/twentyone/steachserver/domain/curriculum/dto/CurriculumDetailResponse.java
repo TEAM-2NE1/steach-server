@@ -3,10 +3,9 @@ package com.twentyone.steachserver.domain.curriculum.dto;
 import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.model.CurriculumDetail;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
-import java.time.LocalTime;
 
-import com.twentyone.steachserver.util.DateTimeUtil;
-import com.twentyone.steachserver.util.WeekdayBitmaskUtil;
+import com.twentyone.steachserver.util.converter.DateTimeUtil;
+import com.twentyone.steachserver.util.converter.WeekdayBitmaskUtil;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,6 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 public class CurriculumDetailResponse {
     private Integer curriculumId;
+    private Integer teacherId;
     private String teacherName;
     private String title;
     private String subTitle;
@@ -33,7 +33,7 @@ public class CurriculumDetailResponse {
     private String lectureEndTime;
     private int currentAttendees;
     private int maxAttendees;
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     public static CurriculumDetailResponse fromDomain(Curriculum curriculum) {
         // 7을 이진수 문자열로 변환
@@ -41,6 +41,7 @@ public class CurriculumDetailResponse {
 
         return CurriculumDetailResponse.builder()
                 .curriculumId(curriculum.getId())
+                .teacherId(curriculum.getTeacher().getId())
                 .teacherName(curriculum.getTeacher().getName())
                 .title(curriculum.getTitle())
                 .subTitle(curriculumDetail.getSubTitle())
@@ -56,7 +57,7 @@ public class CurriculumDetailResponse {
                 .lectureEndTime(DateTimeUtil.convert(curriculumDetail.getLectureCloseTime()))
                 .currentAttendees(curriculumDetail.getCurrentAttendees())
                 .maxAttendees(curriculumDetail.getMaxAttendees())
-                .createdAt(curriculum.getCreatedAt())
+                .createdAt(DateTimeUtil.convert(curriculum.getCreatedAt()))
                 .build();
     }
     public static CurriculumDetailResponse fromDomainBySimple(Curriculum curriculum) {
@@ -65,6 +66,7 @@ public class CurriculumDetailResponse {
 
         return CurriculumDetailResponse.builder()
                 .curriculumId(curriculum.getId())
+                .teacherId(curriculum.getTeacher().getId())
                 .teacherName(curriculum.getTeacher().getName())
                 .title(curriculum.getTitle())
                 .intro(curriculumDetail.getIntro())
@@ -76,7 +78,7 @@ public class CurriculumDetailResponse {
                 .lectureEndTime(DateTimeUtil.convert(curriculumDetail.getLectureCloseTime()))
                 .currentAttendees(curriculumDetail.getCurrentAttendees())
                 .maxAttendees(curriculumDetail.getMaxAttendees())
-                .createdAt(curriculum.getCreatedAt())
+                .createdAt(DateTimeUtil.convert(curriculum.getCreatedAt()))
                 .build();
     }
 }

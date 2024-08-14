@@ -1,18 +1,33 @@
 //sonarqube
+// build.gradle 에서 ext로 정의
+//def jacocoDir = "${buildDir}/customJacocoReportDir"
+def void property(java.lang.String string1, java.lang.String string2) {}
+
 sonarqube {
     properties {
-        property "sonar.projectName", "Steach"
-        property "sonar.projectKey", "2ne1_steach_server"
-        property "sonar.host.url", "http://steach.ssafy.io:9000"
-        property "sonar.login", "squ_88c9fcb9d2041d7b4a6a810955888d173c0aeb12"
+        property "sonar.projectName", "steach-server"
+        property "sonar.projectKey", "steach-server"
+        property "sonar.host.url", "http://43.202.1.52:9000"
+        property "sonar.token", "squ_9aa7980bb6f27b7f25091824cd3af5cddabf96db"
         property "sonar.language", "java"
         property 'sonar.projectVersion', '1.1.0-SNAPSHOT'
         property "sonar.sourceEncoding", "UTF-8"
-        property 'sonar.coverage.jacoco.xmlReportPaths', '${buildDir}/reports/jacoco/test/jacocoTestReport.xml'
-        property 'sonar.java.binaries', '${buildDir}/classes'
+
         property 'sonar.test.inclusions', '**/*Test.java'
         property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/**'
         property "sonar.sources", "src/main/java"
 
+        property "sonar.java.binaries", "${projectDir}/build/classes/java/main"
+        property 'sonar.coverage.jacoco.xmlReportPaths', "${jacocoDir}/jacocoTestReport.xml"
+
+// 이는 메서드의 복잡도가 10을 초과하면 경고를 표시합니다.
+        property "sonar.java.metrics.methodComplexityThreshold", "10"
+
+//        property 'sonar.coverage.jacoco.xmlReportPaths', jacocoDir.map { it.file('jacocoTestReport.xml') }.get().asFile.path
+//        Execution failed for task ':sonar'.
+//        > No signature of method: java.lang.String.map() is applicable for argument types: (sonarqube_d3d6am1yjzld9akvhilqh5kp0$_run_closure1$_closure2$_closure3) values: [sonarqube_d3d6am1yjzld9akvhilqh5kp0$_run_closure1$_closure2$_closure3@2b93b8]
+//        Possible solutions: tap(groovy.lang.Closure), md5(), wait(), dump(), any(), grep()
+
     }
 }
+

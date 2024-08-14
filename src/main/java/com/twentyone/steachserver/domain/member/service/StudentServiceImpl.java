@@ -1,5 +1,6 @@
 package com.twentyone.steachserver.domain.member.service;
 
+import com.twentyone.steachserver.domain.auth.dto.CheckUsernameAvailableResponse;
 import com.twentyone.steachserver.domain.auth.service.PasswordAuthTokenService;
 import com.twentyone.steachserver.domain.member.dto.StudentInfoRequest;
 import com.twentyone.steachserver.domain.member.dto.StudentInfoResponse;
@@ -35,5 +36,19 @@ public class StudentServiceImpl implements StudentService {
         student.updateInfo(request.getNickname(), request.getEmail(), encodedPassword);
 
         return StudentInfoResponse.fromDomain(student);
+    }
+
+    @Override
+    public CheckUsernameAvailableResponse checkNicknameAvailability(String nickname) {
+        boolean canUse = !studentRepository.existsByName(nickname);
+
+        return new CheckUsernameAvailableResponse(canUse);
+    }
+
+    @Override
+    public CheckUsernameAvailableResponse checkEmailAvailability(String email) {
+        boolean canUse = !studentRepository.existsByEmail(email);
+
+        return new CheckUsernameAvailableResponse(canUse);
     }
 }

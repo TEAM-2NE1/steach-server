@@ -13,7 +13,6 @@ public class ServerManager {
     private static final String SERVER_URL = "http://localhost:8080";
 
     public static boolean isServerRunning() {
-        log.info("server running check : " + SERVER_URL + "api/v1//check/server/operating");
         try {
             // RestTemplate 클래스는 Spring에서 제공하는 RESTful 웹 서비스와 상호작용하기 위한 간단한 HTTP 클라이언트입니다.
             RestTemplate restTemplate = new RestTemplate();

@@ -23,7 +23,7 @@ public class StudentLectureController {
     public ResponseEntity<?> submitTimeFocusTime(@AuthenticationPrincipal Student student,
                                                  @PathVariable("lectureId") Integer lectureId,
                                                  @RequestBody FocusTimeRequestDto focusTimeDto) {
-        studentLectureService.saveTimeFocusTime(student.getId(), lectureId, focusTimeDto.sleepTime());
+        studentLectureService.saveSleepTime(student.getId(), lectureId, focusTimeDto.sleepTime());
         return ResponseEntity.ok().build();
     }
 }

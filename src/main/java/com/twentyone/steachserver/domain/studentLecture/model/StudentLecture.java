@@ -1,12 +1,13 @@
 package com.twentyone.steachserver.domain.studentLecture.model;
 
-import com.twentyone.steachserver.config.domain.BaseTimeEntity;
+import com.twentyone.steachserver.domain.common.BaseTimeEntity;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Student;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Getter(value = AccessLevel.PUBLIC)
 @Setter(value = AccessLevel.PRIVATE)
@@ -17,7 +18,7 @@ public class StudentLecture extends BaseTimeEntity {
     private StudentLectureId id;
 
     @Column(name = "focus_ratio", precision = 5, scale = 2)
-    private BigDecimal focusRatio = BigDecimal.ZERO;
+    private BigDecimal focusRatio = BigDecimal.valueOf(100.00);
 
     // minute
     @Column(name = "focus_time", columnDefinition = "SMALLINT(6)")
@@ -56,9 +57,10 @@ public class StudentLecture extends BaseTimeEntity {
         return studentLecture;
     }
 
-    public static StudentLecture of(Student student, Lecture lecture, Integer focusTime) {
+    public static StudentLecture of(Student student, Lecture lecture, Integer sleepTime, Integer lectureDurationMinutes) {
         StudentLecture studentLecture = new StudentLecture(student, lecture);
-        studentLecture.focusTime = focusTime;
+        studentLecture.focusTime = lectureDurationMinutes - sleepTime;
+        studentLecture.focusRatio = lectureDurationMinutes - sleepTime > 0 ? BigDecimal.valueOf((float) (studentLecture.focusTime * 100)).divide(BigDecimal.valueOf(lectureDurationMinutes), 2, RoundingMode.HALF_UP) : BigDecimal.valueOf(100.00);
 
         return studentLecture;
     }

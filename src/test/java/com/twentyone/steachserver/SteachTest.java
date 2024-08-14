@@ -20,12 +20,11 @@ import static org.assertj.core.api.Fail.fail;
  * 설명: test 프로파일을 활성화하여 테스트 실행 시 특정 설정 파일이나 빈 설정을 사용하도록 합니다. 이를 통해 개발, 테스트, 프로덕션 등 환경별로 다른 설정을 쉽게 적용할 수 있습니다.
  */
 @Nested
-@SpringBootTest
 @ActiveProfiles("test")
 public class SteachTest {
     @BeforeAll
     public static void checkTestProfile() {
-        System.out.println("application-test.yml 파일여부 확인(test_db 사용 여부)");
+//        System.out.println("application-test.yml 파일여부 확인(test_db 사용 여부)");
         if (!Files.exists(Paths.get("src/test/resources/application-test.yml"))) {
             fail("application-test.yml 파일이 존재하지 않습니다.");
         }

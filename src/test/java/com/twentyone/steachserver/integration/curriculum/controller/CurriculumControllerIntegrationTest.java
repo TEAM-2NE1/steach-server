@@ -46,7 +46,7 @@ public class CurriculumControllerIntegrationTest extends TeacherAuthControllerIn
         커리큘럼_기본_정보.put("subTitle", "부제목");
         커리큘럼_기본_정보.put("intro", "소개");
         커리큘럼_기본_정보.put("information", "정보");
-        커리큘럼_기본_정보.put("category", CurriculumCategory.EDUCATION);
+        커리큘럼_기본_정보.put("category", CurriculumCategory.getCategoryByIndex(0));
         커리큘럼_기본_정보.put("subCategory", "하위 카테고리");
         커리큘럼_기본_정보.put("bannerImgUrl", "http://example.com/banner.jpg");
         커리큘럼_기본_정보.put("startDate", LocalDate.now());
@@ -115,8 +115,8 @@ public class CurriculumControllerIntegrationTest extends TeacherAuthControllerIn
     }
 
     Integer 커리큘럼_생성_확인(Response 커리큘럼_생성, Map<String, Object> 커리큘럼_기본_정보) throws JsonProcessingException {
-        String s = 커리큘럼_생성.body().prettyPrint();
-        System.out.println(s);
+//        String s = 커리큘럼_생성.body().prettyPrint();
+//        System.out.println(s);
         커리큘럼_생성
                 .then()
                 .statusCode(HttpStatus.OK.value())

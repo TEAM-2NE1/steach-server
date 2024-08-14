@@ -51,8 +51,11 @@ public class ClassroomServiceImpl implements ClassroomService {
 
         // 추후 배치처리해주면 기가 맥힐듯
         for (Lecture lecture : lectures) {
-            Classroom classroom = Classroom.createClassroom(lecture);
-            classroomRepository.save(classroom);
+            Optional<Classroom> byId = classroomRepository.findById(lecture.getId());
+            if (byId.isEmpty()) {
+                Classroom classroom = Classroom.createClassroom(lecture);
+                classroomRepository.save(classroom);
+            }
         }
     }
 

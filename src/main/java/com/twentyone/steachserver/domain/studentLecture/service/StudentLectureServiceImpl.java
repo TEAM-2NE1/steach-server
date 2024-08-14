@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 
 
 @Service
@@ -35,7 +34,7 @@ public class StudentLectureServiceImpl implements StudentLectureService {
 
     @Override
     @Transactional
-    public void saveTimeFocusTime(Integer studentId, Integer lectureId, Integer sleepTime) {
+    public void saveSleepTime(Integer studentId, Integer lectureId, Integer sleepTime) {
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 강의입니다."));
         Student student = studentRepository.getReferenceById(studentId);
@@ -50,25 +49,30 @@ public class StudentLectureServiceImpl implements StudentLectureService {
                         studentLecture -> {
                             LocalDateTime updatedAt = studentLecture.getUpdatedAt();
                             int middleMinutes = (int) Duration.between(updatedAt, LocalDateTime.now()).toMinutes();
-                            int plusFocusTime = middleMinutes - sleepTime;
+                            int plusSleepTime = middleMinutes - sleepTime;
 
-                            Integer lastFocusTime = studentLecture.getFocusTime();
+                            //FIXME plusFocusTime이 마이너스가 되는 문제 발생!! 0으로 맞추도록 임시 설정
+                            if (plusSleepTime < 0) {
+                                plusSleepTime = 0;
+                            }
 
-                            int newFocusTime = lastFocusTime + plusFocusTime;
-                            if (newFocusTime > lectureDurationMinutes) {
+                            Integer lastSleepTime = studentLecture.getFocusTime();
+
+                            int newSleepTime = lastSleepTime + plusSleepTime;
+                            if (newSleepTime > lectureDurationMinutes) {
                                 studentLecture.updateNewFocusTime(lectureDurationMinutes);
                             } else {
-                                studentLecture.sumFocusTime(plusFocusTime);
+                                studentLecture.sumFocusTime(newSleepTime);
                             }
                         },
-                        () -> createAndSaveStudentLecture(studentId, lectureId, lectureDurationMinutes - sleepTime)
+                        () -> createAndSaveStudentLecture(studentId, lectureId, sleepTime, lectureDurationMinutes)
                 );
     }
 
-    private void createAndSaveStudentLecture(Integer studentId, Integer lectureId, Integer focusTime) {
+    private void createAndSaveStudentLecture(Integer studentId, Integer lectureId, Integer sleepTime, Integer lectureDurationMinutes) {
         Lecture lecture = lectureRepository.getReferenceById(lectureId);
         Student student = studentRepository.getReferenceById(studentId);
-        StudentLecture studentLecture = StudentLecture.of(student, lecture, focusTime);
+        StudentLecture studentLecture = StudentLecture.of(student, lecture, sleepTime, lectureDurationMinutes);
         studentLectureRepository.save(studentLecture);
     }
 
@@ -78,13 +82,13 @@ public class StudentLectureServiceImpl implements StudentLectureService {
         studentLectureQueryRepository.updateStudentLectureByFinishLecture(lectureId);
     }
 
-    @Override
-    public void createStudentLectureByLecture(Integer lectureId) {
-        List<Student> students = lectureQueryRepository.getStudentIds(lectureId);
-
-        for (Student student : students) {
-            studentLectureRepository.save(StudentLecture.of(student, lectureRepository.getReferenceById(lectureId)));
-        }
-
-    }
+//    @Override
+//    @Transactional
+//    public void createStudentLectureByLecture(Integer lectureId) {
+//        List<Student> students = lectureQueryRepository.getStudentIds(lectureId);
+//
+//        for (Student student : students) {
+//            studentLectureRepository.save(StudentLecture.of(student, lectureRepository.getReferenceById(lectureId)));
+//        }
+//    }
 }

@@ -1,5 +1,7 @@
 package com.twentyone.steachserver.domain.lecture.dto.update;
 
 
-public record UpdateLectureRequestDto(String lectureTitle) {
+import java.time.LocalTime;
+
+public record UpdateLectureRequestDto(String lectureTitle, LocalTime lectureStartTime, LocalTime lectureEndTime) {
 }

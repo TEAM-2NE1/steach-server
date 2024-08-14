@@ -1,0 +1,65 @@
+auth_enabled: false  # 인증 기능을 비활성화합니다.
+
+server:  # 서버 설정에 대한 섹션입니다.
+  http_listen_port: 3100  # HTTP 요청을 수신할 포트 번호를 3100으로 설정합니다.
+  grpc_listen_port: 9096  # gRPC 요청을 수신할 포트 번호를 9096으로 설정합니다.
+
+common:  # 공통 설정에 대한 섹션입니다.
+  instance_addr: 43.202.1.52
+#  instance_addr: 127.0.0.1  # 인스턴스의 주소를 로컬호스트(127.0.0.1)로 설정합니다.
+  path_prefix: /tmp/loki  # Loki의 데이터가 저장될 기본 경로를 /tmp/loki로 설정합니다.
+  storage:  # 스토리지 설정입니다.
+    filesystem:  # 파일 시스템을 이용한 스토리지 설정입니다.
+      chunks_directory: /tmp/loki/chunks  # 로그 청크가 저장될 디렉토리를 /tmp/loki/chunks로 설정합니다.
+      rules_directory: /tmp/loki/rules  # 룰 파일이 저장될 디렉토리를 /tmp/loki/rules로 설정합니다.
+  replication_factor: 1  # 데이터의 복제본 수를 1로 설정합니다. 즉, 복제본이 없습니다.
+  ring:  # 분산 처리와 관련된 설정입니다.
+    kvstore:  # 키-값 저장소 설정입니다.
+      store: inmemory  # 인메모리 키-값 저장소를 사용하도록 설정합니다.
+
+query_range:  # 쿼리 범위 설정입니다.
+  results_cache:  # 쿼리 결과 캐시 설정입니다.
+    cache:  # 캐시 설정입니다.
+      embedded_cache:  # 내장된 캐시를 사용하도록 설정합니다.
+        enabled: true  # 내장 캐시를 활성화합니다.
+        max_size_mb: 100  # 캐시의 최대 크기를 100MB로 설정합니다.
+
+schema_config:  # 스키마 설정입니다.
+  configs:  # 여러 개의 스키마 구성 목록입니다.
+    - from: 2020-10-24  # 이 스키마 설정이 적용되는 시작 날짜입니다.
+      store: tsdb  # Time Series Database(TSDB)를 스토리지로 사용합니다.
+      object_store: filesystem  # 파일 시스템을 객체 저장소로 사용합니다.
+      schema: v13  # 스키마 버전을 v13으로 설정합니다.
+      index:  # 인덱스 설정입니다.
+        prefix: index_  # 인덱스 파일의 접두사를 index_로 설정합니다.
+        period: 24h  # 인덱스의 생성 주기를 24시간으로 설정합니다.
+
+ruler:  # 룰 설정에 대한 섹션입니다.
+  alertmanager_url: http://localhost:9093  # Alertmanager의 URL을 http://localhost:9093으로 설정합니다.
+
+# 실제 환경에서 위까지 적용.
+
+# 아래는 그라파나의 깃허브에서 직접 가져온거임
+ingester:  # 로그 데이터를 청크로 저장하는 구성 요소 설정입니다.
+  chunk_target_size: 2000  # 청크의 목표 크기를 1000으로 설정합니다.
+  max_chunk_age: 5s  # 청크가 최대 10초 동안 유지되도록 설정합니다.
+  chunk_idle_period: 5s  # 청크가 비활성 상태일 경우 10초 후에 플러시되도록 설정합니다.
+  flush_check_period: 5s  # 청크가 플러시(쓰기)될지 여부를 확인하는 주기를 10초로 설정합니다.
+
+limits_config:  # 제한 구성 설정입니다.
+  allow_structured_metadata: true  # 구조화된 메타데이터를 허용하도록 설정합니다.
+
+# 유튜브 영상에서 추천함
+pattern_config:  # 패턴 설정에 대한 섹션입니다.
+  enabled: true  # 패턴 매칭을 활성화합니다.
+
+# 기본적으로, Loki는 익명으로, 그러나 고유 식별이 가능한 사용 및 구성 분석 데이터를 Grafana Labs로 전송합니다.
+# 이러한 통계는 Loki의 사용 방법을 더 잘 이해하는 데 도움이 되며, 대부분의 사용자에 대한 성능 수준을 보여줍니다.
+# 이는 기능 및 문서의 우선순위를 정하는 데 도움이 됩니다.
+# 전송되는 데이터에 대한 자세한 내용은 아래를 참조하십시오.
+# https://github.com/grafana/loki/blob/main/pkg/analytics/stats.go
+# 보고서에 포함되는 내용을 보려면 buildReport 메서드를 참조하십시오.
+#
+# 보고를 비활성화하려면, 아래 줄의 주석을 해제하십시오:
+#analytics:
+#  reporting_enabled: false  # 보고 기능을 비활성화합니다.

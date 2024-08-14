@@ -22,8 +22,11 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Integer>
     @Query("select c from Curriculum c join c.curriculumDetail where c.id = :id")
     Optional<Curriculum> findByIdWithDetail(@Param("id") Integer id);
 
-    @Query("select c from Curriculum  c join c.curriculumDetail where c.teacher = :teacher")
+    @Query("select c from Curriculum c join c.curriculumDetail where c.teacher = :teacher order by c.createdAt desc")
     Page<Curriculum> findAllByTeacher(@Param("teacher") Teacher teacher, Pageable pageable);
+
+    @Query("select c from Curriculum c join c.curriculumDetail where c.teacher = :teacher order by c.createdAt desc")
+    List<Curriculum> findAllByTeacher(@Param("teacher") Teacher teacher);
 
     Optional<Curriculum> findByLecturesContaining(Lecture lecture);
 }

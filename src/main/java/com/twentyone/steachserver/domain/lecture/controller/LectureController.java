@@ -3,9 +3,11 @@ package com.twentyone.steachserver.domain.lecture.controller;
 import com.twentyone.steachserver.domain.auth.error.ForbiddenException;
 import com.twentyone.steachserver.domain.classroom.dto.ClassroomResponseDto;
 import com.twentyone.steachserver.domain.classroom.model.Classroom;
+import com.twentyone.steachserver.domain.lecture.dto.CompletedLecturesByStudentResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.CompletedLecturesResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.FinalLectureInfoByTeacherDto;
 import com.twentyone.steachserver.domain.lecture.dto.LectureBeforeStartingResponseDto;
+import com.twentyone.steachserver.domain.lecture.dto.MyLectureHistoryResponse;
 import com.twentyone.steachserver.domain.lecture.dto.update.UpdateLectureRequestDto;
 import com.twentyone.steachserver.domain.lecture.error.LectureTimeNotYetException;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
@@ -19,9 +21,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Tag(name = "강의")
@@ -44,7 +48,19 @@ public class LectureController {
         return ResponseEntity.ok().body(lectureBeforeStartingResponseDto);
     }
 
-    @Operation(summary = "[선생님] 강의 수정!", description = "성공시 200 반환, 실패시 204 NO_CONTENT 반환.")
+    @Secured("ROLE_STUDENT")
+    @Operation(summary = "[공통] 수강한 강의에 대한 다양한 정보 반환", description = "무조건 200을 반환, 강의에 대해서 시작 전 강의면 시작 전 형태로, 끝난 강의는 끝난형태로 반환.")
+    @GetMapping("/complete/student")
+    public ResponseEntity<?> getLectureEndInformation(@AuthenticationPrincipal Student student){
+        List<CompletedLecturesByStudentResponseDto> completedLecturesResponseDto = lectureService.getFinalLectureInformationByStudent(student);
+        return ResponseEntity.ok().body(completedLecturesResponseDto);
+    }
+
+    @Operation(
+            summary = "[선생님] 강의 수정!",
+            description = "성공시 200 반환, 실패시 204 NO_CONTENT 반환.<br/>" +
+                    "title이나 lecture_start_time이 null이면 변경안됨"
+    )
     @PatchMapping("/{lectureId}")
     public ResponseEntity<?> updateLectureInformation(@PathVariable("lectureId") Integer lectureId, @RequestBody UpdateLectureRequestDto updatelectureRequestDto) {
         return lectureService.updateLectureInformation(lectureId, updatelectureRequestDto)
@@ -94,5 +110,18 @@ public class LectureController {
         lectureService.delete(lectureId, teacher);
 
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "[선생님] (강의 끝난 후) 강의 레포트 반환", description = "무조건 200을 반환, 강의 끝냈을 때 데이터 똑같이 보내줌")
+    @GetMapping("/report/{lectureId}")
+    public ResponseEntity<FinalLectureInfoByTeacherDto> getLectureReport(@PathVariable("lectureId") Integer lectureId) {
+        FinalLectureInfoByTeacherDto finalLectureInfoByTeacherDto = lectureService.getFinalLectureInformation(lectureId);
+        return ResponseEntity.ok().body(finalLectureInfoByTeacherDto);
+    }
+
+    @Operation(summary = "[학생] 나의 강의 히스토리 반환", description = "강의 히스토리 반환")
+    @GetMapping("/history")
+    public ResponseEntity<MyLectureHistoryResponse> getMyLectureHistory(@AuthenticationPrincipal Student student) {
+        return ResponseEntity.ok(lectureService.getMyLectureHistory(student));
     }
 }

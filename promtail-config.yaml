@@ -1,0 +1,62 @@
+server:
+  http_listen_port: 9080 # Promtail이 HTTP 요청을 수신하는 포트를 9080으로 설정합니다.
+  grpc_listen_port: 0 # gRPC 포트를 비활성화합니다.
+
+positions:
+  filename: /tmp/positions.yaml # 로그 수집 위치를 저장하는 파일 경로를 /tmp/positions.yaml로 설정합니다.
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push # 수집된 로그를 전송할 Loki 서버의 URL을 설정합니다.
+
+scrape_configs:
+  - job_name: system # 잡 이름을 "system"으로 설정합니다.
+    static_configs:
+      - targets:
+          - localhost # 로그 수집 대상을 localhost로 설정합니다.
+        labels:
+          job: varlogs # 로그에 사용될 라벨을 "varlogs"로 설정합니다.
+          __path__: /var/log/*log # 로그 파일 경로를 /var/log/*log로 설정합니다.
+
+
+  - job_name: steach-server
+    static_configs:
+      - targets:
+          - steach-server
+        labels:
+          job: steach-server-logs
+          __path__: /var/log/steach-server/*.log
+
+
+# path 가 서버 내부의 path인거 같아서 수정
+#- job_name: steach-server
+#    static_configs:
+#      - targets:
+#          - steach-server
+#        labels:
+#          job: steach-server-logs
+#          __path__: /var/lib/docker/containers/b8b85667fb417429736251efa473af77a18d8c10db6ca69d51e3c0ec941ab586/b8b85667fb417429736251efa473af77a18d8c10db6ca69d51e3c0ec941ab586-json.log
+
+
+# # /var/lib/docker/containers/b8b85667fb417429736251efa473af77a18d8c10db6ca69d51e3c0ec941ab586/b8b85667fb417429736251efa473af77a18d8c10db6ca69d51e3c0ec941ab586-json.log
+
+#  - job_name: docker # 잡 이름을 "docker"로 설정합니다.
+#    static_configs: # 정적 설정 사용
+#      - targets:
+#          - localhost # 로그 수집 대상을 localhost로 설정합니다.
+##        labels:
+##          job: dockerlogs # Docker 로그에 사용될 job 라벨을 "dockerlogs"로 설정합니다.
+#        labels:
+#          job: grafana
+#          __path__: /var/log/grafana/*log
+
+    # 아래는 공식 설정 파일 기본은 아니다.
+    relabel_configs:
+      - source_labels: [__meta_docker_container_name] # Docker 컨테이너 이름을 소스 라벨로 설정합니다.
+        target_label: container # 대상 라벨을 "container"로 설정합니다.
+
+# 이 설정 파일은 Promtail의 설정입니다.
+# Promtail은 로그를 수집하여 Loki 서버에 전송하는 역할을 합니다.
+# 이 구성에서는 Promtail이 HTTP 요청을 수신할 포트와 로그 위치 파일 경로를 정의하고,
+# 수집된 로그를 전송할 Loki 서버의 URL을 설정합니다.
+# 또한, 로그 수집을 위한 여러 잡(job)들을 정의하고, 특정 경로에서 로그를 수집하도록 설정하며,
+# Docker 컨테이너 로그를 수집할 때 라벨을 재설정하는 규칙도 포함하고 있습니다.
