@@ -17,7 +17,7 @@ public class StudentLecture extends BaseTimeEntity {
     private StudentLectureId id;
 
     @Column(name = "focus_ratio", precision = 5, scale = 2)
-    private BigDecimal focusRatio = BigDecimal.ZERO;
+    private BigDecimal focusRatio = BigDecimal.valueOf(100.00);
 
     // minute
     @Column(name = "focus_time", columnDefinition = "SMALLINT(6)")

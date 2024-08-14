@@ -20,6 +20,7 @@ public class LectureResponseDto {
     private Integer lectureOrder;
     private LocalDateTime lectureStartTime;
     private LocalDateTime lectureEndTime;
+    private Boolean isCompleted;
 
     public static LectureResponseDto fromDomain(Lecture lecture) {
         return LectureResponseDto.builder()
@@ -28,6 +29,7 @@ public class LectureResponseDto {
                 .lectureOrder(lecture.getLectureOrder())
                 .lectureStartTime(lecture.getLectureStartDate())
                 .lectureEndTime(lecture.getLectureEndDate())
+                .isCompleted(lecture.getRealEndTime() != null)
                 .build();
     }
 
