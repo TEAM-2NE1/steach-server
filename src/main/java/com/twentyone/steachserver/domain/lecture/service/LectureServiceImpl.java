@@ -264,7 +264,11 @@ public class LectureServiceImpl implements LectureService {
                 List<Quiz> quizzes = lecture.getQuizzes();
                 for (Quiz quiz: quizzes) {
                     StudentQuiz byStudentAndQuiz = studentQuizRepository.findByStudentAndQuiz(student, quiz)
-                            .orElseThrow(() -> new IllegalArgumentException("끝난 강의는 반드시 이 값이 존재해야합니다."));
+                            .orElseGet(() -> null);
+
+                    if (byStudentAndQuiz == null) {
+                        continue;
+                    }
 
                     quizScore += byStudentAndQuiz.getScore();
                     if (byStudentAndQuiz.getStudentChoice().equals(quiz.getQuizChoiceString().get(quiz.getAnswer()))) {
