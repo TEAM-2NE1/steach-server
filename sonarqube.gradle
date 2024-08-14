@@ -7,8 +7,8 @@ sonarqube {
     properties {
         property "sonar.projectName", "steach-server"
         property "sonar.projectKey", "steach-server"
-        property "sonar.host.url", "http://steach.ssafy.io:9000"
-        property "sonar.token", "squ_06276c2bf9d82b58a779e405958e68ae0bf2bea2"
+        property "sonar.host.url", "http://43.202.1.52:9000"
+        property "sonar.token", "squ_9aa7980bb6f27b7f25091824cd3af5cddabf96db"
         property "sonar.language", "java"
         property 'sonar.projectVersion', '1.1.0-SNAPSHOT'
         property "sonar.sourceEncoding", "UTF-8"
@@ -19,6 +19,9 @@ sonarqube {
 
         property "sonar.java.binaries", "${projectDir}/build/classes/java/main"
         property 'sonar.coverage.jacoco.xmlReportPaths', "${jacocoDir}/jacocoTestReport.xml"
+
+// 이는 메서드의 복잡도가 10을 초과하면 경고를 표시합니다.
+        property "sonar.java.metrics.methodComplexityThreshold", "10"
 
 //        property 'sonar.coverage.jacoco.xmlReportPaths', jacocoDir.map { it.file('jacocoTestReport.xml') }.get().asFile.path
 //        Execution failed for task ':sonar'.

@@ -96,9 +96,10 @@ public class CurriculumServiceImpl implements CurriculumService {
 
         for (int i = 0; i < selectedDates.size(); i++) {
             LocalDateTime lectureDate = selectedDates.get(i).with(curriculumDetail.getLectureStartTime()); // 날짜에 시간 설정
+            LocalDateTime lectureEndDate = selectedDates.get(i).with(curriculumDetail.getLectureCloseTime()); // 날짜에 시간 설정
             int order = i + 1;
             Lecture lecture = Lecture.of(request.getTitle() + " " + order + "강", order,
-                    lectureDate, curriculum);
+                    lectureDate, lectureEndDate, curriculum);
             lectureRepository.save(lecture);
         }
 

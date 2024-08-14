@@ -36,8 +36,8 @@ public class StudentQuizServiceImpl implements StudentQuizService {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 퀴즈입니다."));
 
-        lectureValidator.validateFinishLecture(quiz.getLecture());
-        lectureValidator.validateQuizOfLectureAuth(quiz, student);
+        //lectureValidator.validateFinishLecture(quiz.getLecture());
+        //lectureValidator.validateQuizOfLectureAuth(quiz, student);
 
         Optional<StudentQuiz> studentQuiz = studentQuizzesRepository.findById(StudentQuizId.createStudentQuizId(student.getId(), quizId));
         if (studentQuiz.isPresent()) throw new IllegalArgumentException("이미 점수가 존재합니다.");
@@ -46,7 +46,7 @@ public class StudentQuizServiceImpl implements StudentQuizService {
         studentQuizzesRepository.save(newStudentQuiz);
 
         //통계생성 - 나중에 Redis로 바꾸지
-        QuizStatistics quizStatistics = quizStatisticsRepository.findByStudentIdAndLectureIdOrderByCurrentScoreDesc(student.getId(), quiz.getLecture().getId())
+        QuizStatistics quizStatistics = quizStatisticsRepository.findByStudentIdAndLectureId(student.getId(), quiz.getLecture().getId())
                 .orElseGet(() -> new QuizStatistics(newStudentQuiz.getQuiz().getLecture().getId(), newStudentQuiz.getStudent().getId()));
         quizStatistics.update(requestDto.score());
 

@@ -20,10 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -205,22 +202,25 @@ public class  QuizServiceImpl implements QuizService {
     public QuizStatisticDto getStatistics(Integer quizId) {
         Quiz quiz = quizRepository.findById(quizId)
                         .orElseThrow(() -> new ResourceNotFoundException("찾을 수 없는 퀴즈"));
-        List<StudentQuiz> studentQuizByQuiz = studentQuizRepository.findStudentQuizByQuiz(quiz);
+        List<StudentQuiz> studentQuizByQuiz = studentQuizRepository.findTop4ByQuiz(quiz);
 
         List<QuizChoice> quizChoices = quiz.getQuizChoices();
         int[] count = new int[quizChoices.size()];
 
         //통계데이터 TODO redis로 변경
-        List<QuizStudentScoreDto> prev = new ArrayList<>();
+        List<QuizStudentScoreDto> prev = new ArrayList<>(); //없어도 될 것 같다 - 클라이언트 저장으로 변경됨
         List<QuizStudentScoreDto> current = new ArrayList<>();
 
+        // 추가
+        studentQuizByQuiz.sort(Comparator.comparingInt(StudentQuiz::getScore).reversed());
+
         int rank = 1;
+
         for (StudentQuiz studentQuiz: studentQuizByQuiz) {
-            QuizStatistics quizStatistics = quizStatisticsRepository.findByStudentIdAndLectureIdOrderByCurrentScoreDesc(studentQuiz.getStudent().getId(), studentQuiz.getQuiz().getLecture().getId())
+            QuizStatistics quizStatistics = quizStatisticsRepository.findByStudentIdAndLectureId(studentQuiz.getStudent().getId(), studentQuiz.getQuiz().getLecture().getId())
                     .orElseThrow(() -> new RuntimeException("quizStatistics 찾을 수 없음"));
-            prev.add(new QuizStudentScoreDto(quizStatistics.getPrevRank(), quizStatistics.getPrevScore(), studentQuiz.getStudent().getName()));
-            quizStatistics.setCurrentRank(rank++);
-            current.add(new QuizStudentScoreDto(quizStatistics.getCurrentRank(), quizStatistics.getCurrentScore(), studentQuiz.getStudent().getName()));
+            
+            current.add(new QuizStudentScoreDto(0, quizStatistics.getCurrentScore(), studentQuiz.getStudent().getName()));
 
             for (int i =0; i<quizChoices.size(); i++) {
                 QuizChoice quizChoice = quizChoices.get(i);
@@ -230,6 +230,15 @@ public class  QuizServiceImpl implements QuizService {
                     break;
                 }
             }
+        }
+
+        //score 총 합 기준으로 정렬
+        Collections.sort(current, (o1, o2) -> o2.getScore() - o1.getScore());
+
+        //랭크 부여
+        int rank = 1;
+        for (QuizStudentScoreDto dto: current) {
+            dto.setCurrentRank(rank++);
         }
 
         List<Integer> statistics = Arrays.stream(count).boxed().collect(Collectors.toList());

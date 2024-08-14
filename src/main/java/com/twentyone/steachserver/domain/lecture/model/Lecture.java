@@ -33,11 +33,14 @@ public class Lecture {
     @Column(name = "lecture_start_date", nullable = false)
     private LocalDateTime lectureStartDate; //시작 날짜로 해석하겠음 - 주효림
 
+    @Column(name = "lecture_end_date")
+    private LocalDateTime lectureEndDate;
+
     @Column(name = "real_start_time")
     private LocalDateTime realStartTime;
 
     @Column(name = "real_end_time")
-    private LocalDateTime realEndTime;
+    private LocalDateTime realEndTime; //강의가 끝났는지 여부 판단 이걸로함
 
     @Column(name = "number_of_quizzes", columnDefinition = "TINYINT(4)")
     private Integer numberOfQuizzes = 0;
@@ -52,11 +55,12 @@ public class Lecture {
     @OneToMany(mappedBy = "lecture")
     private List<StudentLecture> studentLectures = new ArrayList<>();
 
-    public static Lecture of(String title, Integer lectureOrder, LocalDateTime lectureStartTime, Curriculum curriculum) {
+    public static Lecture of(String title, Integer lectureOrder, LocalDateTime lectureStartTime, LocalDateTime lectureEndDate, Curriculum curriculum) {
         Lecture lecture = new Lecture();
         lecture.title = title;
         lecture.lectureOrder = lectureOrder;
         lecture.lectureStartDate = lectureStartTime;
+        lecture.lectureEndDate = lectureEndDate;
         lecture.curriculum = curriculum;
 
         curriculum.addLecture(lecture);
@@ -72,17 +76,21 @@ public class Lecture {
         this.realEndTime = LocalDateTime.now();
     }
     public void updateRealStartTimeWithNow() {
-        System.out.println("update");
+//        System.out.println("update");
         this.realStartTime = LocalDateTime.now();
     }
 
-    public void update(String lectureTitle, LocalTime lectureStartTime) {
+    public void update(String lectureTitle, LocalTime lectureStartTime, LocalTime lectureEndTime) {
         if (lectureTitle != null) {
             this.title = lectureTitle;
         }
 
         if (lectureStartTime != null) {
             this.lectureStartDate = this.lectureStartDate.withHour(lectureStartTime.getHour()).withMinute(lectureStartTime.getMinute());
+        }
+
+        if (lectureEndDate != null) {
+            this.lectureEndDate = this.lectureEndDate.withHour(lectureEndTime.getHour()).withMinute(lectureEndTime.getMinute());
         }
     }
 

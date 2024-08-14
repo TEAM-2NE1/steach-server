@@ -31,6 +31,5 @@ class RedisConfigInfoTest extends SteachTest {
     void testRedisUrl() {
         String redisUrl = env.getProperty("spring.data.redis.url");
         assertNotNull(redisUrl);
-        System.out.println("Configured Redis URL: " + redisUrl);
     }
 }

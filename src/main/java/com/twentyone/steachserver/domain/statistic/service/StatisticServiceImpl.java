@@ -5,6 +5,7 @@ import com.twentyone.steachserver.domain.curriculum.model.Curriculum;
 import com.twentyone.steachserver.domain.curriculum.repository.CurriculumRepository;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
 import com.twentyone.steachserver.domain.member.model.Student;
+import com.twentyone.steachserver.domain.member.repository.StudentRepository;
 import com.twentyone.steachserver.domain.statistic.dto.RadarChartStatisticDto;
 import com.twentyone.steachserver.domain.statistic.dto.StatisticsByCurriculumCategory;
 import com.twentyone.steachserver.domain.statistic.model.RadarChartStatistic;
@@ -22,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,6 +36,7 @@ public class StatisticServiceImpl implements StatisticService {
     private final RadarChartStatisticRepository radarChartStatisticRepository;
     private final LectureStatisticMongoRepository lectureStatisticMongoRepository;
     private final GPTDataByLectureMongoRepository gptDataByLectureMongoRepository;
+    private final StudentRepository studentRepository;
 
     final int NUMBER_OF_CATEGORIES = CurriculumCategory.sizeExcludingETC();
 
@@ -58,10 +62,15 @@ public class StatisticServiceImpl implements StatisticService {
                 .orElseThrow(() -> new IllegalArgumentException("studentId : " + studentId + " 통계가 존재하지 않습니다."));
 
         List<StatisticsByCurriculumCategory> items = radarChartStatistic.getItems();
+        List<String> categories = CurriculumCategory.getCategoriesDescription();
+//        System.out.println(categories);
+//        System.out.println(items);
 
         if(items.stream()
                 .allMatch(statisticsByCurriculumCategory -> statisticsByCurriculumCategory.totalLectureMinute() == 0)) {
-            return RadarChartStatisticDto.of(new ArrayList<>(NUMBER_OF_CATEGORIES));
+            Map<String, Integer> scores = categories.stream()
+                    .collect(Collectors.toMap(category -> category, category -> 0));
+            return RadarChartStatisticDto.of(scores);
         }
 
         BigDecimal maxFocusRatio = BigDecimal.valueOf(-1);
@@ -77,8 +86,18 @@ public class StatisticServiceImpl implements StatisticService {
         }
         // 이건 기존 값에 곱해줄 값
         List<Integer> list = createRadarChartScores(maxFocusRatio, maxLectureMinutes, items);
+//        System.out.println(list);
 
-        return RadarChartStatisticDto.of(list);
+        if (list.size() == categories.size()) {
+            Map<String, Integer> scores = IntStream.range(0, list.size())
+                    .boxed()
+                    .collect(Collectors.toMap(categories::get, list::get));
+            return RadarChartStatisticDto.of(scores);
+
+        } else {
+            throw new IllegalArgumentException("The sizes of the categories and scores lists do not match.");
+        }
+
     }
 
     private List<Integer> createRadarChartScores(BigDecimal maxFocusRatio, int maxLectureMinutes, List<StatisticsByCurriculumCategory> items) {
@@ -92,27 +111,29 @@ public class StatisticServiceImpl implements StatisticService {
             double weightedFocusRatio = items.get(i).averageFocusRatio().multiply(factorWeightingFocusRatio).intValue();
             double weightedLectureMinutes = items.get(i).totalLectureMinute() * factorWeightingLectureMinutes;
             int sum = (int) (weightedFocusRatio + weightedLectureMinutes);
-            if (sum >= maxValue) {
+            if (sum > maxValue) {
                 max =  i;
+                maxValue = sum;
             }
             list.add(sum);
         }
+
         list.set(max, 100);
         return list;
     }
 
     @Override
     public String createGPTString(Student student) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("You're a student career consultant and student career counselor." +
-                "Next, you'll see information about the courses a student has taken, along with various statistics, such as quiz scores and attention span in those courses." +
-                "Based on these statistics, I can make career recommendations based on the student's interests and aptitudes." +
-                "Food biotech, math teacher, software developer, etc.").append("\n");
-
         List<GPTDataByLecture> gptDataByLectures = gptDataByLectureMongoRepository.findAllByStudentId(student.getId());
 
         if (gptDataByLectures.isEmpty())
             throw new IllegalArgumentException("학생 " + student.getName() + "의 GPT 데이터가 존재하지 않습니다.");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("You're a student career consultant and student career counselor." +
+                "Next, you'll see information about the courses a student has taken, along with various statistics, such as quiz scores and attention span in those courses." +
+                "Based on these statistics, I can make career recommendations based on the student's interests and aptitudes.").append("\n");
+
 
         for (GPTDataByLecture gptDataByLecture : gptDataByLectures) {
             sb.append("Lecture title: ").append(gptDataByLecture.getLectureTitle());
@@ -121,7 +142,12 @@ public class StatisticServiceImpl implements StatisticService {
             sb.append(" Lecture Focus: ").append(gptDataByLecture.getFocusRatio()).append("%");
             sb.append("\n");
         }
-        sb.append("in korean");
+        sb.append("<Please nominate job for your two greatest strengths>");
+        sb.append("Give me recommendations for exact jobs, not fields that specialize in these categories.");
+        sb.append("Based on the above answers, I want the career recommendation answer to be no more than 6 lines with the key points.");
+        sb.append("<Keep characters to 250 or less including spaces>");
+        sb.append("시작 하는 말을 '").append(student.getName()).append("님에 대한 진로추천 압니다.' 라고 시작해줘 ");
+        sb.append("And <please answer in Korean>");
         return sb.toString();
     }
 

@@ -30,14 +30,14 @@ public class GPTController {
         String gptString = null;
         Map<String, String> responseMap = new HashMap<>();
         try {
-            gptString = statisticService.createGPTString(student);
-            responseMap.put("gptString", gptString);
-            String gptStatistic = gptService.getChatGPTResponse(gptString);
+            String gptStatistic = gptService.getChatGPTResponse(student);
             responseMap.put("gptStatistic", gptStatistic);
             return ResponseEntity.ok(responseMap);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.OK).body(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage() + " 데이터: " + responseMap);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error: " + e.getMessage());
         }
     }
 

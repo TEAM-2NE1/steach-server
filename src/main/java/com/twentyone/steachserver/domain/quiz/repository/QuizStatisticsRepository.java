@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface QuizStatisticsRepository extends JpaRepository<QuizStatistics, Integer> {
-    Optional<QuizStatistics> findByStudentIdAndLectureIdOrderByCurrentScoreDesc(Integer studentId, Integer lectureId);
+    Optional<QuizStatistics> findByStudentIdAndLectureId(Integer studentId, Integer lectureId);
 }

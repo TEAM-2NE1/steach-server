@@ -7,6 +7,7 @@ import com.twentyone.steachserver.domain.curriculum.dto.CurriculumAddRequest;
 import com.twentyone.steachserver.domain.curriculum.dto.CurriculumDetailResponse;
 import com.twentyone.steachserver.domain.curriculum.enums.CurriculumCategory;
 import com.twentyone.steachserver.domain.curriculum.service.CurriculumService;
+import com.twentyone.steachserver.domain.gpt.service.GPTService;
 import com.twentyone.steachserver.domain.lecture.dto.LectureResponseDto;
 import com.twentyone.steachserver.domain.lecture.dto.AllLecturesInCurriculaResponseDto;
 import com.twentyone.steachserver.domain.lecture.model.Lecture;
@@ -69,6 +70,9 @@ public class TestScenario1 {
 
     @Autowired
     StatisticService statisticService;
+
+    @Autowired
+    GPTService gptService;
 
     @Autowired
     StudentQuizService studentQuizService;
@@ -208,9 +212,9 @@ public class TestScenario1 {
         studentQuizService.createStudentQuiz(student3, quizId3, studentQuizRequestDto9);
 
         FocusTimeRequestDto focusTimeRequestDto = new FocusTimeRequestDto(10);
-        studentLectureService.saveTimeFocusTime(student1.getId(), lectureId1, 50);
-        studentLectureService.saveTimeFocusTime(student2.getId(), lectureId1, 40);
-        studentLectureService.saveTimeFocusTime(student3.getId(), lectureId1, 30);
+        studentLectureService.saveSleepTime(student1.getId(), lectureId1, 50);
+        studentLectureService.saveSleepTime(student2.getId(), lectureId1, 40);
+        studentLectureService.saveSleepTime(student3.getId(), lectureId1, 30);
 
         /* FIXME 8-4. 강의 종료 */
         Lecture updateLecture = lectureService.updateRealEndTime(lectureId1);
@@ -275,9 +279,9 @@ public class TestScenario1 {
         studentQuizRequestDto9 = new StudentQuizRequestDto(100, "Object");
         studentQuizService.createStudentQuiz(student3, quizId3, studentQuizRequestDto9);
 
-        studentLectureService.saveTimeFocusTime(student1.getId(), lectureId1, 10);
-        studentLectureService.saveTimeFocusTime(student2.getId(), lectureId1, 20);
-        studentLectureService.saveTimeFocusTime(student3.getId(), lectureId1, 30);
+        studentLectureService.saveSleepTime(student1.getId(), lectureId1, 10);
+        studentLectureService.saveSleepTime(student2.getId(), lectureId1, 20);
+        studentLectureService.saveSleepTime(student3.getId(), lectureId1, 30);
 
         /* FIXME 9-4. 강의 종료 */
         updateLecture = lectureService.updateRealEndTime(lectureId1);
@@ -286,8 +290,10 @@ public class TestScenario1 {
         statisticService.createStatisticsByFinalLecture(updateLecture);
         lectureService.getFinalLectureInformation(lectureId1);
 
-        log.info(statisticService.createGPTString(student1));
-        log.info(statisticService.createGPTString(student2));
-        log.info(statisticService.createGPTString(student3));
+        log.info(statisticService.createGPTString(student1).substring(0, 50));
+//        log.info(statisticService.createGPTString(student2));
+//        log.info(statisticService.createGPTString(student3));
+
+//        log.info(gptService.getChatGPTResponse(student1.getId()));
     }
 }

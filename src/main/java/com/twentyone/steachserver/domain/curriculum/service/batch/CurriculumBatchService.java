@@ -24,7 +24,6 @@ public class CurriculumBatchService {
     // Todo: batch 처리를 통해서 빠르게 생성하기
     @Scheduled(fixedRate = 600000)  // 10분마다 실행
     public void updateCurriculumsInRedis() {
-        log.info("Updating curriculums in Redis: {}", DateTimeUtil.convert(LocalDateTime.now()));
         List<CurriculumDetailResponse> popularRatioCurriculums = curriculumService.getPopularRatioCurriculums();
         curriculumRedisService.savePopularRatioCurricula(popularRatioCurriculums);
 
