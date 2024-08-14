@@ -14,7 +14,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
@@ -23,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @DisplayName("커리큘럼 실제 레디스 서비스 단위 테스트")
@@ -51,21 +48,6 @@ class CurriculumRealRedisServiceTest extends SteachTest {
         redisTemplate.getConnectionFactory().getConnection().flushDb();
     }
 
-    static class TypeReferenceCapture extends TypeReference<List<CurriculumDetailResponse>> {}
-
-    static class TypeReferenceCaptureMatcher implements org.mockito.ArgumentMatcher<TypeReference<List<CurriculumDetailResponse>>> {
-        private final TypeReference<List<CurriculumDetailResponse>> expectedTypeReference;
-
-        public TypeReferenceCaptureMatcher(TypeReference<List<CurriculumDetailResponse>> expectedTypeReference) {
-            this.expectedTypeReference = expectedTypeReference;
-        }
-
-        @Override
-        public boolean matches(TypeReference<List<CurriculumDetailResponse>> argument) {
-            return argument.getType().equals(expectedTypeReference.getType());
-        }
-    }
-
     private CurriculumDetailResponse createMockCurriculumDetailResponse(int id) {
         return CurriculumDetailResponse.builder()
                 .curriculumId(id)
@@ -74,7 +56,7 @@ class CurriculumRealRedisServiceTest extends SteachTest {
                 .subTitle("Subtitle " + id)
                 .intro("Intro " + id)
                 .information("Information " + id)
-                .category(CurriculumCategory.EDUCATION)
+                .category(CurriculumCategory.getCategoryByIndex(2))
                 .subCategory("SubCategory " + id)
                 .bannerImgUrl("BannerUrl " + id)
                 .startDate(DateTimeUtil.convert(LocalDateTime.now()))

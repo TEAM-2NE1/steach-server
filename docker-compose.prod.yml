@@ -1,0 +1,24 @@
+services:
+  app: # steach-server 애플리케이션 서비스 정의 steach-server가 이미 빌드되고 있으므로 의의 app으로 설정!??
+    image: steach-server:latest # 사용할 Docker 이미지 지정
+    container_name: steach-server # 컨테이너 이름 지정
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod # Spring Boot 프로파일 설정
+    ports:
+      - "18080:8080" # 호스트의 8080 포트를 컨테이너의 18080 포트에 매핑
+    networks:
+      - steach-server-network
+
+    # Docker는 각 컨테이너의 로그를 /var/lib/docker/containers/<container-id>/ 디렉토리에 저장합니다.
+  # 각 컨테이너의 로그 파일은 container-id-json.log라는 이름으로 저장됩니다.
+    logging:
+      driver: "json-file" # JSON 파일 형식으로 로그를 저장하는 로깅 드라이버를 사용 (기본)
+      options:
+        max-size: "10m"   # 각 로그 파일의 최대 크기를 10MB로 제한
+        max-file: "5"     # 최대 5개의 로그 파일을 유지, 이 수를 초과하면 가장 오래된 파일이 삭제되고 새로운 파일이 생성됨
+
+# nginx 생성시 만들어둔 네트워크 사용
+networks:
+  steach-server-network:
+    external: true  # 외부에서 생성된 네트워크를 사용하도록 설정합니다.
+    name: steach-server-network  # 사용하려는 네트워크 이름을 'steach-server-network'로 지정합니다.

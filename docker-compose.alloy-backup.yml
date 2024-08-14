@@ -1,0 +1,26 @@
+services:
+  alloy:
+    image: grafana/alloy:latest  # Grafana의 Alloy 최신 버전 이미지를 사용합니다.
+    container_name: alloy
+    ports:
+      - 12345:12345  # 호스트의 포트 12345를 컨테이너의 포트 12345에 매핑합니다.
+    volumes:
+      - /home/ubuntu/grafana/alloy/alloy-config.alloy:/etc/alloy/config.alloy  # 로컬의 alloy-config.alloy 파일을 컨테이너의 /etc/alloy/config.alloy 경로에 마운트합니다.
+      - ${env.SERVER_LOG_PATH}:/tmp/app-logs
+
+    #      - /tmp/logs/steach-server:/tmp/app-logs  # 로컬의 logs 디렉토리를 컨테이너의 /tmp/app-logs 디렉토리에 마운트합니다.
+    command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy  # Alloy 서버를 시작하고, HTTP 서버 주소를 0.0.0.0:12345로 설정하며, 저장소 경로를 /var/lib/alloy/data로 지정합니다. 또한 /etc/alloy/config.alloy 설정 파일을 사용합니다.
+    depends_on:
+      - loki  # 'loki' 서비스가 먼저 시작된 후 이 서비스가 시작되도록 설정합니다.
+    networks:
+      - steach-server-network  # 'steach-server-network' 네트워크에 연결합니다.
+
+
+# nginx 생성시 만들어둔 네트워크 사용
+networks:
+  steach-server-network:
+    external: true  # 외부에서 생성된 네트워크를 사용하도록 설정합니다.
+    name: steach-server-network  # 사용하려는 네트워크 이름을 'steach-server-network'로 지정합니다.
+
+
+# env.SERVER_LOG_PATH = "/var/lib/docker/containers/${containerId}"

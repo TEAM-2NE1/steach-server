@@ -8,6 +8,7 @@ import com.twentyone.steachserver.domain.lecture.dto.AllLecturesInCurriculaRespo
 import com.twentyone.steachserver.domain.lecture.service.LectureService;
 import com.twentyone.steachserver.domain.member.model.Student;
 import com.twentyone.steachserver.domain.member.model.Teacher;
+import com.twentyone.steachserver.domain.member.repository.TeacherRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class CurriculumController {
     }
 
     @Secured("ROLE_TEACHER")
-    @Operation(summary = "[강사] 커리큘럼 생성!")
+    @Operation(summary = "[강사] 커리큘럼 생성!", description = "category종류: KOREAN, MATH, FOREIGN_LANGUAGE, SCIENCE, ENGINEERING, ARTS_AND_PHYSICAL, SOCIAL, ETC")
     @PostMapping
     public ResponseEntity<CurriculumDetailResponse> createCurriculum(
             @AuthenticationPrincipal LoginCredential credential,

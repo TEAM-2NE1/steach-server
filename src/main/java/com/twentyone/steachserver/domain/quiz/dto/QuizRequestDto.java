@@ -1,8 +1,12 @@
 package com.twentyone.steachserver.domain.quiz.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -19,7 +23,34 @@ import java.util.List;
  *   ] // 중복가능
  * }
  */
-@Builder
-public record QuizRequestDto(Integer quizNumber, String question, List<String> choices, List<String> answers) {
+@AllArgsConstructor
+@NoArgsConstructor
+public class QuizRequestDto {
+    private Integer quizNumber;
+    private String question;
+    private List<String> choices;
+    @Min(1)
+    private Integer answers;
+    @Schema(example = "5")
+    private Integer time = 5; // default 5초
 
+    public Integer getQuizNumber() {
+        return quizNumber;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public List<String> getChoices() {
+        return choices;
+    }
+
+    public Integer getAnswers() {
+        return answers - 1; //서버용
+    }
+
+    public Integer getTime() {
+        return time;
+    }
 }
