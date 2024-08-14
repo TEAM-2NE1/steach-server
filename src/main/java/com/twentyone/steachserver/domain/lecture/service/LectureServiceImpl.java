@@ -22,6 +22,7 @@ import com.twentyone.steachserver.domain.studentLecture.repository.StudentLectur
 import com.twentyone.steachserver.domain.studentQuiz.model.StudentQuiz;
 import com.twentyone.steachserver.domain.studentQuiz.repository.StudentQuizRepository;
 import com.twentyone.steachserver.global.error.ResourceNotFoundException;
+import com.twentyone.steachserver.util.converter.DateTimeUtil;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -275,8 +276,8 @@ public class LectureServiceImpl implements LectureService {
                         new LectureHistoryResponse(
                                 curriculum.getTitle(), // 커리큘럼 이름
                                 lecture.getTitle(),    // 강의 이름
-                                lecture.getLectureStartDate(),  // 예정된 시작 시간
-                                lecture.getRealEndTime(),       // 실제 끝나는 시간
+                                DateTimeUtil.convert(lecture.getLectureStartDate()),  // 예정된 시작 시간
+                                DateTimeUtil.convert(lecture.getRealEndTime()),       // 실제 끝나는 시간
                                 averageFocusRatio,     // 집중도 평균
                                 averageFocusMinute,    // 집중한 시간
                                 quizScore,             // 퀴즈점수

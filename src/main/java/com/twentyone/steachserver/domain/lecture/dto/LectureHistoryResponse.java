@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 public class LectureHistoryResponse {
     private String curriculumName;
     private String lectureName;
-    private LocalDateTime lectureStartTime;
-    private LocalDateTime lectureEndTime;
+    private String lectureStartTime;
+    private String lectureEndTime;
     private BigDecimal averageFocusRatio;
     private Integer averageFocusMinute;
     private Integer quizScore;
