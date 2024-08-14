@@ -210,7 +210,12 @@ public class  QuizServiceImpl implements QuizService {
         //통계데이터 TODO redis로 변경
         List<QuizStudentScoreDto> prev = new ArrayList<>(); //없어도 될 것 같다 - 클라이언트 저장으로 변경됨
         List<QuizStudentScoreDto> current = new ArrayList<>();
-        
+
+        // 추가
+        studentQuizByQuiz.sort(Comparator.comparingInt(StudentQuiz::getScore).reversed());
+
+        int rank = 1;
+
         for (StudentQuiz studentQuiz: studentQuizByQuiz) {
             QuizStatistics quizStatistics = quizStatisticsRepository.findByStudentIdAndLectureId(studentQuiz.getStudent().getId(), studentQuiz.getQuiz().getLecture().getId())
                     .orElseThrow(() -> new RuntimeException("quizStatistics 찾을 수 없음"));

@@ -212,9 +212,9 @@ public class TestScenario1 {
         studentQuizService.createStudentQuiz(student3, quizId3, studentQuizRequestDto9);
 
         FocusTimeRequestDto focusTimeRequestDto = new FocusTimeRequestDto(10);
-        studentLectureService.saveTimeFocusTime(student1.getId(), lectureId1, 50);
-        studentLectureService.saveTimeFocusTime(student2.getId(), lectureId1, 40);
-        studentLectureService.saveTimeFocusTime(student3.getId(), lectureId1, 30);
+        studentLectureService.saveSleepTime(student1.getId(), lectureId1, 50);
+        studentLectureService.saveSleepTime(student2.getId(), lectureId1, 40);
+        studentLectureService.saveSleepTime(student3.getId(), lectureId1, 30);
 
         /* FIXME 8-4. 강의 종료 */
         Lecture updateLecture = lectureService.updateRealEndTime(lectureId1);
@@ -279,9 +279,9 @@ public class TestScenario1 {
         studentQuizRequestDto9 = new StudentQuizRequestDto(100, "Object");
         studentQuizService.createStudentQuiz(student3, quizId3, studentQuizRequestDto9);
 
-        studentLectureService.saveTimeFocusTime(student1.getId(), lectureId1, 10);
-        studentLectureService.saveTimeFocusTime(student2.getId(), lectureId1, 20);
-        studentLectureService.saveTimeFocusTime(student3.getId(), lectureId1, 30);
+        studentLectureService.saveSleepTime(student1.getId(), lectureId1, 10);
+        studentLectureService.saveSleepTime(student2.getId(), lectureId1, 20);
+        studentLectureService.saveSleepTime(student3.getId(), lectureId1, 30);
 
         /* FIXME 9-4. 강의 종료 */
         updateLecture = lectureService.updateRealEndTime(lectureId1);
