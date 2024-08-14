@@ -199,29 +199,21 @@ public class  QuizServiceImpl implements QuizService {
 
     @Override
     @Transactional
-    public QuizStatisticDto getStatistics(Integer quizId) {
+    public QuizStatisticDto getStatistics(Integer quizId) { //통계데이터 TODO redis로 변경
+        /*
+         * <나와야하는 결과물>
+         * 1) 한 퀴즈에 대해 선택지 당 선택된 개수
+         * 2) 한 강의에서 사람들의 current 퀴즈점수 + rank매기기
+         */
         Quiz quiz = quizRepository.findById(quizId)
                         .orElseThrow(() -> new ResourceNotFoundException("찾을 수 없는 퀴즈"));
-        List<StudentQuiz> studentQuizByQuiz = studentQuizRepository.findTop4ByQuiz(quiz);
 
+        //1) 한 퀴즈에 대해 선택지 당 선택된 개수
+        List<StudentQuiz> studentQuizByQuiz = studentQuizRepository.findByQuiz(quiz);
         List<QuizChoice> quizChoices = quiz.getQuizChoices();
         int[] count = new int[quizChoices.size()];
 
-        //통계데이터 TODO redis로 변경
-        List<QuizStudentScoreDto> prev = new ArrayList<>(); //없어도 될 것 같다 - 클라이언트 저장으로 변경됨
-        List<QuizStudentScoreDto> current = new ArrayList<>();
-
-        // 추가
-        studentQuizByQuiz.sort(Comparator.comparingInt(StudentQuiz::getScore).reversed());
-
-//        int rank = 1; 사용하지 않아서 주석처리
-
         for (StudentQuiz studentQuiz: studentQuizByQuiz) {
-            QuizStatistics quizStatistics = quizStatisticsRepository.findByStudentIdAndLectureId(studentQuiz.getStudent().getId(), studentQuiz.getQuiz().getLecture().getId())
-                    .orElseThrow(() -> new RuntimeException("quizStatistics 찾을 수 없음"));
-            
-            current.add(new QuizStudentScoreDto(0, quizStatistics.getCurrentScore(), studentQuiz.getStudent().getName()));
-
             for (int i =0; i<quizChoices.size(); i++) {
                 QuizChoice quizChoice = quizChoices.get(i);
 
@@ -230,6 +222,25 @@ public class  QuizServiceImpl implements QuizService {
                     break;
                 }
             }
+        }
+
+        // 2) 한 강의에서 사람들의 current 퀴즈점수 + rank매기기
+        Lecture lecture = quiz.getLecture();
+        List<Quiz> quizzes = lecture.getQuizzes();
+
+        Map<String, Integer> scoreBoard = new HashMap<>();
+        for (Quiz eachQuiz: quizzes) {
+            List<StudentQuiz> studentQuizzes = eachQuiz.getStudentQuizzes();
+            for (StudentQuiz studentQuiz: studentQuizzes) {
+                String studentName = studentQuiz.getStudent().getName();
+                Integer score = scoreBoard.getOrDefault(studentName, 0) + studentQuiz.getScore();
+                scoreBoard.put(studentName, score);
+            }
+        }
+
+        List<QuizStudentScoreDto> current = new ArrayList<>();
+        for (String studentName: scoreBoard.keySet()) {
+            current.add(new QuizStudentScoreDto(0, scoreBoard.get(studentName), studentName));
         }
 
         //score 총 합 기준으로 정렬
@@ -242,7 +253,7 @@ public class  QuizServiceImpl implements QuizService {
         }
 
         List<Integer> statistics = Arrays.stream(count).boxed().collect(Collectors.toList());
-        QuizStatisticDto quizStatisticDto = new QuizStatisticDto(statistics, prev, current);
+        QuizStatisticDto quizStatisticDto = new QuizStatisticDto(statistics, new ArrayList<>(), current);
 
         return quizStatisticDto;
     }
