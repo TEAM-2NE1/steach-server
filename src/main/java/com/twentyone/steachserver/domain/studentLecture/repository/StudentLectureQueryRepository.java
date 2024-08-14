@@ -178,7 +178,7 @@ public class StudentLectureQueryRepository {
 
                 sl.updateFocusRatio(calculatedFocusRatio);
             }
-            System.out.println(sl);
+//            System.out.println(sl);
 
             // 학생별 퀴즈 총점수 및 정답 맞춘 수 계산
             List<StudentQuiz> quizzes = studentQuizMap.get(sl.getStudent().getId());

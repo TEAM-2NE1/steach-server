@@ -29,8 +29,6 @@ public class RedisConfig {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        log.info("Redis URL: {}", url);
-        System.out.println("Redis URL: " + url);
         URI redisUri = URI.create(url);
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(
                 redisUri.getHost(),
