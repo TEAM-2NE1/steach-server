@@ -215,12 +215,12 @@ public class  QuizServiceImpl implements QuizService {
         studentQuizByQuiz.sort(Comparator.comparingInt(StudentQuiz::getScore).reversed());
 
         int rank = 1;
+
         for (StudentQuiz studentQuiz: studentQuizByQuiz) {
             QuizStatistics quizStatistics = quizStatisticsRepository.findByStudentIdAndLectureId(studentQuiz.getStudent().getId(), studentQuiz.getQuiz().getLecture().getId())
                     .orElseThrow(() -> new RuntimeException("quizStatistics 찾을 수 없음"));
-
-            quizStatistics.setCurrentRank(rank++);
-            current.add(new QuizStudentScoreDto(quizStatistics.getCurrentRank(), quizStatistics.getCurrentScore(), studentQuiz.getStudent().getName()));
+            
+            current.add(new QuizStudentScoreDto(0, quizStatistics.getCurrentScore(), studentQuiz.getStudent().getName()));
 
             for (int i =0; i<quizChoices.size(); i++) {
                 QuizChoice quizChoice = quizChoices.get(i);
@@ -232,7 +232,14 @@ public class  QuizServiceImpl implements QuizService {
             }
         }
 
+        //score 총 합 기준으로 정렬
         Collections.sort(current, (o1, o2) -> o2.getScore() - o1.getScore());
+
+        //랭크 부여
+        int rank = 1;
+        for (QuizStudentScoreDto dto: current) {
+            dto.setCurrentRank(rank++);
+        }
 
         List<Integer> statistics = Arrays.stream(count).boxed().collect(Collectors.toList());
         QuizStatisticDto quizStatisticDto = new QuizStatisticDto(statistics, prev, current);

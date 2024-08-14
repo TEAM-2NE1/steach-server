@@ -11,4 +11,8 @@ public class QuizStudentScoreDto {
     private int rank;
     private int score;
     private String name;
+
+    public void setCurrentRank(int rank) {
+        this.rank = rank;
+    }
 }
