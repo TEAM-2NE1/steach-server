@@ -234,7 +234,8 @@ public class LectureServiceImpl implements LectureService {
     public MyLectureHistoryResponse getMyLectureHistory(Student student) {
         //내가수강하는 커리큘럼의 강의들 중, final time이 있는 애들을 모두 가져옴
         //내가 수강하는 커리큘럼 강의 가져오기
-        List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student);
+        log.info("[학샏] 강의 히스토리 가져오기 요청");
+        List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student.getId());
 
         List<Curriculum> curricula = new ArrayList<>();
         for (StudentCurriculum studentCurriculum : studentsCurricula) {
