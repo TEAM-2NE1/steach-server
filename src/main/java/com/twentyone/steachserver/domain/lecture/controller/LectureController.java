@@ -119,6 +119,7 @@ public class LectureController {
         return ResponseEntity.ok().body(finalLectureInfoByTeacherDto);
     }
 
+    @Secured("ROLE_STUDENT")
     @Operation(summary = "[학생] 나의 강의 히스토리 반환", description = "강의 히스토리 반환")
     @GetMapping("/history")
     public ResponseEntity<MyLectureHistoryResponse> getMyLectureHistory(@AuthenticationPrincipal Student student) {
