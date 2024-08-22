@@ -11,41 +11,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig {
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/**")
-//                        .allowedOrigins("http://localhost:8080")
-//                        .allowedOrigins("http://localhost:5173")
-//                        .allowedOrigins("http://steach.ssafy.io:5173")
-//                        .allowedOrigins("https://steach.ssafy.io:5173")
-//                        .allowedOrigins("https://main--steach.netlify.app")
-//                        .allowedOrigins("http://localhost/")
-//                        .allowCredentials(true)
-//                        .allowedMethods("*")
-//                        .allowedHeaders("*")
-//                        .allowedMethods("GET", "POST", "PUT", "DELETE");
-//            }
-//        };
-//    }
-
     // CORS 허용 적용
     @Bean
-    @Primary
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:5173");
         configuration.addAllowedOrigin("http://localhost");
         configuration.addAllowedOrigin("http://localhost/");
 
-        configuration.addAllowedOrigin("http://steach.ssafy.io:5173");
-        configuration.addAllowedOrigin("https://steach.ssafy.io:5173");
+        configuration.addAllowedOrigin("http://43.202.1.52:5173");
+        configuration.addAllowedOrigin("https://43.202.1.52:5173");
         // 2024-08-09 16시 80포트 추가
         configuration.addAllowedOrigin("https://43.202.1.52");
-        configuration.addAllowedOrigin("https://steach.ssafy.io");
-        configuration.addAllowedOrigin("https://main--steach.netlify.app");
+        configuration.addAllowedOrigin("https://43.202.1.52");
+
         configuration.addAllowedOrigin("http://localhost:8080");
 
         configuration.addAllowedHeader("*");
