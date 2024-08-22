@@ -234,7 +234,8 @@ public class LectureServiceImpl implements LectureService {
     public MyLectureHistoryResponse getMyLectureHistory(Student student) {
         //내가수강하는 커리큘럼의 강의들 중, final time이 있는 애들을 모두 가져옴
         //내가 수강하는 커리큘럼 강의 가져오기
-        List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student);
+        log.info("[학샏] 강의 히스토리 가져오기 요청");
+        List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student.getId());
 
         List<Curriculum> curricula = new ArrayList<>();
         for (StudentCurriculum studentCurriculum : studentsCurricula) {
@@ -264,7 +265,11 @@ public class LectureServiceImpl implements LectureService {
                 List<Quiz> quizzes = lecture.getQuizzes();
                 for (Quiz quiz: quizzes) {
                     StudentQuiz byStudentAndQuiz = studentQuizRepository.findByStudentAndQuiz(student, quiz)
-                            .orElseThrow(() -> new IllegalArgumentException("끝난 강의는 반드시 이 값이 존재해야합니다."));
+                            .orElseGet(() -> null);
+
+                    if (byStudentAndQuiz == null) {
+                        continue;
+                    }
 
                     quizScore += byStudentAndQuiz.getScore();
                     if (byStudentAndQuiz.getStudentChoice().equals(quiz.getQuizChoiceString().get(quiz.getAnswer()))) {

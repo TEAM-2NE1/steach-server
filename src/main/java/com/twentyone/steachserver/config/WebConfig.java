@@ -29,7 +29,7 @@ public class WebConfig {
             }
         };
     }
-
+    
     // CORS 허용 적용
     @Bean
     @Primary

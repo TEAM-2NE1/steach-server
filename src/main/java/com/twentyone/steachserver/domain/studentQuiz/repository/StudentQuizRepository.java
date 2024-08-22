@@ -14,8 +14,7 @@ import java.util.Optional;
 public interface StudentQuizRepository extends JpaRepository<StudentQuiz, StudentQuizId> {
 //    List<StudentQuiz> findTop4StudentQuizByQuizOrderByScoreDesc(Quiz quiz);
 
-    @Query("SELECT sq FROM StudentQuiz sq WHERE sq.quiz = :quiz")
-    List<StudentQuiz> findTop4ByQuiz(@Param("quiz") Quiz quiz);
+    List<StudentQuiz> findByQuiz(Quiz quiz);
 
     Optional<StudentQuiz> findByStudentAndQuiz(Student student, Quiz quiz);
 }
