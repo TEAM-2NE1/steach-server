@@ -207,7 +207,7 @@ public class CurriculumServiceImpl implements CurriculumService {
     @Override
     @Transactional(readOnly = true)
     public CurriculumListResponse getStudentsCurricula(Student student) {
-        List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student);
+        List<StudentCurriculum> studentsCurricula = studentCurriculumRepository.findByStudent(student.getId());
 
         List<Curriculum> curriculaList = new ArrayList<>();
         for (StudentCurriculum studentCurriculum : studentsCurricula) {

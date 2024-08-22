@@ -47,3 +47,7 @@ out/
 
 ### docker-compost ###
 !docker-compose.**.yml
+
+
+### nohup ###
+nohup_local.out

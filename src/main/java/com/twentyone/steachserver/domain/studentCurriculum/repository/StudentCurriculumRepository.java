@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StudentCurriculumRepository extends JpaRepository<StudentCurriculum, StudentCurriculumId> {
-    @Query("select sc from StudentCurriculum sc join sc.curriculum where sc.student = :student")
+    @Query("select sc from StudentCurriculum sc left join sc.curriculum where sc.student = :student")
     Page<StudentCurriculum> findByStudent(@Param("student") Student student, Pageable pageable);
 
-    @Query("select sc from StudentCurriculum sc join sc.curriculum where sc.student = :student")
-    List<StudentCurriculum> findByStudent(@Param("student") Student student);
+    @Query(value = "select * from students_curricula sc left join curricula c on sc.curriculum_id = c.id where sc.student_id = :studentId", nativeQuery = true)
+    List<StudentCurriculum> findByStudent(@Param("studentId") Integer studentId);
 
     Optional<StudentCurriculum> findTop1ByStudentAndCurriculum(Student student, Curriculum curriculum);
 
