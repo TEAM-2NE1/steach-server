@@ -15,7 +15,7 @@ volumes:  # 서비스들이 사용하는 데이터 저장소 설정
 networks:  # 네트워크 설정
   default:  # 기본 네트워크 설정
     name: elastic  # 네트워크 이름 설정
-    external: false  # 외부 네트워크를 사용하지 않음
+    external: false  # 외부 네트워크를 사용하지 않음  # 네트워크가 없으면 생성
 
 services:  # 서비스 정의
   setup:  # Elasticsearch 설정을 위한 서비스

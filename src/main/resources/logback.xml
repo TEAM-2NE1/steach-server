@@ -41,6 +41,7 @@
     <!-- ServerStatusController 클래스의 로거 설정 -->
     <logger name="com.twentyone.steachserver.interfaces.status.ServerStatusController" level="INFO" additivity="false">
         <appender-ref ref="STATUS_CONTROLLER"/>
+        <appender-ref ref="CONSOLE"/> <!-- 콘솔에도 출력하도록 추가 -->
     </logger>
 
     <!-- AnotherController 클래스의 로거 설정 -->
