@@ -37,8 +37,8 @@ out/
 ### VS Code ###
 .vscode/
 
-*.yml
-*.properties
+application*.yml
+application*.properties
 !gradle/wrapper/gradle-wrapper.properties
 
 ### querydsl ###
@@ -46,8 +46,7 @@ out/
 
 
 ### docker-compost ###
-!docker-compose.**.yml
-
-
-### nohup ###
-nohup_local.out
+!docker-compose.*.yml
+!docker-compose.yml
+!filebeat.yml
+!metricbeat.yml
