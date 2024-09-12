@@ -12,11 +12,20 @@ filebeat.inputs:
       # status_logs 디렉토리에 있는 모든 로그 파일을 수집
       - /usr/share/filebeat/status_logs/*.log
 
+# 도커 로그 수집을 위해  - /var/run/docker.sock:/var/run/docker.sock 볼륨 설정이 필수.
 filebeat.autodiscover:
   providers:
     - type: docker
       hints.enabled: true  # Docker 컨테이너에서 자동으로 로그 수집을 활성화하기 위해 힌트 기반 발견을 사용합니다.
-
+      templates:
+        - condition:
+            equals:
+              docker.container.labels.co.elastic.logs/enabled: "true"
+# 위 설정 후,
+#     labels:
+#      co.elastic.logs/enabled: "true"  # 이 컨테이너의 로그 수집 활성화
+#      co.elastic.logs/module: "java"  # Java 모듈을 사용해 로그 처리 (nginx, redis) 등 여러 방식
+# 와 같은 것을 도커 컴포즈에는 위 같이, 타 방식은 다른 방식으로 설정해 주면 자동으로 가져옴
 processors:
   - add_docker_metadata: ~  # Docker 관련 메타데이터를 수집 이벤트에 자동으로 추가합니다.
 

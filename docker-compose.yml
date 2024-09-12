@@ -23,7 +23,7 @@ services:  # 서비스 정의
     volumes:  # 볼륨 마운트
       - certs:/usr/share/elasticsearch/config/certs  # 인증서 볼륨을 컨테이너 내 경로에 마운트
     user: "0"  # root 사용자로 실행
-    command: >  # 실행할 커맨드 지정
+    command: >  # 실행할 커맨드 지정 (ssl 인증서 만드는 작업)
       bash -c '
         if [ x${ELASTIC_PASSWORD} == x ]; then
           echo "Set the ELASTIC_PASSWORD environment variable in the .env file";
