@@ -49,3 +49,4 @@ out/
 !docker-compose.**.yml
 
 nohup_local.out
+logs/**
