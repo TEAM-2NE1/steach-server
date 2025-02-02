@@ -1,0 +1,142 @@
+services:  # Docker Compose로 관리할 서비스 목록입니다.
+  grafana:  # Grafana 서비스 설정입니다.
+    image: grafana/grafana:latest # Grafana 최신 버전 이미지를 사용합니다.
+    container_name: grafana # 컨테이너 이름을 'grafana'로 지정합니다.
+    ports:
+      - "30001:3000" # 호스트의 포트 30001을 컨테이너의 3000번 포트(Grafana 웹 인터페이스)에 매핑합니다.
+    environment:  # 환경 변수 설정입니다.
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning  # Grafana 프로비저닝 파일의 경로를 /etc/grafana/provisioning으로 설정합니다.
+      - GF_AUTH_ANONYMOUS_ENABLED=true  # 익명 접근을 허용합니다.
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin  # 익명 사용자를 관리자(Admin) 역할로 설정합니다.
+      - GF_DEFAULT_TIMEZONE=Asia/Seoul
+
+    entrypoint:  # 컨테이너가 시작될 때 실행할 명령어를 지정합니다.
+      - sh
+      - -euc  # 스크립트 실행 시 에러 발생 시 중지하고, 각 명령어를 실행합니다.
+      - |
+        mkdir -p /etc/grafana/provisioning/datasources  
+        cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml  
+        apiVersion: 1
+        datasources:
+        - name: Loki  
+          type: loki  
+          access: proxy 
+          orgId: 1  
+          url: http://loki:3100  
+          basicAuth: false  
+          isDefault: true 
+          version: 1  
+          editable: false
+        EOF
+        /run.sh
+#        - name: Prometheus
+#                  type: prometheus
+#                  orgId: 1
+#                  url: http://prometheus:9090
+#                  basicAuth: false
+#                  isDefault: true
+#                  version: 1
+#                  editable: false
+    networks:
+      - steach-server-network  # 'steach-server-network' 네트워크에 연결합니다.
+    depends_on:  # 'loki' 서비스가 먼저 시작된 후 이 서비스가 시작되도록 설정합니다.
+      - loki
+      - prometheus
+
+  loki:  # Loki 서비스 설정입니다.
+    image: grafana/loki:main
+    container_name: loki # 컨테이너 이름을 'loki'로 지정합니다.
+    ports:
+      - "3100:3100" # 호스트의 3100번 포트를 컨테이너의 3100번 포트(Loki API)에 매핑합니다.
+    networks:
+      - steach-server-network  # 'steach-server-network' 네트워크에 연결합니다.
+    command: -config.file=/etc/loki/local-config.yaml  # Loki 설정 파일 경로를 지정합니다.
+    volumes:  # 볼륨을 사용해 파일을 마운트합니다.
+      - /home/ubuntu/grafana/loki/loki-config.yaml:/etc/loki-config.yaml  # 호스트의 Loki 설정 파일을 컨테이너 내부로 마운트합니다.
+      # 아래부터는 깃허브에서 가져옴
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://127.0.0.1:3100/ready" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+    loki-data:
+      build: docker/blocks/loki/data
+      command: node /home/node/data.js http://loki:3100
+      depends_on:
+        - loki
+      # when loki starts, there might be some time while it is not
+      # accepting requests, so we allow data.js to restart on failure.
+      restart: "on-failure"
+
+  #  prometheus:
+  #    image: prom/prometheus:v2.47.0
+  #    command:
+  #      - --web.enable-remote-write-receiver
+  #      - --config.file=/etc/prometheus/prometheus.yml
+  #    ports:
+  #      - "9090:9090"
+
+#  alloy:
+#    image: grafana/alloy:latest  # Grafana의 Alloy 최신 버전 이미지를 사용합니다.
+#    ports:
+#      - 12345:12345  # 호스트의 포트 12345를 컨테이너의 포트 12345에 매핑합니다.
+#    volumes:
+#      - /home/ubuntu/grafana/alloy/alloy-config.alloy:/etc/alloy/config.alloy  # 로컬의 alloy-config.alloy 파일을 컨테이너의 /etc/alloy/config.alloy 경로에 마운트합니다.
+#      # 로그의 위치 추가. 그런데 컨테이너 id가 폴더 명에 들어가는데 항상 바뀜.
+#      - /var/lib/docker/containers/b8b85667fb417429736251efa473af77a18d8c10db6ca69d51e3c0ec941ab586:/tmp/app-logs  # 로컬의 logs 디렉토리를 컨테이너의 /tmp/app-logs 디렉토리에 마운트합니다.
+#    command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy  # Alloy 서버를 시작하고, HTTP 서버 주소를 0.0.0.0:12345로 설정하며, 저장소 경로를 /var/lib/alloy/data로 지정합니다. 또한 /etc/alloy/config.alloy 설정 파일을 사용합니다.
+#    depends_on:
+#      - loki  # 'loki' 서비스가 먼저 시작된 후 이 서비스가 시작되도록 설정합니다.
+#    networks:
+#      - steach-server-network  # 'steach-server-network' 네트워크에 연결합니다.
+
+
+#  promtail:  # Promtail 서비스 설정입니다.
+#    image: grafana/promtail:main
+#    container_name: promtail # 컨테이너 이름을 'promtail'로 지정합니다.
+#    volumes:  # 여러 파일과 디렉토리를 마운트합니다.
+#      - ${env.SERVER_LOG_PATH}:/var/log/steach-server # 호스트의 /var/log 디렉토리를 컨테이너의 /var/log 디렉토리로 마운트합니다.
+#      - /var/run/docker.sock:/var/run/docker.sock # 호스트의 Docker 소켓을 컨테이너 내부로 마운트합니다.
+#      - /home/ubuntu/grafana/promtail/promtail-config.yaml:/etc/promtail/promtail-config.yaml  # 호스트의 Promtail 설정 파일을 컨테이너 내부로 마운트합니다.
+#    command: -config.file=/etc/promtail/promtail-config.yaml  # Promtail 설정 파일 경로를 지정합니다.
+#    networks:
+#      - steach-server-network  # 'steach-server-network' 네트워크에 연결합니다.
+#    depends_on:  # 'loki' 서비스가 먼저 시작된 후 이 서비스가 시작되도록 설정합니다.
+#      - loki
+
+
+# 이미 만들어져 있는 네트워크 사용
+networks:
+  steach-server-network:
+    external: true  # 외부에서 생성된 네트워크를 사용하도록 설정합니다.
+    name: steach-server-network  # 사용하려는 네트워크 이름을 'steach-server-network'로 지정합니다.
+
+# 이 구성 파일은 Grafana, Loki, 그리고 Promtail을 Docker Compose로 관리하도록 설정합니다.
+# Grafana는 익명 사용자가 관리자로 접근할 수 있도록 설정되어 있으며, Loki를 기본 데이터 소스로 사용합니다.
+# Loki와 Promtail은 각각의 설정 파일을 호스트에서 컨테이너로 마운트하여 사용하며, 모두 동일한 Docker 네트워크(steach-server-network)에 연결됩니다.
+# 모든 서비스는 지정된 버전의 이미지를 사용하며, 서비스 간의 의존성을 설정하여 순차적으로 시작되도록 구성되어 있습니다.
+
+
+#    mkdir -p /etc/grafana/provisioning/datasources  # 데이터 소스 프로비저닝 파일을 저장할 디렉토리를 생성합니다.
+#    cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml  # 데이터 소스 프로비저닝 파일을 생성합니다.
+#    apiVersion: 1
+#    datasources:
+#    - name: Loki  # 데이터 소스 이름을 'Loki'로 설정합니다.
+#      type: loki  # 데이터 소스 타입을 'loki'로 설정합니다.
+#      access: proxy  # 프록시를 통해 Loki에 접근하도록 설정합니다.
+#      orgId: 1  # 조직 ID를 1로 설정합니다.
+#      url: http://loki:3100  # Loki의 URL을 http://loki:3100으로 설정합니다.
+#      basicAuth: false  # 기본 인증을 사용하지 않도록 설정합니다.
+#      isDefault: true  # 기본 데이터 소스로 설정합니다.
+#      version: 1  # 데이터 소스 버전을 1로 설정합니다.
+#      editable: false  # 데이터 소스를 수정할 수 없도록 설정합니다.
+#    EOF
+#    /run.sh  # Grafana 컨테이너의 기본 실행 파일인 run.sh를 실행합니다.
+
+
+#docker stop grafana promtail loki alloy
+#docker rm grafana promtail loki alloy
+#docker ps
+#docker compose up --build -d
+#docker ps
