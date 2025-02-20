@@ -128,7 +128,8 @@
 <img width="893" alt="image" src="https://github.com/user-attachments/assets/3f440e90-2801-4ad9-a575-b43ea2404404" />
 
 ## 🔹 화상 강의 화면
-![강의](https://github.com/user-attachments/assets/bf3f59f4-176a-416c-a9b3-89ea880cf079)
+![강의1](https://github.com/user-attachments/assets/fc517a06-9798-44fb-abcf-3f25b102a2ee)
+
 
 ## 🔹 AI 진로 추천 결과 및 통계 화면
 ![steach통계](https://github.com/user-attachments/assets/abffddd6-29f8-4745-92ec-ad6763718f23)
